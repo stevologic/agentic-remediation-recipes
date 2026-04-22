@@ -175,6 +175,116 @@ an alternative.
 - **tfsec / Checkov / kube-linter** — category-specific scanners
   that ship with sensible defaults and `--fix` in many cases.
 
+### Container image scanning
+
+- **Trivy** (Aqua) — fast, open-source scanner for OS packages,
+  language dependencies, IaC, and secrets inside container
+  images. `trivy image <image>` on every build is the default
+  starting point.
+- **Grype** (Anchore) — companion to Syft (SBOM) and widely used
+  in CI. Integrates cleanly with Sigstore and Cosign for signed
+  SBOM attestations.
+- **Clair** (Quay) — registry-side scanning; pairs well with
+  Harbor / Quay-style private registries.
+- **Docker Scout** — Docker Hub–native scanning with
+  vulnerability policy and base-image recommendations.
+- **Snyk Container / Wiz / Prisma Cloud / Aqua** — commercial
+  scanners with richer prioritization, context, and
+  registry-level reporting. All layer on top of the same CVE
+  feeds; the differentiator is usually prioritization, not
+  detection.
+
+### Golden images and base-image hygiene
+
+Container image scanning is where most security programs first
+experience "alert fatigue from findings we can't meaningfully
+fix." A stock Debian / Alpine / Ubuntu base image carries
+hundreds of CVEs at any given moment, almost none of which are
+exploitable against your service, and almost all of which are
+fixed only when the upstream distro rebuilds. **Golden images**
+are the industry pattern for turning that noise into a small,
+owned, actionable fix loop.
+
+**What a golden image is:**
+
+- A **pre-hardened base image** owned by the platform or security
+  team (not the application team).
+- **Minimal by design** — distroless, scratch-plus-libc, or a
+  small-footprint distribution like Alpine / Wolfi. The fewer
+  packages, the fewer CVEs.
+- **Signed** with Sigstore / Cosign so downstream consumers can
+  verify provenance.
+- **SBOM-embedded** (CycloneDX or SPDX) so a scanner can report
+  on contents without re-analysing layers.
+- **Rebuilt on a known cadence** — nightly, weekly, or on any
+  upstream CVE landing in the base packages — so fixes flow
+  downstream automatically.
+- **Versioned and lifecycled** — `myorg/base:python-3.12-2026.04`
+  rather than `:latest`; old versions deprecate on a documented
+  schedule.
+
+**Why golden images make container scanning transparent:**
+
+- **One rebuild fixes many.** A CVE in the base image is
+  remediated once, by the platform team, and every downstream
+  service picks up the fix on its next deploy.
+- **Application-team triage collapses to a yes/no question.**
+  "Is the image on the current golden version?" is binary.
+  Application teams don't re-triage base-layer CVEs — they just
+  rebuild.
+- **Scan reports become actionable.** Findings that are *not*
+  in the golden image are findings the application team
+  introduced — which is the small, focused fix set they can
+  actually own.
+- **Supply-chain provenance is inherited.** A service built on a
+  signed golden image inherits that signature in its attestation
+  chain; auditors can trace a running container all the way
+  back to a known-good base.
+
+**Where this pairs with agentic remediation.** The
+[Vulnerable Dependency Remediation]({{< relref
+"/security-remediation/vulnerable-dependencies" >}})
+workflow becomes almost trivial when golden images are in
+place: the agent's PR is usually a single-line `FROM
+myorg/base:python-3.12-2026.04 → 2026.05` bump, fully
+verifiable by CI, with the remediation reasoning carried in the
+golden image's own changelog. Where there's no golden image,
+the same agent has to reason about individual package bumps
+across a layered Dockerfile — much more blast radius, much
+harder to gate safely.
+
+**Representative tooling:**
+
+- **Chainguard Images** — distroless, minimal-CVE, signed,
+  SBOM-embedded base images rebuilt continuously. Commercial
+  with a free tier.
+- **Wolfi** (Chainguard) — open-source distro purpose-built for
+  container images; widely used as the foundation for custom
+  golden images.
+- **Google Distroless** — open-source minimal images for the
+  common language runtimes. The original distroless lineage.
+- **Red Hat Universal Base Images (UBI)** — enterprise-supported
+  base images with a stable CVE-remediation SLA.
+- **Microsoft CBL-Mariner / Azure Linux** — minimal-footprint
+  distribution used as a base in Azure and CI environments.
+- **Sigstore Cosign + Syft** — open-source signing + SBOM
+  tooling; the ecosystem standard for signed, SBOM-carrying
+  golden images.
+
+**A starter policy.** Even before a full platform team owns the
+program, a small policy wins disproportionately:
+
+1. **One approved base image per language runtime.** No mixing.
+2. **No `:latest` tags.** Pinned versions only, with a
+   deprecation window.
+3. **CI fails any image that doesn't start from the approved
+   base.** OPA / Conftest / a Dockerfile linter all do this.
+4. **Scheduled rebuild workflow** that publishes new versions of
+   each golden image on a regular cadence, with a changelog.
+5. **A dashboard** of downstream consumers ("services still on
+   `:python-3.12-2026.03` after 30 days"). Stale consumers are
+   the canary for golden-image adoption health.
+
 ### CI-level auto-remediation
 
 - **GitHub Actions** — a tiny workflow that runs `npm audit fix` /

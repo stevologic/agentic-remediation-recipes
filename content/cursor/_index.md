@@ -13,6 +13,13 @@ dispatch a Background Agent to fix any of them with one click — or schedule
 them for autonomous overnight runs.
 {{< /callout >}}
 
+{{< callout type="warning" >}}
+**In a hurry?** The
+[**Quick Start**]({{< relref "/quickstart#cursor-five-minute-path" >}})
+is a five-minute path to your first agentic remediation PR with
+Cursor. Come back here for the full recipe once that loop is working.
+{{< /callout >}}
+
 Cursor's Agent (and Background Agents) can be steered with project-level
 rules and MCP servers to handle remediation queues without ever leaving
 the editor. Engineers get a consistent "open finding → branched PR"

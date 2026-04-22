@@ -13,6 +13,14 @@ Coding Agent task, which produces a reviewed pull request without manual
 hand-off.
 {{< /callout >}}
 
+{{< callout type="warning" >}}
+**In a hurry?** The
+[**Quick Start**]({{< relref "/quickstart#github-copilot-five-minute-path" >}})
+is a five-minute path to your first agentic remediation PR with
+GitHub Copilot. Come back here for the full recipe once that loop is
+working.
+{{< /callout >}}
+
 This recipe walks through turning GitHub Copilot — specifically **Copilot Chat**
 and the **Copilot Coding Agent** — into a remediation pipeline that picks up
 findings, opens branches, and ships PRs. Copilot is the shortest-setup

@@ -45,20 +45,37 @@ outputs:
 # runtime from `params.repoURL` so the site can be forked without edits.
 menu:
   main:
+    - identifier: quickstart
+      name: Quick Start
+      pageRef: quickstart
+      weight: 1
+
     - identifier: fundamentals
       name: Fundamentals
       pageRef: fundamentals
-      weight: 1
+      weight: 2
+      params:
+        type: menu
+    - identifier: fundamentals-threat-model
+      parent: fundamentals
+      name: Threat Model
+      pageRef: fundamentals/threat-model
+      weight: 11
+    - identifier: fundamentals-emerging-patterns
+      parent: fundamentals
+      name: Emerging Patterns
+      pageRef: fundamentals/emerging-patterns
+      weight: 12
 
     - identifier: docs
       name: Docs
       pageRef: docs
-      weight: 2
+      weight: 3
 
     - identifier: agents
       name: Agents
       pageRef: agents
-      weight: 3
+      weight: 4
       params:
         type: menu
     - identifier: copilot
@@ -90,17 +107,24 @@ menu:
     - identifier: prompt-library
       name: Prompt Library
       pageRef: prompt-library
-      weight: 4
+      weight: 5
+      params:
+        type: menu
+    - identifier: prompt-library-sources
+      parent: prompt-library
+      name: Reputable Sources
+      pageRef: prompt-library/sources
+      weight: 51
 
     - identifier: mcp-servers
       name: MCP Servers
       pageRef: mcp-servers
-      weight: 5
+      weight: 6
 
     - identifier: security-remediation
       name: Security Remediation
       pageRef: security-remediation
-      weight: 6
+      weight: 7
       params:
         type: menu
     - identifier: secrem-sensitive-data
@@ -142,12 +166,12 @@ menu:
     - identifier: automation
       name: Automation
       pageRef: automation
-      weight: 7
+      weight: 8
 
     - identifier: contribute
       name: Contribute
       pageRef: contribute
-      weight: 8
+      weight: 9
 
   sidebar:
     - identifier: more

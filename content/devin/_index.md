@@ -13,6 +13,13 @@ backlog, each running an end-to-end remediation playbook against the
 affected repository.
 {{< /callout >}}
 
+{{< callout type="warning" >}}
+**In a hurry?** The
+[**Quick Start**]({{< relref "/quickstart#devin-five-minute-path" >}})
+is a five-minute path to your first agentic remediation PR with
+Devin. Come back here for the full recipe once that loop is working.
+{{< /callout >}}
+
 Devin is a fully autonomous engineering agent — well suited to multi-step
 remediation work that spans repos, CI, and ticket systems. Unlike the
 other recipes on this site, Devin owns its own sandbox and integrations;

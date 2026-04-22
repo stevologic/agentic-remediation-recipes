@@ -13,6 +13,13 @@ attempts each fix in an isolated sandbox, and posts PRs with detailed
 remediation notes.
 {{< /callout >}}
 
+{{< callout type="warning" >}}
+**In a hurry?** The
+[**Quick Start**]({{< relref "/quickstart#codex-five-minute-path" >}})
+is a five-minute path to your first agentic remediation PR with
+Codex. Come back here for the full recipe once that loop is working.
+{{< /callout >}}
+
 OpenAI's Codex (CLI + cloud agent) is purpose-built for sandboxed,
 repo-aware tasks — a strong fit for **batch** remediation jobs. The
 recipe is: a small driver script, a standing `AGENTS.md`, and a

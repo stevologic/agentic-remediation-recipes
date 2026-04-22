@@ -56,6 +56,26 @@ extra things:
    decides what to do next, rather than producing one-shot output.
 3. **A goal** — a task description that tells it when it's done.
 
+```mermaid
+flowchart LR
+    LLM[LLM<br/><i>generates text</i>]
+    TOOLS["Tools<br/><i>read / write / run / call</i>"]
+    LOOP["Loop<br/><i>observe → decide → act</i>"]
+    GOAL["Goal<br/><i>stop condition</i>"]
+    AGENT((Agent))
+
+    LLM --- AGENT
+    TOOLS --- AGENT
+    LOOP --- AGENT
+    GOAL --- AGENT
+
+    classDef part fill:#0a2540,stroke:#00e5ff,color:#f5f7fb;
+    classDef sum fill:#241432,stroke:#7c5cff,color:#f5f7fb,font-weight:bold;
+    class LLM,TOOLS,LOOP,GOAL part
+    class AGENT sum
+```
+
+
 If any of those three is missing, you have something less than an
 agent:
 
@@ -102,6 +122,22 @@ Every agent on this site runs a variant of the same loop:
    information.
 6. **Produce the artifact.** A PR, a triage note, or a "stopped and
    asked a human" ping.
+
+```mermaid
+flowchart LR
+    T[Task<br/>prompt / ticket / finding] --> P[Plan]
+    P --> A[Act<br/>invoke a tool]
+    A --> O[Observe<br/>read tool output]
+    O --> D{Decide<br/>goal met?}
+    D -->|no, replan| P
+    D -->|yes| R[Produce artifact<br/>PR / triage note / ping]
+    D -->|blocked| STOP[Stop + ask human]
+
+    classDef act fill:#0a2540,stroke:#00e5ff,color:#f5f7fb;
+    classDef guard fill:#2a1040,stroke:#ff4ecb,color:#f5f7fb;
+    class A,O act
+    class D guard
+```
 
 The failure mode you care about most is step 5 going wrong — the
 agent "deciding" to do something the prompt didn't authorise (touch
@@ -160,6 +196,22 @@ no memory — everything you don't write down, the agent will guess
 at, and guessing is where silent bugs come from.
 
 ### Prompt, model, and tools evolve — orchestration doesn't
+
+```mermaid
+flowchart LR
+    subgraph SPINE["Orchestration spine (stable)"]
+        direction LR
+        Q[Queue] --> DP[Dispatcher] --> AG[Agent run] --> V[Verify] --> PR[PR / review]
+    end
+    P["Prompt<br/><i>(evolves)</i>"] -.feeds.-> AG
+    M["Model<br/><i>(evolves)</i>"] -.runs.-> AG
+    TL["Tools / MCP<br/><i>(evolves)</i>"] -.extends.-> AG
+
+    classDef stable fill:#0a2540,stroke:#00e5ff,color:#f5f7fb;
+    classDef fluid fill:#241432,stroke:#7c5cff,color:#f5f7fb,stroke-dasharray: 4 3;
+    class Q,DP,AG,V,PR stable
+    class P,M,TL fluid
+```
 
 Every agent recipe on this site calls this out in its **Orchestration**
 section. The pattern worth internalising:
@@ -220,6 +272,36 @@ truth — your finding system, your ticket tracker, your runbook
 store, your CI — and offers a small set of well-named functions
 the agent is allowed to call.
 
+```mermaid
+flowchart LR
+    AGENT["Agent<br/>(Claude / Cursor / Devin / ...)"]
+    subgraph MCP["MCP server"]
+        direction TB
+        T1["tool: list_findings(severity)"]
+        T2["tool: get_issue(id)"]
+        T3["tool: get_runbook(name)"]
+        CRED["Scoped credentials<br/>+ rate limits<br/>+ audit log"]
+    end
+    UP["Upstream system<br/>(Snyk / Jira / Confluence / ...)"]
+
+    AGENT -->|"MCP call<br/>(typed, scoped)"| MCP
+    MCP -->|"authenticated API call"| UP
+    UP -->|"structured response"| MCP
+    MCP -->|"typed response"| AGENT
+
+    classDef a fill:#0a2540,stroke:#00e5ff,color:#f5f7fb;
+    classDef b fill:#241432,stroke:#7c5cff,color:#f5f7fb;
+    classDef c fill:#1a2a1a,stroke:#86efac,color:#f5f7fb;
+    class AGENT a
+    class T1,T2,T3,CRED b
+    class UP c
+```
+
+Read the diagram as: the agent only ever sees the **typed tools**
+the MCP server publishes; the MCP server holds the credentials,
+the rate limits, and the audit log; the upstream system never talks
+directly to the agent. That narrowing is the whole security model.
+
 Concretely, an MCP server gives you four things:
 
 - **Typed tools.** Functions like `list_findings(severity)` or
@@ -261,6 +343,57 @@ If MCP servers are the **data connectors**, an **MCP gateway** is
 the reverse proxy in front of them. It sits between every agent
 and every MCP server you've wired up, and it's how teams keep MCP
 sane once they have more than two or three servers in play.
+
+```mermaid
+flowchart LR
+    A1[Claude]
+    A2[Cursor]
+    A3[Devin]
+    A4[Copilot]
+    A5[Codex]
+
+    subgraph GW["MCP gateway"]
+        direction TB
+        AUTH["Identity &<br/>per-agent auth"]
+        POL["Policy<br/>(allowlists, rate limits,<br/>write-approvals, redaction)"]
+        ROUTE["Routing<br/>(snyk.* → Snyk MCP<br/>jira.* → Jira MCP<br/>github.* → GitHub MCP)"]
+        LOG["Uniform audit log"]
+    end
+
+    subgraph SERVERS["MCP servers"]
+        direction TB
+        S1[Snyk MCP]
+        S2[Jira MCP]
+        S3[GitHub MCP]
+        S4[Runbooks MCP]
+    end
+
+    U1[(Snyk)]
+    U2[(Jira)]
+    U3[(GitHub)]
+    U4[(Confluence)]
+
+    A1 & A2 & A3 & A4 & A5 -->|"one endpoint"| GW
+    GW --> S1 --> U1
+    GW --> S2 --> U2
+    GW --> S3 --> U3
+    GW --> S4 --> U4
+
+    classDef agent fill:#0a2540,stroke:#00e5ff,color:#f5f7fb;
+    classDef gate fill:#2a1040,stroke:#ff4ecb,color:#f5f7fb;
+    classDef srv fill:#241432,stroke:#7c5cff,color:#f5f7fb;
+    classDef up fill:#1a2a1a,stroke:#86efac,color:#f5f7fb;
+    class A1,A2,A3,A4,A5 agent
+    class AUTH,POL,ROUTE,LOG gate
+    class S1,S2,S3,S4 srv
+    class U1,U2,U3,U4 up
+```
+
+Read the diagram as: every agent connects to **one** endpoint (the
+gateway), every upstream system has **one** credential pair (held by
+the gateway), every tool call lands in **one** audit log. That
+collapse is why gateways show up the moment a program has more than
+a couple of agents or a couple of backends.
 
 A gateway gives you four things a single MCP server can't:
 

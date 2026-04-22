@@ -13,6 +13,13 @@ sidebar:
 hooks blocking unsafe edits before they happen.
 {{< /callout >}}
 
+{{< callout type="warning" >}}
+**In a hurry?** The
+[**Quick Start**]({{< relref "/quickstart#claude-five-minute-path" >}})
+is a five-minute path to your first agentic remediation PR with
+Claude. Come back here for the full recipe once that loop is working.
+{{< /callout >}}
+
 Claude — via **Claude Code**, the **Claude Agent SDK**, and **MCP** — can
 drive end-to-end remediation: triage, fix, test, and ship. Skills encode
 your house rules; hooks enforce them; MCP servers bring in your real
