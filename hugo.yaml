@@ -110,11 +110,41 @@ menu:
       weight: 5
       params:
         type: menu
+    - identifier: prompt-library-claude
+      parent: prompt-library
+      name: Claude
+      pageRef: prompt-library/claude
+      weight: 51
+    - identifier: prompt-library-copilot
+      parent: prompt-library
+      name: GitHub Copilot
+      pageRef: prompt-library/github_copilot
+      weight: 52
+    - identifier: prompt-library-cursor
+      parent: prompt-library
+      name: Cursor
+      pageRef: prompt-library/cursor
+      weight: 53
+    - identifier: prompt-library-codex
+      parent: prompt-library
+      name: Codex
+      pageRef: prompt-library/codex
+      weight: 54
+    - identifier: prompt-library-devin
+      parent: prompt-library
+      name: Devin
+      pageRef: prompt-library/devin
+      weight: 55
+    - identifier: prompt-library-general
+      parent: prompt-library
+      name: General
+      pageRef: prompt-library/general
+      weight: 56
     - identifier: prompt-library-sources
       parent: prompt-library
       name: Reputable Sources
       pageRef: prompt-library/sources
-      weight: 51
+      weight: 57
 
     - identifier: mcp-servers
       name: MCP Servers
