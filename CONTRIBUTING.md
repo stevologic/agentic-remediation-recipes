@@ -235,8 +235,8 @@ Concrete trigger.
 
 A PR needs **two approvals** to merge:
 
-1. **Security** — at least one reviewer from the InfoSec team. We're
-   checking for safe guardrails, no leaked secrets, and that the
+1. **Security** — at least one reviewer from the security team.
+   They check for safe guardrails, no leaked secrets, and that the
    recipe doesn't inadvertently create a worse problem than the
    finding it's fixing.
 2. **Owning team** — at least one reviewer from the team that will be
@@ -296,4 +296,4 @@ the project.
 
 ---
 
-Created by your friends in **InfoSec** ♥
+An open, community-driven playbook for **security engineering teams** ♥

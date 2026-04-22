@@ -30,10 +30,11 @@ build, every deploy, or on a schedule.
 
 This page describes the **tool-agnostic workflow** for integrating
 an agentic pen-test platform into the same orchestration spine
-the other InfoSec workflows use. Two platforms fit this shape
-today and the pattern generalises to
-any similar platform that lands in the market. The workflow on
-this page names neither; vendors are configuration, not contract.
+the other security remediation workflows on this site use.
+Multiple platforms fit this shape today and the pattern generalises
+to any similar platform that lands in the market. The workflow on
+this page names none of them; vendors are configuration, not
+contract.
 
 ## What agentic pen testing actually is
 
@@ -74,7 +75,7 @@ flowchart LR
     H --> I{Severity &<br/>scope gate}
     I -->|in-scope| J[Triage ticket]
     I -->|out-of-scope| K[Discard + log]
-    J --> L[InfoSec + owning team]
+    J --> L[Security + owning team]
 ```
 
 ## The shape of integration — platform-agnostic
@@ -247,26 +248,56 @@ dispatch rules change:
    the orchestrator's perspective.
 4. **Verify.** Pull the findings stream, run dedup + scope +
    severity gates, normalise to the internal schema.
-5. **Review.** Open triage tickets; notify InfoSec and owning
-   teams; track SLA.
+5. **Review.** Open triage tickets; notify the security team and
+   owning engineering teams; track SLA.
 
 
-## How we decided when it's "active"
+## Why this is an emerging need
 
-This workflow graduated from **On deck** to **Active** when:
+Continuous, agent-driven offensive testing is a capability the
+information security industry is still actively maturing. It
+deserves a place on this site because the gap it closes — drift
+between quarterly human pen tests — is real for every InfoSec
+program that ships software faster than it tests it, and because
+the shape of integrating these platforms is stable enough to
+document even while the platforms themselves are evolving.
 
-- A pilot ran against three staging environments for 30 days
-  without causing an incident outside scope.
-- The finding stream was dedupe-stable run-over-run (same code,
-  same findings; new deploy, new findings land cleanly).
-- The severity gate was calibrated — below-threshold volume sat
-  at a level owning teams could absorb.
-- The kill-switch path was exercised end-to-end with a deliberate
-  scope-violation drill.
+The capability is **emerging**, not settled. Reasonable InfoSec
+programs are at very different points on the adoption curve:
+some are piloting a single platform against one staging
+environment, some are running continuous coverage across a
+portfolio, and some are still evaluating whether the false-positive
+rate is tolerable for their reviewers. All of those positions are
+defensible. This page exists to give any of those programs a
+vendor-neutral shape to work against, rather than inheriting a
+vendor's.
 
-Teams adopting this workflow in their own environment should run
-a similar 30-day pilot before pointing it at anything with real
-reviewers behind it.
+## Readiness signals for adoption
+
+An InfoSec program is ready to turn on continuous agentic pen
+testing — against pre-production, with humans in the loop — when
+it can answer yes to all of these:
+
+- **A scoped, durable pilot.** The program can run the platform
+  against a small number of staging environments for a meaningful
+  window (commonly 30 days) without causing an incident outside
+  scope.
+- **Dedupe stability.** The finding stream is stable run-over-run
+  (same code, same findings; new deploy, new findings land
+  cleanly), so reviewers are not re-triaging noise.
+- **A calibrated severity gate.** Below-threshold volume sits at
+  a level owning engineering teams can actually absorb without
+  reviewer burnout.
+- **An exercised kill switch.** The scope-violation / revoke-and-stop
+  path has been drilled end-to-end, not just documented.
+- **Reviewer capacity.** There is a named group of humans —
+  security engineers, AppSec, or a rotation — who will own the
+  triage queue these findings land in.
+
+Programs that don't yet hit all of these should treat the
+workflow as aspirational and use it to scope their pilot, rather
+than flip it on wholesale. This is emerging practice, not a
+shrink-wrapped product.
 
 ## Evaluating a platform
 
@@ -301,10 +332,10 @@ not vendor pitch decks:
 
 ## Changelog
 
-- 2026-04-22 — v1, promoted from On deck to Active after the
-  30-day pilot. Vendor-neutral orchestration in place. Two
-  platform backends supported today; others can
-  be added behind the same shape.
+- 2026-04-22 — v1, initial publication of the vendor-neutral
+  orchestration shape for an emerging capability. Multiple
+  platform backends fit this shape today; others can be added
+  behind the same contract as the market matures.
 
 ## See also
 

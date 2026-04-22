@@ -136,24 +136,26 @@ MCP Server Access page.
   {{< card link="/mcp-servers/" title="Click more to find out →" subtitle="Connector catalog, integration template, and per-agent wiring for Claude, Cursor, Devin, Codex, and Copilot." >}}
 {{< /cards >}}
 
-## Agentic Security Remediation on your behalf
+## Agentic Security Remediation on engineering's behalf
 
-Separately from the recipes above, **Information Security operates
+Separately from the recipes above, a **security team can operate
 its own agentic workflows** to drive down risk without asking
-every engineering team to stand up their own. Today that means
-two scheduled, reviewer-gated workflows — one for **sensitive
-data element (SDE) remediation** and one for **vulnerable
-dependency remediation** — with more on the way. The PRs you see
-tagged `sec-auto-remediation` come from these.
+every engineering team to stand up their own. The reference
+workflows on this site cover **sensitive data element (SDE)
+remediation**, **vulnerable dependency remediation**, and
+**agentic penetration testing**. The PRs that come out of these
+carry an auto-remediation label (the site uses
+`sec-auto-remediation` as the illustrative example — rename to
+your org's convention).
 
-If you want to understand what InfoSec is running, what's in
-scope, how orchestration decides when to hand work to an agent,
-and what the guardrails look like, the full writeup (plus
-mermaid diagrams of each flow) lives under
+To understand what the workflows do, what's in scope, how
+orchestration decides when to hand work to an agent, and what
+the guardrails look like, the full writeup (plus mermaid
+diagrams of each flow) lives under
 [**Agentic Security Remediation**]({{< relref "/security-remediation" >}}).
 
 {{< cards >}}
-  {{< card link="/security-remediation/" title="Click to see more →" subtitle="Workflows InfoSec runs on engineers' behalf, with scope, guardrails, and review policy for each." >}}
+  {{< card link="/security-remediation/" title="Click to see more →" subtitle="Reference workflows a security team can run on engineering's behalf, with scope, guardrails, and review policy for each." >}}
 {{< /cards >}}
 
 ## What belongs here

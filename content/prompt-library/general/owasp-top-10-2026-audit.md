@@ -3,7 +3,7 @@ title: "OWASP Top 10 (2026) — repo audit"
 linkTitle: "OWASP Top 10 2026 audit"
 tool: "general"
 author: "Stephen M Abbott"
-team: "InfoSec"
+team: "Security"
 maturity: "development"
 model: "Opus 4.7"
 tags: ["owasp", "top-10", "audit", "hunt", "sast", "security-posture"]

@@ -3,7 +3,7 @@ title: "Vulnerable dependency remediation (issue template + instructions)"
 linkTitle: "Vulnerable dep remediation"
 tool: "github_copilot"
 author: "Stephen M Abbott"
-team: "InfoSec"
+team: "Security"
 maturity: "development"
 model: "Opus 4.7"
 tags: ["sca", "cve", "dependencies", "copilot", "coding-agent", "issue-template"]

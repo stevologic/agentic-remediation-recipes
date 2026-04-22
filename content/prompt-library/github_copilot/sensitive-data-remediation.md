@@ -3,7 +3,7 @@ title: "Sensitive data element remediation (issue template + instructions)"
 linkTitle: "Sensitive data remediation"
 tool: "github_copilot"
 author: "Stephen M Abbott"
-team: "InfoSec"
+team: "Security"
 maturity: "development"
 model: "Opus 4.7"
 tags: ["sde", "secrets", "pii", "dlp", "copilot", "coding-agent", "issue-template"]

@@ -94,7 +94,7 @@ this in for their own organizations.
 5. **Complete internal training.** Read the internal rules of
    engagement for Cursor Agent and Background Agent usage on
    production repos before running any recipe. Internal link:
-   [InfoSec AI usage policy](#placeholder-policy-link).
+   [your org's AI usage policy](#placeholder-policy-link).
 
 ## Recipe steps
 

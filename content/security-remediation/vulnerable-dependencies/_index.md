@@ -39,7 +39,7 @@ flowchart LR
     C -->|major bump required| F
     D --> G[Sandbox: apply bump]
     G --> H[Run tests]
-    H -->|pass| I[PR: sec-auto-remediation]
+    H -->|pass| I[PR: auto-remediation label]
     H -->|fail| J[Revert + TRIAGE.md]
     I --> K[Human reviewer]
     K -->|approve| L[Merge]
@@ -98,7 +98,9 @@ sequenceDiagram
 
 - **One CVE, one PR.** Bundling multiple fixes masks which bump
   caused a regression. One is the rule, even if it creates more
-  PRs.
+  PRs. Tag each PR with an auto-remediation label — the site uses
+  `sec-auto-remediation` as the illustrative example; rename to
+  your org's convention.
 - **No code edits outside the lockfile.** If a bump requires a
   code change, the agent stops — that's a human call.
 - **No CI skip tokens.** The agent will never add `[skip ci]`,
@@ -130,12 +132,13 @@ inputs evolve.
 - **Prompt.** The triage heuristics (when to stop, how to format
   the PR body) get tuned from reviewer pushback.
 - **Model.** Upgraded when a newer model measurably improves
-  precision on our labelled CVE set.
+  precision on the team's labelled CVE set.
 - **Tools.** New ecosystem connectors (e.g. Rust `Cargo.lock`,
   PHP `composer.lock`) plug in as MCP servers without touching
   the orchestrator.
 
 ## Changelog
 
-- 2026-04-21 — v1, covers Node, Python, and Go. Rust and PHP
-  queued for next quarter.
+- 2026-04-21 — v1 reference workflow, covers Node, Python, and
+  Go. Rust and PHP are typical next-quarter extensions for teams
+  adopting this pattern.

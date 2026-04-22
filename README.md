@@ -5,6 +5,39 @@ theme) that catalogs **community-driven recipes** for turning the AI coding
 tools engineering teams already use — GitHub Copilot, Devin, Cursor,
 Codex, and Claude — into autonomous security remediators.
 
+## Purpose
+
+The agentic landscape is moving faster than any single team's internal
+documentation can keep up with. New models ship monthly, new agent
+platforms launch quarterly, MCP connectors proliferate across every
+SaaS an engineering org touches, and the guardrails that kept a pilot
+safe last quarter may not cover the capabilities shipping next quarter.
+
+This project exists for two reasons:
+
+1. **A working reference for agentic security remediation.** A
+   tool-agnostic, reviewer-gated, measurable shape of workflow that
+   any security engineering team can adopt, adapt, and fork — rather
+   than starting from a blank page every time a new capability lands.
+2. **A common language for agentic enablement inside companies
+   embracing this transformational moment.** Engineering leaders,
+   security teams, platform teams, and compliance counterparts need
+   a shared vocabulary and a shared mental model to have the same
+   conversation. This site is designed to be that shared artifact —
+   something a team can point at internally ("this is the shape we're
+   adopting, this is the maturity stage we're in, this is the
+   evidence we're producing") instead of re-explaining first
+   principles in every meeting.
+
+The recipes, prompts, reference workflows, metrics, reviewer
+playbook, rollout model, compliance mapping, and threat model are
+all written to be **industry-generic**: rename the labels, swap the
+tools, bring your own policy — the shape travels. As the landscape
+evolves, so does this site. Forks are encouraged; contributions back
+are the whole point.
+
+## What's in the site
+
 The site is a polished landing page backed by a full docs experience,
 and ships with:
 
@@ -17,9 +50,9 @@ and ships with:
 - **MCP Servers** — connector catalog, onboarding checklist, and a
   write-up on MCP gateways (when and why to put one in front of your
   connectors).
-- **Agentic Security Remediation** — the workflows InfoSec operates
-  today: Sensitive Data Element, Vulnerable Dependency, and Agentic
-  Penetration Testing.
+- **Agentic Security Remediation** — reference workflows a security
+  team can operate on engineering's behalf: Sensitive Data Element,
+  Vulnerable Dependency, and Agentic Penetration Testing.
 - **Automation, not agentic** — what deterministic tooling still does
   best, and where agents should *not* replace it.
 - **Contribute** — fork-and-PR guide for adding recipes, prompts, or
@@ -109,7 +142,7 @@ hugo-site/
 │   │   └── github_copilot/         # Copilot instructions + issue templates
 │   ├── mcp-servers/_index.md       # Connector catalog + gateway write-up
 │   ├── security-remediation/
-│   │   ├── _index.md               # InfoSec workflow overview
+│   │   ├── _index.md               # Security team workflow overview
 │   │   ├── sensitive-data/         # SDE remediation workflow
 │   │   ├── vulnerable-dependencies/# Dep remediation workflow
 │   │   └── penetration-testing/    # Agentic pen testing 
@@ -143,7 +176,7 @@ the top nav's **Contribute** link points at) and `LICENSE`.
 | **Agents** | Per-tool recipes for GitHub Copilot, Claude, Cursor, Codex, Devin — each with Install → Configure → Dispatch → Guardrails, plus General and Enterprise onboarding. |
 | **Prompt Library** | Tool-agnostic prompts under `general/` (OWASP Top 10 2026 audit, OWASP Top 10 2026 remediate) plus per-tool prompts for CVE triage, vulnerable deps, and SDE remediation. |
 | **MCP Servers** | Why MCP exists; connector catalog (risk, ownership, ticket, knowledge, code, observability); MCP gateway patterns; integration on-ramp. |
-| **Security Remediation** | The workflows InfoSec runs today: SDE, vulnerable deps, agentic pen testing. Each page describes the orchestration spine, guardrails, and what the workflow won't catch. |
+| **Security Remediation** | Reference workflows a security team can operate: SDE, vulnerable deps, agentic pen testing. Each page describes the orchestration spine, guardrails, and what the workflow won't catch. Plus program metrics, reviewer playbook, rollout maturity model, compliance mapping. |
 | **Automation** | The "just use a linter" checklist — deterministic automation that earns its keep before an agent ever runs. |
 | **Contribute** | How to add a recipe, a prompt, or a new workflow. |
 
@@ -252,4 +285,4 @@ MIT — see `LICENSE`.
 
 ---
 
-Created by your friends in **InfoSec** ♥
+An open, community-driven playbook for **security engineering teams** ♥

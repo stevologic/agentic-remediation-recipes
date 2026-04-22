@@ -9,7 +9,7 @@
 # only used for local `hugo server` and Docker builds.
 # For a custom domain, set it to e.g. "https://docs.example.com/".
 baseURL: "https://stevologic.github.io/agentic-remediation-recipes/"
-title: "Agentic Remediation Recipes by InfoSec"
+title: "Agentic Remediation Recipes"
 languageCode: en-us
 
 enableRobotsTXT: true
@@ -101,6 +101,43 @@ menu:
       name: Security Remediation
       pageRef: security-remediation
       weight: 6
+      params:
+        type: menu
+    - identifier: secrem-sensitive-data
+      parent: security-remediation
+      name: Sensitive Data Element
+      pageRef: security-remediation/sensitive-data
+      weight: 61
+    - identifier: secrem-vuln-deps
+      parent: security-remediation
+      name: Vulnerable Dependencies
+      pageRef: security-remediation/vulnerable-dependencies
+      weight: 62
+    - identifier: secrem-pentest
+      parent: security-remediation
+      name: Agentic Penetration Testing
+      pageRef: security-remediation/penetration-testing
+      weight: 63
+    - identifier: secrem-metrics
+      parent: security-remediation
+      name: Program Metrics & KPIs
+      pageRef: security-remediation/metrics
+      weight: 64
+    - identifier: secrem-reviewer
+      parent: security-remediation
+      name: Reviewer Playbook
+      pageRef: security-remediation/reviewer-playbook
+      weight: 65
+    - identifier: secrem-maturity
+      parent: security-remediation
+      name: Rollout & Maturity Model
+      pageRef: security-remediation/maturity
+      weight: 66
+    - identifier: secrem-compliance
+      parent: security-remediation
+      name: Compliance & Audit
+      pageRef: security-remediation/compliance
+      weight: 67
 
     - identifier: automation
       name: Automation
@@ -122,10 +159,6 @@ menu:
       name: Contribute
       pageRef: /contribute
       weight: 101
-    - identifier: repo-sidebar
-      name: "Repository ↗"
-      url: "https://github.com/stevologic/agentic-remediation-recipes"
-      weight: 102
 
 # ----------------------------------------------------------------------------
 # Theme params
@@ -159,7 +192,7 @@ params:
   footer:
     displayCopyright: true
     displayPoweredBy: false
-    copyright: "© 2026 Agentic Remediation Recipes · Created by your friends in InfoSec ♥"
+    copyright: "© 2026 Agentic Remediation Recipes · An open, community-driven playbook for security engineering teams"
 
   # Page displays & behaviour
   page:
@@ -169,11 +202,10 @@ params:
   toc:
     displayTags: true
 
-  # Edit on GitHub links — will follow repoURL at build time
-  # (CI injects HUGO_PARAMS_REPOURL so the edit base stays correct).
+  # Edit on GitHub links — disabled. We don't want an external
+  # callout to github.com injected into every page's header.
   editURL:
-    enable: true
-    base: "https://github.com/stevologic/agentic-remediation-recipes/edit/main/hugo-site/content"
+    enable: false
 
   # Built-in search
   search:

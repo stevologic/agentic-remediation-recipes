@@ -3,7 +3,7 @@ title: "OWASP Top 10 (2026) — remediate"
 linkTitle: "OWASP Top 10 2026 remediate"
 tool: "general"
 author: "Stephen M Abbott"
-team: "InfoSec"
+team: "Security"
 maturity: "development"
 model: "Opus 4.7"
 tags: ["owasp", "top-10", "remediate", "pr", "fix"]
@@ -215,4 +215,4 @@ reviewer channel) instead of forcing a PR if:
 - [Fundamentals]({{< relref "/fundamentals" >}}) — vocabulary used
   in the PR body
 - [Agentic Security Remediation]({{< relref "/security-remediation" >}})
-  — how InfoSec runs prompts like this in production
+  — how a security team runs prompts like this in production

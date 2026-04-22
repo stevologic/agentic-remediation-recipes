@@ -1,4 +1,23 @@
 {{/*
+  ---------- Hardening: no external resources, no install / translate prompts ----------
+  These meta tags + the CSP below tell the browser:
+    - Do not offer to translate this page (kills Chrome's translation banner).
+    - Do not treat this page as installable (kills the "Install app" /
+      "Use an app / extension" recommendation banner).
+    - Only load assets from the same origin (kills any accidental
+      CDN-fetched font / script — which is the most common reason a
+      browser would recommend installing a companion extension).
+
+  If an asset genuinely needs to be added back (e.g., an image from a
+  trusted partner), extend the CSP rather than remove it.
+*/}}
+<meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="apple-mobile-web-app-capable" content="no">
+<meta name="mobile-web-app-capable" content="no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'none';">
+
+{{/*
   Load the custom stylesheet on every page.
   Hextra exposes a "custom/head-end.html" partial hook for exactly this.
 */}}
@@ -14,3 +33,25 @@
 {{ with resources.Get "js/mermaid-viewer.js" | minify | fingerprint }}
   <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
 {{ end }}
+
+{{/*
+  Strip any PWA manifest the theme may have injected earlier in <head>,
+  and any external <link rel="preconnect"> / <link rel="dns-prefetch">
+  hints that would advertise an external dependency. This runs inline
+  so it happens before the first paint — the browser never sees a
+  manifest or preconnect to decide to act on.
+*/}}
+<script>
+(function () {
+  var removeSelectors = [
+    'link[rel="manifest"]',
+    'link[rel~="preconnect"]',
+    'link[rel~="dns-prefetch"]',
+    'link[rel~="prefetch"][href^="http"]',
+    'link[rel="chrome-webstore-item"]'
+  ];
+  removeSelectors.forEach(function (sel) {
+    document.querySelectorAll(sel).forEach(function (el) { el.remove(); });
+  });
+})();
+</script>

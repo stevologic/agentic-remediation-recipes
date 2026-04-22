@@ -3,7 +3,7 @@ title: "Scheduled sensitive data element (SDE) remediation"
 linkTitle: "Scheduled SDE remediation"
 tool: "devin"
 author: "Stephen M Abbott"
-team: "InfoSec"
+team: "Security"
 maturity: "development"
 model: "Opus 4.7"
 tags: ["scheduled", "sde", "secrets", "pii", "phi", "pci", "dlp", "devin"]

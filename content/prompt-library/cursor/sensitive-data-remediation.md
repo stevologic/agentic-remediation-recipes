@@ -3,7 +3,7 @@ title: "Sensitive data element remediation (rule + command)"
 linkTitle: "Sensitive data remediation"
 tool: "cursor"
 author: "Stephen M Abbott"
-team: "InfoSec"
+team: "Security"
 maturity: "development"
 model: "Opus 4.7"
 tags: ["sde", "secrets", "pii", "dlp", "cursor", "rules", "commands"]

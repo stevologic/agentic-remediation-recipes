@@ -3,7 +3,7 @@ title: "Sensitive data element remediation (non-interactive)"
 linkTitle: "Sensitive data remediation"
 tool: "codex"
 author: "Stephen M Abbott"
-team: "InfoSec"
+team: "Security"
 maturity: "development"
 model: "Opus 4.7"
 tags: ["sde", "secrets", "pii", "dlp", "codex", "noninteractive", "ci"]

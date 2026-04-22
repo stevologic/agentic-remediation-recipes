@@ -363,8 +363,10 @@ space.
   could affect if it's wrong. Remediation recipes keep blast
   radius small on purpose.
 - **Kill switch** — A way to stop the agent fleet immediately
-  (e.g., the `copilot-paused` or `codex-paused` label pattern).
-  Every batch recipe on this site has one.
+  (e.g., a pause label the dispatcher respects, like
+  `copilot-paused` or `codex-paused` — these are illustrative
+  label names; rename to your org's convention). Every batch
+  recipe on this site has one.
 - **Stop-and-ask** — Instead of guessing, the agent halts and
   writes a triage note or pings a channel. This is the preferred
   failure mode, not a bug.
@@ -434,15 +436,19 @@ the same.
   [Prompt Library]({{< relref "/prompt-library" >}}). Every entry
   lists the model it was tested against, its maturity, and the
   team behind it.
-- **Look at what InfoSec already runs** under
+- **Look at reference workflows** under
   [Agentic Security Remediation]({{< relref "/security-remediation" >}}) —
-  you'll see the output of these patterns as PRs and triage
+  the output of these patterns is PRs and triage
   tickets.
 - **Understand what you get for free without an LLM** by reading
   [Automation, not agentic]({{< relref "/automation" >}}). Spoiler:
   more than you might think.
 - **See what's wired into the context layer** on
   [MCP Server Access]({{< relref "/mcp-servers" >}}).
+- **Understand the ways this whole thing can be attacked** on
+  [Threat Model: agents as attack surface]({{< relref "/fundamentals/threat-model" >}}) —
+  prompt injection, poisoned MCP, tool abuse, and the mitigations
+  every program should have in place.
 
 ## See also
 

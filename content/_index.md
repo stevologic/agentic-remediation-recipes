@@ -1,5 +1,5 @@
 ---
-title: Agentic Remediation Recipes by InfoSec
+title: Agentic Remediation Recipes
 description: >
   A curated, community-driven library of recipes for turning the AI assistants
   engineers already use — GitHub Copilot, Devin, Cursor, Codex, and

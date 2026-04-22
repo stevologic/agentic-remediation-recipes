@@ -94,7 +94,7 @@ expected to fill this in for their own organizations.
 5. **Complete internal training.** Read the internal rules of
    engagement for using Claude Code on production repos before
    running any recipe end-to-end. Internal link:
-   [InfoSec AI usage policy](#placeholder-policy-link).
+   [your org's AI usage policy](#placeholder-policy-link).
 
 ## Install Claude Code
 

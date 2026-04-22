@@ -102,7 +102,7 @@ organizations.
 5. **Complete internal training.** Read the internal rules of
    engagement for Copilot usage on production repos before
    dispatching any coding-agent task. Internal link:
-   [InfoSec AI usage policy](#placeholder-policy-link).
+   [your org's AI usage policy](#placeholder-policy-link).
 
 ## Recipe steps
 

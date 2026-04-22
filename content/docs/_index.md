@@ -74,7 +74,8 @@ a PR.
   context layer: what data sources agents can reach, under what
   scopes.
 - **[Security Remediation]({{< relref "/security-remediation" >}})**
-  — the agentic workflows InfoSec runs on engineers' behalf.
+  — reference agentic workflows a security team can run on
+  engineering's behalf.
 - **[Automation]({{< relref "/automation" >}})** — deterministic
   tools that earn their keep before you reach for an LLM.
 - **Docs** (you are here) — meta-information about how this site works

@@ -23,10 +23,10 @@ out of scope).
 Teams routinely commit configs, log formatters, and schema files
 that — usually by accident — start emitting sensitive elements
 (email addresses, phone numbers, session tokens, internal user
-IDs) into places where they shouldn't appear. Our DLP scanner
-catches these; historically, the remediation was a Jira ticket
-that sat for weeks. This workflow turns the same finding into a
-PR within the hour.
+IDs) into places where they shouldn't appear. A DLP scanner
+typically catches these; historically, the remediation is a
+ticket that sits for weeks. This workflow turns the same finding
+into a PR within the hour.
 
 ## High-level flow
 
@@ -115,9 +115,11 @@ does not invent new patterns.
 - **DLP re-scan required.** Before opening the PR, the agent
   re-runs the DLP scanner against the sandbox and confirms the
   original finding is gone. If it isn't, the agent stops.
-- **Human approval required.** The PR is tagged
-  `sec-auto-remediation`. A reviewer from InfoSec **and** a
-  reviewer from the owning team must approve before merge.
+- **Human approval required.** The PR is tagged with an
+  auto-remediation label (the site uses `sec-auto-remediation` as
+  the illustrative example — rename to your org's convention). A
+  reviewer from the security team **and** a reviewer from the
+  owning team must approve before merge.
 
 ## What it won't catch
 
@@ -133,12 +135,13 @@ does not invent new patterns.
 The orchestration stays stable — intake, dispatch, sandbox, guard,
 review. What changes:
 
-- **Prompt.** We tune the remediation-menu instructions quarterly
-  based on reviewer feedback.
-- **Model.** We upgrade the underlying model when a newer one
-  meaningfully improves precision on our eval set.
-- **Tools.** When a new scanner joins intake, we add it as another
-  MCP connector; the orchestrator doesn't change.
+- **Prompt.** Remediation-menu instructions are tuned on a regular
+  cadence (e.g. quarterly) based on reviewer feedback.
+- **Model.** The underlying model is upgraded when a newer one
+  meaningfully improves precision on the team's own evaluation
+  set.
+- **Tools.** When a new scanner joins intake, it's added as another
+  MCP connector; the orchestrator itself doesn't change.
 
 ## Changelog
 

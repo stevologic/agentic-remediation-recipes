@@ -5,25 +5,25 @@ weight: 9
 sidebar:
   open: true
 description: >
-  Workflows Information Security is standing up to drive down risk
-  on engineers' behalf — using agentic remediation where it earns
-  its keep, and stopping cleanly where it doesn't.
+  Reference workflows a security engineering team can operate on
+  behalf of the wider organization — using agentic remediation
+  where it earns its keep, and stopping cleanly where it doesn't.
 ---
 
 {{< callout type="info" >}}
-**TL;DR.** These are the agentic workflows **InfoSec operates**, not
-ones we're asking engineering teams to run. The Prompt Library is
-the shared cookbook; this section is the menu InfoSec is cooking
-from. You don't have to do anything — you'll see the output as PRs,
-tickets, or triage notes.
+**TL;DR.** These are **reference workflows a security team operates**
+on engineering's behalf — not ones engineering teams are asked to
+run themselves. The Prompt Library is the shared cookbook; this
+section is the menu a security team cooks from. Engineering doesn't
+have to do anything — the output is PRs, tickets, or triage notes.
 {{< /callout >}}
 
 Agentic automation is most valuable in places where risk reduction
 is measurable, the fix shape is narrow, and the blast radius of a
 bad change is small enough that a tight guardrail can catch it.
-The two workflows below fit that profile. Everything else InfoSec
-runs manually — or hands to a human with a checklist — until we're
-confident the automation is safer than a hurried engineer at
+The workflows below fit that profile. Everything else a security
+team runs manually — or hands to a human with a checklist — until
+the automation is demonstrably safer than a hurried engineer at
 11 p.m.
 
 ## How we decide what to automate
@@ -45,24 +45,41 @@ Before a workflow lands here, it has to satisfy four tests:
 {{< cards >}}
   {{< card link="/security-remediation/sensitive-data/" title="Sensitive Data Element Remediation" subtitle="Detect and redact unexpected PII / secrets appearing in logs, schemas, and shared configs." >}}
   {{< card link="/security-remediation/vulnerable-dependencies/" title="Vulnerable Dependency Remediation" subtitle="Bump transitive and direct dependencies in response to CVEs and Dependabot advisories." >}}
-  {{< card link="/security-remediation/penetration-testing/" title="Agentic Penetration Testing" subtitle="Autonomous recon, scoped fuzzing, and auth / IDOR / SSRF walk-throughs against pre-production targets — findings returned as triage tickets." >}}
+  {{< card link="/security-remediation/penetration-testing/" title="Agentic Penetration Testing" subtitle="An emerging InfoSec capability: autonomous recon, scoped fuzzing, and auth / IDOR / SSRF walk-throughs against pre-production targets — findings returned as triage tickets." >}}
+{{< /cards >}}
+
+## Program operations
+
+The workflows above are how the program *acts*. The pages below
+are how it's *run* — the measurement, review, rollout, and
+compliance layers every program needs whether it has one workflow
+or ten.
+
+{{< cards >}}
+  {{< card link="/security-remediation/metrics/" title="Program Metrics & KPIs" subtitle="MTTR, merge-as-is rate, reviewer burden, false positives, cost per finding — what to measure and what a good month looks like." >}}
+  {{< card link="/security-remediation/reviewer-playbook/" title="Reviewer Playbook" subtitle="The seven-question checklist for gating agent PRs, plus onboarding, redirect patterns, and prompt-drift signals to escalate." >}}
+  {{< card link="/security-remediation/maturity/" title="Rollout & Maturity Model" subtitle="Crawl / walk / run adoption — pilot exit criteria, expansion signals, and the kill signals that pause a workflow." >}}
+  {{< card link="/security-remediation/compliance/" title="Compliance & Audit" subtitle="How this shape of workflow maps onto SOC 2, ISO 27001, PCI DSS, and NIST SSDF — evidence to produce and questions auditors will ask." >}}
 {{< /cards >}}
 
 ## On deck
 
-These are the workflows InfoSec is scoping next. Same four tests
-apply — bounded scope, reversible output, measurable outcome, clean
-failure mode — before any of them move to "Active."
+Candidate workflows teams scope next typically sit in a shared
+backlog. The same four tests apply — bounded scope, reversible
+output, measurable outcome, clean failure mode — before any of
+them move to "Active."
 
-- **More to come.** As the orchestration spine matures, we'll add
-  workflows where the cost/benefit math is clearly in agents' favor.
-  If you have a candidate, see [Contribute]({{< relref "/contribute" >}}).
+- **More to come.** As the orchestration spine matures, new
+  workflows land where the cost/benefit math is clearly in agents'
+  favor. If you have a candidate, see
+  [Contribute]({{< relref "/contribute" >}}).
 
 ## How orchestration fits together
 
-All InfoSec agentic workflows share one orchestration spine:
+Every agentic remediation workflow here shares one orchestration
+spine:
 
-1. **Intake** — a finding lands in our risk system (CVE feed, DLP
+1. **Intake** — a finding lands in the risk system (CVE feed, DLP
    scanner, SAST, manual report).
 2. **Dispatch** — the orchestrator decides whether the finding is
    eligible for an agent (scope, blast radius, cost caps).
@@ -84,12 +101,14 @@ separation of concerns.
 
 ## What engineers will see
 
-- **PRs** tagged `sec-auto-remediation` with a human from
-  InfoSec on the review line.
+- **PRs** tagged with an auto-remediation label (`sec-auto-remediation`
+  is the illustrative example used throughout this site — rename to
+  your org's convention) with a reviewer from the security team on
+  the review line.
 - **Triage tickets** when the agent stops — these are not asks for
-  you to debug the agent, they're asks for a human fix.
-- **A changelog** on each workflow page below, so you can see when
-  its behaviour changed and why.
+  engineers to debug the agent, they're asks for a human fix.
+- **A changelog** on each workflow page below, so readers can see
+  when its behaviour changed and why.
 
 ## What this section is not
 
@@ -101,6 +120,6 @@ separation of concerns.
 
 ## See also
 
-- [Prompt Library]({{< relref "/prompt-library" >}}) — the recipes InfoSec and engineering teams share
+- [Prompt Library]({{< relref "/prompt-library" >}}) — the recipes security and engineering teams share
 - [Agents]({{< relref "/agents" >}}) — per-tool orchestration recipes
 - [Contribute]({{< relref "/contribute" >}}) — suggest a new workflow

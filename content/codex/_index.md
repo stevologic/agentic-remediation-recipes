@@ -101,7 +101,7 @@ this in for their own organizations.
    engagement for hosted-LLM use on production repos, and confirm
    the data-handling classification for anything you send to the
    API. Internal link:
-   [InfoSec AI usage policy](#placeholder-policy-link).
+   [your org's AI usage policy](#placeholder-policy-link).
 
 ## Install the Codex CLI
 

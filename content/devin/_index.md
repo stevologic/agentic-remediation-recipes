@@ -95,7 +95,7 @@ their own organizations.
    engagement for autonomous-agent usage on production repos,
    including ACU budget caps and the "no auto-merge" policy.
    Internal link:
-   [InfoSec AI usage policy](#placeholder-policy-link).
+   [your org's AI usage policy](#placeholder-policy-link).
 
 ## Recipe steps
 

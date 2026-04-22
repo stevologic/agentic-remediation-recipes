@@ -14,6 +14,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>{{ .Site.Title }}</title>
 {{ with .Site.Params.description }}<meta name="description" content="{{ . }}">{{ end }}
+{{/*
+  Hardening — same as content pages. No PWA manifest (kills the
+  "Install app" / "Use an app / extension" banner Chrome otherwise
+  offers), no translate banner, no external resource loads.
+*/}}
+<meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="apple-mobile-web-app-capable" content="no">
+<meta name="mobile-web-app-capable" content="no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'none';">
 <link rel="icon" type="image/svg+xml" href="{{ $base }}/images/logo.svg">
 {{/*
   Self-contained font strategy: the site ships zero external asset
@@ -1089,19 +1099,19 @@
     </span>
   </a>
 
-  <!-- Agentic workflows InfoSec runs for you -->
+  <!-- Agentic workflows a security team operates -->
   <a class="dual-cta-card secrem reveal d3" href="{{ $base }}/security-remediation/">
     <div class="dual-cta-eyebrow">
       <span class="dot"></span>
-      <span>InfoSec Operated · Reviewer-gated</span>
+      <span>Security-operated · Reviewer-gated</span>
     </div>
-    <h3>Agentic workflows InfoSec runs for you</h3>
+    <h3>Agentic workflows a security team operates</h3>
     <p>
-      Workflows <strong>InfoSec operates</strong> — not ones we're asking
-      engineering teams to run. Bounded scope, reversible output (always a
-      PR, never a merge), measurable outcomes, and clean failure modes.
-      You'll see the output as PRs tagged <code>sec-auto-remediation</code>
-      or triage tickets when the agent stops cleanly.
+      Reference workflows <strong>a security team operates</strong> on engineering's
+      behalf — not ones engineering teams are asked to run. Bounded scope, reversible
+      output (always a PR, never a merge), measurable outcomes, and clean failure
+      modes. The output is PRs tagged with an auto-remediation label (rename to your
+      org's convention), or triage tickets when the agent stops cleanly.
     </p>
     <div class="dual-cta-tags">
       <span class="dual-cta-tag">sensitive data elements</span>
@@ -1153,7 +1163,7 @@
     <span>© 2026</span>
   </div>
   <div class="infosec">
-    Created by your friends in <strong>InfoSec</strong> <span class="heart">♥</span>
+    An open, community-driven playbook for <strong>security engineering teams</strong> <span class="heart">♥</span>
   </div>
 </footer>
 

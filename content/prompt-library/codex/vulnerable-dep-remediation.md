@@ -3,7 +3,7 @@ title: "Vulnerable dependency remediation (non-interactive)"
 linkTitle: "Vulnerable dep remediation"
 tool: "codex"
 author: "Stephen M Abbott"
-team: "InfoSec"
+team: "Security"
 maturity: "development"
 model: "Opus 4.7"
 tags: ["sca", "cve", "dependencies", "codex", "noninteractive", "ci"]
