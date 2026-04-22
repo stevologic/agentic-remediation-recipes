@@ -23,10 +23,20 @@ out of scope).
 Teams routinely commit configs, log formatters, and schema files
 that — usually by accident — start emitting sensitive elements
 (email addresses, phone numbers, session tokens, internal user
-IDs) into places where they shouldn't appear. A DLP scanner
-typically catches these; historically, the remediation is a
-ticket that sits for weeks. This workflow turns the same finding
-into a PR within the hour.
+IDs) into places where they shouldn't appear. An SDE or DLP
+scanner typically catches these; historically, the remediation
+is a ticket that sits for weeks. This workflow turns the same
+finding into a PR within the hour.
+
+**Upstream detection is a prerequisite, not part of this workflow.**
+The orchestrator expects a deterministic scanner to be producing
+structured findings it can consume — for example,
+[Earlybird]({{< relref "/automation#sensitive-data-element-sde-detection" >}})
+for in-repo SDE scanning, Gitleaks or TruffleHog for credentials,
+or a commercial DLP product for data-in-motion. The
+[Automation page]({{< relref "/automation" >}}) catalogs the
+common scanners; the agentic remediation here picks up *after*
+the scanner has fired.
 
 ## High-level flow
 

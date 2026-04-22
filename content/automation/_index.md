@@ -81,14 +81,90 @@ it, or *how* to migrate callers, an agent is earning its keep.
 - **gofmt / goimports** — the table stakes for Go style.
 - **Clippy** — `cargo clippy --fix` for Rust.
 
-### Secrets & DLP
+### Secret detection
 
-- **Gitleaks** — pre-commit + CI scan for secret patterns. Free,
-  well-tuned, easy to allowlist.
-- **TruffleHog** — credential detection with verified / unverified
-  confidence tiers.
+- **Gitleaks** — open-source SAST for secrets. Detects hardcoded
+  credentials, API keys, tokens, and high-entropy strings across
+  source code, git history, and uncommitted changes. Configuration
+  lives in `.gitleaks.toml` (rules, allowlists, path filters).
+  Typical deployment:
+  - **Pre-commit hook** — `gitleaks protect --staged` blocks a
+    commit before the secret ever lands in history.
+  - **CI job** — `gitleaks detect --source . --log-opts="--all"`
+    scans the full history on every PR and fails the build if a
+    new secret appears.
+  - **GitHub Action** — the official `gitleaks/gitleaks-action` is
+    a drop-in; enable `GITLEAKS_ENABLE_UPLOAD_ARTIFACT` to get the
+    SARIF into the Security tab.
+
+  Tune the ruleset: the defaults are generous, and allowlisting
+  legitimate fixtures / test data (via `[allowlist]` entries with
+  `paths`, `regexes`, or `stopwords`) is what makes Gitleaks usable
+  in a large repo. Pair with `gitleaks git` in the pre-receive hook
+  if you run a self-hosted git server.
+
+- **TruffleHog** — credential detection with **verified / unverified**
+  confidence tiers. The killer feature is live verification: when
+  TruffleHog finds what looks like an AWS key, it calls AWS to
+  confirm the key is active before flagging it. Dramatically cuts
+  false positives but requires the scanner to have outbound network
+  access.
 - **GitHub secret scanning** — built into GitHub for supported
-  partners, with push protection. Flip it on.
+  partners, with push protection. Flip it on — zero config, and
+  the push-protection path stops secrets at the git-push boundary
+  rather than after the fact.
+
+### Sensitive Data Element (SDE) detection
+
+Secret scanners catch credentials. **SDE scanners** catch the
+broader category — PII, PHI, PCI data, and other regulated
+content that shouldn't live in source, logs, or shared configs.
+
+- **Earlybird** (American Express,
+  [github.com/americanexpress/earlybird](https://github.com/americanexpress/earlybird))
+  — open-source SDE scanner with a deliberately broad module set:
+  credentials (API keys, tokens, private keys), PII (SSNs, credit
+  card numbers, email addresses, phone numbers), PHI patterns, and
+  language-specific hotspots (SQL-in-strings, hard-coded IPs, weak
+  crypto calls). Written in Go, fast enough to run in a pre-commit
+  hook on monorepos.
+
+  Where Earlybird earns its keep:
+  - **Pre-commit.** `earlybird scan --path .` with `--severity
+    high` as a blocking gate; lower severities report but don't
+    block. Install via the project's binary release or `go install`.
+  - **CI.** Run against the diff (`--git-staged` or `--git-tracked`)
+    to catch regressions on PR. Full-repo scans belong on a
+    schedule, not on every push.
+  - **Custom modules.** The `.ge_ignore` file and
+    `config/*.json` rule packs make it straightforward to add
+    organisation-specific sensitive patterns (internal account
+    ID shapes, proprietary identifiers) without forking.
+  - **Output formats.** JSON, JUnit XML, and human-readable —
+    JUnit plugs directly into most CI dashboards.
+
+  Earlybird overlaps with Gitleaks on the credential side. Running
+  both is common — Gitleaks for git-history-aware secret sweeps,
+  Earlybird for the wider SDE surface on the working tree. Dedupe
+  downstream if you route both into the same triage queue.
+
+- **detect-secrets** (Yelp) — the original audit-style scanner
+  with a `.secrets.baseline` file so reviewers can snooze known
+  findings deliberately rather than by allowlist regex.
+- **Presidio** (Microsoft) — PII detection and redaction library
+  aimed at structured and unstructured text (logs, free-form
+  fields, CSV exports), with named-entity and regex recognizers
+  bundled. Heavier to stand up than Earlybird but the right tool
+  when the SDE surface is data flowing through services, not just
+  code in a repo.
+
+**Where this pairs with the agentic workflow.** The
+[Sensitive Data Element remediation workflow]({{< relref
+"/security-remediation/sensitive-data" >}}) assumes a deterministic
+scanner like Earlybird (or the equivalent) is already surfacing
+findings; the agent's job is the *fix-and-PR* step, not the
+detection step. Running a good SDE scanner is a prerequisite, not
+an alternative.
 
 ### Policy-as-code
 
