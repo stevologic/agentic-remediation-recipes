@@ -45,6 +45,32 @@ flowchart LR
     K -->|approve| L[Merge]
 ```
 
+## Intake paths
+
+Most programs start with one intake path and grow into more.
+Two shapes are worth naming explicitly because they have
+different orchestration implications:
+
+- **Orchestrator-pulled.** Your orchestrator polls the advisory
+  feed (CVE / OSV / vendor SCA API), classifies, and dispatches
+  the agent. You own the identity, the queue, the rate limits,
+  and the audit trail end-to-end. This is the shape the rest of
+  this workflow assumes.
+- **Platform-assigned.** The code-hosting platform exposes an
+  "assign to agent" action directly on the native alert UI —
+  Dependabot alerts assignable to Copilot, Claude, or Codex
+  (2026) is the representative example; expect equivalents on
+  GitLab, Bitbucket, and the SCA vendors. The platform spawns
+  the run, opens the draft PR, and ties it back to the alert.
+  No orchestrator required.
+
+**If you run both**, treat platform-assigned as the *fallback*
+path — it catches anything that falls off the main queue and
+stays useful as a manual-escalation lever for reviewers — and
+make sure the two audit trails land in a shared stream. "Which
+agent, on whose authority, touched this PR?" should have one
+answer, not two.
+
 ## What 'eligible' means
 
 The classifier hands a finding to the agent only when:
@@ -110,6 +136,18 @@ sequenceDiagram
 - **Yanked version guard.** The registry is re-queried just before
   PR open; if the patched version was yanked, the agent stops and
   writes a triage note.
+- **Malicious-package downgrade path.** "Bump to the latest patched
+  version" is the wrong default when the *advisory itself* is that
+  the package was compromised (maintainer account takeover,
+  poisoned release, self-propagating worm in the supply chain). In
+  those cases the remediation is a **pin backwards** to a
+  known-good version — or an eject to a fork — not a forward bump.
+  The classifier should recognise the advisory shape ("malicious
+  code in versions X and later") and route the agent to a
+  downgrade workflow; if the affected version is the only published
+  version, escalate to a human. See
+  [Threat Model → Agent-infrastructure supply-chain compromise]({{< relref "/fundamentals/threat-model#observed-real-world-patterns" >}})
+  for why this case is worth calling out separately.
 
 ## What it won't catch
 

@@ -153,6 +153,37 @@ flowchart TB
   brittleness. The pattern works when plans are coarse-grained
   and the executor has explicit fall-back-to-ask behaviour.
 
+### Platform-delivered remediation intake
+
+- **What it is.** The code-hosting platform itself exposes a
+  "hand this finding to an agent" button on the native finding
+  UI — dependency advisories, scanning alerts, dependabot
+  entries — and the platform spawns the agent run, opens the
+  draft PR, and wires it back to the alert. The assignee
+  abstraction is generic: you pick an agent (Copilot, Claude,
+  Codex, …), and the platform handles dispatch, auth, and
+  result plumbing.
+- **Why it matters.** It collapses the whole orchestrator layer
+  for teams that don't want to build one. For small orgs, this
+  is the shortest path from "we have an SCA queue" to "most of
+  the queue is draft PRs waiting for review." For larger orgs
+  already running their own orchestrator, it's still useful as
+  a *fallback* intake — anything that falls off the main queue
+  can still be agent-assigned from the native UI.
+- **Watch for.** The platform-spawned agent runs under the
+  platform's identity, not your orchestrator's, so your audit
+  trail fragments unless you consciously unify it. Also: the
+  agent can open multiple draft PRs for the same alert (one per
+  assigned agent), which is great for compare-and-pick but
+  requires a review convention so the loser PRs get closed
+  rather than lingering. And the same reviewer-gate discipline
+  still applies — "the platform assigned it" is not a trust
+  signal; it's just a dispatch mechanism.
+- **Representative shape.** GitHub's Dependabot alert
+  assignees (Copilot / Claude / Codex, 2026). Expect
+  equivalents from GitLab, Bitbucket, and the SCA vendors as
+  the pattern spreads.
+
 ### Chain-of-verification
 
 - **What it is.** The agent generates an answer, then generates
@@ -167,6 +198,192 @@ flowchart TB
 - **Watch for.** It doubles token cost. Worth it on high-stakes
   steps (the final PR body, the proposed patch); overkill on
   every intermediate reasoning step.
+
+---
+
+## Agent platform primitives
+
+A short run of protocol-level primitives that changed what
+counts as a sensible agent design in 2025–2026. These map
+one-to-one onto features shipped in the Claude API and the MCP
+spec, and they're summarised here because each of them re-opens
+design decisions elsewhere on this site. See
+[MCP Server Access → Where MCP is heading in 2026]({{< relref "/mcp-servers#where-mcp-is-heading-in-2026" >}})
+for the roadmap context.
+
+### Progressive tool discovery and tool search
+
+```mermaid
+flowchart LR
+    USER[User intent] --> AGENT[Agent with search tool]
+    AGENT -->|discovery query| SEARCH[tool_search_tool]
+    SEARCH -->|3–5 tool_reference blocks| AGENT
+    AGENT -->|loads only discovered tools| RUN[Tool execution]
+    CAT[(Catalog of 100s of tools<br/><i>defer_loading: true</i>)] -.-> SEARCH
+
+    classDef agent fill:#0a2540,stroke:#00e5ff,color:#f5f7fb;
+    classDef tool fill:#2a1040,stroke:#ff4ecb,color:#f5f7fb;
+    classDef io fill:#1a2a1a,stroke:#86efac,color:#f5f7fb;
+    class AGENT,RUN agent
+    class SEARCH,CAT tool
+    class USER io
+```
+
+- **What it is.** Instead of loading every tool definition into
+  the system-prompt prefix, tools are marked `defer_loading:
+  true` and surfaced on demand via a **tool search tool** (regex
+  or BM25). The agent searches the catalog, the API returns 3–5
+  `tool_reference` blocks, and those are expanded inline into
+  full tool definitions for this turn. The catalog stays outside
+  the context; only what's needed gets loaded.
+- **Why it matters.** Tool definitions eat a surprising
+  percentage of context. A typical multi-server setup (GitHub +
+  Slack + Sentry + Grafana + Splunk) can consume ~55k tokens in
+  definitions before any real work happens. Tool selection
+  accuracy also drops noticeably past 30–50 visible tools.
+  Progressive discovery reports ~85%+ reductions in
+  tool-definition token cost, and Claude Code applies it
+  automatically, deferring servers whose definitions would
+  otherwise exceed ~10% of the context window. The practical
+  effect for remediation programs: you can expose a
+  catalog-scale connector fleet (hundreds to low thousands of
+  tools) to a single agent without paying the context-bloat or
+  accuracy tax.
+- **Watch for.** More reachable tools means more tool-poisoning
+  surface area (descriptions are prompt-layer input). Pin
+  descriptions, diff them on update, and keep the gateway's
+  allowlist as the real scoping boundary — see
+  [Threat Model → tool poisoning]({{< relref "/fundamentals/threat-model#2-poisoned-mcp-responses-and-tool-descriptions" >}}).
+  Also: keep 3–5 highest-frequency tools non-deferred;
+  discovery latency is real.
+- **Representative tooling.** Anthropic's
+  [tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool)
+  (regex and BM25 variants), Claude Code's progressive tool
+  discovery, MCP gateway catalogs that implement the same shape
+  server-side, and embeddings-based custom implementations via
+  the `tool_reference` block format.
+
+### Programmatic tool calling
+
+```mermaid
+flowchart LR
+    P[Prompt] --> M[Model]
+    M -->|"writes orchestration code"| S["Code-execution sandbox<br/><i>loops · branches · filters</i>"]
+    S -->|tool_use| T[(Tool: database / MCP / API)]
+    T -->|tool_result stays in sandbox| S
+    S -->|final summary only| M
+    M --> OUT[Response]
+
+    classDef model fill:#0a2540,stroke:#00e5ff,color:#f5f7fb;
+    classDef sandbox fill:#2a1040,stroke:#ff4ecb,color:#f5f7fb,stroke-dasharray: 4 3;
+    classDef io fill:#1a2a1a,stroke:#86efac,color:#f5f7fb;
+    class M model
+    class S,T sandbox
+    class P,OUT io
+```
+
+- **What it is.** Instead of round-tripping the model once per
+  tool call, the model writes a Python script inside a
+  code-execution sandbox that invokes tools as async functions
+  — with loops, conditionals, early-termination, filtering,
+  aggregation, error handling. Tools are opted in with
+  `allowed_callers: ["code_execution_20260120"]`. Intermediate
+  `tool_result` payloads stay in the sandbox; only the final
+  output returns to the model's context.
+- **Why it matters.** For any remediation workflow with 3+
+  dependent tool calls, this pattern can reduce token use by
+  an order of magnitude and cut latency proportionally. Concrete
+  shapes this unlocks: batched reachability triage across a
+  large finding queue; multi-source correlation (advisory feed
+  + SBOM + CODEOWNERS) in one sandbox run; large-diff reasoning
+  where file contents never enter context.
+- **Watch for.** Tools served by the Anthropic
+  [MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector)
+  are currently **not** callable programmatically — the feature
+  works against first-party API tools plus self-hosted tools
+  in the sandbox. If you want the pattern over MCP today, you
+  implement the sandbox + tool-routing yourself. Expect this to
+  change; track the feature-gate. Security implication: tool
+  results become strings the sandbox may interpret as code —
+  validate external tool output the same way you'd validate
+  any untrusted string reaching an eval boundary.
+- **Representative tooling.** Anthropic's
+  [programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)
+  (GA on Claude API; Sonnet 4.5+, Opus 4.5+), self-hosted
+  sandboxed equivalents, and client-side direct-execution for
+  trusted-environment cases. On agentic benchmarks like
+  BrowseComp and DeepSearchQA, programmatic tool calling has
+  been the single most reported unlock for multi-step agent
+  performance.
+
+### Elicitation: structured input from the user
+
+- **What it is.** An MCP primitive (shipped September 2025) that
+  lets a server pause mid-execution and ask the user for
+  *structured* input — a JSON-schema form rather than a free-
+  text prompt. The agent is a participant in the handoff, not
+  the target of the question.
+- **Why it matters.** Remediation workflows frequently need
+  a mid-run human decision: "vulnerable dep or vulnerable
+  config?", "apply the breaking bump or stop?", "approve the
+  registry push?". Elicitation gives those decisions a native
+  home: typed, auditable, outside the free-text channel where
+  injection is easiest. It also gives connectors a native way
+  to elicit one-time credentials without storing them in a
+  prompt.
+- **Watch for.** Elicitation requests are *also* prompt-layer
+  surface — a compromised server could craft an elicitation that
+  reads like a social-engineering payload. Schema-constrain the
+  fields and surface the elicitation in the orchestrator's UI,
+  not in the raw model stream.
+- **Representative tooling.** MCP clients that implement the
+  elicitation spec (client-side); MCP SDKs that expose it
+  server-side; the `elicitation/create` request/response shape
+  in the 2025-09 MCP spec.
+
+### MCP tasks primitive for long-running work
+
+- **What it is.** An experimental MCP primitive (Dec 2025) for
+  work that outlives a single request/response cycle. The agent
+  submits a task; the server returns a task handle; the agent
+  (or an orchestrator queue) polls or receives callbacks as
+  state evolves. Designed for CI runs, long test suites, staged
+  rollouts, and anything measured in minutes-to-hours.
+- **Why it matters.** The dominant 2024–2025 workaround was
+  "agent holds connection open and retries" or "orchestrator
+  queues its own tasks and polls each server in a bespoke way."
+  The tasks primitive formalises the pattern into the protocol,
+  so both sides of the connection agree on the lifecycle.
+- **Watch for.** A single user intent can fan out into a tree
+  of tasks across several servers. Plan for a correlation ID
+  that spans the tree — otherwise your audit trail fragments
+  and postmortems get painful.
+- **Representative tooling.** The 2025-12 MCP spec's
+  experimental tasks primitive; MCP SDKs as they adopt it;
+  orchestrator queues (LangGraph, Temporal, Inngest, internal
+  queues) that expose MCP-task-shaped work items.
+
+### MCP applications
+
+- **What it is.** A packaging shape on the 2026 MCP roadmap:
+  server + tools + UI + skills delivered as one "application"
+  the agent can embed or hand off to. Concretely, this looks
+  like "the SCA vendor ships an MCP application that owns the
+  scanning + reproduction UX, and your agent composes it
+  rather than re-implementing it."
+- **Why it matters.** Moves the vendor boundary up a level. A
+  reference remediation pipeline becomes "agent orchestrates a
+  small set of MCP applications," not "agent + ten
+  point-integrations each with their own quirks."
+- **Watch for.** Gateway design has to accommodate
+  multiple co-resident applications, not just a tool-name fan-
+  out. Identity and audit needs to pass through the
+  application boundary; you don't want an application to become
+  a new un-audited layer.
+- **Representative shape.** The MCP applications primitive
+  landing in early 2026. Expect SCA, SAST, DAST, ticketing,
+  and code-hosting vendors to ship applications rather than
+  one-off tool surfaces.
 
 ---
 
@@ -425,63 +642,29 @@ flowchart LR
 
 ## Coding standards evolving under agents
 
-### `AGENTS.md` as a shared convention
+### Cross-host agent skills
 
-- **What it is.** `AGENTS.md` started with Codex but has become
-  a widely adopted convention for repo-level instructions to
-  coding agents — regardless of vendor. Several tools
-  (Codex, Cursor, Claude, and others) now read it.
-- **Why it matters.** One file, many agents. If your repo
-  already has tool-specific files (`CLAUDE.md`,
-  `copilot-instructions.md`, `.cursor/rules/*.mdc`), the
-  duplication is a maintenance problem that `AGENTS.md` is
-  trying to solve.
-- **Watch for.** Tools adopt the convention at different rates
-  and with different precedence rules. Keep tool-specific files
-  for now, link out to a shared `AGENTS.md` for the parts that
-  genuinely overlap.
-
-### Agent-readable CODEOWNERS extensions
-
-- **What it is.** Extending `CODEOWNERS` (or a similar file)
-  to carry additional metadata that agents can read: blast
-  radius, review requirements, forbidden paths, required
-  reviewers by finding class.
-- **Why it matters.** Dispatch decisions ("is this PR
-  auto-mergeable?" / "who needs to review?") become
-  data-driven rather than prompt-embedded.
-
-### Commit conventions for agent traceability
-
-- **What it is.** Structured trailers on agent-authored commits
-  (`Co-Authored-By:`, `Agent-Model:`, `Agent-Run-Id:`,
-  `Prompt-Hash:`) that the orchestrator writes automatically.
-- **Why it matters.** One-command answers to "which commits
-  were agent-authored?" and "which prompt version produced
-  this commit?" — both are routine compliance questions.
-
----
-
-## How to track what's next
-
-- **Pick three sources and follow them.** The MITRE ATLAS
-  updates, the OWASP GenAI Project release notes, and the
-  per-vendor changelogs for the agent platforms your program
-  uses are a reasonable minimum. Add the
-  [reputable prompt sources]({{< relref
-  "/prompt-library/sources" >}}) list as a quarterly skim.
-- **Run a "what's new?" review quarterly.** Pick the top three
-  items that have emerged since the last review, decide whether
-  any are worth piloting, and retire any entries here that
-  clearly didn't pan out.
-- **Contribute back.** Anything you find that earns its keep,
-  [contribute back]({{< relref "/contribute" >}}) — either as
-  a new entry on this page, or as a full workflow page.
-
-## See also
-
-- [Fundamentals]({{< relref "/fundamentals" >}}) — the settled primer
-- [Threat Model]({{< relref "/fundamentals/threat-model" >}}) — agents as attack surface
-- [Prompt Library → Sources]({{< relref "/prompt-library/sources" >}}) — where to find pre-engineered prompts
-- [Automation]({{< relref "/automation" >}}) — deterministic tools that underpin all of the above
-- [Security Remediation → Rollout & Maturity]({{< relref "/security-remediation/maturity" >}}) — where these patterns fit on the adoption curve
+- **What it is.** The "skill" concept that originated with
+  Claude Code — a named, packaged workflow (folder + instruction
+  file + helper scripts) an agent can invoke — has evolved into a
+  portable unit that multiple agent hosts (Claude Code, Copilot,
+  Cursor, Codex CLI, and others) can load and run. Package
+  managers and CLIs (for example, `gh skill` in the GitHub CLI)
+  are emerging to distribute skills the way Homebrew distributes
+  binaries.
+- **Why it matters.** Until recently, writing a
+  "CVE-triage" or "SDE-remediation" workflow meant porting the
+  same logic into four different file formats
+  (`.claude/skills/…`, `.cursor/rules/…`, a Codex driver script,
+  a Copilot instructions block). A portable skill format
+  collapses that duplication and lets a team ship one artifact
+  against whichever host each developer happens to use.
+- **Watch for.** Host-specific capability drift. The same skill
+  may have different tool authority on different hosts; treat
+  each host + skill combination as its own eval target until the
+  capability surfaces converge.
+- **Representative tooling.** The skill formats inside each
+  of the five agent hosts this site documents (Claude, Copilot,
+  Cursor, Codex, Devin), the emerging `gh skill` command in the
+  GitHub CLI, and the skill metadata conventions forming around
+  the MCP ecosystem.

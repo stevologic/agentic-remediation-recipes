@@ -263,21 +263,256 @@ wiring does.
   connector is mounted as a CLI tool Codex can call. See the
   [Codex recipe]({{< relref "/codex" >}}).
 
-## What this section is not
+## Ecosystem developments to track
 
-- A substitute for your data-classification policy. If a
-  system holds sensitive data, the rules for how an agent may
-  read it live in policy — this section documents the
-  *mechanics*, not the authorization.
-- A mandate to connect everything. "Democratizing data" does
-  not mean "remove the fence." It means: for each signal an
-  agent can prove it needs, make the path to getting it
-  narrow, typed, scoped, and logged — so the answer is "yes,
-  and here's the audit trail," not "ask a human, wait a day."
+MCP is still evolving. A few 2026-era developments are worth
+tracking because they change the shape of connector / gateway
+design materially:
 
-## See also
+- **Server discovery via `.well-known` metadata ("Server Cards").**
+  A maturing pattern where servers publish structured capability
+  metadata at a predictable URL, so agents, gateways, and
+  registries can enumerate what a server exposes without first
+  connecting to it. Useful in gateway catalogs and in the
+  experimental → production promotion step above.
+- **SSO-integrated auth, away from static client secrets.** The
+  enterprise-readiness push for MCP emphasises OIDC / SSO-bound
+  identities for agents, short-lived tokens, and audit trails on
+  the auth path itself — so revocation, group membership, and
+  separation of duties follow the same controls your other
+  internal tooling already obeys. Plan the gateway to carry
+  identity end-to-end: the agent's user-or-workload identity
+  should be the thing the backend sees, not a shared service
+  account, so deny-logs and scope checks are meaningful at
+  audit time.
 
-- [Agents]({{< relref "/agents" >}}) — per-tool orchestration recipes
-- [Prompt Library]({{< relref "/prompt-library" >}}) — prompts that make use of these connectors
-- [Agentic Security Remediation]({{< relref "/security-remediation" >}}) — workflows that depend on these integrations
-- [Contribute]({{< relref "/contribute" >}}) — submit a new connector writeup
+## Where MCP is heading in 2026
+
+MCP has moved from "a spec for a handful of local stdio servers"
+to enterprise infrastructure in roughly eighteen months. The
+shape of what agents can do — and how remediation programs
+should plan for them — is being redrawn by a short list of
+primitives that are either shipping or on the near-term roadmap.
+These notes distil the public direction as of the
+[April 2026 "Future of MCP" keynote](https://www.youtube.com/watch?v=v3Fr2JR47KA)
+by David Soria Parra (Anthropic, MCP co-creator) and align with
+the corresponding Anthropic API documentation for the
+[tool search](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool)
+and [programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)
+features.
+
+{{< callout type="info" >}}
+**Headline claim from the keynote.** *"2026 is the year agents go
+to production."* The argument is that the protocol work of 2024–
+2025 (remote transports, authorization, elicitation, tasks) has
+now landed the pieces an agent needs to run against real
+enterprise data, under real auth, for long enough to finish real
+work. Your remediation program's planning horizon should reflect
+that — not as hype, but as permission to design around primitives
+that are genuinely available rather than workarounds.
+{{< /callout >}}
+
+### The protocol timeline that got us here
+
+A short chronology, because design decisions for your connector
+fleet depend on which primitives you can assume are available:
+
+| When | Milestone | What it unlocked |
+| --- | --- | --- |
+| Nov 2024 | Core MCP open-sourced | Local stdio servers; the client / server / tool shape. |
+| Mar 2025 | Remote transports | HTTP-based MCP servers; network boundaries between agent and tools. |
+| Jun 2025 | Authorization | OAuth-style delegated auth on MCP; the foundation for SSO-integrated agents. |
+| Sep 2025 | Elicitation | Servers can request structured input from the user mid-execution. |
+| Dec 2025 | Tasks primitive (experimental) | Async, long-running agent workflows coordinated through MCP. |
+| Q1 2026 | MCP applications | Packaged UX surfaces delivered over MCP — the "apps for agents" shape. |
+
+The ecosystem-adoption numbers from the keynote are striking on
+their own: MCP SDKs were pulling on the order of **110 million
+downloads per month** by early 2026 — a scale the React ecosystem
+took roughly three years to reach. Whatever else is true, MCP is
+where connector investment is happening.
+
+### Progressive tool discovery (tool search)
+
+The thing that most directly affects the design of an agentic
+remediation program is how agents handle **large tool catalogs**.
+A typical multi-connector setup (GitHub + Slack + Sentry +
+Grafana + Splunk) consumes on the order of **55k tokens of
+context in tool definitions alone** before the agent does any
+work; selection accuracy also degrades noticeably past **30–50
+available tools**.
+
+Progressive discovery flips this. Instead of loading every tool
+upfront:
+
+- Tools are marked `defer_loading: true`; they are *not* in the
+  system-prompt prefix.
+- A **tool search** tool (regex or BM25 variant) sits in the
+  initial surface. When the agent needs a capability, it searches
+  the catalog, the API returns 3–5 `tool_reference` blocks, and
+  those are expanded inline into full tool definitions.
+- Claude Code applies this automatically, deferring any MCP
+  server whose tool definitions would otherwise consume more
+  than ~10% of the context window; reported reductions are on
+  the order of **>85%** of the tool-definition token cost.
+
+Why this matters for remediation specifically: it collapses the
+old "one gateway, one agent, curated per-workflow toolset"
+constraint. You can plausibly expose a 200-, 500-, or even
+low-thousands-of-tools catalog to a single remediation agent and
+rely on the discovery layer to keep context spend sane. The
+practical consequence is that **the gateway becomes the catalog**,
+and per-workflow tool trimming becomes an optimisation, not a
+correctness requirement.
+
+Guardrail implication: tool poisoning (see the
+[Threat Model]({{< relref "/fundamentals/threat-model" >}}))
+gets more surface area, because more tools are reachable more
+cheaply. The mitigation ("pin tool descriptions; diff on update")
+is now table stakes, not an edge concern.
+
+### Programmatic tool calling
+
+The second shift is in *how* agents chain tools. Classic tool use
+round-trips through the model for every call: the model emits a
+`tool_use`, the caller returns a `tool_result`, the model
+reasons, emits the next `tool_use`, and so on. For any workflow
+with 3+ dependent calls, that's expensive, slow, and lossy —
+every intermediate result sits in context.
+
+Programmatic tool calling lets the model **write code that orchestrates
+the tools**, inside a code-execution sandbox. Tools marked
+`allowed_callers: ["code_execution_20260120"]` are callable as
+async Python functions; the model writes a script with the usual
+shape (loops, branches, error handling, filters, early
+termination) and only the final result enters context. Anthropic
+reports order-of-magnitude reductions in token use and latency
+on multi-step workflows; the feature is generally available on
+the first-party Claude API for Claude Sonnet 4.5+ and Opus 4.5+.
+
+Concrete remediation patterns this unlocks:
+
+- **Batch triage across many findings.** Instead of N model turns
+  to triage N findings, a single code-execution run fetches,
+  filters by reachability/severity, and returns only the cohort
+  that needs human review.
+- **Large-diff reasoning.** Pull the affected files, run
+  property tests, filter to the failures, summarise. The raw
+  file contents never enter the model's context.
+- **Multi-source correlation.** Query the advisory feed, the
+  SBOM, and the CODEOWNERS graph in one script; return the
+  three-tuple per affected repo.
+
+Constraint to know about: MCP-connector tools cannot currently
+be called programmatically on the Claude API. If you want the
+programmatic pattern today, either expose those tools as
+first-party API tools or run your own sandboxed code-execution
+pattern per the Anthropic
+[programmatic tool calling docs](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling).
+This is likely to change — worth tracking.
+
+### Elicitation: the agent asking *you* for structured input
+
+Historically, MCP was a one-way street: the client asked, the
+server answered. **Elicitation** (shipped in the MCP spec in
+September 2025) lets a server pause mid-execution and request
+*structured* input from the user — a schema-typed form rather
+than a free-text prompt.
+
+Why this matters for remediation:
+
+- **Mid-run clarifications become safe.** A triage tool that
+  discovers a finding could be either vulnerable-dependency *or*
+  vulnerable-config can surface an elicitation — "which path
+  should I take?" — with a typed answer, instead of asking the
+  model to guess or flipping to a free-form chat.
+- **Break-glass approvals have a home.** Write-path operations
+  that require a human OK (merge, registry push, ticket bulk-op)
+  can live as an elicitation step. The approval is structured
+  (a boolean + optional justification), auditable, and native
+  to the protocol, rather than a bolt-on in the orchestrator.
+- **Secret-handling stays out of prompts.** A server can
+  elicit a one-time credential from the user and scope it to the
+  current task — instead of asking the agent to hold or remember
+  it.
+
+If you're designing a new connector in 2026, plan for which of
+your write-path operations are elicitation targets and which are
+silent reads, rather than inventing a separate approval channel.
+
+### Long-running tasks and the tasks primitive
+
+The experimental **tasks** primitive (Dec 2025) addresses the
+mismatch between an agent's operational unit (seconds) and
+real remediation work (minutes to hours — reproduction,
+test-suite runs, pipeline waits, staged rollouts). Instead of
+forcing the agent to hold a connection open, a task is
+**submitted to the server**, the server returns a task handle,
+and the agent (or the orchestrator) polls or receives callbacks
+as the task progresses.
+
+Design implications:
+
+- Connectors for CI systems, long test suites, and staged
+  deploys become first-class, not workarounds built on retry
+  loops inside the agent.
+- The orchestrator's queue model maps cleanly onto MCP tasks;
+  if you already have a queue, the migration path is
+  "register the task with the upstream server, track it in
+  the queue" rather than a rewrite.
+- Observability shifts — a single user intent ("remediate
+  this CVE") may translate to a tree of tasks across several
+  servers; plan for a correlation ID that spans them.
+
+### MCP applications
+
+The Q1 2026 arrival of **MCP applications** generalises the
+server into something closer to an app surface: packaged UI +
+tools + skills, delivered over MCP, that a host agent can embed
+or hand off to. Concretely, this is how "ask the agent to
+remediate a CVE" could become "the agent hands off to the SCA
+vendor's MCP application, which owns the scanning / reproduction
+UX, and returns a typed result." You keep the reviewer gate;
+you skip the integration plumbing.
+
+This is the primitive to watch for in 2026–2027 vendor
+roadmaps. Expect SCA, SAST, DAST, and ticket vendors to ship
+MCP applications in preference to one-off integrations, and
+plan gateway design for multiple co-resident applications
+instead of a single tool fan-out.
+
+### What this means for program design
+
+A short synthesis to carry back into your own planning:
+
+- **Design for larger connector catalogs.** The old constraint
+  "keep the per-agent tool count under ~30" is relaxed by tool
+  search. Start thinking in terms of *gateway coverage*, not
+  *per-agent curation*.
+- **Split "tool use" from "tool orchestration."** Programmatic
+  tool calling is a different programming model. Workflows
+  with 3+ dependent calls, large intermediate data, or batch
+  shape are candidates to port to the programmatic pattern.
+- **Use elicitation for approvals and clarifications.**
+  Replace free-text "are you sure?" turns with typed
+  elicitations. The reviewer workflow
+  ([Reviewer Playbook]({{< relref "/security-remediation/reviewer-playbook" >}}))
+  has a natural home here.
+- **Adopt the tasks primitive for anything over ~30 seconds.**
+  Don't keep agents holding connections open for long CI runs;
+  let the primitive do it.
+- **Keep guardrails pinned.** Tool descriptions, skill
+  instructions, and elicitation schemas are prompt-layer
+  inputs. Version, review, and diff them the same way you do
+  the system prompt — see
+  [Threat Model → tool poisoning]({{< relref "/fundamentals/threat-model#2-poisoned-mcp-responses-and-tool-descriptions" >}}).
+
+Cross-link into the pattern catalog for deeper reading on each
+of these:
+[Emerging Patterns → progressive discovery]({{< relref "/fundamentals/emerging-patterns#progressive-tool-discovery-and-tool-search" >}})
+·
+[Emerging Patterns → programmatic tool calling]({{< relref "/fundamentals/emerging-patterns#programmatic-tool-calling" >}})
+·
+[Emerging Patterns → elicitation]({{< relref "/fundamentals/emerging-patterns#elicitation-structured-input-from-the-user" >}})
+·
+[Emerging Patterns → tasks primitive]({{< relref "/fundamentals/emerging-patterns#mcp-tasks-primitive-for-long-running-work" >}}).
