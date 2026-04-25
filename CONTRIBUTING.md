@@ -1,4 +1,4 @@
-# Contributing to Agentic Remediation Recipes
+# Contributing to security-recipes.ai
 
 Thanks for wanting to contribute! This project is **community-driven** — we
 grow faster the more teams share back the recipes, prompts, and

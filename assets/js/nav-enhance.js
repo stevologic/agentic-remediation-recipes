@@ -1,5 +1,5 @@
 /*
- * Navbar enhancement — Agentic Remediation Recipes.
+ * Navbar enhancement — security-recipes.ai.
  *
  * Hextra renders a top-level menu entry with children (`params.type: menu`)
  * as a <button> that toggles a dropdown but doesn't itself navigate. We

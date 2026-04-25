@@ -1,5 +1,5 @@
 # ============================================================================
-# Hugo configuration — Agentic Remediation Recipes
+# Hugo configuration — security-recipes.ai
 # Uses the Hextra theme (https://imfing.github.io/hextra/)
 # ============================================================================
 
@@ -8,8 +8,8 @@
 # so forks / renames work without editing this file. The value below is
 # only used for local `hugo server` and Docker builds.
 # For a custom domain, set it to e.g. "https://docs.example.com/".
-baseURL: "https://stevologic.github.io/agentic-remediation-recipes/"
-title: "Agentic Remediation Recipes"
+baseURL: "https://security-recipes.ai/"
+title: "security-recipes.ai"
 languageCode: en-us
 
 enableRobotsTXT: true
@@ -56,6 +56,11 @@ menu:
       weight: 2
       params:
         type: menu
+    - identifier: fundamentals-overview
+      parent: fundamentals
+      name: Overview
+      pageRef: fundamentals
+      weight: 10
     - identifier: fundamentals-threat-model
       parent: fundamentals
       name: Threat Model
@@ -78,6 +83,11 @@ menu:
       weight: 4
       params:
         type: menu
+    - identifier: agents-overview
+      parent: agents
+      name: Overview
+      pageRef: agents
+      weight: 20
     - identifier: copilot
       parent: agents
       name: GitHub Copilot
@@ -110,6 +120,11 @@ menu:
       weight: 5
       params:
         type: menu
+    - identifier: prompt-library-overview
+      parent: prompt-library
+      name: Overview
+      pageRef: prompt-library
+      weight: 50
     - identifier: prompt-library-claude
       parent: prompt-library
       name: Claude
@@ -145,6 +160,16 @@ menu:
       name: Reputable Sources
       pageRef: prompt-library/sources
       weight: 57
+    - identifier: prompt-library-cve
+      parent: prompt-library
+      name: CVE Recipes
+      pageRef: prompt-library/cve
+      weight: 58
+    - identifier: prompt-library-classic
+      parent: prompt-library
+      name: Classic Vulnerable Defaults
+      pageRef: prompt-library/general/classic-vulnerable-defaults
+      weight: 59
 
     - identifier: mcp-servers
       name: MCP Servers
@@ -157,6 +182,11 @@ menu:
       weight: 7
       params:
         type: menu
+    - identifier: secrem-overview
+      parent: security-remediation
+      name: Overview
+      pageRef: security-remediation
+      weight: 60
     - identifier: secrem-sensitive-data
       parent: security-remediation
       name: Sensitive Data Element
@@ -167,26 +197,56 @@ menu:
       name: Vulnerable Dependencies
       pageRef: security-remediation/vulnerable-dependencies
       weight: 62
+    - identifier: secrem-sast
+      parent: security-remediation
+      name: SAST Findings
+      pageRef: security-remediation/sast-findings
+      weight: 63
+    - identifier: secrem-base-images
+      parent: security-remediation
+      name: Base Image & Container Layers
+      pageRef: security-remediation/base-images
+      weight: 64
+    - identifier: secrem-cache-purge
+      parent: security-remediation
+      name: Artifact Cache Purge
+      pageRef: security-remediation/artifact-cache-purge
+      weight: 65
+    - identifier: secrem-classic-defaults
+      parent: security-remediation
+      name: Classic Vulnerable Defaults
+      pageRef: security-remediation/classic-vulnerable-defaults
+      weight: 66
     - identifier: secrem-metrics
       parent: security-remediation
       name: Program Metrics & KPIs
       pageRef: security-remediation/metrics
-      weight: 64
+      weight: 67
     - identifier: secrem-reviewer
       parent: security-remediation
       name: Reviewer Playbook
       pageRef: security-remediation/reviewer-playbook
-      weight: 65
+      weight: 68
+    - identifier: secrem-gatekeeping
+      parent: security-remediation
+      name: Gatekeeping Patterns
+      pageRef: security-remediation/gatekeeping
+      weight: 69
+    - identifier: secrem-runtime-controls
+      parent: security-remediation
+      name: Runtime Controls
+      pageRef: security-remediation/runtime-controls
+      weight: 70
     - identifier: secrem-maturity
       parent: security-remediation
       name: Rollout & Maturity Model
       pageRef: security-remediation/maturity
-      weight: 66
+      weight: 71
     - identifier: secrem-compliance
       parent: security-remediation
       name: Compliance & Audit
       pageRef: security-remediation/compliance
-      weight: 67
+      weight: 72
 
     - identifier: automation
       name: Automation
@@ -241,7 +301,7 @@ params:
   footer:
     displayCopyright: true
     displayPoweredBy: false
-    copyright: "© 2026 Agentic Remediation Recipes · An open, community-driven playbook for security engineering teams"
+    copyright: "© 2026 security-recipes.ai · An open, community-driven playbook for security engineering teams"
 
   # Page displays & behaviour
   page:

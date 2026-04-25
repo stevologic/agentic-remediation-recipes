@@ -45,21 +45,38 @@ Before a workflow lands here, it has to satisfy four tests:
 {{< cards >}}
   {{< card link="/security-remediation/sensitive-data/" title="Sensitive Data Element Remediation" subtitle="Detect and redact unexpected PII / secrets appearing in logs, schemas, and shared configs." >}}
   {{< card link="/security-remediation/vulnerable-dependencies/" title="Vulnerable Dependency Remediation" subtitle="Bump transitive and direct dependencies in response to CVEs and Dependabot advisories." >}}
+  {{< card link="/security-remediation/sast-findings/" title="SAST Finding Remediation" subtitle="Triage SAST findings, drop the false positives with audit, and auto-fix the long tail of bounded fix shapes." >}}
+  {{< card link="/security-remediation/base-images/" title="Base Image & Container Layers" subtitle="Bump `FROM` lines, refresh OS-package layers, and rebuild derived multi-stage images on OS-level CVEs." >}}
+  {{< card link="/security-remediation/artifact-cache-purge/" title="Artifact Cache & Mirror Quarantine" subtitle="When a published artifact is compromised, evict it from every internal proxy, container registry, and CI cache that might still serve it." >}}
+  {{< card link="/security-remediation/classic-vulnerable-defaults/" title="Classic Vulnerable Defaults" subtitle="Mitigate and uplift the durable, recurring weaknesses that keep landing — pickle, unsafe YAML, JNDI lookups, JWT `none`, XXE, and friends." >}}
 {{< /cards >}}
 
 ## Program operations
 
 The workflows above are how the program *acts*. The pages below
-are how it's *run* — the measurement, review, rollout, and
-compliance layers every program needs whether it has one workflow
-or ten.
+are how it's *run* — the measurement, review, rollout, gating,
+runtime, and compliance layers every program needs whether it
+has one workflow or ten.
 
 {{< cards >}}
   {{< card link="/security-remediation/metrics/" title="Program Metrics & KPIs" subtitle="MTTR, merge-as-is rate, reviewer burden, false positives, cost per finding — what to measure and what a good month looks like." >}}
   {{< card link="/security-remediation/reviewer-playbook/" title="Reviewer Playbook" subtitle="The seven-question checklist for gating agent PRs, plus onboarding, redirect patterns, and prompt-drift signals to escalate." >}}
+  {{< card link="/security-remediation/gatekeeping/" title="Gatekeeping Patterns" subtitle="The catalog of admission, mid-run, pre-merge, post-merge, runtime, and cross-cutting gates — pick a stack, not a single gate." >}}
+  {{< card link="/security-remediation/runtime-controls/" title="Runtime Controls" subtitle="Inline action proxies and telemetry-driven session disablement — what the gate at the *running* agent looks like, not at its PR." >}}
   {{< card link="/security-remediation/maturity/" title="Rollout & Maturity Model" subtitle="Crawl / walk / run adoption — pilot exit criteria, expansion signals, and the kill signals that pause a workflow." >}}
   {{< card link="/security-remediation/compliance/" title="Compliance & Audit" subtitle="How this shape of workflow maps onto SOC 2, ISO 27001, PCI DSS, and NIST SSDF — evidence to produce and questions auditors will ask." >}}
 {{< /cards >}}
+
+## Per-CVE recipes
+
+When a finding is a *named* CVE — Log4Shell, xz-utils,
+Heartbleed, regreSSHion, the headline supply-chain story of
+the month — generic workflows are not always enough. The CVE
+has its own blast radius, its own quirks, and its own
+"remediation that looks right and isn't." See
+[CVE Recipes]({{< relref "/prompt-library/cve" >}}) for
+per-CVE prompts that an agent can run end-to-end without
+breaking the code around the fix.
 
 ## On deck
 

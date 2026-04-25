@@ -6,11 +6,11 @@ toc: true
 sidebar:
   open: true
 description: >
-  What Agentic Remediation Recipes is, who it's for, how the site is
+  What security-recipes.ai is, who it's for, how the site is
   structured, and how to get value out of it in your first 10 minutes.
 ---
 
-**Agentic Remediation Recipes** is an community-driven library of opinionated
+**security-recipes.ai** is a community-driven library of opinionated
 playbooks for turning the AI coding tools engineers already use —
 GitHub Copilot, Devin, Cursor, Codex, and Claude — into **autonomous
 remediators** that close risk instead of logging it.

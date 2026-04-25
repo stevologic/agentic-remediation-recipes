@@ -1,7 +1,8 @@
-# Agentic Remediation Recipes
+# security-recipes.ai
 
 A Hugo docs site (built with the [Hextra](https://imfing.github.io/hextra/)
-theme) that catalogs **community-driven recipes** for turning the AI coding
+theme) — published as **[security-recipes.ai](https://security-recipes.ai/)** —
+that catalogs **community-driven recipes** for turning the AI coding
 tools engineering teams already use — GitHub Copilot, Devin, Cursor,
 Codex, and Claude — into autonomous security remediators.
 
@@ -88,8 +89,8 @@ serves it from `nginx:alpine`:
 
 ```bash
 cd hugo-site
-docker build -t agentic-remediation-recipes .
-docker run --rm -p 8080:80 agentic-remediation-recipes
+docker build -t security-recipes .
+docker run --rm -p 8080:80 security-recipes
 # open http://localhost:8080
 ```
 

@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 # ============================================================================
-# Agentic Remediation Recipes — container build
+# security-recipes.ai — container build
 #
 # Multi-stage build:
 #   1. `builder`  — Hugo extended + Go, fetches Hextra module, builds static site
@@ -124,7 +124,7 @@ RUN HUGO_PARAMS_REPOURL="${REPO_URL:-https://github.com/stevologic/agentic-remed
 # ----- Stage 2 : runtime ----------------------------------------------------
 FROM nginx:1.27-alpine AS runtime
 
-LABEL org.opencontainers.image.title="Agentic Remediation Recipes" \
+LABEL org.opencontainers.image.title="security-recipes.ai" \
       org.opencontainers.image.description="Community-driven recipes for agentic remediation across AI coding tools." \
       org.opencontainers.image.source="https://github.com/stevologic/agentic-remediation-recipes"
 

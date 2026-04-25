@@ -1,5 +1,5 @@
 ---
-title: Agentic Remediation Recipes
+title: security-recipes.ai
 description: >
   A curated, community-driven library of recipes for turning the AI assistants
   engineers already use — GitHub Copilot, Devin, Cursor, Codex, and
