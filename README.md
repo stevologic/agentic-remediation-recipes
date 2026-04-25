@@ -237,8 +237,12 @@ The project ships with a GitHub Actions workflow
    `https://<user>.github.io/<repo>/`.
 
 > **Custom domain?** Add a `static/CNAME` file containing your domain
-> (it ends up at the root of `gh-pages`) and set `baseURL` in
-> `hugo.yaml` to `https://your-domain/`.
+> (it ends up at the root of `gh-pages`, which is what makes the
+> custom-domain binding survive `force_orphan: true` deploys). The
+> workflow detects the CNAME and uses `https://<your-domain>/` as the
+> baseURL automatically — no `hugo.yaml` edit required, and the
+> GitHub-Pages-subpath rewrites (asset URLs, card links) are skipped
+> because the site is served from the host root.
 
 > **Token permissions.** The workflow only needs the default
 > `GITHUB_TOKEN` with `contents: write` — no PATs required.

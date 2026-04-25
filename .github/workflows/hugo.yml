@@ -94,8 +94,18 @@ jobs:
           sudo dpkg -i "${RUNNER_TEMP}/hugo.deb"
 
       # ----------------------------------------------------------------
-      # Compute the correct baseURL for GitHub Pages from the repo
-      # context, so forks / renames just work without editing hugo.yaml.
+      # Compute the correct baseURL.
+      #
+      # Custom-domain takes priority: if `static/CNAME` exists in the
+      # Hugo project, use its contents as the host and serve from `/`.
+      # The CNAME file is also copied to the site root by Hugo's static
+      # asset pipeline, which is what tells GitHub Pages to keep the
+      # custom-domain binding across `force_orphan: true` deploys —
+      # without it, the domain setting is wiped on every push.
+      #
+      # Otherwise fall back to the GitHub Pages default, computed from
+      # the repo context so forks / renames just work without editing
+      # hugo.yaml:
       #
       #   User/org page  →  https://<owner>.github.io/
       #   Project page   →  https://<owner>.github.io/<repo>/
@@ -103,16 +113,25 @@ jobs:
       # GitHub Pages hostnames are always lowercase, even when the owner
       # name is mixed case — hence the `tr '[:upper:]' '[:lower:]'`.
       # ----------------------------------------------------------------
-      - name: Compute GitHub Pages base URL
+      - name: Compute baseURL (custom domain or GitHub Pages)
         id: pages
         run: |
-          OWNER_LC="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          REPO="${GITHUB_REPOSITORY##*/}"
-          REPO_LC="$(echo "$REPO" | tr '[:upper:]' '[:lower:]')"
-          if [ "$REPO_LC" = "${OWNER_LC}.github.io" ]; then
-            BASE_URL="https://${OWNER_LC}.github.io/"
+          CNAME_FILE="${{ steps.hugo-dir.outputs.path }}/static/CNAME"
+          if [ -s "$CNAME_FILE" ]; then
+            # Read the first non-empty line, strip whitespace.
+            CUSTOM_HOST="$(grep -v '^[[:space:]]*$' "$CNAME_FILE" | head -n1 | tr -d '[:space:]')"
+            BASE_URL="https://${CUSTOM_HOST}/"
+            echo "Detected static/CNAME → using custom domain baseURL"
           else
-            BASE_URL="https://${OWNER_LC}.github.io/${REPO}/"
+            OWNER_LC="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
+            REPO="${GITHUB_REPOSITORY##*/}"
+            REPO_LC="$(echo "$REPO" | tr '[:upper:]' '[:lower:]')"
+            if [ "$REPO_LC" = "${OWNER_LC}.github.io" ]; then
+              BASE_URL="https://${OWNER_LC}.github.io/"
+            else
+              BASE_URL="https://${OWNER_LC}.github.io/${REPO}/"
+            fi
+            echo "No static/CNAME — using GitHub Pages default baseURL"
           fi
           echo "base_url=${BASE_URL}" >> "$GITHUB_OUTPUT"
           echo "Computed baseURL: ${BASE_URL}"
