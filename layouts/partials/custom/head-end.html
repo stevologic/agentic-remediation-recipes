@@ -84,6 +84,15 @@ window.__NAV_ROUTES = (function () {
 {{ end }}
 
 {{/*
+  Sidebar default-collapse — force tree menus in the left docs sidebar
+  to start collapsed, then reopen only the active page ancestry so users
+  keep orientation without an always-expanded menu.
+*/}}
+{{ with resources.Get "js/sidebar-collapse.js" | minify | fingerprint }}
+  <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{ end }}
+
+{{/*
   Strip any PWA manifest the theme may have injected earlier in <head>,
   and any external <link rel="preconnect"> / <link rel="dns-prefetch">
   hints that would advertise an external dependency. This runs inline
