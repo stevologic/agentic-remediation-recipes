@@ -131,7 +131,11 @@ The generator assesses **all High/Critical advisories** in the input
 path and records one decision per advisory in the JSON report
 (`generated`, `skipped_no_cve`, `skipped_no_fix`, `skipped_no_ranges`).
 Generated pages are intentionally marked **draft** so maintainers can
-review wording and add CVE-specific nuances before publishing.
+review wording and add CVE-specific nuances before publishing. After
+generation, iterate through each `generated` result in the assessment
+report and either (a) promote to a curated file in
+`content/prompt-library/cve/` or (b) discard if no real remediation path
+exists.
 
 ---
 

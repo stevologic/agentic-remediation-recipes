@@ -18,7 +18,7 @@
       "severity": "critical"
     }
   ],
-  "generated_at": "2026-04-26T20:32:46Z",
+  "generated_at": "2026-04-26T20:36:19Z",
   "output_root": "/tmp/cve-generated-check",
   "totals": {
     "generated": 2,
