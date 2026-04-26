@@ -52,6 +52,8 @@ Before a workflow lands here, it has to satisfy four tests:
   {{< card link="/security-remediation/base-images/" title="Base Image & Container Layers" subtitle="Bump `FROM` lines, refresh OS-package layers, and rebuild derived multi-stage images on OS-level CVEs." >}}
   {{< card link="/security-remediation/artifact-cache-purge/" title="Artifact Cache & Mirror Quarantine" subtitle="When a published artifact is compromised, evict it from every internal proxy, container registry, and CI cache that might still serve it." >}}
   {{< card link="/security-remediation/classic-vulnerable-defaults/" title="Classic Vulnerable Defaults" subtitle="Mitigate and uplift the durable, recurring weaknesses that keep landing — pickle, unsafe YAML, JNDI lookups, JWT `none`, XXE, and friends." >}}
+  {{< card link="/security-remediation/crypto-payments/" title="Cryptocurrency & Crypto Payments Security" subtitle="Harden wallet operations, address handling, and settlement controls where one wrong transaction is irreversible." >}}
+  {{< card link="/security-remediation/defi-blockchain/" title="DeFi & Blockchain Protocol Security" subtitle="Secure smart-contract, oracle, bridge, and governance operations with runbooks designed for on-chain blast radius." >}}
 {{< /cards >}}
 
 ## Program operations
