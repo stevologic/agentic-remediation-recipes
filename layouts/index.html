@@ -332,6 +332,101 @@
   .hero-meta span { display: inline-flex; align-items: center; gap: 6px; }
   .hero-meta .sep { width: 4px; height: 4px; border-radius: 50%; background: var(--ink-3); }
 
+  /* ============ LANDING SEARCH ============ */
+  .home-search {
+    margin: 26px auto 0;
+    width: min(760px, 100%);
+    position: relative;
+    text-align: left;
+  }
+  .home-search-label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    color: var(--ink-3);
+  }
+  .home-search-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 14px;
+    border: 1px solid var(--card-border);
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(10px);
+    padding: 0 12px;
+  }
+  .home-search-input-wrap:focus-within {
+    border-color: rgba(0,229,255,0.4);
+    box-shadow: 0 0 0 2px rgba(0,229,255,0.12);
+  }
+  .home-search-icon {
+    color: var(--ink-3);
+    flex: none;
+    width: 18px;
+    height: 18px;
+  }
+  .home-search-input {
+    flex: 1;
+    height: 48px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--ink-0);
+    font-size: 15px;
+    font-family: var(--font-sans);
+  }
+  .home-search-input::placeholder { color: var(--ink-3); }
+  .home-search-hint {
+    flex: none;
+    font-size: 11px;
+    color: var(--ink-3);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 3px 7px;
+    font-family: var(--font-mono);
+  }
+  .home-search-results {
+    margin-top: 10px;
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(8,10,16,0.95);
+    backdrop-filter: blur(12px);
+    display: none;
+  }
+  .home-search-results[data-open="1"] { display: block; }
+  .home-search-empty {
+    padding: 14px 16px;
+    color: var(--ink-2);
+    font-size: 14px;
+  }
+  .home-search-item {
+    display: block;
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+  .home-search-item:first-child { border-top: 0; }
+  .home-search-item:hover,
+  .home-search-item[data-active="1"] {
+    background: rgba(255,255,255,0.04);
+  }
+  .home-search-item-title {
+    color: var(--ink-0);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .home-search-item-meta {
+    color: var(--ink-2);
+    font-size: 12px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
   /* ============ HERO CTA ROW ============ */
   .hero-cta-row {
     display: inline-flex;
@@ -974,7 +1069,7 @@
     across your <span class="accent">AI tooling stack</span>.
   </h1>
   <p class="subtitle reveal d3">
-    A curated, community-driven library of recipes that turn the AI assistants your
+    A curated, AI-Powered and community-driven library of recipes that turn the AI assistants your
     engineers already use into autonomous remediators — patching vulnerabilities,
     fixing flaky tests, and closing security findings without leaving the IDE.
   </p>
@@ -995,6 +1090,15 @@
     <span>Curated, practitioner-tested recipes</span>
     <span class="sep"></span>
     <span>Community-maintained - contribution welcomed!</span>
+  </div>
+  <div class="home-search reveal d4">
+    <label class="home-search-label" for="home-search-input">Search recipes</label>
+    <div class="home-search-input-wrap">
+      <svg class="home-search-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="home-search-input" class="home-search-input" type="search" placeholder="Find docs, agents, prompts, and remediation workflows…" autocomplete="off" />
+      <span class="home-search-hint">/</span>
+    </div>
+    <div id="home-search-results" class="home-search-results" role="listbox" aria-label="Search results"></div>
   </div>
 </section>
 
@@ -1238,6 +1342,132 @@
 </footer>
 
 <script>
+  (function () {
+    const input = document.getElementById('home-search-input');
+    const resultsEl = document.getElementById('home-search-results');
+    if (!input || !resultsEl) return;
+
+    let docs = [];
+    let loading = null;
+    let activeIndex = -1;
+
+    function escapeHtml(s) {
+      return (s || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function ensureIndexLoaded() {
+      if (loading) return loading;
+      loading = fetch('{{ $base }}/recipes-index.json', { credentials: 'same-origin' })
+        .then(r => r.ok ? r.json() : Promise.reject(new Error('index-unavailable')))
+        .then(data => {
+          docs = Array.isArray(data) ? data : [];
+          return docs;
+        })
+        .catch(() => {
+          docs = [];
+          return docs;
+        });
+      return loading;
+    }
+
+    function scoreDoc(doc, q) {
+      const title = (doc.title || '').toLowerCase();
+      const section = (doc.section || '').toLowerCase();
+      const summary = (doc.summary || '').toLowerCase();
+      const content = (doc.content || '').toLowerCase();
+
+      let score = 0;
+      if (title === q) score += 120;
+      if (title.startsWith(q)) score += 90;
+      if (title.includes(q)) score += 60;
+      if (section.includes(q)) score += 25;
+      if (summary.includes(q)) score += 15;
+      if (content.includes(q)) score += 10;
+      return score;
+    }
+
+    function renderResults(items, query) {
+      if (!query) {
+        resultsEl.innerHTML = '';
+        resultsEl.removeAttribute('data-open');
+        activeIndex = -1;
+        return;
+      }
+      if (!items.length) {
+        resultsEl.innerHTML = '<div class="home-search-empty">No matches found.</div>';
+        resultsEl.setAttribute('data-open', '1');
+        activeIndex = -1;
+        return;
+      }
+
+      resultsEl.innerHTML = items.map((d, i) => (
+        `<a class="home-search-item" data-index="${i}" href="${escapeHtml(d.path || d.url || '#')}">
+          <div class="home-search-item-title">${escapeHtml(d.title || 'Untitled')}</div>
+          <div class="home-search-item-meta">${escapeHtml(d.section || 'page')}</div>
+        </a>`
+      )).join('');
+      resultsEl.setAttribute('data-open', '1');
+      activeIndex = -1;
+    }
+
+    function setActive(index) {
+      const nodes = resultsEl.querySelectorAll('.home-search-item');
+      nodes.forEach(n => n.removeAttribute('data-active'));
+      if (index < 0 || index >= nodes.length) return;
+      nodes[index].setAttribute('data-active', '1');
+      nodes[index].scrollIntoView({ block: 'nearest' });
+      activeIndex = index;
+    }
+
+    async function runSearch() {
+      const q = input.value.trim().toLowerCase();
+      const index = await ensureIndexLoaded();
+      if (!q) {
+        renderResults([], '');
+        return;
+      }
+      const matched = index
+        .map(d => ({ ...d, _score: scoreDoc(d, q) }))
+        .filter(d => d._score > 0)
+        .sort((a, b) => b._score - a._score)
+        .slice(0, 8);
+      renderResults(matched, q);
+    }
+
+    input.addEventListener('input', runSearch);
+    input.addEventListener('focus', () => { if (input.value.trim()) runSearch(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement !== input) {
+        e.preventDefault();
+        input.focus();
+      }
+      if (!resultsEl.hasAttribute('data-open')) return;
+      const items = resultsEl.querySelectorAll('.home-search-item');
+      if (!items.length) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setActive(Math.min(activeIndex + 1, items.length - 1));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setActive(Math.max(activeIndex - 1, 0));
+      } else if (e.key === 'Enter' && activeIndex >= 0 && items[activeIndex]) {
+        items[activeIndex].click();
+      } else if (e.key === 'Escape') {
+        resultsEl.removeAttribute('data-open');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (resultsEl.contains(e.target) || e.target === input) return;
+      resultsEl.removeAttribute('data-open');
+    });
+  })();
+
   // Mouse-tracked card glow (matches uploaded design)
   document.querySelectorAll('.tool-card').forEach(card => {
     card.addEventListener('mousemove', e => {
