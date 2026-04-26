@@ -21,22 +21,42 @@
       .replace(/'/g, '&#39;');
   }
 
-  function indexUrl() {
-    return new URL('recipes-index.json', window.location.origin + (window.__SITE_BASE_PREFIX || '/')).toString();
+  function basePrefix() {
+    var raw = (window.__SITE_BASE_PREFIX || '/').toString();
+    if (!raw.startsWith('/')) raw = '/' + raw;
+    if (!raw.endsWith('/')) raw = raw + '/';
+    return raw;
+  }
+
+  function indexCandidates() {
+    var prefix = basePrefix();
+    var origin = window.location.origin;
+    return [
+      new URL(prefix + 'recipes-index.json', origin).toString(),
+      new URL('recipes-index.json', origin).toString()
+    ];
   }
 
   function ensureIndexLoaded() {
     if (loading) return loading;
-    loading = fetch(indexUrl(), { credentials: 'same-origin' })
-      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('index-unavailable')); })
-      .then(function (data) {
-        docs = Array.isArray(data) ? data : [];
-        return docs;
-      })
-      .catch(function () {
-        docs = [];
-        return docs;
-      });
+    loading = (async function () {
+      var urls = indexCandidates();
+      var lastError = null;
+      for (var i = 0; i < urls.length; i++) {
+        try {
+          var r = await fetch(urls[i], { credentials: 'same-origin' });
+          if (!r.ok) throw new Error('index-unavailable');
+          var data = await r.json();
+          docs = Array.isArray(data) ? data : [];
+          if (docs.length) return docs;
+        } catch (e) {
+          lastError = e;
+        }
+      }
+      if (lastError) console.warn('[docs-search] failed to load recipes index');
+      docs = [];
+      return docs;
+    })();
     return loading;
   }
 
@@ -175,8 +195,13 @@
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         setActive(Math.max(activeIndex - 1, 0), resultsEl);
-      } else if (e.key === 'Enter' && activeIndex >= 0 && items[activeIndex]) {
-        items[activeIndex].click();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (activeIndex >= 0 && items[activeIndex]) {
+          items[activeIndex].click();
+        } else if (items[0]) {
+          items[0].click();
+        }
       }
     });
   }

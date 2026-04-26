@@ -945,15 +945,26 @@ header nav a[data-nav-dropdown][data-nav-open="1"]::after {
   gap: 10px;
   border-radius: 999px;
   border: 1px solid var(--arr-card-border);
-  background: rgba(10, 12, 20, 0.82);
+  background:
+    linear-gradient(135deg, rgba(124, 92, 255, 0.2), rgba(0, 229, 255, 0.12)),
+    rgba(10, 12, 20, 0.86);
   color: var(--arr-ink-0);
-  padding: 10px 14px;
+  padding: 10px 15px;
   cursor: pointer;
   backdrop-filter: blur(8px);
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: transform .16s ease, box-shadow .22s ease, border-color .22s ease;
 }
 
 .docs-search-launch:hover {
-  border-color: var(--arr-card-hover-border);
+  border-color: rgba(124, 92, 255, 0.45);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(124, 92, 255, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
 }
 
 .docs-search-launch-kbd {
