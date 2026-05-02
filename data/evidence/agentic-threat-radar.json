@@ -92,6 +92,37 @@
       ]
     },
     {
+      "capability_id": "context-egress-boundary",
+      "critical_or_high_signal_count": 2,
+      "max_strategic_score": 93,
+      "signal_count": 2,
+      "signal_ids": [
+        "context-over-sharing-and-memory-poisoning",
+        "ai-data-security-and-provenance"
+      ]
+    },
+    {
+      "capability_id": "context-poisoning-guard",
+      "critical_or_high_signal_count": 3,
+      "max_strategic_score": 98,
+      "signal_count": 3,
+      "signal_ids": [
+        "indirect-prompt-injection-social-engineering",
+        "context-over-sharing-and-memory-poisoning",
+        "ai-data-security-and-provenance"
+      ]
+    },
+    {
+      "capability_id": "mcp-connector-intake-scanner",
+      "critical_or_high_signal_count": 2,
+      "max_strategic_score": 95,
+      "signal_count": 2,
+      "signal_ids": [
+        "mcp-token-passthrough-and-scope-creep",
+        "tool-poisoning-and-shadow-mcp"
+      ]
+    },
+    {
       "capability_id": "mcp-connector-trust-pack",
       "critical_or_high_signal_count": 2,
       "max_strategic_score": 95,
@@ -151,6 +182,23 @@
   "failures": [],
   "feature_backlog": [
     {
+      "id": "context-poisoning-guard",
+      "related_signal_ids": [
+        "indirect-prompt-injection-social-engineering",
+        "context-over-sharing-and-memory-poisoning",
+        "ai-data-security-and-provenance"
+      ],
+      "status": "implemented",
+      "supporting_signal_count": 3,
+      "supporting_signal_max_score": 98,
+      "supporting_signal_priority_counts": {
+        "critical": 1,
+        "high": 2
+      },
+      "title": "Context poisoning guard",
+      "why": "Prompt injection, MCP tool poisoning, context over-sharing, and AI data provenance guidance all point to deterministic inspection before context reaches agents; this run implemented the generated guard pack and MCP tool."
+    },
+    {
       "id": "hosted-context-signing",
       "related_signal_ids": [
         "context-over-sharing-and-memory-poisoning",
@@ -174,7 +222,7 @@
         "mcp-token-passthrough-and-scope-creep",
         "agent-identity-explosion"
       ],
-      "status": "recommended_next",
+      "status": "implemented",
       "supporting_signal_count": 3,
       "supporting_signal_max_score": 95,
       "supporting_signal_priority_counts": {
@@ -182,7 +230,7 @@
         "high": 1
       },
       "title": "MCP connector intake scanner",
-      "why": "Connector sprawl, tool poisoning, shadow MCP servers, and scope drift are strong enterprise pain points with a clear MCP-native monetization path."
+      "why": "Connector sprawl, tool poisoning, shadow MCP servers, and scope drift are strong enterprise pain points with a clear MCP-native monetization path; this run implemented the deterministic intake pack and MCP tool."
     },
     {
       "id": "agent-run-attestation",
@@ -207,11 +255,23 @@
   "path_evidence": [
     {
       "path": "content/security-remediation/agentic-threat-radar/_index.md",
-      "sha256": "448f543fbb2f1b3fa02d61127ade37958fd7e0964344233bea577a4d24713197"
+      "sha256": "fde7cbe09a8049d2c8e844bb38791b3ec9f879cd5935c97b1230b1dce8f010e5"
+    },
+    {
+      "path": "content/security-remediation/context-egress-boundary/_index.md",
+      "sha256": "7584c0b3da56782219357e1d032e3c08fd7eb1421d5a0f5fa70616b2348ba034"
+    },
+    {
+      "path": "content/security-remediation/context-poisoning-guard/_index.md",
+      "sha256": "2386c85485b7af9cb4e0335d03d307c40cca5b57121b2b8dbca642020272abfe"
+    },
+    {
+      "path": "content/security-remediation/mcp-connector-intake-scanner/_index.md",
+      "sha256": "dcfa3672c2da75abd22902ec2f7679ed45e0ad13effe7f45d6839315447bd57b"
     },
     {
       "path": "content/security-remediation/secure-context-firewall/_index.md",
-      "sha256": "0dfbc3b8e019f6e16bbd1e5be69b4ea405413b6c5986085652119aafc4a51e9c"
+      "sha256": "85b194501c5bd5ba7a79b7aa8547765aa26b48fc090f5bbb2ac06a8f5d86f3ec"
     },
     {
       "path": "data/assurance/agentic-assurance-control-map.json",
@@ -230,8 +290,16 @@
       "sha256": "5d136e95149b04fbc6c7b856293b200ade4245bdb2c2697a583014878bea7725"
     },
     {
+      "path": "data/assurance/context-egress-boundary-model.json",
+      "sha256": "9d74ea546f1b152d9ef94cc1fc8fdd1515cfc21d89be4e1e1377ffefa423b235"
+    },
+    {
+      "path": "data/assurance/context-poisoning-guard-profile.json",
+      "sha256": "f304416742054e6a4ef8debd096a29a9fa7f3cb0b3584047ffc849fd9778b160"
+    },
+    {
       "path": "data/context/secure-context-registry.json",
-      "sha256": "2048ca84dc5d53705a90163370e61e6dacc5fe3fdff7755f0df505e5d2896578"
+      "sha256": "eac3e9ba8b61a5d77d6ef8629c6959722d53fee2fb4fa5b2ebfeb574e7b772fd"
     },
     {
       "path": "data/evidence/agent-identity-delegation-ledger.json",
@@ -239,11 +307,11 @@
     },
     {
       "path": "data/evidence/agentic-assurance-pack.json",
-      "sha256": "0b09ed31de95a42da6d711374b560f326d4e96458f1ea4f1e30c7fa38107563e"
+      "sha256": "f97a022e915e0357b265f2546c5abaa4d7228ca4f636e0f5f063accfc5dba8f1"
     },
     {
       "path": "data/evidence/agentic-readiness-scorecard.json",
-      "sha256": "ebff0d9edaabc6046f0d167c82544be088222b872f3d6e7f1ccda6adc4ace755"
+      "sha256": "442cecb2d6d32283436deb472e3f9397126cf2d6e9d222030cca3235d24286cb"
     },
     {
       "path": "data/evidence/agentic-red-team-drill-pack.json",
@@ -251,7 +319,19 @@
     },
     {
       "path": "data/evidence/agentic-system-bom.json",
-      "sha256": "4cd44626396d6c04077ab0e78ac9830d5e7fba6208e50663a079dcccf12b16e7"
+      "sha256": "e8ce7c0ef1c932965606e1da56d27c863622377dfb4d8a9342c4f137b81f82c7"
+    },
+    {
+      "path": "data/evidence/context-egress-boundary-pack.json",
+      "sha256": "2846a9f75a9365eddce822ef0bcce3171e61ed98396fc4243ea307fae57612a8"
+    },
+    {
+      "path": "data/evidence/context-poisoning-guard-pack.json",
+      "sha256": "bf8df9688e623bd965cd296784ab6af24533441a2f7aad0fe80404508f99db20"
+    },
+    {
+      "path": "data/evidence/mcp-connector-intake-pack.json",
+      "sha256": "7f1f63920abe6121a181f17a856253db7e12bdc88cea16357e358b80d656f11f"
     },
     {
       "path": "data/evidence/mcp-connector-trust-pack.json",
@@ -259,11 +339,15 @@
     },
     {
       "path": "data/evidence/secure-context-trust-pack.json",
-      "sha256": "e7eb59b441f42e84bf1655f47e4f0512af02c507837739f16f6ab7a2ad9a8530"
+      "sha256": "62db92368261a42f7d77de6a6f1e24304e5fbf6fd11d512823641f385aeb1d03"
     },
     {
       "path": "data/intelligence/agentic-threat-radar-sources.json",
-      "sha256": "f15d9773f0372f38bf6ff2a6a805b03281da66112c07d1ea626b929dca0fb5aa"
+      "sha256": "cf325df60b041fa9ac819777a4731d0963b982436965848fbaa90212de62a759"
+    },
+    {
+      "path": "data/mcp/connector-intake-candidates.json",
+      "sha256": "67627bc35a30623c011f09296e020e5fe07009799aecdf981dae130b4d3080bf"
     },
     {
       "path": "data/mcp/connector-trust-registry.json",
@@ -272,6 +356,10 @@
     {
       "path": "data/policy/mcp-gateway-policy.json",
       "sha256": "bb1dbf00ec5bee173a19dff65266f13d84501b94aca3239019a03d6e09546de2"
+    },
+    {
+      "path": "scripts/evaluate_context_egress_decision.py",
+      "sha256": "376546eccacfec8664c7f86fc3779b53a618267f6367249a16b088b2395a125c"
     },
     {
       "path": "scripts/evaluate_secure_context_retrieval.py",
@@ -296,6 +384,18 @@
     {
       "path": "scripts/generate_agentic_system_bom.py",
       "sha256": "22c6dc80ed751191ac7e752a574aded31a6063c5d76801905cd7025c11d9dd83"
+    },
+    {
+      "path": "scripts/generate_context_egress_boundary_pack.py",
+      "sha256": "046d153462416c013186fd171e56a8ef82aa74c34852b798cb94d64a1227b358"
+    },
+    {
+      "path": "scripts/generate_context_poisoning_guard_pack.py",
+      "sha256": "6bbde1f8f47f028aae2ae705c0659956e18eefdc200278924dacad1c78d95ce8"
+    },
+    {
+      "path": "scripts/generate_mcp_connector_intake_pack.py",
+      "sha256": "92074bb18b314328dea345c907f51f692c1586bba3555cf05536613de16d54db"
     },
     {
       "path": "scripts/generate_mcp_connector_trust_pack.py",
@@ -359,6 +459,38 @@
       "title": "Secure Context Firewall"
     },
     {
+      "buyer_value": "Inspects registered context roots for prompt-injection, tool-poisoning, hidden-instruction, approval-bypass, and exfiltration markers before MCP retrieval.",
+      "evidence_paths": [
+        "data/assurance/context-poisoning-guard-profile.json",
+        "data/evidence/context-poisoning-guard-pack.json",
+        "scripts/generate_context_poisoning_guard_pack.py",
+        "content/security-remediation/context-poisoning-guard/_index.md"
+      ],
+      "id": "context-poisoning-guard",
+      "mcp_tools": [
+        "recipes_context_poisoning_guard_pack"
+      ],
+      "status": "implemented",
+      "title": "Context Poisoning Guard"
+    },
+    {
+      "buyer_value": "Turns data-class, destination, DPA, zero-data-retention, residency, and secret-egress requirements into deterministic MCP-readable decisions before context leaves a boundary.",
+      "evidence_paths": [
+        "data/assurance/context-egress-boundary-model.json",
+        "data/evidence/context-egress-boundary-pack.json",
+        "scripts/generate_context_egress_boundary_pack.py",
+        "scripts/evaluate_context_egress_decision.py",
+        "content/security-remediation/context-egress-boundary/_index.md"
+      ],
+      "id": "context-egress-boundary",
+      "mcp_tools": [
+        "recipes_context_egress_boundary_pack",
+        "recipes_evaluate_context_egress_decision"
+      ],
+      "status": "implemented",
+      "title": "Context Egress Boundary"
+    },
+    {
       "buyer_value": "Enforces default-deny tool access, approval holds, scoped branch writes, and runtime kill decisions.",
       "evidence_paths": [
         "data/policy/mcp-gateway-policy.json",
@@ -398,6 +530,21 @@
       ],
       "status": "implemented",
       "title": "MCP Connector Trust Pack"
+    },
+    {
+      "buyer_value": "Scores new or changed MCP servers before promotion, returning admission decisions, control gaps, registry patch previews, and red-team drills.",
+      "evidence_paths": [
+        "data/mcp/connector-intake-candidates.json",
+        "data/evidence/mcp-connector-intake-pack.json",
+        "scripts/generate_mcp_connector_intake_pack.py",
+        "content/security-remediation/mcp-connector-intake-scanner/_index.md"
+      ],
+      "id": "mcp-connector-intake-scanner",
+      "mcp_tools": [
+        "recipes_mcp_connector_intake_pack"
+      ],
+      "status": "implemented",
+      "title": "MCP Connector Intake Scanner"
     },
     {
       "buyer_value": "Turns agentic risks into repeatable adversarial drills with expected decisions and evidence requirements.",
@@ -471,7 +618,7 @@
   "source_artifacts": {
     "agentic_threat_radar_sources": {
       "path": "data/intelligence/agentic-threat-radar-sources.json",
-      "sha256": "f15d9773f0372f38bf6ff2a6a805b03281da66112c07d1ea626b929dca0fb5aa"
+      "sha256": "cf325df60b041fa9ac819777a4731d0963b982436965848fbaa90212de62a759"
     }
   },
   "source_references": [
@@ -616,12 +763,12 @@
       "high": 10
     },
     "critical_or_high_signal_count": 9,
-    "feature_backlog_count": 3,
+    "feature_backlog_count": 4,
     "horizon_counts": {
       "next": 2,
       "now": 8
     },
-    "implemented_capability_count": 10,
+    "implemented_capability_count": 13,
     "priority_counts": {
       "critical": 3,
       "high": 6,
@@ -704,6 +851,21 @@
           "title": "Secure Context Firewall"
         },
         {
+          "buyer_value": "Inspects registered context roots for prompt-injection, tool-poisoning, hidden-instruction, approval-bypass, and exfiltration markers before MCP retrieval.",
+          "evidence_paths": [
+            "data/assurance/context-poisoning-guard-profile.json",
+            "data/evidence/context-poisoning-guard-pack.json",
+            "scripts/generate_context_poisoning_guard_pack.py",
+            "content/security-remediation/context-poisoning-guard/_index.md"
+          ],
+          "id": "context-poisoning-guard",
+          "mcp_tools": [
+            "recipes_context_poisoning_guard_pack"
+          ],
+          "status": "implemented",
+          "title": "Context Poisoning Guard"
+        },
+        {
           "buyer_value": "Turns agentic risks into repeatable adversarial drills with expected decisions and evidence requirements.",
           "evidence_paths": [
             "data/assurance/agentic-red-team-scenario-map.json",
@@ -745,6 +907,7 @@
       "mapped_capability_ids": [
         "secure-context-trust-pack",
         "secure-context-firewall",
+        "context-poisoning-guard",
         "agentic-red-team-drill-pack",
         "mcp-gateway-policy"
       ],
@@ -832,6 +995,21 @@
           "title": "Agent Identity and Delegation Ledger"
         },
         {
+          "buyer_value": "Scores new or changed MCP servers before promotion, returning admission decisions, control gaps, registry patch previews, and red-team drills.",
+          "evidence_paths": [
+            "data/mcp/connector-intake-candidates.json",
+            "data/evidence/mcp-connector-intake-pack.json",
+            "scripts/generate_mcp_connector_intake_pack.py",
+            "content/security-remediation/mcp-connector-intake-scanner/_index.md"
+          ],
+          "id": "mcp-connector-intake-scanner",
+          "mcp_tools": [
+            "recipes_mcp_connector_intake_pack"
+          ],
+          "status": "implemented",
+          "title": "MCP Connector Intake Scanner"
+        },
+        {
           "buyer_value": "Inventories MCP namespaces, owners, trust tiers, controls, promotion criteria, and kill signals.",
           "evidence_paths": [
             "data/mcp/connector-trust-registry.json",
@@ -873,6 +1051,7 @@
       "mapped_capability_ids": [
         "mcp-gateway-policy",
         "agent-identity-ledger",
+        "mcp-connector-intake-scanner",
         "mcp-connector-trust-pack",
         "agentic-assurance-pack"
       ],
@@ -1088,6 +1267,38 @@
           "title": "Secure Context Firewall"
         },
         {
+          "buyer_value": "Inspects registered context roots for prompt-injection, tool-poisoning, hidden-instruction, approval-bypass, and exfiltration markers before MCP retrieval.",
+          "evidence_paths": [
+            "data/assurance/context-poisoning-guard-profile.json",
+            "data/evidence/context-poisoning-guard-pack.json",
+            "scripts/generate_context_poisoning_guard_pack.py",
+            "content/security-remediation/context-poisoning-guard/_index.md"
+          ],
+          "id": "context-poisoning-guard",
+          "mcp_tools": [
+            "recipes_context_poisoning_guard_pack"
+          ],
+          "status": "implemented",
+          "title": "Context Poisoning Guard"
+        },
+        {
+          "buyer_value": "Turns data-class, destination, DPA, zero-data-retention, residency, and secret-egress requirements into deterministic MCP-readable decisions before context leaves a boundary.",
+          "evidence_paths": [
+            "data/assurance/context-egress-boundary-model.json",
+            "data/evidence/context-egress-boundary-pack.json",
+            "scripts/generate_context_egress_boundary_pack.py",
+            "scripts/evaluate_context_egress_decision.py",
+            "content/security-remediation/context-egress-boundary/_index.md"
+          ],
+          "id": "context-egress-boundary",
+          "mcp_tools": [
+            "recipes_context_egress_boundary_pack",
+            "recipes_evaluate_context_egress_decision"
+          ],
+          "status": "implemented",
+          "title": "Context Egress Boundary"
+        },
+        {
           "buyer_value": "Makes workflows, agents, identities, MCP connectors, evidence, evals, and drift triggers inspectable.",
           "evidence_paths": [
             "data/assurance/agentic-system-bom-profile.json",
@@ -1129,6 +1340,8 @@
       "mapped_capability_ids": [
         "secure-context-trust-pack",
         "secure-context-firewall",
+        "context-poisoning-guard",
+        "context-egress-boundary",
         "agentic-system-bom",
         "agentic-assurance-pack"
       ],
@@ -1188,6 +1401,21 @@
     {
       "buyer_trigger": "The buyer's developers are installing local MCP servers faster than security can review them.",
       "capabilities": [
+        {
+          "buyer_value": "Scores new or changed MCP servers before promotion, returning admission decisions, control gaps, registry patch previews, and red-team drills.",
+          "evidence_paths": [
+            "data/mcp/connector-intake-candidates.json",
+            "data/evidence/mcp-connector-intake-pack.json",
+            "scripts/generate_mcp_connector_intake_pack.py",
+            "content/security-remediation/mcp-connector-intake-scanner/_index.md"
+          ],
+          "id": "mcp-connector-intake-scanner",
+          "mcp_tools": [
+            "recipes_mcp_connector_intake_pack"
+          ],
+          "status": "implemented",
+          "title": "MCP Connector Intake Scanner"
+        },
         {
           "buyer_value": "Inventories MCP namespaces, owners, trust tiers, controls, promotion criteria, and kill signals.",
           "evidence_paths": [
@@ -1256,6 +1484,7 @@
       "horizon": "now",
       "id": "tool-poisoning-and-shadow-mcp",
       "mapped_capability_ids": [
+        "mcp-connector-intake-scanner",
         "mcp-connector-trust-pack",
         "mcp-gateway-policy",
         "agentic-red-team-drill-pack",
@@ -1332,6 +1561,38 @@
           "title": "Secure Context Trust Pack"
         },
         {
+          "buyer_value": "Turns data-class, destination, DPA, zero-data-retention, residency, and secret-egress requirements into deterministic MCP-readable decisions before context leaves a boundary.",
+          "evidence_paths": [
+            "data/assurance/context-egress-boundary-model.json",
+            "data/evidence/context-egress-boundary-pack.json",
+            "scripts/generate_context_egress_boundary_pack.py",
+            "scripts/evaluate_context_egress_decision.py",
+            "content/security-remediation/context-egress-boundary/_index.md"
+          ],
+          "id": "context-egress-boundary",
+          "mcp_tools": [
+            "recipes_context_egress_boundary_pack",
+            "recipes_evaluate_context_egress_decision"
+          ],
+          "status": "implemented",
+          "title": "Context Egress Boundary"
+        },
+        {
+          "buyer_value": "Inspects registered context roots for prompt-injection, tool-poisoning, hidden-instruction, approval-bypass, and exfiltration markers before MCP retrieval.",
+          "evidence_paths": [
+            "data/assurance/context-poisoning-guard-profile.json",
+            "data/evidence/context-poisoning-guard-pack.json",
+            "scripts/generate_context_poisoning_guard_pack.py",
+            "content/security-remediation/context-poisoning-guard/_index.md"
+          ],
+          "id": "context-poisoning-guard",
+          "mcp_tools": [
+            "recipes_context_poisoning_guard_pack"
+          ],
+          "status": "implemented",
+          "title": "Context Poisoning Guard"
+        },
+        {
           "buyer_value": "Packages controls, workflow evidence, standards mapping, and adoption story for AI platform and GRC review.",
           "evidence_paths": [
             "data/assurance/agentic-assurance-control-map.json",
@@ -1386,6 +1647,8 @@
       "id": "ai-data-security-and-provenance",
       "mapped_capability_ids": [
         "secure-context-trust-pack",
+        "context-egress-boundary",
+        "context-poisoning-guard",
         "agentic-assurance-pack",
         "agentic-system-bom",
         "agentic-threat-radar"

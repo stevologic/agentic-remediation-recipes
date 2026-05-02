@@ -25,8 +25,9 @@ guidance into a generated evidence pack:
 - Source-backed threat signals from OWASP, MCP, NIST, CISA, Microsoft,
   OpenAI, and CSA.
 - Mapped SecurityRecipes capabilities such as the Secure Context Trust
-  Pack, MCP Gateway Policy, Agent Identity Ledger, Red-Team Drill Pack,
-  Readiness Scorecard, Agentic System BOM, and this radar.
+  Pack, Context Poisoning Guard, MCP Gateway Policy, Agent Identity
+  Ledger, Red-Team Drill Pack, Readiness Scorecard, Agentic System BOM,
+  and this radar.
 - Buyer triggers that explain when an enterprise should care.
 - Product roadmap actions that keep the open knowledge base aligned
   with a future hosted MCP/server business.
@@ -57,7 +58,7 @@ python3 scripts/generate_agentic_threat_radar.py --check
 | MCP token passthrough and scope creep | Critical | Remote MCP servers need audience-bound tokens, resource indicators, precise scopes, and default-deny gateway policy. |
 | Agent identity explosion | Critical | Agents are becoming their own non-human identity class, with ownership, delegation, token lifetime, and revocation needs. |
 | Tool poisoning and shadow MCP | High | Tool descriptions, schemas, local servers, and connector updates are now part of the attack surface. |
-| Context over-sharing and memory poisoning | High | Retrieval policy needs provenance, freshness, data-class gates, and tenant isolation before context reaches agents. |
+| Context over-sharing and memory poisoning | High | Retrieval and egress policy need provenance, freshness, data-class gates, tenant isolation, and destination controls before context reaches or leaves agents. |
 | Audit telemetry and evidence chain | High | Enterprises need correlated records for context retrieval, tool calls, policy decisions, reviews, and scanner proof. |
 | Human approval and tool safeguards | High | Approval must become a typed, policy-enforced control for high-risk or irreversible actions. |
 | AI data security and provenance | High | Guidance is converging on data integrity, monitoring, lifecycle governance, and provenance for AI operations. |
@@ -100,6 +101,14 @@ Get signals that support the secure context layer:
 {
   "capability_id": "secure-context-trust-pack",
   "minimum_score": 85
+}
+```
+
+Get signals tied to outbound context movement:
+
+```json
+{
+  "capability_id": "context-egress-boundary"
 }
 ```
 

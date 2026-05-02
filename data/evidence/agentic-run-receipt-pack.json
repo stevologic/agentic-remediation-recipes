@@ -1,0 +1,2438 @@
+{
+  "enterprise_adoption_packet": {
+    "board_level_claim": "SecurityRecipes can turn autonomous agent work into a portable receipt that is easier to audit than a human Slack thread.",
+    "default_questions_answered": [
+      "Who did the agent act for?",
+      "Which context package and source hashes were used?",
+      "Which MCP tools were allowed, held, denied, or killed?",
+      "Where did context leave the boundary?",
+      "Which human approved approval-required actions?",
+      "Which verifier proved the outcome?",
+      "Which evidence is retained and for how long?",
+      "Was the delegated identity revoked?"
+    ],
+    "recommended_first_use": "Attach receipt templates to AI platform intake, agent-production readiness reviews, SOC 2 control evidence, security incident review, and MCP server approval.",
+    "sales_motion": "Lead with open receipt schemas, then sell hosted receipt signing, cross-tool log ingestion, SIEM export, trust-center evidence bundles, and buyer diligence workspaces."
+  },
+  "example_receipt_envelope": {
+    "events": [
+      {
+        "event_class": "identity_issued",
+        "minimum_fields": [
+          "identity_id",
+          "agent_id",
+          "agent_class",
+          "workflow_id",
+          "run_id",
+          "issued_at",
+          "expires_at",
+          "delegated_by",
+          "token_audience",
+          "scopes"
+        ]
+      },
+      {
+        "event_class": "context_retrieval_decision",
+        "minimum_fields": [
+          "workflow_id",
+          "run_id",
+          "source_id",
+          "retrieval_mode",
+          "requested_path",
+          "decision",
+          "context_hash",
+          "trust_tier"
+        ]
+      },
+      {
+        "event_class": "context_poisoning_scan",
+        "minimum_fields": [
+          "source_id",
+          "run_id",
+          "decision",
+          "rule_ids",
+          "actionable_finding_count",
+          "source_hash"
+        ]
+      },
+      {
+        "event_class": "mcp_tool_decision",
+        "minimum_fields": [
+          "workflow_id",
+          "agent_id",
+          "run_id",
+          "tool_namespace",
+          "tool_access_mode",
+          "gate_phase",
+          "decision",
+          "policy_hash",
+          "correlation_id"
+        ]
+      },
+      {
+        "event_class": "context_egress_decision",
+        "minimum_fields": [
+          "workflow_id",
+          "run_id",
+          "source_id",
+          "data_class",
+          "destination_class",
+          "decision",
+          "egress_policy_hash",
+          "tenant_id"
+        ]
+      },
+      {
+        "event_class": "human_approval",
+        "minimum_fields": [
+          "workflow_id",
+          "run_id",
+          "approval_id",
+          "approver",
+          "reviewer_pool",
+          "approved_scope",
+          "approved_at",
+          "change_reference"
+        ]
+      },
+      {
+        "event_class": "verifier_result",
+        "minimum_fields": [
+          "workflow_id",
+          "run_id",
+          "verifier_id",
+          "verifier_type",
+          "result",
+          "artifact_uri",
+          "completed_at"
+        ]
+      },
+      {
+        "event_class": "evidence_attached",
+        "minimum_fields": [
+          "workflow_id",
+          "run_id",
+          "evidence_id",
+          "evidence_owner",
+          "retention",
+          "artifact_uri",
+          "artifact_hash"
+        ]
+      },
+      {
+        "event_class": "run_closed",
+        "minimum_fields": [
+          "workflow_id",
+          "run_id",
+          "final_state",
+          "closed_at",
+          "output_reference",
+          "receipt_hash"
+        ]
+      },
+      {
+        "event_class": "identity_revoked",
+        "minimum_fields": [
+          "identity_id",
+          "workflow_id",
+          "run_id",
+          "revoked_at",
+          "revocation_reason",
+          "revocation_status"
+        ]
+      }
+    ],
+    "receipt_id": "sr-run-receipt::<workflow_id>::<run_id>",
+    "receipt_schema_version": "1.0",
+    "runtime_attributes": [
+      "workflow_id",
+      "agent_id",
+      "agent_class",
+      "identity_id",
+      "run_id",
+      "tenant_id",
+      "source_revision",
+      "policy_pack_hash",
+      "context_package_hash",
+      "egress_policy_hash",
+      "receipt_schema_version"
+    ],
+    "signature": {
+      "algorithm": "sha256",
+      "model": "sign receipt envelope with tenant KMS, Sigstore, or equivalent workload attestation after run closure"
+    },
+    "state": "untrusted_until_complete"
+  },
+  "failures": [],
+  "generated_at": "2026-05-02",
+  "intent": "Define the portable proof object SecurityRecipes expects for every governed agentic remediation run: a signed or attestable receipt that joins identity, context retrieval, context poisoning inspection, MCP tool decisions, context egress, human approval, verifier output, evidence retention, and revocation into one enterprise review artifact.",
+  "positioning": {
+    "buyer": "AI Platform, Security Engineering, GRC, IAM, procurement security, vendor-risk, incident response, and acquisition diligence teams",
+    "category": "Agentic AI run assurance and secure-context evidence receipts",
+    "enterprise_promise": "Every trusted agent run can be explained without replaying a transcript: who the agent acted for, which context it used, which tools it called, what was allowed or denied, where context went, which verifier passed, who approved, and when the delegated identity was revoked.",
+    "why_now": "Agentic systems are becoming an autonomous workforce attached to MCP servers, SaaS connectors, repositories, tickets, logs, and model providers. Enterprises need receipts that make autonomous work auditable at runtime speed."
+  },
+  "receipt_contract": {
+    "acceptance_criteria": [
+      "receipt includes all required runtime attributes",
+      "identity_id matches the generated agent identity ledger for workflow_id and agent_class",
+      "context_package_hash matches the secure context trust pack for workflow_id",
+      "egress_policy_hash matches the context egress boundary pack for workflow_id",
+      "every MCP namespace used by the run has a gateway decision event",
+      "all approval-required namespaces have a human_approval event before execution",
+      "all context movement has an egress decision event before leaving the tenant or model boundary",
+      "verifier_result proves the workflow-specific fix or triage condition",
+      "identity_revoked or run_closed records final credential state",
+      "receipt envelope is immutable after closure and can be exported without raw secrets"
+    ],
+    "default_state": "untrusted_until_complete",
+    "failure_states": [
+      {
+        "meaning": "The run cannot be trusted because the acting identity was not issued from the agent identity ledger.",
+        "state": "invalid_missing_identity"
+      },
+      {
+        "meaning": "The context package hash or source hash no longer matches the current secure context trust pack.",
+        "state": "invalid_context_drift"
+      },
+      {
+        "meaning": "The run used a tool namespace without a gateway decision event.",
+        "state": "invalid_unlogged_tool_call"
+      },
+      {
+        "meaning": "Context left a boundary without an egress decision event.",
+        "state": "invalid_egress_gap"
+      },
+      {
+        "meaning": "An approval-required action lacks a matching human approval record.",
+        "state": "invalid_approval_gap"
+      },
+      {
+        "meaning": "No verifier result proves the stated remediation or triage outcome.",
+        "state": "invalid_verifier_gap"
+      }
+    ],
+    "hash_algorithm": "sha256",
+    "minimum_retention_days": 400,
+    "receipt_id_format": "sr-run-receipt::<workflow_id>::<run_id>",
+    "required_event_classes": [
+      "identity_issued",
+      "context_retrieval_decision",
+      "context_poisoning_scan",
+      "mcp_tool_decision",
+      "context_egress_decision",
+      "human_approval",
+      "verifier_result",
+      "evidence_attached",
+      "run_closed",
+      "identity_revoked"
+    ],
+    "required_runtime_attributes": [
+      "workflow_id",
+      "agent_id",
+      "agent_class",
+      "identity_id",
+      "run_id",
+      "tenant_id",
+      "source_revision",
+      "policy_pack_hash",
+      "context_package_hash",
+      "egress_policy_hash",
+      "receipt_schema_version"
+    ],
+    "signature_model": "sign receipt envelope with tenant KMS, Sigstore, or equivalent workload attestation after run closure"
+  },
+  "receipt_pack_id": "security-recipes-agentic-run-receipts",
+  "receipt_summary": {
+    "default_state": "untrusted_until_complete",
+    "failure_count": 0,
+    "readiness_decision_counts": {
+      "pilot_guarded": 4,
+      "scale_ready": 4
+    },
+    "required_event_class_count": 10,
+    "source_failure_count": 0,
+    "workflow_count": 8
+  },
+  "schema_version": "1.0",
+  "source_artifacts": {
+    "agent_identity_ledger": {
+      "path": "data/evidence/agent-identity-delegation-ledger.json",
+      "sha256": "690de03ff300a5d11f99676422fb9f6db0c69c48fb7e03ebccf3a1429ef60551"
+    },
+    "agentic_assurance_pack": {
+      "path": "data/evidence/agentic-assurance-pack.json",
+      "sha256": "f97a022e915e0357b265f2546c5abaa4d7228ca4f636e0f5f063accfc5dba8f1"
+    },
+    "agentic_readiness_scorecard": {
+      "path": "data/evidence/agentic-readiness-scorecard.json",
+      "sha256": "442cecb2d6d32283436deb472e3f9397126cf2d6e9d222030cca3235d24286cb"
+    },
+    "agentic_red_team_drill_pack": {
+      "path": "data/evidence/agentic-red-team-drill-pack.json",
+      "sha256": "f06b0824cd1fd68931a63152193469ab91ea480868e34dfde532ae94f229ba8b"
+    },
+    "agentic_run_receipt_profile": {
+      "path": "data/assurance/agentic-run-receipt-profile.json",
+      "sha256": "a672335147e5ff0a385131b0b45296abffe155883f7be2510a656cf085c186e7"
+    },
+    "agentic_system_bom": {
+      "path": "data/evidence/agentic-system-bom.json",
+      "sha256": "e8ce7c0ef1c932965606e1da56d27c863622377dfb4d8a9342c4f137b81f82c7"
+    },
+    "context_egress_boundary_pack": {
+      "path": "data/evidence/context-egress-boundary-pack.json",
+      "sha256": "2846a9f75a9365eddce822ef0bcce3171e61ed98396fc4243ea307fae57612a8"
+    },
+    "context_poisoning_guard_pack": {
+      "path": "data/evidence/context-poisoning-guard-pack.json",
+      "sha256": "bf8df9688e623bd965cd296784ab6af24533441a2f7aad0fe80404508f99db20"
+    },
+    "mcp_gateway_policy": {
+      "path": "data/policy/mcp-gateway-policy.json",
+      "sha256": "bb1dbf00ec5bee173a19dff65266f13d84501b94aca3239019a03d6e09546de2"
+    },
+    "secure_context_trust_pack": {
+      "path": "data/evidence/secure-context-trust-pack.json",
+      "sha256": "59190bacc08caf9f8a90cdfd068763ef0011d787bc94f6f3a132174a5fd97289"
+    },
+    "workflow_manifest": {
+      "path": "data/control-plane/workflow-manifests.json",
+      "sha256": "22f45f06fee190b602ac27f300c94d72ab38646f76a1ad2e4f80923a3a444ceb"
+    }
+  },
+  "standards_alignment": [
+    {
+      "coverage": "Run receipts provide concrete evidence for goal hijack, tool misuse, identity and privilege abuse, supply-chain drift, memory and context poisoning, cascading failures, trust exploitation, and rogue-agent containment.",
+      "id": "owasp-agentic-top-10-2026",
+      "name": "OWASP Top 10 for Agentic Applications 2026",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/"
+    },
+    {
+      "coverage": "Receipts preserve authorization server, resource indicator, token audience, scope, consent, and MCP resource-server decision evidence without exposing raw tokens to the model.",
+      "id": "mcp-authorization-2025-06-18",
+      "name": "Model Context Protocol Authorization 2025-06-18",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization"
+    },
+    {
+      "coverage": "Receipts make confused-deputy checks, token-passthrough denial, SSRF controls, session binding, local-server consent, scope minimization, and audit trails inspectable.",
+      "id": "mcp-security-best-practices",
+      "name": "Model Context Protocol Security Best Practices",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices"
+    },
+    {
+      "coverage": "Receipts require data provenance, integrity, access control, monitoring, retention, third-party data handling, and incident evidence for AI system data used during operation.",
+      "id": "cisa-ai-data-security-2025",
+      "name": "CISA AI Data Security Best Practices",
+      "url": "https://www.cisa.gov/resources-tools/resources/ai-data-security-best-practices-securing-data-used-train-operate-ai-systems"
+    },
+    {
+      "coverage": "Receipts turn secure defaults, transparency, customer-impact ownership, and measurable security outcomes into a repeatable artifact.",
+      "id": "cisa-secure-by-design",
+      "name": "CISA Secure by Design",
+      "url": "https://www.cisa.gov/securebydesign"
+    },
+    {
+      "coverage": "Receipts support governed, mapped, measured, and managed AI risk by binding policy, runtime behavior, evidence, and review ownership.",
+      "id": "nist-ai-rmf-1.0",
+      "name": "NIST AI Risk Management Framework 1.0",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+    },
+    {
+      "coverage": "Receipts prepare agentic workflows for critical-infrastructure operators that need concrete, reviewable risk-management practices for AI-enabled capabilities.",
+      "id": "nist-ai-critical-infrastructure-profile-concept-2026",
+      "name": "NIST AI RMF Profile for Trustworthy AI in Critical Infrastructure concept note",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+    },
+    {
+      "coverage": "Receipts connect generative AI provenance, third-party components, monitoring, measurement, data integrity, and incident-response evidence.",
+      "id": "nist-ai-600-1",
+      "name": "NIST AI RMF Generative AI Profile",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence"
+    }
+  ],
+  "workflow_receipt_templates": [
+    {
+      "agent_classes": [
+        "codex",
+        "claude",
+        "devin"
+      ],
+      "approval_required_namespaces": [
+        "registries.quarantine"
+      ],
+      "assurance_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09",
+        "SR-AI-10"
+      ],
+      "bom_component_id": "workflow::artifact-cache-quarantine",
+      "context_package_hash": "9548462a9b1060f2d92deb02aa1efae74204e35384e0d3c14ab60f6c7225c5db",
+      "context_source_ids": [
+        "security-remediation-workflows",
+        "prompt-library-recipes",
+        "agentic-threat-intelligence",
+        "workflow-control-plane",
+        "mcp-gateway-policy",
+        "mcp-connector-trust",
+        "agentic-evidence-packs"
+      ],
+      "egress_policy_hash": "dbe427420d1f3ed8cff135d727d159b5df57809913070fe447ae8f7540a4ffdd",
+      "event_manifest": [
+        {
+          "control_reason": "Proves the agent acted through a scoped non-human identity instead of a shared human token.",
+          "event_class": "identity_issued",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "agent_id",
+            "agent_class",
+            "workflow_id",
+            "run_id",
+            "issued_at",
+            "expires_at",
+            "delegated_by",
+            "token_audience",
+            "scopes"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves retrieved context was registered, owned, hash-bound, and cited.",
+          "event_class": "context_retrieval_decision",
+          "evidence_source": "secure context firewall decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "retrieval_mode",
+            "requested_path",
+            "decision",
+            "context_hash",
+            "trust_tier"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves prompt-like or hidden instructions in retrieved content were handled as untrusted data.",
+          "event_class": "context_poisoning_scan",
+          "evidence_source": "context poisoning guard pack or runtime scan log",
+          "minimum_fields": [
+            "source_id",
+            "run_id",
+            "decision",
+            "rule_ids",
+            "actionable_finding_count",
+            "source_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves every tool call passed through default-deny policy before execution.",
+          "event_class": "mcp_tool_decision",
+          "evidence_source": "MCP gateway policy decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "gate_phase",
+            "decision",
+            "policy_hash",
+            "correlation_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves model-provider, MCP-server, telemetry, public-corpus, and external-webhook movement was classified and gated.",
+          "event_class": "context_egress_decision",
+          "evidence_source": "context egress boundary decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "data_class",
+            "destination_class",
+            "decision",
+            "egress_policy_hash",
+            "tenant_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves approval-required actions were explicitly authorized before execution or merge.",
+          "event_class": "human_approval",
+          "evidence_source": "source host review events, change-management record, or MCP elicitation log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "approval_id",
+            "approver",
+            "reviewer_pool",
+            "approved_scope",
+            "approved_at",
+            "change_reference"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run achieved the intended risk-reduction or triage outcome.",
+          "event_class": "verifier_result",
+          "evidence_source": "CI, scanner, simulation, resolver, or policy verifier artifact",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "verifier_id",
+            "verifier_type",
+            "result",
+            "artifact_uri",
+            "completed_at"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves required evidence exists and is retained for audit or incident response.",
+          "event_class": "evidence_attached",
+          "evidence_source": "evidence store, source host, scanner, CI, ticket, or MCP gateway",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "evidence_id",
+            "evidence_owner",
+            "retention",
+            "artifact_uri",
+            "artifact_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run reached a terminal state and the receipt envelope was sealed.",
+          "event_class": "run_closed",
+          "evidence_source": "orchestrator run record",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "final_state",
+            "closed_at",
+            "output_reference",
+            "receipt_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves short-lived credentials ended with the run or kill signal.",
+          "event_class": "identity_revoked",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "workflow_id",
+            "run_id",
+            "revoked_at",
+            "revocation_reason",
+            "revocation_status"
+          ],
+          "required": true
+        }
+      ],
+      "expected_gateway_policy_hash": "5502fa113292dc7ea35d349973c36277f60abe0de4fe4fca22269f8fc69c4045",
+      "human_review_required": true,
+      "identity_ids": [
+        "sr-agent::artifact-cache-quarantine::claude",
+        "sr-agent::artifact-cache-quarantine::codex",
+        "sr-agent::artifact-cache-quarantine::devin"
+      ],
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "incidents.security",
+        "inventory.artifacts",
+        "registries.quarantine"
+      ],
+      "minimum_evidence_records": [
+        {
+          "evidence_owner": "Supply Chain Security",
+          "id": "artifact-identifier-record",
+          "retention": "400d",
+          "source": "incident ticket and advisory"
+        },
+        {
+          "evidence_owner": "Security Incident Response",
+          "id": "artifact-quarantine-approval",
+          "retention": "400d",
+          "source": "MCP elicitation or change-management record"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "artifact-post-purge-verification",
+          "retention": "400d",
+          "source": "registry and proxy audit logs"
+        }
+      ],
+      "public_path": "/security-remediation/artifact-cache-purge/",
+      "readiness_decision": "pilot_guarded",
+      "readiness_score": 93,
+      "receipt_acceptance_criteria": [
+        "receipt includes all required runtime attributes",
+        "identity_id matches the generated agent identity ledger for workflow_id and agent_class",
+        "context_package_hash matches the secure context trust pack for workflow_id",
+        "egress_policy_hash matches the context egress boundary pack for workflow_id",
+        "every MCP namespace used by the run has a gateway decision event",
+        "all approval-required namespaces have a human_approval event before execution",
+        "all context movement has an egress decision event before leaving the tenant or model boundary",
+        "verifier_result proves the workflow-specific fix or triage condition",
+        "identity_revoked or run_closed records final credential state",
+        "receipt envelope is immutable after closure and can be exported without raw secrets"
+      ],
+      "receipt_id": "sr-run-receipt::artifact-cache-quarantine",
+      "receipt_status": "receipt_required_for_guarded_pilot",
+      "red_team_drill_count": 7,
+      "required_event_class_count": 10,
+      "retention_days": 400,
+      "runtime_attribute_contract": [
+        "workflow_id",
+        "agent_id",
+        "agent_class",
+        "identity_id",
+        "run_id",
+        "tenant_id",
+        "source_revision",
+        "policy_pack_hash",
+        "context_package_hash",
+        "egress_policy_hash",
+        "receipt_schema_version"
+      ],
+      "status": "active",
+      "title": "Artifact Cache and Mirror Quarantine",
+      "workflow_id": "artifact-cache-quarantine"
+    },
+    {
+      "agent_classes": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot",
+        "devin"
+      ],
+      "approval_required_namespaces": [],
+      "assurance_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09",
+        "SR-AI-10"
+      ],
+      "bom_component_id": "workflow::base-image-remediation",
+      "context_package_hash": "144b1f7dc626cbabcf44b8c259e6ba8ce00726925849b8b6087b2dafd0a8cdd2",
+      "context_source_ids": [
+        "security-remediation-workflows",
+        "prompt-library-recipes",
+        "agentic-threat-intelligence",
+        "workflow-control-plane",
+        "mcp-gateway-policy",
+        "mcp-connector-trust",
+        "agentic-evidence-packs"
+      ],
+      "egress_policy_hash": "71b09e53adae52cc909d622313e883af2e43a85836d7c9b8e717b8fb39359249",
+      "event_manifest": [
+        {
+          "control_reason": "Proves the agent acted through a scoped non-human identity instead of a shared human token.",
+          "event_class": "identity_issued",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "agent_id",
+            "agent_class",
+            "workflow_id",
+            "run_id",
+            "issued_at",
+            "expires_at",
+            "delegated_by",
+            "token_audience",
+            "scopes"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves retrieved context was registered, owned, hash-bound, and cited.",
+          "event_class": "context_retrieval_decision",
+          "evidence_source": "secure context firewall decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "retrieval_mode",
+            "requested_path",
+            "decision",
+            "context_hash",
+            "trust_tier"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves prompt-like or hidden instructions in retrieved content were handled as untrusted data.",
+          "event_class": "context_poisoning_scan",
+          "evidence_source": "context poisoning guard pack or runtime scan log",
+          "minimum_fields": [
+            "source_id",
+            "run_id",
+            "decision",
+            "rule_ids",
+            "actionable_finding_count",
+            "source_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves every tool call passed through default-deny policy before execution.",
+          "event_class": "mcp_tool_decision",
+          "evidence_source": "MCP gateway policy decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "gate_phase",
+            "decision",
+            "policy_hash",
+            "correlation_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves model-provider, MCP-server, telemetry, public-corpus, and external-webhook movement was classified and gated.",
+          "event_class": "context_egress_decision",
+          "evidence_source": "context egress boundary decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "data_class",
+            "destination_class",
+            "decision",
+            "egress_policy_hash",
+            "tenant_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves approval-required actions were explicitly authorized before execution or merge.",
+          "event_class": "human_approval",
+          "evidence_source": "source host review events, change-management record, or MCP elicitation log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "approval_id",
+            "approver",
+            "reviewer_pool",
+            "approved_scope",
+            "approved_at",
+            "change_reference"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run achieved the intended risk-reduction or triage outcome.",
+          "event_class": "verifier_result",
+          "evidence_source": "CI, scanner, simulation, resolver, or policy verifier artifact",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "verifier_id",
+            "verifier_type",
+            "result",
+            "artifact_uri",
+            "completed_at"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves required evidence exists and is retained for audit or incident response.",
+          "event_class": "evidence_attached",
+          "evidence_source": "evidence store, source host, scanner, CI, ticket, or MCP gateway",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "evidence_id",
+            "evidence_owner",
+            "retention",
+            "artifact_uri",
+            "artifact_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run reached a terminal state and the receipt envelope was sealed.",
+          "event_class": "run_closed",
+          "evidence_source": "orchestrator run record",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "final_state",
+            "closed_at",
+            "output_reference",
+            "receipt_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves short-lived credentials ended with the run or kill signal.",
+          "event_class": "identity_revoked",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "workflow_id",
+            "run_id",
+            "revoked_at",
+            "revocation_reason",
+            "revocation_status"
+          ],
+          "required": true
+        }
+      ],
+      "expected_gateway_policy_hash": "0f5377b2127c5c70a93093dd5d81843ee85c04033f7744ac691d55ee0d4c4053",
+      "human_review_required": true,
+      "identity_ids": [
+        "sr-agent::base-image-remediation::claude",
+        "sr-agent::base-image-remediation::codex",
+        "sr-agent::base-image-remediation::cursor",
+        "sr-agent::base-image-remediation::devin",
+        "sr-agent::base-image-remediation::github_copilot"
+      ],
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "ci.runs",
+        "images.golden",
+        "repo.contents"
+      ],
+      "minimum_evidence_records": [
+        {
+          "evidence_owner": "Platform Security",
+          "id": "base-image-sbom-signature",
+          "retention": "400d",
+          "source": "registry attestation and cosign verification"
+        },
+        {
+          "evidence_owner": "Platform Security",
+          "id": "base-image-scan-before-after",
+          "retention": "400d",
+          "source": "Trivy, Grype, or commercial scanner"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "base-image-rollout-record",
+          "retention": "400d",
+          "source": "deployment platform events"
+        }
+      ],
+      "public_path": "/security-remediation/base-images/",
+      "readiness_decision": "scale_ready",
+      "readiness_score": 98,
+      "receipt_acceptance_criteria": [
+        "receipt includes all required runtime attributes",
+        "identity_id matches the generated agent identity ledger for workflow_id and agent_class",
+        "context_package_hash matches the secure context trust pack for workflow_id",
+        "egress_policy_hash matches the context egress boundary pack for workflow_id",
+        "every MCP namespace used by the run has a gateway decision event",
+        "all approval-required namespaces have a human_approval event before execution",
+        "all context movement has an egress decision event before leaving the tenant or model boundary",
+        "verifier_result proves the workflow-specific fix or triage condition",
+        "identity_revoked or run_closed records final credential state",
+        "receipt envelope is immutable after closure and can be exported without raw secrets"
+      ],
+      "receipt_id": "sr-run-receipt::base-image-remediation",
+      "receipt_status": "receipt_ready",
+      "red_team_drill_count": 7,
+      "required_event_class_count": 10,
+      "retention_days": 400,
+      "runtime_attribute_contract": [
+        "workflow_id",
+        "agent_id",
+        "agent_class",
+        "identity_id",
+        "run_id",
+        "tenant_id",
+        "source_revision",
+        "policy_pack_hash",
+        "context_package_hash",
+        "egress_policy_hash",
+        "receipt_schema_version"
+      ],
+      "status": "active",
+      "title": "Base Image and Container Layer Remediation",
+      "workflow_id": "base-image-remediation"
+    },
+    {
+      "agent_classes": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot"
+      ],
+      "approval_required_namespaces": [],
+      "assurance_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09",
+        "SR-AI-10"
+      ],
+      "bom_component_id": "workflow::classic-vulnerable-defaults",
+      "context_package_hash": "871d5e2122bfac2d8898aa0faf0bf80ef0765551452406b5017a4151127345ea",
+      "context_source_ids": [
+        "security-remediation-workflows",
+        "prompt-library-recipes",
+        "agentic-threat-intelligence",
+        "workflow-control-plane",
+        "mcp-gateway-policy",
+        "mcp-connector-trust",
+        "agentic-evidence-packs"
+      ],
+      "egress_policy_hash": "d8adf24aa36b0c0bb4092a6262690c5217f74c6b5404a315621ef4b9e6bc7e00",
+      "event_manifest": [
+        {
+          "control_reason": "Proves the agent acted through a scoped non-human identity instead of a shared human token.",
+          "event_class": "identity_issued",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "agent_id",
+            "agent_class",
+            "workflow_id",
+            "run_id",
+            "issued_at",
+            "expires_at",
+            "delegated_by",
+            "token_audience",
+            "scopes"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves retrieved context was registered, owned, hash-bound, and cited.",
+          "event_class": "context_retrieval_decision",
+          "evidence_source": "secure context firewall decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "retrieval_mode",
+            "requested_path",
+            "decision",
+            "context_hash",
+            "trust_tier"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves prompt-like or hidden instructions in retrieved content were handled as untrusted data.",
+          "event_class": "context_poisoning_scan",
+          "evidence_source": "context poisoning guard pack or runtime scan log",
+          "minimum_fields": [
+            "source_id",
+            "run_id",
+            "decision",
+            "rule_ids",
+            "actionable_finding_count",
+            "source_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves every tool call passed through default-deny policy before execution.",
+          "event_class": "mcp_tool_decision",
+          "evidence_source": "MCP gateway policy decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "gate_phase",
+            "decision",
+            "policy_hash",
+            "correlation_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves model-provider, MCP-server, telemetry, public-corpus, and external-webhook movement was classified and gated.",
+          "event_class": "context_egress_decision",
+          "evidence_source": "context egress boundary decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "data_class",
+            "destination_class",
+            "decision",
+            "egress_policy_hash",
+            "tenant_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves approval-required actions were explicitly authorized before execution or merge.",
+          "event_class": "human_approval",
+          "evidence_source": "source host review events, change-management record, or MCP elicitation log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "approval_id",
+            "approver",
+            "reviewer_pool",
+            "approved_scope",
+            "approved_at",
+            "change_reference"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run achieved the intended risk-reduction or triage outcome.",
+          "event_class": "verifier_result",
+          "evidence_source": "CI, scanner, simulation, resolver, or policy verifier artifact",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "verifier_id",
+            "verifier_type",
+            "result",
+            "artifact_uri",
+            "completed_at"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves required evidence exists and is retained for audit or incident response.",
+          "event_class": "evidence_attached",
+          "evidence_source": "evidence store, source host, scanner, CI, ticket, or MCP gateway",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "evidence_id",
+            "evidence_owner",
+            "retention",
+            "artifact_uri",
+            "artifact_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run reached a terminal state and the receipt envelope was sealed.",
+          "event_class": "run_closed",
+          "evidence_source": "orchestrator run record",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "final_state",
+            "closed_at",
+            "output_reference",
+            "receipt_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves short-lived credentials ended with the run or kill signal.",
+          "event_class": "identity_revoked",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "workflow_id",
+            "run_id",
+            "revoked_at",
+            "revocation_reason",
+            "revocation_status"
+          ],
+          "required": true
+        }
+      ],
+      "expected_gateway_policy_hash": "4aa2afc4455b1dc82226b979ed70141e6a14e98ed982ee088c0a52d6947e1056",
+      "human_review_required": true,
+      "identity_ids": [
+        "sr-agent::classic-vulnerable-defaults::claude",
+        "sr-agent::classic-vulnerable-defaults::codex",
+        "sr-agent::classic-vulnerable-defaults::cursor",
+        "sr-agent::classic-vulnerable-defaults::github_copilot"
+      ],
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "ci.runs",
+        "recipes.defaults",
+        "repo.contents"
+      ],
+      "minimum_evidence_records": [
+        {
+          "evidence_owner": "Application Security",
+          "id": "classic-default-rule-record",
+          "retention": "400d",
+          "source": "SAST or custom scanner output"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "classic-default-test-record",
+          "retention": "400d",
+          "source": "CI test artifact"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "classic-default-review-record",
+          "retention": "400d",
+          "source": "source host review events"
+        }
+      ],
+      "public_path": "/security-remediation/classic-vulnerable-defaults/",
+      "readiness_decision": "scale_ready",
+      "readiness_score": 98,
+      "receipt_acceptance_criteria": [
+        "receipt includes all required runtime attributes",
+        "identity_id matches the generated agent identity ledger for workflow_id and agent_class",
+        "context_package_hash matches the secure context trust pack for workflow_id",
+        "egress_policy_hash matches the context egress boundary pack for workflow_id",
+        "every MCP namespace used by the run has a gateway decision event",
+        "all approval-required namespaces have a human_approval event before execution",
+        "all context movement has an egress decision event before leaving the tenant or model boundary",
+        "verifier_result proves the workflow-specific fix or triage condition",
+        "identity_revoked or run_closed records final credential state",
+        "receipt envelope is immutable after closure and can be exported without raw secrets"
+      ],
+      "receipt_id": "sr-run-receipt::classic-vulnerable-defaults",
+      "receipt_status": "receipt_ready",
+      "red_team_drill_count": 7,
+      "required_event_class_count": 10,
+      "retention_days": 400,
+      "runtime_attribute_contract": [
+        "workflow_id",
+        "agent_id",
+        "agent_class",
+        "identity_id",
+        "run_id",
+        "tenant_id",
+        "source_revision",
+        "policy_pack_hash",
+        "context_package_hash",
+        "egress_policy_hash",
+        "receipt_schema_version"
+      ],
+      "status": "active",
+      "title": "Classic Vulnerable Defaults",
+      "workflow_id": "classic-vulnerable-defaults"
+    },
+    {
+      "agent_classes": [
+        "codex",
+        "claude",
+        "cursor"
+      ],
+      "approval_required_namespaces": [],
+      "assurance_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09",
+        "SR-AI-10"
+      ],
+      "bom_component_id": "workflow::crypto-payment-security",
+      "context_package_hash": "04e2832684ae0db38f3e991b50724417a97b1f75d65926ca7a6185e30bd28113",
+      "context_source_ids": [
+        "security-remediation-workflows",
+        "prompt-library-recipes",
+        "agentic-threat-intelligence",
+        "workflow-control-plane",
+        "mcp-gateway-policy",
+        "mcp-connector-trust",
+        "agentic-evidence-packs"
+      ],
+      "egress_policy_hash": "9017117d2b7a20d5c504bc081fafa6f97b79cf86a743f9e7642232f169b3ce62",
+      "event_manifest": [
+        {
+          "control_reason": "Proves the agent acted through a scoped non-human identity instead of a shared human token.",
+          "event_class": "identity_issued",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "agent_id",
+            "agent_class",
+            "workflow_id",
+            "run_id",
+            "issued_at",
+            "expires_at",
+            "delegated_by",
+            "token_audience",
+            "scopes"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves retrieved context was registered, owned, hash-bound, and cited.",
+          "event_class": "context_retrieval_decision",
+          "evidence_source": "secure context firewall decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "retrieval_mode",
+            "requested_path",
+            "decision",
+            "context_hash",
+            "trust_tier"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves prompt-like or hidden instructions in retrieved content were handled as untrusted data.",
+          "event_class": "context_poisoning_scan",
+          "evidence_source": "context poisoning guard pack or runtime scan log",
+          "minimum_fields": [
+            "source_id",
+            "run_id",
+            "decision",
+            "rule_ids",
+            "actionable_finding_count",
+            "source_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves every tool call passed through default-deny policy before execution.",
+          "event_class": "mcp_tool_decision",
+          "evidence_source": "MCP gateway policy decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "gate_phase",
+            "decision",
+            "policy_hash",
+            "correlation_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves model-provider, MCP-server, telemetry, public-corpus, and external-webhook movement was classified and gated.",
+          "event_class": "context_egress_decision",
+          "evidence_source": "context egress boundary decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "data_class",
+            "destination_class",
+            "decision",
+            "egress_policy_hash",
+            "tenant_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves approval-required actions were explicitly authorized before execution or merge.",
+          "event_class": "human_approval",
+          "evidence_source": "source host review events, change-management record, or MCP elicitation log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "approval_id",
+            "approver",
+            "reviewer_pool",
+            "approved_scope",
+            "approved_at",
+            "change_reference"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run achieved the intended risk-reduction or triage outcome.",
+          "event_class": "verifier_result",
+          "evidence_source": "CI, scanner, simulation, resolver, or policy verifier artifact",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "verifier_id",
+            "verifier_type",
+            "result",
+            "artifact_uri",
+            "completed_at"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves required evidence exists and is retained for audit or incident response.",
+          "event_class": "evidence_attached",
+          "evidence_source": "evidence store, source host, scanner, CI, ticket, or MCP gateway",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "evidence_id",
+            "evidence_owner",
+            "retention",
+            "artifact_uri",
+            "artifact_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run reached a terminal state and the receipt envelope was sealed.",
+          "event_class": "run_closed",
+          "evidence_source": "orchestrator run record",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "final_state",
+            "closed_at",
+            "output_reference",
+            "receipt_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves short-lived credentials ended with the run or kill signal.",
+          "event_class": "identity_revoked",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "workflow_id",
+            "run_id",
+            "revoked_at",
+            "revocation_reason",
+            "revocation_status"
+          ],
+          "required": true
+        }
+      ],
+      "expected_gateway_policy_hash": "1a011f70e2e0be1b4efac650873bff7ef3d73b08d9dae0e7aa926d93d6eb7cb5",
+      "human_review_required": true,
+      "identity_ids": [
+        "sr-agent::crypto-payment-security::claude",
+        "sr-agent::crypto-payment-security::codex",
+        "sr-agent::crypto-payment-security::cursor"
+      ],
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "payments.findings",
+        "payments.simulation",
+        "repo.contents"
+      ],
+      "minimum_evidence_records": [
+        {
+          "evidence_owner": "Fintech Security",
+          "id": "crypto-payment-simulation",
+          "retention": "400d",
+          "source": "sandbox transaction simulation artifact"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "crypto-payment-two-key-review",
+          "retention": "400d",
+          "source": "source host review events"
+        },
+        {
+          "evidence_owner": "AI Platform",
+          "id": "crypto-payment-agent-audit",
+          "retention": "400d",
+          "source": "MCP gateway audit log"
+        }
+      ],
+      "public_path": "/security-remediation/crypto-payments/",
+      "readiness_decision": "pilot_guarded",
+      "readiness_score": 93,
+      "receipt_acceptance_criteria": [
+        "receipt includes all required runtime attributes",
+        "identity_id matches the generated agent identity ledger for workflow_id and agent_class",
+        "context_package_hash matches the secure context trust pack for workflow_id",
+        "egress_policy_hash matches the context egress boundary pack for workflow_id",
+        "every MCP namespace used by the run has a gateway decision event",
+        "all approval-required namespaces have a human_approval event before execution",
+        "all context movement has an egress decision event before leaving the tenant or model boundary",
+        "verifier_result proves the workflow-specific fix or triage condition",
+        "identity_revoked or run_closed records final credential state",
+        "receipt envelope is immutable after closure and can be exported without raw secrets"
+      ],
+      "receipt_id": "sr-run-receipt::crypto-payment-security",
+      "receipt_status": "receipt_required_for_guarded_pilot",
+      "red_team_drill_count": 7,
+      "required_event_class_count": 10,
+      "retention_days": 400,
+      "runtime_attribute_contract": [
+        "workflow_id",
+        "agent_id",
+        "agent_class",
+        "identity_id",
+        "run_id",
+        "tenant_id",
+        "source_revision",
+        "policy_pack_hash",
+        "context_package_hash",
+        "egress_policy_hash",
+        "receipt_schema_version"
+      ],
+      "status": "active",
+      "title": "Cryptocurrency and Crypto Payments Security",
+      "workflow_id": "crypto-payment-security"
+    },
+    {
+      "agent_classes": [
+        "codex",
+        "claude",
+        "cursor"
+      ],
+      "approval_required_namespaces": [],
+      "assurance_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09",
+        "SR-AI-10"
+      ],
+      "bom_component_id": "workflow::defi-blockchain-security",
+      "context_package_hash": "3695523da72e7e09913fadec3969258ac806a771bbef974c410f74193de62c01",
+      "context_source_ids": [
+        "security-remediation-workflows",
+        "prompt-library-recipes",
+        "agentic-threat-intelligence",
+        "workflow-control-plane",
+        "mcp-gateway-policy",
+        "mcp-connector-trust",
+        "agentic-evidence-packs"
+      ],
+      "egress_policy_hash": "8b243ba912cdd2a36f2cb9a6e5366a27abbdb83fb6cc897a2f17d142c67fbe30",
+      "event_manifest": [
+        {
+          "control_reason": "Proves the agent acted through a scoped non-human identity instead of a shared human token.",
+          "event_class": "identity_issued",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "agent_id",
+            "agent_class",
+            "workflow_id",
+            "run_id",
+            "issued_at",
+            "expires_at",
+            "delegated_by",
+            "token_audience",
+            "scopes"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves retrieved context was registered, owned, hash-bound, and cited.",
+          "event_class": "context_retrieval_decision",
+          "evidence_source": "secure context firewall decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "retrieval_mode",
+            "requested_path",
+            "decision",
+            "context_hash",
+            "trust_tier"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves prompt-like or hidden instructions in retrieved content were handled as untrusted data.",
+          "event_class": "context_poisoning_scan",
+          "evidence_source": "context poisoning guard pack or runtime scan log",
+          "minimum_fields": [
+            "source_id",
+            "run_id",
+            "decision",
+            "rule_ids",
+            "actionable_finding_count",
+            "source_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves every tool call passed through default-deny policy before execution.",
+          "event_class": "mcp_tool_decision",
+          "evidence_source": "MCP gateway policy decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "gate_phase",
+            "decision",
+            "policy_hash",
+            "correlation_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves model-provider, MCP-server, telemetry, public-corpus, and external-webhook movement was classified and gated.",
+          "event_class": "context_egress_decision",
+          "evidence_source": "context egress boundary decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "data_class",
+            "destination_class",
+            "decision",
+            "egress_policy_hash",
+            "tenant_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves approval-required actions were explicitly authorized before execution or merge.",
+          "event_class": "human_approval",
+          "evidence_source": "source host review events, change-management record, or MCP elicitation log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "approval_id",
+            "approver",
+            "reviewer_pool",
+            "approved_scope",
+            "approved_at",
+            "change_reference"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run achieved the intended risk-reduction or triage outcome.",
+          "event_class": "verifier_result",
+          "evidence_source": "CI, scanner, simulation, resolver, or policy verifier artifact",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "verifier_id",
+            "verifier_type",
+            "result",
+            "artifact_uri",
+            "completed_at"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves required evidence exists and is retained for audit or incident response.",
+          "event_class": "evidence_attached",
+          "evidence_source": "evidence store, source host, scanner, CI, ticket, or MCP gateway",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "evidence_id",
+            "evidence_owner",
+            "retention",
+            "artifact_uri",
+            "artifact_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run reached a terminal state and the receipt envelope was sealed.",
+          "event_class": "run_closed",
+          "evidence_source": "orchestrator run record",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "final_state",
+            "closed_at",
+            "output_reference",
+            "receipt_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves short-lived credentials ended with the run or kill signal.",
+          "event_class": "identity_revoked",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "workflow_id",
+            "run_id",
+            "revoked_at",
+            "revocation_reason",
+            "revocation_status"
+          ],
+          "required": true
+        }
+      ],
+      "expected_gateway_policy_hash": "7c90a08d9acea79ba2d8e20206d286fb25e04f2a07296edf53f5cf4b3e2a8920",
+      "human_review_required": true,
+      "identity_ids": [
+        "sr-agent::defi-blockchain-security::claude",
+        "sr-agent::defi-blockchain-security::codex",
+        "sr-agent::defi-blockchain-security::cursor"
+      ],
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "chain.simulation",
+        "protocol.findings",
+        "repo.contents"
+      ],
+      "minimum_evidence_records": [
+        {
+          "evidence_owner": "Protocol Security",
+          "id": "defi-fork-or-invariant-test",
+          "retention": "400d",
+          "source": "Foundry, Hardhat, Echidna, or simulator artifact"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "defi-two-key-review",
+          "retention": "400d",
+          "source": "source host review events"
+        },
+        {
+          "evidence_owner": "AI Platform",
+          "id": "defi-agent-tool-audit",
+          "retention": "400d",
+          "source": "MCP gateway audit log"
+        }
+      ],
+      "public_path": "/security-remediation/defi-blockchain/",
+      "readiness_decision": "pilot_guarded",
+      "readiness_score": 93,
+      "receipt_acceptance_criteria": [
+        "receipt includes all required runtime attributes",
+        "identity_id matches the generated agent identity ledger for workflow_id and agent_class",
+        "context_package_hash matches the secure context trust pack for workflow_id",
+        "egress_policy_hash matches the context egress boundary pack for workflow_id",
+        "every MCP namespace used by the run has a gateway decision event",
+        "all approval-required namespaces have a human_approval event before execution",
+        "all context movement has an egress decision event before leaving the tenant or model boundary",
+        "verifier_result proves the workflow-specific fix or triage condition",
+        "identity_revoked or run_closed records final credential state",
+        "receipt envelope is immutable after closure and can be exported without raw secrets"
+      ],
+      "receipt_id": "sr-run-receipt::defi-blockchain-security",
+      "receipt_status": "receipt_required_for_guarded_pilot",
+      "red_team_drill_count": 7,
+      "required_event_class_count": 10,
+      "retention_days": 400,
+      "runtime_attribute_contract": [
+        "workflow_id",
+        "agent_id",
+        "agent_class",
+        "identity_id",
+        "run_id",
+        "tenant_id",
+        "source_revision",
+        "policy_pack_hash",
+        "context_package_hash",
+        "egress_policy_hash",
+        "receipt_schema_version"
+      ],
+      "status": "active",
+      "title": "DeFi and Blockchain Protocol Security",
+      "workflow_id": "defi-blockchain-security"
+    },
+    {
+      "agent_classes": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot"
+      ],
+      "approval_required_namespaces": [],
+      "assurance_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09",
+        "SR-AI-10"
+      ],
+      "bom_component_id": "workflow::sast-finding-remediation",
+      "context_package_hash": "995ce75b4d679ecc6bfc1a0764c6e4d47f4cbed659bb6c79e63fb8dde886fd83",
+      "context_source_ids": [
+        "security-remediation-workflows",
+        "prompt-library-recipes",
+        "agentic-threat-intelligence",
+        "workflow-control-plane",
+        "mcp-gateway-policy",
+        "mcp-connector-trust",
+        "agentic-evidence-packs"
+      ],
+      "egress_policy_hash": "9a65a7b7b045108b27bcf6d383ef58bbd69e4cad6c61a1b08be08ccc535e93cc",
+      "event_manifest": [
+        {
+          "control_reason": "Proves the agent acted through a scoped non-human identity instead of a shared human token.",
+          "event_class": "identity_issued",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "agent_id",
+            "agent_class",
+            "workflow_id",
+            "run_id",
+            "issued_at",
+            "expires_at",
+            "delegated_by",
+            "token_audience",
+            "scopes"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves retrieved context was registered, owned, hash-bound, and cited.",
+          "event_class": "context_retrieval_decision",
+          "evidence_source": "secure context firewall decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "retrieval_mode",
+            "requested_path",
+            "decision",
+            "context_hash",
+            "trust_tier"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves prompt-like or hidden instructions in retrieved content were handled as untrusted data.",
+          "event_class": "context_poisoning_scan",
+          "evidence_source": "context poisoning guard pack or runtime scan log",
+          "minimum_fields": [
+            "source_id",
+            "run_id",
+            "decision",
+            "rule_ids",
+            "actionable_finding_count",
+            "source_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves every tool call passed through default-deny policy before execution.",
+          "event_class": "mcp_tool_decision",
+          "evidence_source": "MCP gateway policy decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "gate_phase",
+            "decision",
+            "policy_hash",
+            "correlation_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves model-provider, MCP-server, telemetry, public-corpus, and external-webhook movement was classified and gated.",
+          "event_class": "context_egress_decision",
+          "evidence_source": "context egress boundary decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "data_class",
+            "destination_class",
+            "decision",
+            "egress_policy_hash",
+            "tenant_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves approval-required actions were explicitly authorized before execution or merge.",
+          "event_class": "human_approval",
+          "evidence_source": "source host review events, change-management record, or MCP elicitation log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "approval_id",
+            "approver",
+            "reviewer_pool",
+            "approved_scope",
+            "approved_at",
+            "change_reference"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run achieved the intended risk-reduction or triage outcome.",
+          "event_class": "verifier_result",
+          "evidence_source": "CI, scanner, simulation, resolver, or policy verifier artifact",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "verifier_id",
+            "verifier_type",
+            "result",
+            "artifact_uri",
+            "completed_at"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves required evidence exists and is retained for audit or incident response.",
+          "event_class": "evidence_attached",
+          "evidence_source": "evidence store, source host, scanner, CI, ticket, or MCP gateway",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "evidence_id",
+            "evidence_owner",
+            "retention",
+            "artifact_uri",
+            "artifact_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run reached a terminal state and the receipt envelope was sealed.",
+          "event_class": "run_closed",
+          "evidence_source": "orchestrator run record",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "final_state",
+            "closed_at",
+            "output_reference",
+            "receipt_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves short-lived credentials ended with the run or kill signal.",
+          "event_class": "identity_revoked",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "workflow_id",
+            "run_id",
+            "revoked_at",
+            "revocation_reason",
+            "revocation_status"
+          ],
+          "required": true
+        }
+      ],
+      "expected_gateway_policy_hash": "6049c1c6645bb8ee3be03d2f5fa88d0ce4e5fe6780a95bfda4e03fbb150b567b",
+      "human_review_required": true,
+      "identity_ids": [
+        "sr-agent::sast-finding-remediation::claude",
+        "sr-agent::sast-finding-remediation::codex",
+        "sr-agent::sast-finding-remediation::cursor",
+        "sr-agent::sast-finding-remediation::github_copilot"
+      ],
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "ci.runs",
+        "findings.sast",
+        "repo.contents"
+      ],
+      "minimum_evidence_records": [
+        {
+          "evidence_owner": "Application Security",
+          "id": "sast-rule-trace",
+          "retention": "400d",
+          "source": "SAST SARIF"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "sast-verifier-run",
+          "retention": "400d",
+          "source": "CI scanner artifact"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "sast-pr-review-record",
+          "retention": "400d",
+          "source": "source host review events"
+        }
+      ],
+      "public_path": "/security-remediation/sast-findings/",
+      "readiness_decision": "pilot_guarded",
+      "readiness_score": 95,
+      "receipt_acceptance_criteria": [
+        "receipt includes all required runtime attributes",
+        "identity_id matches the generated agent identity ledger for workflow_id and agent_class",
+        "context_package_hash matches the secure context trust pack for workflow_id",
+        "egress_policy_hash matches the context egress boundary pack for workflow_id",
+        "every MCP namespace used by the run has a gateway decision event",
+        "all approval-required namespaces have a human_approval event before execution",
+        "all context movement has an egress decision event before leaving the tenant or model boundary",
+        "verifier_result proves the workflow-specific fix or triage condition",
+        "identity_revoked or run_closed records final credential state",
+        "receipt envelope is immutable after closure and can be exported without raw secrets"
+      ],
+      "receipt_id": "sr-run-receipt::sast-finding-remediation",
+      "receipt_status": "receipt_required_for_guarded_pilot",
+      "red_team_drill_count": 7,
+      "required_event_class_count": 10,
+      "retention_days": 400,
+      "runtime_attribute_contract": [
+        "workflow_id",
+        "agent_id",
+        "agent_class",
+        "identity_id",
+        "run_id",
+        "tenant_id",
+        "source_revision",
+        "policy_pack_hash",
+        "context_package_hash",
+        "egress_policy_hash",
+        "receipt_schema_version"
+      ],
+      "status": "active",
+      "title": "SAST Finding Remediation",
+      "workflow_id": "sast-finding-remediation"
+    },
+    {
+      "agent_classes": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot",
+        "devin"
+      ],
+      "approval_required_namespaces": [],
+      "assurance_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09",
+        "SR-AI-10"
+      ],
+      "bom_component_id": "workflow::sensitive-data-remediation",
+      "context_package_hash": "7602a53574a7d011834ec33413348a84550fae0b2aa4e21adb3ee623bcaf2475",
+      "context_source_ids": [
+        "security-remediation-workflows",
+        "prompt-library-recipes",
+        "agentic-threat-intelligence",
+        "workflow-control-plane",
+        "mcp-gateway-policy",
+        "mcp-connector-trust",
+        "agentic-evidence-packs"
+      ],
+      "egress_policy_hash": "50d90e47c9cf159117d6b78687263ef16c341d785a4915141ede2f9034b71ac0",
+      "event_manifest": [
+        {
+          "control_reason": "Proves the agent acted through a scoped non-human identity instead of a shared human token.",
+          "event_class": "identity_issued",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "agent_id",
+            "agent_class",
+            "workflow_id",
+            "run_id",
+            "issued_at",
+            "expires_at",
+            "delegated_by",
+            "token_audience",
+            "scopes"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves retrieved context was registered, owned, hash-bound, and cited.",
+          "event_class": "context_retrieval_decision",
+          "evidence_source": "secure context firewall decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "retrieval_mode",
+            "requested_path",
+            "decision",
+            "context_hash",
+            "trust_tier"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves prompt-like or hidden instructions in retrieved content were handled as untrusted data.",
+          "event_class": "context_poisoning_scan",
+          "evidence_source": "context poisoning guard pack or runtime scan log",
+          "minimum_fields": [
+            "source_id",
+            "run_id",
+            "decision",
+            "rule_ids",
+            "actionable_finding_count",
+            "source_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves every tool call passed through default-deny policy before execution.",
+          "event_class": "mcp_tool_decision",
+          "evidence_source": "MCP gateway policy decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "gate_phase",
+            "decision",
+            "policy_hash",
+            "correlation_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves model-provider, MCP-server, telemetry, public-corpus, and external-webhook movement was classified and gated.",
+          "event_class": "context_egress_decision",
+          "evidence_source": "context egress boundary decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "data_class",
+            "destination_class",
+            "decision",
+            "egress_policy_hash",
+            "tenant_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves approval-required actions were explicitly authorized before execution or merge.",
+          "event_class": "human_approval",
+          "evidence_source": "source host review events, change-management record, or MCP elicitation log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "approval_id",
+            "approver",
+            "reviewer_pool",
+            "approved_scope",
+            "approved_at",
+            "change_reference"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run achieved the intended risk-reduction or triage outcome.",
+          "event_class": "verifier_result",
+          "evidence_source": "CI, scanner, simulation, resolver, or policy verifier artifact",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "verifier_id",
+            "verifier_type",
+            "result",
+            "artifact_uri",
+            "completed_at"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves required evidence exists and is retained for audit or incident response.",
+          "event_class": "evidence_attached",
+          "evidence_source": "evidence store, source host, scanner, CI, ticket, or MCP gateway",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "evidence_id",
+            "evidence_owner",
+            "retention",
+            "artifact_uri",
+            "artifact_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run reached a terminal state and the receipt envelope was sealed.",
+          "event_class": "run_closed",
+          "evidence_source": "orchestrator run record",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "final_state",
+            "closed_at",
+            "output_reference",
+            "receipt_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves short-lived credentials ended with the run or kill signal.",
+          "event_class": "identity_revoked",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "workflow_id",
+            "run_id",
+            "revoked_at",
+            "revocation_reason",
+            "revocation_status"
+          ],
+          "required": true
+        }
+      ],
+      "expected_gateway_policy_hash": "9ef61cdf1c839d291886fc4a95a46f7b561be6500dbe2775be8e1d8ecb83de97",
+      "human_review_required": true,
+      "identity_ids": [
+        "sr-agent::sensitive-data-remediation::claude",
+        "sr-agent::sensitive-data-remediation::codex",
+        "sr-agent::sensitive-data-remediation::cursor",
+        "sr-agent::sensitive-data-remediation::devin",
+        "sr-agent::sensitive-data-remediation::github_copilot"
+      ],
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "findings.sde",
+        "repo.contents",
+        "tickets.security"
+      ],
+      "minimum_evidence_records": [
+        {
+          "evidence_owner": "Security Engineering",
+          "id": "sde-scanner-before-after",
+          "retention": "400d",
+          "source": "scanner SARIF or JSON"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "sde-pr-review-record",
+          "retention": "400d",
+          "source": "source host review events"
+        },
+        {
+          "evidence_owner": "AI Platform",
+          "id": "sde-agent-tool-audit",
+          "retention": "400d",
+          "source": "MCP gateway audit log"
+        }
+      ],
+      "public_path": "/security-remediation/sensitive-data/",
+      "readiness_decision": "scale_ready",
+      "readiness_score": 98,
+      "receipt_acceptance_criteria": [
+        "receipt includes all required runtime attributes",
+        "identity_id matches the generated agent identity ledger for workflow_id and agent_class",
+        "context_package_hash matches the secure context trust pack for workflow_id",
+        "egress_policy_hash matches the context egress boundary pack for workflow_id",
+        "every MCP namespace used by the run has a gateway decision event",
+        "all approval-required namespaces have a human_approval event before execution",
+        "all context movement has an egress decision event before leaving the tenant or model boundary",
+        "verifier_result proves the workflow-specific fix or triage condition",
+        "identity_revoked or run_closed records final credential state",
+        "receipt envelope is immutable after closure and can be exported without raw secrets"
+      ],
+      "receipt_id": "sr-run-receipt::sensitive-data-remediation",
+      "receipt_status": "receipt_ready",
+      "red_team_drill_count": 7,
+      "required_event_class_count": 10,
+      "retention_days": 400,
+      "runtime_attribute_contract": [
+        "workflow_id",
+        "agent_id",
+        "agent_class",
+        "identity_id",
+        "run_id",
+        "tenant_id",
+        "source_revision",
+        "policy_pack_hash",
+        "context_package_hash",
+        "egress_policy_hash",
+        "receipt_schema_version"
+      ],
+      "status": "active",
+      "title": "Sensitive Data Element Remediation",
+      "workflow_id": "sensitive-data-remediation"
+    },
+    {
+      "agent_classes": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot",
+        "devin"
+      ],
+      "approval_required_namespaces": [],
+      "assurance_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09",
+        "SR-AI-10"
+      ],
+      "bom_component_id": "workflow::vulnerable-dependency-remediation",
+      "context_package_hash": "843a3aac93340799888e7a33293e586fd0f767e14e1a501162b304860cb708f4",
+      "context_source_ids": [
+        "security-remediation-workflows",
+        "prompt-library-recipes",
+        "agentic-threat-intelligence",
+        "workflow-control-plane",
+        "mcp-gateway-policy",
+        "mcp-connector-trust",
+        "agentic-evidence-packs"
+      ],
+      "egress_policy_hash": "c0abb42357dfae407d9f5ba4d13b4b62ae5bd079aab02c82761b42733813c0ff",
+      "event_manifest": [
+        {
+          "control_reason": "Proves the agent acted through a scoped non-human identity instead of a shared human token.",
+          "event_class": "identity_issued",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "agent_id",
+            "agent_class",
+            "workflow_id",
+            "run_id",
+            "issued_at",
+            "expires_at",
+            "delegated_by",
+            "token_audience",
+            "scopes"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves retrieved context was registered, owned, hash-bound, and cited.",
+          "event_class": "context_retrieval_decision",
+          "evidence_source": "secure context firewall decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "retrieval_mode",
+            "requested_path",
+            "decision",
+            "context_hash",
+            "trust_tier"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves prompt-like or hidden instructions in retrieved content were handled as untrusted data.",
+          "event_class": "context_poisoning_scan",
+          "evidence_source": "context poisoning guard pack or runtime scan log",
+          "minimum_fields": [
+            "source_id",
+            "run_id",
+            "decision",
+            "rule_ids",
+            "actionable_finding_count",
+            "source_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves every tool call passed through default-deny policy before execution.",
+          "event_class": "mcp_tool_decision",
+          "evidence_source": "MCP gateway policy decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "gate_phase",
+            "decision",
+            "policy_hash",
+            "correlation_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves model-provider, MCP-server, telemetry, public-corpus, and external-webhook movement was classified and gated.",
+          "event_class": "context_egress_decision",
+          "evidence_source": "context egress boundary decision log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "source_id",
+            "data_class",
+            "destination_class",
+            "decision",
+            "egress_policy_hash",
+            "tenant_id"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves approval-required actions were explicitly authorized before execution or merge.",
+          "event_class": "human_approval",
+          "evidence_source": "source host review events, change-management record, or MCP elicitation log",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "approval_id",
+            "approver",
+            "reviewer_pool",
+            "approved_scope",
+            "approved_at",
+            "change_reference"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run achieved the intended risk-reduction or triage outcome.",
+          "event_class": "verifier_result",
+          "evidence_source": "CI, scanner, simulation, resolver, or policy verifier artifact",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "verifier_id",
+            "verifier_type",
+            "result",
+            "artifact_uri",
+            "completed_at"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves required evidence exists and is retained for audit or incident response.",
+          "event_class": "evidence_attached",
+          "evidence_source": "evidence store, source host, scanner, CI, ticket, or MCP gateway",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "evidence_id",
+            "evidence_owner",
+            "retention",
+            "artifact_uri",
+            "artifact_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves the run reached a terminal state and the receipt envelope was sealed.",
+          "event_class": "run_closed",
+          "evidence_source": "orchestrator run record",
+          "minimum_fields": [
+            "workflow_id",
+            "run_id",
+            "final_state",
+            "closed_at",
+            "output_reference",
+            "receipt_hash"
+          ],
+          "required": true
+        },
+        {
+          "control_reason": "Proves short-lived credentials ended with the run or kill signal.",
+          "event_class": "identity_revoked",
+          "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+          "minimum_fields": [
+            "identity_id",
+            "workflow_id",
+            "run_id",
+            "revoked_at",
+            "revocation_reason",
+            "revocation_status"
+          ],
+          "required": true
+        }
+      ],
+      "expected_gateway_policy_hash": "1bb48c4dcfc00b8a67cef524dd1ed88641aac925e201c01c2814242d08eb486b",
+      "human_review_required": true,
+      "identity_ids": [
+        "sr-agent::vulnerable-dependency-remediation::claude",
+        "sr-agent::vulnerable-dependency-remediation::codex",
+        "sr-agent::vulnerable-dependency-remediation::cursor",
+        "sr-agent::vulnerable-dependency-remediation::devin",
+        "sr-agent::vulnerable-dependency-remediation::github_copilot"
+      ],
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "advisories.vulnerability",
+        "repo.contents",
+        "sbom.inventory"
+      ],
+      "minimum_evidence_records": [
+        {
+          "evidence_owner": "Product Security",
+          "id": "dependency-advisory-record",
+          "retention": "400d",
+          "source": "advisory feed or SCA platform"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "dependency-resolver-log",
+          "retention": "400d",
+          "source": "CI artifact"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "dependency-pr-review-record",
+          "retention": "400d",
+          "source": "source host review events"
+        }
+      ],
+      "public_path": "/security-remediation/vulnerable-dependencies/",
+      "readiness_decision": "scale_ready",
+      "readiness_score": 98,
+      "receipt_acceptance_criteria": [
+        "receipt includes all required runtime attributes",
+        "identity_id matches the generated agent identity ledger for workflow_id and agent_class",
+        "context_package_hash matches the secure context trust pack for workflow_id",
+        "egress_policy_hash matches the context egress boundary pack for workflow_id",
+        "every MCP namespace used by the run has a gateway decision event",
+        "all approval-required namespaces have a human_approval event before execution",
+        "all context movement has an egress decision event before leaving the tenant or model boundary",
+        "verifier_result proves the workflow-specific fix or triage condition",
+        "identity_revoked or run_closed records final credential state",
+        "receipt envelope is immutable after closure and can be exported without raw secrets"
+      ],
+      "receipt_id": "sr-run-receipt::vulnerable-dependency-remediation",
+      "receipt_status": "receipt_ready",
+      "red_team_drill_count": 7,
+      "required_event_class_count": 10,
+      "retention_days": 400,
+      "runtime_attribute_contract": [
+        "workflow_id",
+        "agent_id",
+        "agent_class",
+        "identity_id",
+        "run_id",
+        "tenant_id",
+        "source_revision",
+        "policy_pack_hash",
+        "context_package_hash",
+        "egress_policy_hash",
+        "receipt_schema_version"
+      ],
+      "status": "active",
+      "title": "Vulnerable Dependency Remediation",
+      "workflow_id": "vulnerable-dependency-remediation"
+    }
+  ]
+}

@@ -1,0 +1,221 @@
+{
+  "schema_version": "1.0",
+  "last_reviewed": "2026-05-02",
+  "intent": "Define the SecurityRecipes MCP authorization conformance model so agent hosts, MCP gateways, IAM teams, and enterprise buyers can verify resource-bound tokens, token audience validation, PKCE, protected-resource metadata, token-passthrough denial, scope minimization, consent, session binding, and audit evidence before agents use MCP tools.",
+  "positioning": {
+    "buyer": "AI Platform, IAM, Product Security, GRC, procurement security, and enterprise architecture teams",
+    "category": "MCP authorization conformance and scope-drift control",
+    "enterprise_promise": "SecurityRecipes can explain whether MCP tool access is bound to the right resource, token audience, client, workflow, agent run, and scope before a tool call reaches enterprise systems.",
+    "why_now": "MCP adoption is moving from local developer experiments to remote production servers. The enterprise control gap is now authorization evidence: who delegated which agent, to which MCP resource, with which scopes, and whether raw user tokens or over-broad permissions leaked into the tool path."
+  },
+  "standards_alignment": [
+    {
+      "id": "mcp-authorization-2025-06-18",
+      "name": "Model Context Protocol Authorization",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization",
+      "coverage": "OAuth authorization for HTTP MCP servers, resource indicators, protected-resource metadata, authorization-server metadata, PKCE, HTTPS, bearer-token validation, and token audience checks."
+    },
+    {
+      "id": "mcp-security-best-practices",
+      "name": "Model Context Protocol Security Best Practices",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices",
+      "coverage": "Confused-deputy prevention, token-passthrough avoidance, SSRF controls, scope minimization, session safety, local-server hardening, and audit trails."
+    },
+    {
+      "id": "owasp-agentic-top-10-2026",
+      "name": "OWASP Top 10 for Agentic Applications 2026",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "coverage": "Agent goal hijacking, tool misuse, identity and privilege abuse, agentic supply-chain risk, unexpected code execution, memory and context poisoning, and rogue-agent containment."
+    },
+    {
+      "id": "owasp-llm-top-10-2025",
+      "name": "OWASP Top 10 for LLM Applications 2025",
+      "url": "https://genai.owasp.org/llm-top-10/",
+      "coverage": "Prompt injection, sensitive information disclosure, supply-chain risk, improper output handling, excessive agency, vector weakness, and unbounded consumption."
+    },
+    {
+      "id": "cisa-ai-data-security",
+      "name": "CISA AI Data Security Best Practices",
+      "url": "https://www.cisa.gov/resources-tools/resources/ai-data-security-best-practices-securing-data-used-train-operate-ai-systems",
+      "coverage": "Data provenance, integrity, access control, monitoring, third-party data handling, evidence, and incident-response expectations for AI systems."
+    },
+    {
+      "id": "cisa-secure-by-design",
+      "name": "CISA Secure by Design",
+      "url": "https://www.cisa.gov/securebydesign",
+      "coverage": "Secure defaults, transparency, measurable customer security outcomes, and executive ownership of security controls."
+    },
+    {
+      "id": "nist-ai-rmf-1.0",
+      "name": "NIST AI Risk Management Framework",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "coverage": "Govern, Map, Measure, and Manage functions for AI lifecycle risk, including governance and operational monitoring."
+    },
+    {
+      "id": "nist-ai-600-1",
+      "name": "NIST AI RMF Generative AI Profile",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+      "coverage": "Generative AI lifecycle, data, third-party, measurement, monitoring, incident, and operational risk management."
+    }
+  ],
+  "conformance_contract": {
+    "default_decision": "hold_for_authorization_evidence",
+    "hash_algorithm": "sha256",
+    "canonical_mcp_resource_uri": "https://mcp.security-recipes.ai/mcp",
+    "required_runtime_attributes": [
+      "workflow_id",
+      "agent_id",
+      "run_id",
+      "connector_id",
+      "namespace",
+      "client_id",
+      "resource_indicator",
+      "token_audience",
+      "token_issuer",
+      "token_expires_at",
+      "token_scopes",
+      "requested_access_mode",
+      "consent_record_id",
+      "session_id",
+      "correlation_id",
+      "gateway_policy_hash"
+    ],
+    "valid_runtime_decisions": [
+      "allow_authorized_mcp_request",
+      "hold_for_authorization_evidence",
+      "deny_token_passthrough",
+      "deny_unbound_token",
+      "deny_scope_drift",
+      "kill_session_on_secret_or_signer_scope"
+    ],
+    "prohibited_scope_terms": [
+      "private_key",
+      "seed_phrase",
+      "signing_material",
+      "raw_access_token",
+      "production_credential",
+      "registry_publish",
+      "deploy_production",
+      "live_funds_movement"
+    ],
+    "gateway_attestation_controls": [
+      "per_client_consent",
+      "short_lived_workload_identity",
+      "deny_token_passthrough",
+      "audit_every_tool_call",
+      "session_binding"
+    ],
+    "write_attestation_controls": [
+      "write_scope_enforcement",
+      "human_review_before_merge"
+    ],
+    "approval_attestation_controls": [
+      "typed_human_approval",
+      "two_key_review",
+      "kill_session_on_approval_bypass"
+    ],
+    "candidate_auth_checks": [
+      "resource_indicators",
+      "audience_validation",
+      "pkce",
+      "short_lived_tokens",
+      "deny_token_passthrough",
+      "deny_private_network_egress",
+      "session_binding",
+      "audit_every_tool_call"
+    ],
+    "live_metadata_evidence_required": [
+      "protected_resource_metadata_url",
+      "authorization_server_metadata_url",
+      "resource_indicator_value",
+      "token_audience_value",
+      "jwks_or_introspection_validation",
+      "redirect_uri_policy",
+      "scope_catalog_hash"
+    ]
+  },
+  "control_checks": [
+    {
+      "id": "protected_resource_metadata",
+      "severity": "high",
+      "applies_to": "remote_http_mcp",
+      "evidence_key": "protected_resource_metadata_url",
+      "control_reason": "Clients need machine-readable protected-resource metadata so tokens are minted for the correct MCP resource instead of a generic API."
+    },
+    {
+      "id": "authorization_server_metadata",
+      "severity": "high",
+      "applies_to": "remote_http_mcp",
+      "evidence_key": "authorization_server_metadata_url",
+      "control_reason": "Authorization server metadata makes issuer, endpoint, supported challenge methods, and token validation assumptions reviewable."
+    },
+    {
+      "id": "resource_indicators",
+      "severity": "critical",
+      "applies_to": "oauth_mcp",
+      "evidence_key": "resource_indicator",
+      "control_reason": "Resource indicators prevent tokens minted for one service from being replayed against another MCP resource."
+    },
+    {
+      "id": "token_audience_validation",
+      "severity": "critical",
+      "applies_to": "oauth_mcp",
+      "evidence_key": "token_audience",
+      "control_reason": "Audience validation rejects confused-deputy and token-substitution attempts before the MCP server handles a tool call."
+    },
+    {
+      "id": "pkce",
+      "severity": "high",
+      "applies_to": "authorization_code_flow",
+      "evidence_key": "pkce_method",
+      "control_reason": "PKCE binds authorization-code flows to the client that initiated the grant."
+    },
+    {
+      "id": "deny_token_passthrough",
+      "severity": "critical",
+      "applies_to": "all_mcp",
+      "evidence_key": "token_passthrough",
+      "control_reason": "Agents must not receive or forward raw user tokens to downstream tools or hidden connector calls."
+    },
+    {
+      "id": "scope_minimization",
+      "severity": "high",
+      "applies_to": "all_mcp",
+      "evidence_key": "token_scopes",
+      "control_reason": "Scopes should bind to workflow, namespace, access mode, and run intent rather than broad user or service-account authority."
+    },
+    {
+      "id": "session_binding",
+      "severity": "medium",
+      "applies_to": "all_mcp",
+      "evidence_key": "session_id",
+      "control_reason": "Session binding makes a tool call traceable to one workflow run and simplifies revocation after kill signals."
+    },
+    {
+      "id": "audit_correlation",
+      "severity": "medium",
+      "applies_to": "all_mcp",
+      "evidence_key": "correlation_id",
+      "control_reason": "Correlation IDs connect authorization, gateway, MCP server, source host, ticket, CI, and run receipt evidence."
+    },
+    {
+      "id": "stdio_command_allowlist",
+      "severity": "high",
+      "applies_to": "local_stdio_mcp",
+      "evidence_key": "command_allowlist",
+      "control_reason": "Local MCP servers need explicit launch-command control because package or command drift changes the trust boundary."
+    }
+  ],
+  "enterprise_adoption_packet": {
+    "board_level_claim": "SecurityRecipes can verify the authorization boundary around MCP tool use before an agent acts.",
+    "default_questions_answered": [
+      "Which MCP connectors have enough gateway evidence to be used today?",
+      "Which candidate MCP servers fail resource, audience, PKCE, token-passthrough, or private-network checks?",
+      "Which workflow namespaces are exposed to authorization scope drift?",
+      "What runtime attributes must appear in a run receipt before an MCP tool call is trusted?",
+      "Which premium controls should be hosted: live metadata discovery, scope-drift alerts, token-binding replay tests, and auth evidence exports?"
+    ],
+    "recommended_first_use": "Run this pack during MCP server intake, remote MCP rollout, IAM review, gateway policy design, and quarterly connector recertification.",
+    "sales_motion": "Lead with open conformance rules, then sell hosted MCP authorization discovery, live metadata checks, fleet-wide scope-drift detection, and signed run-level authorization receipts."
+  }
+}

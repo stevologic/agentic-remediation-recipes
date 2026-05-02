@@ -147,7 +147,7 @@
     },
     "agentic_assurance_pack": {
       "path": "data/evidence/agentic-assurance-pack.json",
-      "sha256": "48d6943a3794a5752e66802c819e5330a5e33b27e461d91e9fde26640591c88f"
+      "sha256": "f97a022e915e0357b265f2546c5abaa4d7228ca4f636e0f5f063accfc5dba8f1"
     },
     "agentic_readiness_model": {
       "path": "data/assurance/agentic-readiness-model.json",

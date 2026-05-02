@@ -29,6 +29,15 @@ identity_ledger_path = "./data/evidence/agent-identity-delegation-ledger.json"
 # recipes_mcp_connector_trust_pack MCP tool.
 connector_trust_pack_path = "./data/evidence/mcp-connector-trust-pack.json"
 
+# Generated MCP connector intake pack exposed through the
+# recipes_mcp_connector_intake_pack MCP tool.
+connector_intake_pack_path = "./data/evidence/mcp-connector-intake-pack.json"
+
+# Generated MCP authorization conformance pack exposed through the
+# recipes_mcp_authorization_conformance_pack and
+# recipes_evaluate_mcp_authorization_decision MCP tools.
+authorization_conformance_pack_path = "./data/evidence/mcp-authorization-conformance-pack.json"
+
 # Generated agentic red-team drill pack exposed through the
 # recipes_agentic_red_team_drill_pack MCP tool.
 red_team_drill_pack_path = "./data/evidence/agentic-red-team-drill-pack.json"
@@ -41,10 +50,23 @@ readiness_scorecard_path = "./data/evidence/agentic-readiness-scorecard.json"
 # recipes_agentic_system_bom MCP tool.
 agentic_system_bom_path = "./data/evidence/agentic-system-bom.json"
 
+# Generated agentic run receipt pack exposed through the
+# recipes_agentic_run_receipt_pack MCP tool.
+agentic_run_receipt_pack_path = "./data/evidence/agentic-run-receipt-pack.json"
+
 # Generated secure context provenance and retrieval trust pack exposed through
 # the recipes_secure_context_trust_pack and
 # recipes_evaluate_context_retrieval_decision MCP tools.
 secure_context_trust_pack_path = "./data/evidence/secure-context-trust-pack.json"
+
+# Generated context poisoning guard pack exposed through the
+# recipes_context_poisoning_guard_pack MCP tool.
+context_poisoning_guard_pack_path = "./data/evidence/context-poisoning-guard-pack.json"
+
+# Generated context egress boundary pack exposed through the
+# recipes_context_egress_boundary_pack and
+# recipes_evaluate_context_egress_decision MCP tools.
+context_egress_boundary_pack_path = "./data/evidence/context-egress-boundary-pack.json"
 
 # Generated source-backed agentic threat and product radar exposed through
 # the recipes_agentic_threat_radar MCP tool.

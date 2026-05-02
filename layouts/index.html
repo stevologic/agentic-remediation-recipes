@@ -1070,7 +1070,7 @@
     for <span class="accent">agentic AI and MCP servers</span>.
   </h1>
   <p class="subtitle reveal d3">
-    SecurityRecipes is an open playbook for security teams adopting AI coding agents. It provides per-agent setup recipes, reusable prompts and rules files, reviewer-gated remediation workflows, generated governance evidence, and a repo-shipped FastMCP server that returns trusted context from the site and local packs.
+    SecurityRecipes is an open playbook for security teams adopting AI coding agents. It provides per-agent setup recipes, reusable prompts and rules files, reviewer-gated remediation workflows, generated governance evidence, and a repo-shipped FastMCP server that controls trusted context retrieval and egress.
   </p>
   <div class="hero-cta-row reveal d3">
     <a class="hero-cta-primary" href="{{ $base }}/quickstart/">
@@ -1088,10 +1088,10 @@
     <span class="sep"></span>
     <span>Read-only FastMCP context server</span>
     <span class="sep"></span>
-    <span>Generated trust, policy, and evidence packs</span>
+    <span>Generated trust, egress, policy, and evidence packs</span>
   </div>
   <div class="home-search reveal d4">
-    <label class="home-search-label" for="home-search-input">Search recipes</label>
+    <label class="home-search-label" for="home-search-input">Search docs</label>
     <div class="home-search-input-wrap">
       <svg class="home-search-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       <input id="home-search-input" class="home-search-input" type="search" placeholder="Find docs, agents, prompts, and remediation workflows…" autocomplete="off" />
@@ -1301,7 +1301,7 @@
     </div>
     <h3>Repo-shipped MCP Server</h3>
     <p>
-      The included FastMCP server searches and returns SecurityRecipes pages plus local generated JSON packs. It is read-only by design: no PR creation, no ticket edits, no secret storage, and no live vendor connector calls hidden behind the tool surface.
+      The included FastMCP server searches SecurityRecipes pages and local generated JSON packs, then exposes deterministic retrieval, authorization, egress, and tool-policy decisions. It is read-only by design: no PR creation, no ticket edits, no secret storage, and no live vendor connector calls hidden behind the tool surface.
     </p>
     <div class="dual-cta-tags">
       <span class="dual-cta-tag">read-only tools</span>
@@ -1309,6 +1309,7 @@
       <span class="dual-cta-tag">site index</span>
       <span class="dual-cta-tag">generated packs</span>
       <span class="dual-cta-tag">runtime decisions</span>
+      <span class="dual-cta-tag">egress boundaries</span>
     </div>
     <span class="dual-cta-link">
       Click to find out more
@@ -1346,11 +1347,13 @@
     </div>
     <div class="dual-cta-card mcp reveal d4">
       <h3>MCP Context + Evidence</h3>
-      <p>A read-only server and generated packs for workflow control, gateway policy, connector trust, identity, assurance, readiness, red-team drills, secure context trust, and runtime retrieval decisions.</p>
+      <p>A read-only server and generated packs for workflow control, gateway policy, connector intake, connector trust, MCP authorization conformance, identity, assurance, readiness, red-team drills, secure context trust, runtime retrieval, context egress decisions, and agentic run receipts.</p>
       <div class="dual-cta-tags">
         <span class="dual-cta-tag">FastMCP</span>
         <span class="dual-cta-tag">JSON packs</span>
         <span class="dual-cta-tag">default-deny decisions</span>
+        <span class="dual-cta-tag">run receipts</span>
+        <span class="dual-cta-tag">data boundaries</span>
       </div>
     </div>
   </div>

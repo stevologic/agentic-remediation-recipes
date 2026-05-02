@@ -70,11 +70,18 @@ After connecting, the server exposes these tools:
 - `recipes_agentic_assurance_pack`
 - `recipes_agent_identity_ledger`
 - `recipes_mcp_connector_trust_pack`
+- `recipes_mcp_connector_intake_pack`
+- `recipes_mcp_authorization_conformance_pack`
+- `recipes_evaluate_mcp_authorization_decision`
 - `recipes_agentic_red_team_drill_pack`
 - `recipes_agentic_readiness_scorecard`
 - `recipes_agentic_system_bom`
+- `recipes_agentic_run_receipt_pack`
 - `recipes_secure_context_trust_pack`
 - `recipes_evaluate_context_retrieval_decision`
+- `recipes_context_poisoning_guard_pack`
+- `recipes_context_egress_boundary_pack`
+- `recipes_evaluate_context_egress_decision`
 - `recipes_agentic_threat_radar`
 - `recipes_match_finding`
 
@@ -96,10 +103,13 @@ docker run --rm -it -p 8123:80 `
 
 Edit `mcp-server.toml` when you need to point the MCP server at a forked
 or self-hosted `recipes-index.json`, workflow manifest, gateway policy,
-assurance pack, identity ledger, connector trust pack, red-team drill
-pack, readiness scorecard, Agentic System BOM, secure context trust
-pack, or agentic threat radar. The secure context retrieval evaluator
-uses the same trust pack and does not require a separate config path.
+assurance pack, identity ledger, connector trust pack, connector intake
+pack, authorization conformance pack, red-team drill pack, readiness
+scorecard, Agentic System BOM, secure context trust pack, context
+poisoning guard pack, context egress boundary pack, or agentic threat
+radar. The secure context retrieval, authorization, and egress
+evaluators use those generated packs and do not require separate config
+paths.
 
 ## Change the local port
 

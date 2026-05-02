@@ -1,0 +1,1543 @@
+{
+  "authorization_contract": {
+    "approval_attestation_controls": [
+      "typed_human_approval",
+      "two_key_review",
+      "kill_session_on_approval_bypass"
+    ],
+    "candidate_auth_checks": [
+      "resource_indicators",
+      "audience_validation",
+      "pkce",
+      "short_lived_tokens",
+      "deny_token_passthrough",
+      "deny_private_network_egress",
+      "session_binding",
+      "audit_every_tool_call"
+    ],
+    "canonical_mcp_resource_uri": "https://mcp.security-recipes.ai/mcp",
+    "default_decision": "hold_for_authorization_evidence",
+    "gateway_attestation_controls": [
+      "per_client_consent",
+      "short_lived_workload_identity",
+      "deny_token_passthrough",
+      "audit_every_tool_call",
+      "session_binding"
+    ],
+    "hash_algorithm": "sha256",
+    "live_metadata_evidence_required": [
+      "protected_resource_metadata_url",
+      "authorization_server_metadata_url",
+      "resource_indicator_value",
+      "token_audience_value",
+      "jwks_or_introspection_validation",
+      "redirect_uri_policy",
+      "scope_catalog_hash"
+    ],
+    "prohibited_scope_terms": [
+      "private_key",
+      "seed_phrase",
+      "signing_material",
+      "raw_access_token",
+      "production_credential",
+      "registry_publish",
+      "deploy_production",
+      "live_funds_movement"
+    ],
+    "required_runtime_attributes": [
+      "workflow_id",
+      "agent_id",
+      "run_id",
+      "connector_id",
+      "namespace",
+      "client_id",
+      "resource_indicator",
+      "token_audience",
+      "token_issuer",
+      "token_expires_at",
+      "token_scopes",
+      "requested_access_mode",
+      "consent_record_id",
+      "session_id",
+      "correlation_id",
+      "gateway_policy_hash"
+    ],
+    "valid_runtime_decisions": [
+      "allow_authorized_mcp_request",
+      "hold_for_authorization_evidence",
+      "deny_token_passthrough",
+      "deny_unbound_token",
+      "deny_scope_drift",
+      "kill_session_on_secret_or_signer_scope"
+    ],
+    "write_attestation_controls": [
+      "write_scope_enforcement",
+      "human_review_before_merge"
+    ]
+  },
+  "authorization_pack_id": "security-recipes-mcp-authorization-conformance",
+  "authorization_summary": {
+    "candidate_count": 3,
+    "candidate_decision_counts": {
+      "approve_for_pilot": 1,
+      "deny_until_redesigned": 1,
+      "hold_for_authorization_evidence": 1
+    },
+    "connector_count": 16,
+    "failure_count": 0,
+    "metadata_evidence_required_count": 16,
+    "registered_decision_counts": {
+      "approve_public_context_no_auth": 1,
+      "approve_with_gateway_attestation": 15
+    },
+    "workflow_count": 8
+  },
+  "candidate_authorization": [
+    {
+      "access_modes": [
+        "approval_required"
+      ],
+      "candidate_id": "registry-publisher",
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp#registries.publish",
+      "conformance_decision": "deny_until_redesigned",
+      "control_gaps": [
+        "audience_validation",
+        "audit_denied_attempts",
+        "deny_private_network_egress",
+        "deny_token_passthrough",
+        "hard_deny",
+        "kill_session_on_attempt"
+      ],
+      "data_classes": [
+        "image_digest",
+        "registry_target",
+        "production_credential"
+      ],
+      "evidence_mode": "candidate_auth_profile",
+      "intake_decision": "deny_until_redesigned",
+      "namespace": "registries.publish",
+      "requested_access_modes": [
+        "approval_required"
+      ],
+      "risk_score": 100,
+      "source": {
+        "distribution": "private registry",
+        "package": "registry-publish-mcp",
+        "publisher": "internal-platform",
+        "review_state": "architecture-review",
+        "version": "0.4.1"
+      },
+      "title": "Container Registry Publisher",
+      "transport": "streamable-http"
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "candidate_id": "browser-research-stdio",
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp#research.browser",
+      "conformance_decision": "hold_for_authorization_evidence",
+      "control_gaps": [
+        "deny_private_network_egress",
+        "deny_token_passthrough",
+        "per_client_consent",
+        "session_binding",
+        "short_lived_workload_identity",
+        "stdio_command_allowlist",
+        "token_audience_validation"
+      ],
+      "data_classes": [
+        "public_reference",
+        "untrusted_web_content"
+      ],
+      "evidence_mode": "candidate_auth_profile",
+      "intake_decision": "hold_for_controls",
+      "namespace": "research.browser",
+      "requested_access_modes": [
+        "read"
+      ],
+      "risk_score": 83,
+      "source": {
+        "distribution": "public npm",
+        "package": "browser-research-mcp",
+        "publisher": "community",
+        "review_state": "unreviewed",
+        "version": "1.2.0"
+      },
+      "title": "Local Browser Research STDIO Server",
+      "transport": "stdio"
+    },
+    {
+      "access_modes": [
+        "write_branch"
+      ],
+      "candidate_id": "github-remediation-writer",
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp#repo.remediation",
+      "conformance_decision": "approve_for_pilot",
+      "control_gaps": [],
+      "data_classes": [
+        "source_code",
+        "pull_request_metadata",
+        "scanner_evidence"
+      ],
+      "evidence_mode": "candidate_auth_profile",
+      "intake_decision": "approve_for_registry_candidate",
+      "namespace": "repo.remediation",
+      "requested_access_modes": [
+        "write_branch"
+      ],
+      "risk_score": 0,
+      "source": {
+        "distribution": "private registry",
+        "package": "github-remediation-mcp",
+        "publisher": "internal-platform",
+        "review_state": "security-reviewed",
+        "version": "0.9.4"
+      },
+      "title": "GitHub Remediation Branch Writer",
+      "transport": "streamable-http"
+    }
+  ],
+  "control_checks": [
+    {
+      "applies_to": "remote_http_mcp",
+      "control_reason": "Clients need machine-readable protected-resource metadata so tokens are minted for the correct MCP resource instead of a generic API.",
+      "evidence_key": "protected_resource_metadata_url",
+      "id": "protected_resource_metadata",
+      "severity": "high"
+    },
+    {
+      "applies_to": "remote_http_mcp",
+      "control_reason": "Authorization server metadata makes issuer, endpoint, supported challenge methods, and token validation assumptions reviewable.",
+      "evidence_key": "authorization_server_metadata_url",
+      "id": "authorization_server_metadata",
+      "severity": "high"
+    },
+    {
+      "applies_to": "oauth_mcp",
+      "control_reason": "Resource indicators prevent tokens minted for one service from being replayed against another MCP resource.",
+      "evidence_key": "resource_indicator",
+      "id": "resource_indicators",
+      "severity": "critical"
+    },
+    {
+      "applies_to": "oauth_mcp",
+      "control_reason": "Audience validation rejects confused-deputy and token-substitution attempts before the MCP server handles a tool call.",
+      "evidence_key": "token_audience",
+      "id": "token_audience_validation",
+      "severity": "critical"
+    },
+    {
+      "applies_to": "authorization_code_flow",
+      "control_reason": "PKCE binds authorization-code flows to the client that initiated the grant.",
+      "evidence_key": "pkce_method",
+      "id": "pkce",
+      "severity": "high"
+    },
+    {
+      "applies_to": "all_mcp",
+      "control_reason": "Agents must not receive or forward raw user tokens to downstream tools or hidden connector calls.",
+      "evidence_key": "token_passthrough",
+      "id": "deny_token_passthrough",
+      "severity": "critical"
+    },
+    {
+      "applies_to": "all_mcp",
+      "control_reason": "Scopes should bind to workflow, namespace, access mode, and run intent rather than broad user or service-account authority.",
+      "evidence_key": "token_scopes",
+      "id": "scope_minimization",
+      "severity": "high"
+    },
+    {
+      "applies_to": "all_mcp",
+      "control_reason": "Session binding makes a tool call traceable to one workflow run and simplifies revocation after kill signals.",
+      "evidence_key": "session_id",
+      "id": "session_binding",
+      "severity": "medium"
+    },
+    {
+      "applies_to": "all_mcp",
+      "control_reason": "Correlation IDs connect authorization, gateway, MCP server, source host, ticket, CI, and run receipt evidence.",
+      "evidence_key": "correlation_id",
+      "id": "audit_correlation",
+      "severity": "medium"
+    },
+    {
+      "applies_to": "local_stdio_mcp",
+      "control_reason": "Local MCP servers need explicit launch-command control because package or command drift changes the trust boundary.",
+      "evidence_key": "command_allowlist",
+      "id": "stdio_command_allowlist",
+      "severity": "high"
+    }
+  ],
+  "enterprise_adoption_packet": {
+    "board_level_claim": "SecurityRecipes can verify the authorization boundary around MCP tool use before an agent acts.",
+    "default_questions_answered": [
+      "Which MCP connectors have enough gateway evidence to be used today?",
+      "Which candidate MCP servers fail resource, audience, PKCE, token-passthrough, or private-network checks?",
+      "Which workflow namespaces are exposed to authorization scope drift?",
+      "What runtime attributes must appear in a run receipt before an MCP tool call is trusted?",
+      "Which premium controls should be hosted: live metadata discovery, scope-drift alerts, token-binding replay tests, and auth evidence exports?"
+    ],
+    "recommended_first_use": "Run this pack during MCP server intake, remote MCP rollout, IAM review, gateway policy design, and quarterly connector recertification.",
+    "sales_motion": "Lead with open conformance rules, then sell hosted MCP authorization discovery, live metadata checks, fleet-wide scope-drift detection, and signed run-level authorization receipts."
+  },
+  "failures": [],
+  "generated_at": "2026-05-02",
+  "intent": "Define the SecurityRecipes MCP authorization conformance model so agent hosts, MCP gateways, IAM teams, and enterprise buyers can verify resource-bound tokens, token audience validation, PKCE, protected-resource metadata, token-passthrough denial, scope minimization, consent, session binding, and audit evidence before agents use MCP tools.",
+  "positioning": {
+    "buyer": "AI Platform, IAM, Product Security, GRC, procurement security, and enterprise architecture teams",
+    "category": "MCP authorization conformance and scope-drift control",
+    "enterprise_promise": "SecurityRecipes can explain whether MCP tool access is bound to the right resource, token audience, client, workflow, agent run, and scope before a tool call reaches enterprise systems.",
+    "why_now": "MCP adoption is moving from local developer experiments to remote production servers. The enterprise control gap is now authorization evidence: who delegated which agent, to which MCP resource, with which scopes, and whether raw user tokens or over-broad permissions leaked into the tool path."
+  },
+  "registered_connector_authorization": [
+    {
+      "access_modes": [
+        "read"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "vulnerability-advisory-feed",
+      "control_gaps": [],
+      "data_classes": [
+        "cve_metadata",
+        "advisory_ranges",
+        "severity",
+        "known_exploited_status"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "advisories.vulnerability",
+      "owner": {
+        "accountable_team": "Product Security",
+        "escalation": "supply-chain-security"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "production",
+      "title": "Vulnerability Advisory Feed",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "chain-simulation-reader",
+      "control_gaps": [],
+      "data_classes": [
+        "fork_test_result",
+        "invariant_test_result",
+        "read_only_rpc_trace"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "chain.simulation",
+      "owner": {
+        "accountable_team": "Protocol Security",
+        "escalation": "protocol-risk-council"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "pilot",
+      "title": "Chain Simulation Reader",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "ci-run-reader",
+      "control_gaps": [],
+      "data_classes": [
+        "build_status",
+        "test_artifacts",
+        "scanner_artifacts"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "ci.runs",
+      "owner": {
+        "accountable_team": "Engineering Platform",
+        "escalation": "build-platform"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "production",
+      "title": "CI Run Reader",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "sast-finding-intake",
+      "control_gaps": [],
+      "data_classes": [
+        "sarif_metadata",
+        "rule_trace",
+        "source_sink_path",
+        "severity"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "findings.sast",
+      "owner": {
+        "accountable_team": "Application Security",
+        "escalation": "secure-code-review"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "production",
+      "title": "SAST Finding Intake",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "sde-finding-intake",
+      "control_gaps": [],
+      "data_classes": [
+        "scanner_metadata",
+        "data_classification",
+        "sample_redacted_finding_context"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "findings.sde",
+      "owner": {
+        "accountable_team": "Security Engineering",
+        "escalation": "privacy-security"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "production",
+      "title": "Sensitive Data Finding Intake",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "golden-image-catalog",
+      "control_gaps": [],
+      "data_classes": [
+        "image_digest",
+        "image_signature",
+        "image_sbom",
+        "deprecation_window"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "images.golden",
+      "owner": {
+        "accountable_team": "Platform Security",
+        "escalation": "container-platform"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "production",
+      "title": "Golden Image Catalog",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "write_ticket"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "security-incident-workspace",
+      "control_gaps": [],
+      "data_classes": [
+        "incident_metadata",
+        "quarantine_evidence",
+        "remediation_links"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "incidents.security",
+      "owner": {
+        "accountable_team": "Security Incident Response",
+        "escalation": "security-incident-commander"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "production",
+      "title": "Security Incident Workspace",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_2_scoped_write",
+        "title": "Scoped Write"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "artifact-inventory",
+      "control_gaps": [],
+      "data_classes": [
+        "artifact_hash",
+        "package_version",
+        "image_digest",
+        "consumer_inventory"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "inventory.artifacts",
+      "owner": {
+        "accountable_team": "Supply Chain Security",
+        "escalation": "security-incident-commander"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "production",
+      "title": "Artifact Inventory",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "payment-security-findings",
+      "control_gaps": [],
+      "data_classes": [
+        "payment_finding_metadata",
+        "asset_class",
+        "chain_or_network",
+        "test_vector"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "payments.findings",
+      "owner": {
+        "accountable_team": "Fintech Security",
+        "escalation": "financial-risk"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "pilot",
+      "title": "Payment Security Findings",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "payment-simulation-reader",
+      "control_gaps": [],
+      "data_classes": [
+        "sandbox_transaction_result",
+        "policy_simulation",
+        "failure_trace"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "payments.simulation",
+      "owner": {
+        "accountable_team": "Fintech Security",
+        "escalation": "financial-risk"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "pilot",
+      "title": "Payment Simulation Reader",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "protocol-security-findings",
+      "control_gaps": [],
+      "data_classes": [
+        "smart_contract_finding",
+        "oracle_or_bridge_context",
+        "asset_exposure",
+        "reproduction_steps"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "protocol.findings",
+      "owner": {
+        "accountable_team": "Protocol Security",
+        "escalation": "protocol-risk-council"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "pilot",
+      "title": "Protocol Security Findings",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_public_context_no_auth",
+      "connector_id": "approved-defaults-recipes",
+      "control_gaps": [],
+      "data_classes": [
+        "public_recipe_context",
+        "approved_migration_pattern",
+        "prompt_instruction"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "recipes.defaults",
+      "owner": {
+        "accountable_team": "SecurityRecipes Maintainers",
+        "escalation": "content-maintainers"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "production",
+      "title": "Approved Vulnerable-Defaults Recipes",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_0_public_context",
+        "title": "Public Context"
+      }
+    },
+    {
+      "access_modes": [
+        "approval_required"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "registry-quarantine",
+      "control_gaps": [],
+      "data_classes": [
+        "artifact_hash",
+        "quarantine_plan",
+        "approval_record",
+        "registry_target"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "registries.quarantine",
+      "owner": {
+        "accountable_team": "Supply Chain Security",
+        "escalation": "security-incident-commander"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "pilot",
+      "title": "Registry Quarantine Controller",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_3_approval_required",
+        "title": "Approval Required"
+      }
+    },
+    {
+      "access_modes": [
+        "write_branch"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "repository-contents",
+      "control_gaps": [],
+      "data_classes": [
+        "source_code",
+        "test_data",
+        "repository_metadata"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "repo.contents",
+      "owner": {
+        "accountable_team": "Engineering Platform",
+        "escalation": "source-control-platform"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "production",
+      "title": "Repository Contents",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_2_scoped_write",
+        "title": "Scoped Write"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "sbom-inventory",
+      "control_gaps": [],
+      "data_classes": [
+        "package_inventory",
+        "image_inventory",
+        "service_ownership",
+        "dependency_graph"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "sbom.inventory",
+      "owner": {
+        "accountable_team": "Supply Chain Security",
+        "escalation": "software-supply-chain"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "production",
+      "title": "SBOM Inventory",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "write_ticket"
+      ],
+      "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+      "conformance_decision": "approve_with_gateway_attestation",
+      "connector_id": "security-ticket-workspace",
+      "control_gaps": [],
+      "data_classes": [
+        "finding_metadata",
+        "triage_notes",
+        "owner_routing"
+      ],
+      "evidence_mode": "gateway_control_attestation",
+      "metadata_evidence_required": [
+        "protected_resource_metadata_url",
+        "authorization_server_metadata_url",
+        "resource_indicator_value",
+        "token_audience_value",
+        "jwks_or_introspection_validation",
+        "redirect_uri_policy",
+        "scope_catalog_hash"
+      ],
+      "namespace": "tickets.security",
+      "owner": {
+        "accountable_team": "Security Operations",
+        "escalation": "security-triage"
+      },
+      "required_runtime_attributes": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "connector_id",
+        "namespace",
+        "client_id",
+        "resource_indicator",
+        "token_audience",
+        "token_issuer",
+        "token_expires_at",
+        "token_scopes",
+        "requested_access_mode",
+        "consent_record_id",
+        "session_id",
+        "correlation_id",
+        "gateway_policy_hash"
+      ],
+      "status": "production",
+      "title": "Security Ticket Workspace",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_2_scoped_write",
+        "title": "Scoped Write"
+      }
+    }
+  ],
+  "schema_version": "1.0",
+  "source_artifacts": {
+    "mcp_authorization_conformance_profile": {
+      "path": "data/assurance/mcp-authorization-conformance-profile.json",
+      "sha256": "8a8ec4251dd78604a84d0fff7c61df9be5b03c05f691336708290827e98d580e"
+    },
+    "mcp_connector_intake_candidates": {
+      "path": "data/mcp/connector-intake-candidates.json",
+      "sha256": "67627bc35a30623c011f09296e020e5fe07009799aecdf981dae130b4d3080bf"
+    },
+    "mcp_connector_intake_pack": {
+      "path": "data/evidence/mcp-connector-intake-pack.json",
+      "sha256": "7f1f63920abe6121a181f17a856253db7e12bdc88cea16357e358b80d656f11f"
+    },
+    "mcp_connector_trust_pack": {
+      "path": "data/evidence/mcp-connector-trust-pack.json",
+      "sha256": "2982b7ab2dea084cd78295ad257cc4c8606c52938197cf61bb2692156dcf92be"
+    },
+    "mcp_gateway_policy": {
+      "path": "data/policy/mcp-gateway-policy.json",
+      "sha256": "bb1dbf00ec5bee173a19dff65266f13d84501b94aca3239019a03d6e09546de2"
+    },
+    "workflow_manifest": {
+      "path": "data/control-plane/workflow-manifests.json",
+      "sha256": "22f45f06fee190b602ac27f300c94d72ab38646f76a1ad2e4f80923a3a444ceb"
+    }
+  },
+  "standards_alignment": [
+    {
+      "coverage": "OAuth authorization for HTTP MCP servers, resource indicators, protected-resource metadata, authorization-server metadata, PKCE, HTTPS, bearer-token validation, and token audience checks.",
+      "id": "mcp-authorization-2025-06-18",
+      "name": "Model Context Protocol Authorization",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization"
+    },
+    {
+      "coverage": "Confused-deputy prevention, token-passthrough avoidance, SSRF controls, scope minimization, session safety, local-server hardening, and audit trails.",
+      "id": "mcp-security-best-practices",
+      "name": "Model Context Protocol Security Best Practices",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices"
+    },
+    {
+      "coverage": "Agent goal hijacking, tool misuse, identity and privilege abuse, agentic supply-chain risk, unexpected code execution, memory and context poisoning, and rogue-agent containment.",
+      "id": "owasp-agentic-top-10-2026",
+      "name": "OWASP Top 10 for Agentic Applications 2026",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/"
+    },
+    {
+      "coverage": "Prompt injection, sensitive information disclosure, supply-chain risk, improper output handling, excessive agency, vector weakness, and unbounded consumption.",
+      "id": "owasp-llm-top-10-2025",
+      "name": "OWASP Top 10 for LLM Applications 2025",
+      "url": "https://genai.owasp.org/llm-top-10/"
+    },
+    {
+      "coverage": "Data provenance, integrity, access control, monitoring, third-party data handling, evidence, and incident-response expectations for AI systems.",
+      "id": "cisa-ai-data-security",
+      "name": "CISA AI Data Security Best Practices",
+      "url": "https://www.cisa.gov/resources-tools/resources/ai-data-security-best-practices-securing-data-used-train-operate-ai-systems"
+    },
+    {
+      "coverage": "Secure defaults, transparency, measurable customer security outcomes, and executive ownership of security controls.",
+      "id": "cisa-secure-by-design",
+      "name": "CISA Secure by Design",
+      "url": "https://www.cisa.gov/securebydesign"
+    },
+    {
+      "coverage": "Govern, Map, Measure, and Manage functions for AI lifecycle risk, including governance and operational monitoring.",
+      "id": "nist-ai-rmf-1.0",
+      "name": "NIST AI Risk Management Framework",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+    },
+    {
+      "coverage": "Generative AI lifecycle, data, third-party, measurement, monitoring, incident, and operational risk management.",
+      "id": "nist-ai-600-1",
+      "name": "NIST AI RMF Generative AI Profile",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence"
+    }
+  ],
+  "workflow_authorization_map": [
+    {
+      "authorization_policy_hash": "9ef61cdf1c839d291886fc4a95a46f7b561be6500dbe2775be8e1d8ecb83de97",
+      "maturity_stage": "walk",
+      "namespaces": [
+        {
+          "access": "read",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "sde-finding-intake",
+          "namespace": "findings.sde",
+          "purpose": "Read scanner finding metadata and data classification.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "write_branch",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "repository-contents",
+          "namespace": "repo.contents",
+          "purpose": "Patch scoped files on a remediation branch only.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "write_ticket",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "security-ticket-workspace",
+          "namespace": "tickets.security",
+          "purpose": "Open triage tickets when data ownership or redaction rules are unclear.",
+          "transport": "streamable-http"
+        }
+      ],
+      "public_path": "/security-remediation/sensitive-data/",
+      "status": "active",
+      "title": "Sensitive Data Element Remediation",
+      "workflow_id": "sensitive-data-remediation"
+    },
+    {
+      "authorization_policy_hash": "1bb48c4dcfc00b8a67cef524dd1ed88641aac925e201c01c2814242d08eb486b",
+      "maturity_stage": "walk",
+      "namespaces": [
+        {
+          "access": "read",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "vulnerability-advisory-feed",
+          "namespace": "advisories.vulnerability",
+          "purpose": "Read advisory ranges, severity, EPSS, and known-exploited status.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "read",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "sbom-inventory",
+          "namespace": "sbom.inventory",
+          "purpose": "Locate affected manifests, images, packages, and owners.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "write_branch",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "repository-contents",
+          "namespace": "repo.contents",
+          "purpose": "Patch manifests and lockfiles on remediation branch only.",
+          "transport": "streamable-http"
+        }
+      ],
+      "public_path": "/security-remediation/vulnerable-dependencies/",
+      "status": "active",
+      "title": "Vulnerable Dependency Remediation",
+      "workflow_id": "vulnerable-dependency-remediation"
+    },
+    {
+      "authorization_policy_hash": "6049c1c6645bb8ee3be03d2f5fa88d0ce4e5fe6780a95bfda4e03fbb150b567b",
+      "maturity_stage": "crawl",
+      "namespaces": [
+        {
+          "access": "read",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "sast-finding-intake",
+          "namespace": "findings.sast",
+          "purpose": "Read rule metadata, evidence path, sink/source trace, and severity.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "write_branch",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "repository-contents",
+          "namespace": "repo.contents",
+          "purpose": "Patch localized source and tests on remediation branch only.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "read",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "ci-run-reader",
+          "namespace": "ci.runs",
+          "purpose": "Read test and scanner re-run outcomes.",
+          "transport": "streamable-http"
+        }
+      ],
+      "public_path": "/security-remediation/sast-findings/",
+      "status": "active",
+      "title": "SAST Finding Remediation",
+      "workflow_id": "sast-finding-remediation"
+    },
+    {
+      "authorization_policy_hash": "0f5377b2127c5c70a93093dd5d81843ee85c04033f7744ac691d55ee0d4c4053",
+      "maturity_stage": "walk",
+      "namespaces": [
+        {
+          "access": "read",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "golden-image-catalog",
+          "namespace": "images.golden",
+          "purpose": "Read approved base-image catalog, signatures, SBOMs, and deprecation windows.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "write_branch",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "repository-contents",
+          "namespace": "repo.contents",
+          "purpose": "Patch Dockerfiles or image pin files on remediation branch only.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "read",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "ci-run-reader",
+          "namespace": "ci.runs",
+          "purpose": "Read build, scan, and signing verification results.",
+          "transport": "streamable-http"
+        }
+      ],
+      "public_path": "/security-remediation/base-images/",
+      "status": "active",
+      "title": "Base Image and Container Layer Remediation",
+      "workflow_id": "base-image-remediation"
+    },
+    {
+      "authorization_policy_hash": "5502fa113292dc7ea35d349973c36277f60abe0de4fe4fca22269f8fc69c4045",
+      "maturity_stage": "crawl",
+      "namespaces": [
+        {
+          "access": "read",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "artifact-inventory",
+          "namespace": "inventory.artifacts",
+          "purpose": "Locate affected packages, images, hashes, mirrors, and consumers.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "approval_required",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "registry-quarantine",
+          "namespace": "registries.quarantine",
+          "purpose": "Stage quarantine or purge operations for human approval.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "write_ticket",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "security-incident-workspace",
+          "namespace": "incidents.security",
+          "purpose": "Attach evidence and remediation links to incident record.",
+          "transport": "streamable-http"
+        }
+      ],
+      "public_path": "/security-remediation/artifact-cache-purge/",
+      "status": "active",
+      "title": "Artifact Cache and Mirror Quarantine",
+      "workflow_id": "artifact-cache-quarantine"
+    },
+    {
+      "authorization_policy_hash": "4aa2afc4455b1dc82226b979ed70141e6a14e98ed982ee088c0a52d6947e1056",
+      "maturity_stage": "walk",
+      "namespaces": [
+        {
+          "access": "read",
+          "authorization_decision": "hold_for_authorization_evidence",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "approved-defaults-recipes",
+          "namespace": "recipes.defaults",
+          "purpose": "Retrieve approved migration pattern for the vulnerable default.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "write_branch",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "repository-contents",
+          "namespace": "repo.contents",
+          "purpose": "Patch localized source and tests on remediation branch only.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "read",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "ci-run-reader",
+          "namespace": "ci.runs",
+          "purpose": "Read test and scanner outcomes.",
+          "transport": "streamable-http"
+        }
+      ],
+      "public_path": "/security-remediation/classic-vulnerable-defaults/",
+      "status": "active",
+      "title": "Classic Vulnerable Defaults",
+      "workflow_id": "classic-vulnerable-defaults"
+    },
+    {
+      "authorization_policy_hash": "1a011f70e2e0be1b4efac650873bff7ef3d73b08d9dae0e7aa926d93d6eb7cb5",
+      "maturity_stage": "crawl",
+      "namespaces": [
+        {
+          "access": "read",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "payment-security-findings",
+          "namespace": "payments.findings",
+          "purpose": "Read payment-security finding details and affected service metadata.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "write_branch",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "repository-contents",
+          "namespace": "repo.contents",
+          "purpose": "Patch validation, policy, and test files on remediation branch only.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "read",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "payment-simulation-reader",
+          "namespace": "payments.simulation",
+          "purpose": "Run or read dry-run transaction simulation output.",
+          "transport": "streamable-http"
+        }
+      ],
+      "public_path": "/security-remediation/crypto-payments/",
+      "status": "active",
+      "title": "Cryptocurrency and Crypto Payments Security",
+      "workflow_id": "crypto-payment-security"
+    },
+    {
+      "authorization_policy_hash": "7c90a08d9acea79ba2d8e20206d286fb25e04f2a07296edf53f5cf4b3e2a8920",
+      "maturity_stage": "crawl",
+      "namespaces": [
+        {
+          "access": "read",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "protocol-security-findings",
+          "namespace": "protocol.findings",
+          "purpose": "Read protocol-security finding details, affected contract, and severity.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "write_branch",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "repository-contents",
+          "namespace": "repo.contents",
+          "purpose": "Patch contracts, policy docs, or tests on remediation branch only.",
+          "transport": "streamable-http"
+        },
+        {
+          "access": "read",
+          "authorization_decision": "approve_with_gateway_attestation",
+          "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
+          "connector_id": "chain-simulation-reader",
+          "namespace": "chain.simulation",
+          "purpose": "Run or read fork-test and invariant-test outputs.",
+          "transport": "streamable-http"
+        }
+      ],
+      "public_path": "/security-remediation/defi-blockchain/",
+      "status": "active",
+      "title": "DeFi and Blockchain Protocol Security",
+      "workflow_id": "defi-blockchain-security"
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "schema_version": "1.0",
+  "last_reviewed": "2026-05-02",
+  "intent": "Add a deterministic context-poisoning guard for the SecurityRecipes secure context layer: every registered source root is scanned for prompt-injection, tool-result-injection, approval-bypass, hidden-instruction, encoded-payload, and secret-exfiltration markers before it is treated as MCP-retrievable context.",
+  "positioning": {
+    "buyer": "AI Platform, Security Engineering, AppSec, Product Security, red teams, GRC, procurement security, and acquisition diligence teams",
+    "category": "Secure-context poisoning detection for agentic AI and MCP",
+    "enterprise_promise": "SecurityRecipes can prove not only which context is registered and hashed, but also whether the current context corpus contains instruction-like payloads that should be demoted, reviewed, or blocked before agents consume it.",
+    "why_now": "Prompt injection, tool poisoning, and MCP connector sprawl turn context into an attack surface. Enterprise buyers need deterministic pre-retrieval inspection in addition to model behavior guidance."
+  },
+  "standards_alignment": [
+    {
+      "id": "openai-agent-prompt-injection-2026",
+      "name": "Designing AI agents to resist prompt injection",
+      "publisher": "OpenAI",
+      "published": "2026-03-11",
+      "url": "https://openai.com/index/designing-agents-to-resist-prompt-injection/",
+      "coverage": "Prompt injection is treated as social engineering against agents; controls should constrain impact even when hostile context reaches the model."
+    },
+    {
+      "id": "owasp-mcp-tool-poisoning",
+      "name": "MCP Tool Poisoning",
+      "publisher": "OWASP",
+      "published": "2026",
+      "url": "https://owasp.org/www-community/attacks/MCP_Tool_Poisoning",
+      "coverage": "Tool responses and MCP metadata can carry hidden instructions that exploit trust gaps between connection-time review and runtime context."
+    },
+    {
+      "id": "owasp-agentic-threats",
+      "name": "Agentic AI Threats and Mitigations",
+      "publisher": "OWASP GenAI Security Project",
+      "published": "2025-02-17",
+      "url": "https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/",
+      "coverage": "Agentic systems require threat-model-based controls for autonomy, tool use, delegated authority, and retrieved context."
+    },
+    {
+      "id": "mcp-security-best-practices",
+      "name": "Model Context Protocol Security Best Practices",
+      "publisher": "Model Context Protocol",
+      "published": "2025-06-18",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices",
+      "coverage": "MCP implementations should minimize scope, prevent token passthrough, avoid confused-deputy behavior, and maintain auditability."
+    },
+    {
+      "id": "nist-ai-600-1",
+      "name": "NIST AI RMF Generative AI Profile",
+      "publisher": "NIST",
+      "published": "2024-07-26",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+      "coverage": "Generative AI systems need lifecycle controls for data provenance, monitoring, measurement, third-party risk, and incident response."
+    },
+    {
+      "id": "cisa-ai-data-security-2025",
+      "name": "AI Data Security: Best Practices for Securing Data Used to Train and Operate AI Systems",
+      "publisher": "CISA, NSA, FBI, and international partners",
+      "published": "2025-05-22",
+      "url": "https://www.cisa.gov/resources-tools/resources/ai-data-security-best-practices-securing-data-used-train-operate-ai-systems",
+      "coverage": "AI data integrity, provenance, monitoring, and protection are required across development, testing, deployment, and operation."
+    }
+  ],
+  "decision_contract": {
+    "default_decision": "hold_for_context_review",
+    "decisions": [
+      {
+        "decision": "pass",
+        "meaning": "No injection-like markers were detected in this registered context source."
+      },
+      {
+        "decision": "allow_with_adversarial_examples",
+        "meaning": "Markers were detected only in documented defensive, red-team, or threat-model examples that should remain demoted to evidence."
+      },
+      {
+        "decision": "hold_for_context_review",
+        "meaning": "Markers were detected in normal guidance or policy context and require human review before promotion."
+      },
+      {
+        "decision": "block_until_removed",
+        "meaning": "Critical exfiltration, hidden instruction, or executable-instruction markers were detected outside allowed examples and should not be returned to agents."
+      }
+    ],
+    "required_runtime_behavior": [
+      "Treat every finding as evidence, never as an instruction for the model to follow.",
+      "Attach source path, source hash, line number, rule ID, and disposition to review evidence.",
+      "Block or hold context when actionable critical or high findings appear outside approved adversarial-example roots.",
+      "Keep documented red-team payloads available only with adversarial-example labels and citation metadata."
+    ]
+  },
+  "scanner_rules": [
+    {
+      "id": "direct-instruction-override",
+      "severity": "critical",
+      "risk_family": "prompt_injection",
+      "description": "Detects text that asks an agent to ignore, forget, or disregard higher-priority instructions."
+    },
+    {
+      "id": "secret-exfiltration-request",
+      "severity": "critical",
+      "risk_family": "secret_exposure",
+      "description": "Detects text that combines a transfer verb with secrets, tokens, private keys, environment dumps, or credential targets."
+    },
+    {
+      "id": "approval-bypass-request",
+      "severity": "high",
+      "risk_family": "approval_bypass",
+      "description": "Detects text that asks an agent to skip, bypass, remove, or disable approval, review, CI, policy, or guardrail controls."
+    },
+    {
+      "id": "hidden-html-instruction",
+      "severity": "high",
+      "risk_family": "hidden_instruction",
+      "description": "Detects HTML or markdown patterns commonly used to hide instructions from reviewers while leaving them available to model context."
+    },
+    {
+      "id": "external-callback-instruction",
+      "severity": "high",
+      "risk_family": "tool_result_injection",
+      "description": "Detects text that pairs submit, post, send, upload, or callback language with external URLs."
+    },
+    {
+      "id": "encoded-payload",
+      "severity": "medium",
+      "risk_family": "context_poisoning",
+      "description": "Detects long base64-like payloads that may hide instructions or data from ordinary review."
+    },
+    {
+      "id": "zero-width-control",
+      "severity": "medium",
+      "risk_family": "hidden_instruction",
+      "description": "Detects zero-width or bidirectional control characters that can obscure text in rendered review surfaces."
+    }
+  ],
+  "allowed_adversarial_context_globs": [
+    "content/fundamentals/threat-model/**",
+    "content/security-remediation/agentic-red-team-drills/**",
+    "content/security-remediation/runtime-controls/**",
+    "content/security-remediation/gatekeeping/**",
+    "content/security-remediation/context-poisoning-guard/**",
+    "content/security-remediation/mcp-connector-intake-scanner/**",
+    "content/security-remediation/secure-context-firewall/**",
+    "content/security-remediation/secure-context-trust-pack/**",
+    "content/security-remediation/context-egress-boundary/**",
+    "content/prompt-library/general/agent-session-kill-rules.md",
+    "data/assurance/agentic-red-team-scenario-map.json",
+    "data/assurance/context-egress-boundary-model.json",
+    "data/intelligence/agentic-threat-radar-sources.json",
+    "data/evidence/agentic-threat-radar.json",
+    "data/evidence/context-egress-boundary-pack.json",
+    "data/evidence/agentic-red-team-drill-pack.json",
+    "data/evidence/agentic-system-bom.json",
+    "data/evidence/mcp-connector-intake-pack.json"
+  ],
+  "defensive_language_prefixes": [
+    "do not",
+    "don't",
+    "never",
+    "must not",
+    "cannot",
+    "should not",
+    "no ",
+    "deny",
+    "blocked",
+    "refuse",
+    "reject",
+    "without"
+  ],
+  "enterprise_adoption_packet": {
+    "board_level_claim": "SecurityRecipes inspects the context supply chain before agents consume it.",
+    "default_questions_answered": [
+      "Which registered context roots contain prompt-injection-like payloads?",
+      "Are those payloads documented adversarial examples or actionable poisoning risks?",
+      "Which source, path, line, and hash prove the finding?",
+      "Which sources should hold for human review before MCP retrieval?",
+      "How does the guard map to prompt injection, tool poisoning, data provenance, and approval-bypass guidance?"
+    ],
+    "recommended_first_use": "Run this pack before context-source promotion, MCP server intake, prompt-library publication, and quarterly secure-context recertification.",
+    "sales_motion": "Use the open guard pack as proof of maturity, then sell hosted source monitoring, context signing, poisoning alerts, and customer corpus scans."
+  }
+}

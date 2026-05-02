@@ -1,0 +1,303 @@
+{
+  "schema_version": "1.0",
+  "last_reviewed": "2026-05-02",
+  "intent": "Define the portable proof object SecurityRecipes expects for every governed agentic remediation run: a signed or attestable receipt that joins identity, context retrieval, context poisoning inspection, MCP tool decisions, context egress, human approval, verifier output, evidence retention, and revocation into one enterprise review artifact.",
+  "positioning": {
+    "buyer": "AI Platform, Security Engineering, GRC, IAM, procurement security, vendor-risk, incident response, and acquisition diligence teams",
+    "category": "Agentic AI run assurance and secure-context evidence receipts",
+    "enterprise_promise": "Every trusted agent run can be explained without replaying a transcript: who the agent acted for, which context it used, which tools it called, what was allowed or denied, where context went, which verifier passed, who approved, and when the delegated identity was revoked.",
+    "why_now": "Agentic systems are becoming an autonomous workforce attached to MCP servers, SaaS connectors, repositories, tickets, logs, and model providers. Enterprises need receipts that make autonomous work auditable at runtime speed."
+  },
+  "standards_alignment": [
+    {
+      "id": "owasp-agentic-top-10-2026",
+      "name": "OWASP Top 10 for Agentic Applications 2026",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "coverage": "Run receipts provide concrete evidence for goal hijack, tool misuse, identity and privilege abuse, supply-chain drift, memory and context poisoning, cascading failures, trust exploitation, and rogue-agent containment."
+    },
+    {
+      "id": "mcp-authorization-2025-06-18",
+      "name": "Model Context Protocol Authorization 2025-06-18",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization",
+      "coverage": "Receipts preserve authorization server, resource indicator, token audience, scope, consent, and MCP resource-server decision evidence without exposing raw tokens to the model."
+    },
+    {
+      "id": "mcp-security-best-practices",
+      "name": "Model Context Protocol Security Best Practices",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices",
+      "coverage": "Receipts make confused-deputy checks, token-passthrough denial, SSRF controls, session binding, local-server consent, scope minimization, and audit trails inspectable."
+    },
+    {
+      "id": "cisa-ai-data-security-2025",
+      "name": "CISA AI Data Security Best Practices",
+      "url": "https://www.cisa.gov/resources-tools/resources/ai-data-security-best-practices-securing-data-used-train-operate-ai-systems",
+      "coverage": "Receipts require data provenance, integrity, access control, monitoring, retention, third-party data handling, and incident evidence for AI system data used during operation."
+    },
+    {
+      "id": "cisa-secure-by-design",
+      "name": "CISA Secure by Design",
+      "url": "https://www.cisa.gov/securebydesign",
+      "coverage": "Receipts turn secure defaults, transparency, customer-impact ownership, and measurable security outcomes into a repeatable artifact."
+    },
+    {
+      "id": "nist-ai-rmf-1.0",
+      "name": "NIST AI Risk Management Framework 1.0",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "coverage": "Receipts support governed, mapped, measured, and managed AI risk by binding policy, runtime behavior, evidence, and review ownership."
+    },
+    {
+      "id": "nist-ai-critical-infrastructure-profile-concept-2026",
+      "name": "NIST AI RMF Profile for Trustworthy AI in Critical Infrastructure concept note",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "coverage": "Receipts prepare agentic workflows for critical-infrastructure operators that need concrete, reviewable risk-management practices for AI-enabled capabilities."
+    },
+    {
+      "id": "nist-ai-600-1",
+      "name": "NIST AI RMF Generative AI Profile",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+      "coverage": "Receipts connect generative AI provenance, third-party components, monitoring, measurement, data integrity, and incident-response evidence."
+    }
+  ],
+  "receipt_contract": {
+    "default_state": "untrusted_until_complete",
+    "receipt_id_format": "sr-run-receipt::<workflow_id>::<run_id>",
+    "hash_algorithm": "sha256",
+    "signature_model": "sign receipt envelope with tenant KMS, Sigstore, or equivalent workload attestation after run closure",
+    "minimum_retention_days": 400,
+    "required_runtime_attributes": [
+      "workflow_id",
+      "agent_id",
+      "agent_class",
+      "identity_id",
+      "run_id",
+      "tenant_id",
+      "source_revision",
+      "policy_pack_hash",
+      "context_package_hash",
+      "egress_policy_hash",
+      "receipt_schema_version"
+    ],
+    "required_event_classes": [
+      "identity_issued",
+      "context_retrieval_decision",
+      "context_poisoning_scan",
+      "mcp_tool_decision",
+      "context_egress_decision",
+      "human_approval",
+      "verifier_result",
+      "evidence_attached",
+      "run_closed",
+      "identity_revoked"
+    ],
+    "acceptance_criteria": [
+      "receipt includes all required runtime attributes",
+      "identity_id matches the generated agent identity ledger for workflow_id and agent_class",
+      "context_package_hash matches the secure context trust pack for workflow_id",
+      "egress_policy_hash matches the context egress boundary pack for workflow_id",
+      "every MCP namespace used by the run has a gateway decision event",
+      "all approval-required namespaces have a human_approval event before execution",
+      "all context movement has an egress decision event before leaving the tenant or model boundary",
+      "verifier_result proves the workflow-specific fix or triage condition",
+      "identity_revoked or run_closed records final credential state",
+      "receipt envelope is immutable after closure and can be exported without raw secrets"
+    ],
+    "failure_states": [
+      {
+        "state": "invalid_missing_identity",
+        "meaning": "The run cannot be trusted because the acting identity was not issued from the agent identity ledger."
+      },
+      {
+        "state": "invalid_context_drift",
+        "meaning": "The context package hash or source hash no longer matches the current secure context trust pack."
+      },
+      {
+        "state": "invalid_unlogged_tool_call",
+        "meaning": "The run used a tool namespace without a gateway decision event."
+      },
+      {
+        "state": "invalid_egress_gap",
+        "meaning": "Context left a boundary without an egress decision event."
+      },
+      {
+        "state": "invalid_approval_gap",
+        "meaning": "An approval-required action lacks a matching human approval record."
+      },
+      {
+        "state": "invalid_verifier_gap",
+        "meaning": "No verifier result proves the stated remediation or triage outcome."
+      }
+    ]
+  },
+  "event_classes": [
+    {
+      "id": "identity_issued",
+      "title": "Identity Issued",
+      "minimum_fields": [
+        "identity_id",
+        "agent_id",
+        "agent_class",
+        "workflow_id",
+        "run_id",
+        "issued_at",
+        "expires_at",
+        "delegated_by",
+        "token_audience",
+        "scopes"
+      ],
+      "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+      "control_reason": "Proves the agent acted through a scoped non-human identity instead of a shared human token."
+    },
+    {
+      "id": "context_retrieval_decision",
+      "title": "Context Retrieval Decision",
+      "minimum_fields": [
+        "workflow_id",
+        "run_id",
+        "source_id",
+        "retrieval_mode",
+        "requested_path",
+        "decision",
+        "context_hash",
+        "trust_tier"
+      ],
+      "evidence_source": "secure context firewall decision log",
+      "control_reason": "Proves retrieved context was registered, owned, hash-bound, and cited."
+    },
+    {
+      "id": "context_poisoning_scan",
+      "title": "Context Poisoning Scan",
+      "minimum_fields": [
+        "source_id",
+        "run_id",
+        "decision",
+        "rule_ids",
+        "actionable_finding_count",
+        "source_hash"
+      ],
+      "evidence_source": "context poisoning guard pack or runtime scan log",
+      "control_reason": "Proves prompt-like or hidden instructions in retrieved content were handled as untrusted data."
+    },
+    {
+      "id": "mcp_tool_decision",
+      "title": "MCP Tool Decision",
+      "minimum_fields": [
+        "workflow_id",
+        "agent_id",
+        "run_id",
+        "tool_namespace",
+        "tool_access_mode",
+        "gate_phase",
+        "decision",
+        "policy_hash",
+        "correlation_id"
+      ],
+      "evidence_source": "MCP gateway policy decision log",
+      "control_reason": "Proves every tool call passed through default-deny policy before execution."
+    },
+    {
+      "id": "context_egress_decision",
+      "title": "Context Egress Decision",
+      "minimum_fields": [
+        "workflow_id",
+        "run_id",
+        "source_id",
+        "data_class",
+        "destination_class",
+        "decision",
+        "egress_policy_hash",
+        "tenant_id"
+      ],
+      "evidence_source": "context egress boundary decision log",
+      "control_reason": "Proves model-provider, MCP-server, telemetry, public-corpus, and external-webhook movement was classified and gated."
+    },
+    {
+      "id": "human_approval",
+      "title": "Human Approval",
+      "minimum_fields": [
+        "workflow_id",
+        "run_id",
+        "approval_id",
+        "approver",
+        "reviewer_pool",
+        "approved_scope",
+        "approved_at",
+        "change_reference"
+      ],
+      "evidence_source": "source host review events, change-management record, or MCP elicitation log",
+      "control_reason": "Proves approval-required actions were explicitly authorized before execution or merge."
+    },
+    {
+      "id": "verifier_result",
+      "title": "Verifier Result",
+      "minimum_fields": [
+        "workflow_id",
+        "run_id",
+        "verifier_id",
+        "verifier_type",
+        "result",
+        "artifact_uri",
+        "completed_at"
+      ],
+      "evidence_source": "CI, scanner, simulation, resolver, or policy verifier artifact",
+      "control_reason": "Proves the run achieved the intended risk-reduction or triage outcome."
+    },
+    {
+      "id": "evidence_attached",
+      "title": "Evidence Attached",
+      "minimum_fields": [
+        "workflow_id",
+        "run_id",
+        "evidence_id",
+        "evidence_owner",
+        "retention",
+        "artifact_uri",
+        "artifact_hash"
+      ],
+      "evidence_source": "evidence store, source host, scanner, CI, ticket, or MCP gateway",
+      "control_reason": "Proves required evidence exists and is retained for audit or incident response."
+    },
+    {
+      "id": "run_closed",
+      "title": "Run Closed",
+      "minimum_fields": [
+        "workflow_id",
+        "run_id",
+        "final_state",
+        "closed_at",
+        "output_reference",
+        "receipt_hash"
+      ],
+      "evidence_source": "orchestrator run record",
+      "control_reason": "Proves the run reached a terminal state and the receipt envelope was sealed."
+    },
+    {
+      "id": "identity_revoked",
+      "title": "Identity Revoked",
+      "minimum_fields": [
+        "identity_id",
+        "workflow_id",
+        "run_id",
+        "revoked_at",
+        "revocation_reason",
+        "revocation_status"
+      ],
+      "evidence_source": "IAM, workload identity provider, MCP gateway, or orchestrator audit log",
+      "control_reason": "Proves short-lived credentials ended with the run or kill signal."
+    }
+  ],
+  "enterprise_adoption_packet": {
+    "board_level_claim": "SecurityRecipes can turn autonomous agent work into a portable receipt that is easier to audit than a human Slack thread.",
+    "default_questions_answered": [
+      "Who did the agent act for?",
+      "Which context package and source hashes were used?",
+      "Which MCP tools were allowed, held, denied, or killed?",
+      "Where did context leave the boundary?",
+      "Which human approved approval-required actions?",
+      "Which verifier proved the outcome?",
+      "Which evidence is retained and for how long?",
+      "Was the delegated identity revoked?"
+    ],
+    "recommended_first_use": "Attach receipt templates to AI platform intake, agent-production readiness reviews, SOC 2 control evidence, security incident review, and MCP server approval.",
+    "sales_motion": "Lead with open receipt schemas, then sell hosted receipt signing, cross-tool log ingestion, SIEM export, trust-center evidence bundles, and buyer diligence workspaces."
+  }
+}

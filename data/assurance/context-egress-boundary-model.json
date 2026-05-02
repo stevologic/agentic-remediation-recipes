@@ -1,0 +1,684 @@
+{
+  "schema_version": "1.0",
+  "last_reviewed": "2026-05-02",
+  "intent": "Define the SecurityRecipes context egress boundary for agentic AI and MCP systems: every data class, destination class, workflow namespace, source trust tier, redaction requirement, residency constraint, and secret-egress kill rule is expressed as machine-readable policy before context leaves a tenant, model, MCP server, or observability boundary.",
+  "positioning": {
+    "buyer": "AI Platform, Security Engineering, Product Security, Privacy Engineering, GRC, procurement security, vendor-risk, and acquisition diligence teams",
+    "category": "Secure context egress, residency, and data-boundary control for agentic AI",
+    "enterprise_promise": "SecurityRecipes can prove not only which context an agent may retrieve, but also where that context may go, which controls must hold before egress, and which attempts must stop the session.",
+    "why_now": "Agentic AI adoption is moving sensitive tickets, code, logs, tool outputs, and MCP connector results into model and tool contexts. Enterprise buyers need a deterministic data-boundary contract that maps public guidance, generated evidence, customer runtime data, secrets, residency, retention, and third-party MCP destinations."
+  },
+  "standards_alignment": [
+    {
+      "id": "openai-tools-remote-mcp-2026",
+      "name": "OpenAI Connectors and MCP servers",
+      "publisher": "OpenAI API",
+      "published": "2026",
+      "url": "https://platform.openai.com/docs/guides/tools-remote-mcp",
+      "coverage": "Remote MCP servers and connectors can receive sensitive data, are third-party services, and must be reviewed for trust, data retention, data residency, and prompt-injection risk."
+    },
+    {
+      "id": "openai-agent-builder-safety-2026",
+      "name": "Safety in building agents",
+      "publisher": "OpenAI API",
+      "published": "2026",
+      "url": "https://platform.openai.com/docs/guides/agent-builder-safety",
+      "coverage": "Agent workflows should use structured outputs, tool approvals, guardrails, trace graders, and careful MCP tool calling to limit prompt injection and unintended behavior."
+    },
+    {
+      "id": "mcp-authorization-2025-11-25",
+      "name": "Model Context Protocol Authorization Specification",
+      "publisher": "Model Context Protocol",
+      "published": "2025-11-25",
+      "url": "https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization",
+      "coverage": "MCP clients and servers must use resource indicators, audience-bound tokens, HTTPS, PKCE, token validation, and no token passthrough."
+    },
+    {
+      "id": "mcp-security-best-practices-2025",
+      "name": "Model Context Protocol Security Best Practices",
+      "publisher": "Model Context Protocol",
+      "published": "2025-06-18",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices",
+      "coverage": "MCP implementations should avoid confused deputy behavior, token passthrough, SSRF, broad scopes, unsafe sessions, and unaudited local server exposure."
+    },
+    {
+      "id": "owasp-mcp-top-10-2025",
+      "name": "OWASP Top 10 for Model Context Protocol",
+      "publisher": "OWASP Foundation",
+      "published": "2025",
+      "url": "https://owasp.org/www-project-mcp-top-10/",
+      "coverage": "MCP-specific risks include token mismanagement, scope creep, tool poisoning, command execution, weak auth, missing telemetry, shadow servers, and context injection or over-sharing."
+    },
+    {
+      "id": "owasp-llm-top-10-2025",
+      "name": "OWASP Top 10 for LLM Applications 2025",
+      "publisher": "OWASP GenAI Security Project",
+      "published": "2025",
+      "url": "https://genai.owasp.org/llm-top-10/",
+      "coverage": "Relevant risks include sensitive information disclosure, prompt injection, excessive agency, insecure plugin design, supply chain vulnerabilities, and overreliance."
+    },
+    {
+      "id": "cisa-ai-data-security-2025",
+      "name": "AI Data Security: Best Practices for Securing Data Used to Train and Operate AI Systems",
+      "publisher": "CISA, NSA, FBI, and international partners",
+      "published": "2025-05-22",
+      "url": "https://www.cisa.gov/resources-tools/resources/ai-data-security-best-practices-securing-data-used-train-operate-ai-systems",
+      "coverage": "AI data security requires integrity, confidentiality, monitoring, threat detection, and network defense across development, testing, deployment, and operation."
+    },
+    {
+      "id": "nist-ai-600-1",
+      "name": "NIST AI RMF Generative AI Profile",
+      "publisher": "NIST",
+      "published": "2024-07-26",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+      "coverage": "Generative AI risk management includes data provenance, third-party risk, measurement, monitoring, and incident-response controls."
+    }
+  ],
+  "decision_contract": {
+    "default_decision": "deny_unclassified_egress",
+    "runtime_attributes": [
+      "workflow_id",
+      "source_id",
+      "mcp_namespace",
+      "data_class",
+      "destination_class",
+      "tenant_id",
+      "destination_trust_tier",
+      "contains_secret",
+      "contains_unredacted_pii",
+      "dpa_in_place",
+      "zero_data_retention",
+      "residency_region",
+      "required_region",
+      "human_approval_record",
+      "egress_path"
+    ],
+    "decisions": [
+      {
+        "decision": "allow_public_egress_with_citation",
+        "meaning": "Public or open SecurityRecipes context may leave the repo context layer when source ID, path, hash, and citation metadata are preserved."
+      },
+      {
+        "decision": "allow_tenant_bound_egress",
+        "meaning": "Tenant-sensitive context may leave one component only inside an approved tenant boundary with redaction, audit, retention, and residency controls satisfied."
+      },
+      {
+        "decision": "hold_for_redaction_or_dpa",
+        "meaning": "The request is plausible, but missing redaction, tenant ID, human approval, data-processing, zero-data-retention, or residency evidence."
+      },
+      {
+        "decision": "deny_unapproved_workflow_egress",
+        "meaning": "The workflow or MCP namespace is not approved for this context egress path."
+      },
+      {
+        "decision": "deny_untrusted_destination",
+        "meaning": "The destination is unknown, untrusted, disallowed for the data class, or not covered by required connector/provider controls."
+      },
+      {
+        "decision": "deny_unclassified_egress",
+        "meaning": "The data class or source is missing, unknown, or not mapped to a reviewed egress policy."
+      },
+      {
+        "decision": "kill_session_on_secret_egress",
+        "meaning": "Secrets, live tokens, private keys, signing material, seed phrases, or prohibited sensitive context attempted to leave the boundary."
+      }
+    ],
+    "global_rules": [
+      "Default-deny all context egress until the data class, destination class, workflow, and namespace are known.",
+      "Public SecurityRecipes content may leave with citation and source-hash metadata; tenant runtime context may not be embedded in the open corpus.",
+      "Customer source code, tickets, findings, logs, and pipeline evidence remain tenant-bound unless redaction, DPA, retention, and residency controls are satisfied.",
+      "Remote MCP servers and model providers are treated as external processors unless explicitly approved for the tenant and data class.",
+      "Secrets, private keys, signing material, seed phrases, and raw access tokens trigger kill-session behavior."
+    ],
+    "prohibited_data_classes": [
+      "secret_or_token",
+      "signing_material",
+      "seed_phrase_or_private_key",
+      "raw_access_token",
+      "production_credential"
+    ]
+  },
+  "destination_classes": [
+    {
+      "id": "securityrecipes_public_corpus",
+      "title": "SecurityRecipes Public Corpus",
+      "category": "public_repository",
+      "trusted": true,
+      "external_processor": false,
+      "requires_dpa": false,
+      "requires_zero_data_retention": false,
+      "requires_residency_match": false,
+      "required_controls": [
+        "source_review",
+        "no_customer_runtime_data",
+        "source_hash_recorded"
+      ]
+    },
+    {
+      "id": "tenant_mcp_gateway",
+      "title": "Tenant MCP Gateway",
+      "category": "tenant_boundary",
+      "trusted": true,
+      "external_processor": false,
+      "requires_dpa": false,
+      "requires_zero_data_retention": false,
+      "requires_residency_match": true,
+      "required_controls": [
+        "tenant_isolation",
+        "audit_logging",
+        "redaction_before_external_hop",
+        "runtime_policy_decision"
+      ]
+    },
+    {
+      "id": "approved_model_provider",
+      "title": "Approved Model Provider",
+      "category": "external_processor",
+      "trusted": true,
+      "external_processor": true,
+      "requires_dpa": true,
+      "requires_zero_data_retention": true,
+      "requires_residency_match": true,
+      "required_controls": [
+        "vendor_security_review",
+        "no_training_use",
+        "data_processing_terms",
+        "retention_declared",
+        "region_pinned_project"
+      ]
+    },
+    {
+      "id": "approved_remote_mcp_server",
+      "title": "Approved Remote MCP Server",
+      "category": "third_party_mcp",
+      "trusted": true,
+      "external_processor": true,
+      "requires_dpa": true,
+      "requires_zero_data_retention": false,
+      "requires_residency_match": true,
+      "required_controls": [
+        "connector_trust_tier_approved",
+        "oauth_resource_indicators",
+        "token_audience_validation",
+        "no_token_passthrough",
+        "schema_pinned",
+        "tool_result_inspection"
+      ]
+    },
+    {
+      "id": "observability_sink",
+      "title": "Approved Observability Sink",
+      "category": "telemetry",
+      "trusted": true,
+      "external_processor": true,
+      "requires_dpa": true,
+      "requires_zero_data_retention": false,
+      "requires_residency_match": true,
+      "required_controls": [
+        "redaction",
+        "field_allowlist",
+        "retention_declared",
+        "access_review"
+      ]
+    },
+    {
+      "id": "untrusted_remote_mcp_server",
+      "title": "Untrusted Remote MCP Server",
+      "category": "untrusted_third_party",
+      "trusted": false,
+      "external_processor": true,
+      "requires_dpa": true,
+      "requires_zero_data_retention": true,
+      "requires_residency_match": true,
+      "required_controls": [
+        "deny_by_default"
+      ]
+    },
+    {
+      "id": "external_url_or_webhook",
+      "title": "External URL or Webhook",
+      "category": "untrusted_egress",
+      "trusted": false,
+      "external_processor": true,
+      "requires_dpa": true,
+      "requires_zero_data_retention": true,
+      "requires_residency_match": true,
+      "required_controls": [
+        "deny_by_default",
+        "incident_evidence_on_sensitive_payload"
+      ]
+    }
+  ],
+  "data_class_policies": [
+    {
+      "id": "public_reference",
+      "title": "Public Reference",
+      "sensitivity": "public",
+      "default_decision": "allow_public_egress_with_citation",
+      "allowed_destination_classes": [
+        "securityrecipes_public_corpus",
+        "tenant_mcp_gateway",
+        "approved_model_provider"
+      ],
+      "hold_destination_classes": [
+        "approved_remote_mcp_server",
+        "observability_sink"
+      ],
+      "prohibited_destination_classes": [
+        "untrusted_remote_mcp_server",
+        "external_url_or_webhook"
+      ],
+      "required_controls": [
+        "citation_required",
+        "source_hash_required"
+      ],
+      "tenant_id_required": false,
+      "human_approval_required": false,
+      "redaction_required_before_external": false
+    },
+    {
+      "id": "curated_security_guidance",
+      "title": "Curated Security Guidance",
+      "sensitivity": "public",
+      "default_decision": "allow_public_egress_with_citation",
+      "allowed_destination_classes": [
+        "securityrecipes_public_corpus",
+        "tenant_mcp_gateway",
+        "approved_model_provider"
+      ],
+      "hold_destination_classes": [
+        "approved_remote_mcp_server",
+        "observability_sink"
+      ],
+      "prohibited_destination_classes": [
+        "untrusted_remote_mcp_server",
+        "external_url_or_webhook"
+      ],
+      "required_controls": [
+        "citation_required",
+        "source_hash_required",
+        "instruction_demoted"
+      ],
+      "tenant_id_required": false,
+      "human_approval_required": false,
+      "redaction_required_before_external": false
+    },
+    {
+      "id": "generated_policy_evidence",
+      "title": "Generated Policy Evidence",
+      "sensitivity": "public_control_evidence",
+      "default_decision": "allow_public_egress_with_citation",
+      "allowed_destination_classes": [
+        "securityrecipes_public_corpus",
+        "tenant_mcp_gateway",
+        "approved_model_provider"
+      ],
+      "hold_destination_classes": [
+        "approved_remote_mcp_server",
+        "observability_sink"
+      ],
+      "prohibited_destination_classes": [
+        "untrusted_remote_mcp_server",
+        "external_url_or_webhook"
+      ],
+      "required_controls": [
+        "source_hash_required",
+        "schema_validation",
+        "ci_drift_check"
+      ],
+      "tenant_id_required": false,
+      "human_approval_required": false,
+      "redaction_required_before_external": false
+    },
+    {
+      "id": "public_vulnerability_intelligence",
+      "title": "Public Vulnerability Intelligence",
+      "sensitivity": "public",
+      "default_decision": "allow_public_egress_with_citation",
+      "allowed_destination_classes": [
+        "tenant_mcp_gateway",
+        "approved_model_provider",
+        "approved_remote_mcp_server"
+      ],
+      "hold_destination_classes": [
+        "observability_sink"
+      ],
+      "prohibited_destination_classes": [
+        "untrusted_remote_mcp_server",
+        "external_url_or_webhook"
+      ],
+      "required_controls": [
+        "source_named",
+        "citation_required"
+      ],
+      "tenant_id_required": false,
+      "human_approval_required": false,
+      "redaction_required_before_external": false
+    },
+    {
+      "id": "customer_asset_metadata",
+      "title": "Customer Asset Metadata",
+      "sensitivity": "tenant_sensitive",
+      "default_decision": "allow_tenant_bound_egress",
+      "allowed_destination_classes": [
+        "tenant_mcp_gateway"
+      ],
+      "hold_destination_classes": [
+        "approved_model_provider",
+        "approved_remote_mcp_server",
+        "observability_sink"
+      ],
+      "prohibited_destination_classes": [
+        "securityrecipes_public_corpus",
+        "untrusted_remote_mcp_server",
+        "external_url_or_webhook"
+      ],
+      "required_controls": [
+        "tenant_id",
+        "least_privilege_scope",
+        "audit_logging",
+        "retention_declared"
+      ],
+      "tenant_id_required": true,
+      "human_approval_required": false,
+      "redaction_required_before_external": true
+    },
+    {
+      "id": "customer_source_code",
+      "title": "Customer Source Code",
+      "sensitivity": "tenant_restricted",
+      "default_decision": "allow_tenant_bound_egress",
+      "allowed_destination_classes": [
+        "tenant_mcp_gateway"
+      ],
+      "hold_destination_classes": [
+        "approved_model_provider"
+      ],
+      "prohibited_destination_classes": [
+        "securityrecipes_public_corpus",
+        "approved_remote_mcp_server",
+        "observability_sink",
+        "untrusted_remote_mcp_server",
+        "external_url_or_webhook"
+      ],
+      "required_controls": [
+        "tenant_id",
+        "repo_scope_allowlist",
+        "audit_logging",
+        "no_public_export"
+      ],
+      "tenant_id_required": true,
+      "human_approval_required": true,
+      "redaction_required_before_external": true
+    },
+    {
+      "id": "customer_finding_metadata",
+      "title": "Customer Finding Metadata",
+      "sensitivity": "tenant_sensitive",
+      "default_decision": "allow_tenant_bound_egress",
+      "allowed_destination_classes": [
+        "tenant_mcp_gateway"
+      ],
+      "hold_destination_classes": [
+        "approved_model_provider",
+        "approved_remote_mcp_server",
+        "observability_sink"
+      ],
+      "prohibited_destination_classes": [
+        "securityrecipes_public_corpus",
+        "untrusted_remote_mcp_server",
+        "external_url_or_webhook"
+      ],
+      "required_controls": [
+        "tenant_id",
+        "redaction",
+        "field_allowlist",
+        "audit_logging"
+      ],
+      "tenant_id_required": true,
+      "human_approval_required": false,
+      "redaction_required_before_external": true
+    },
+    {
+      "id": "customer_pipeline_metadata",
+      "title": "Customer Pipeline Metadata",
+      "sensitivity": "tenant_sensitive",
+      "default_decision": "allow_tenant_bound_egress",
+      "allowed_destination_classes": [
+        "tenant_mcp_gateway"
+      ],
+      "hold_destination_classes": [
+        "approved_model_provider",
+        "observability_sink"
+      ],
+      "prohibited_destination_classes": [
+        "securityrecipes_public_corpus",
+        "approved_remote_mcp_server",
+        "untrusted_remote_mcp_server",
+        "external_url_or_webhook"
+      ],
+      "required_controls": [
+        "tenant_id",
+        "field_allowlist",
+        "audit_logging",
+        "retention_declared"
+      ],
+      "tenant_id_required": true,
+      "human_approval_required": false,
+      "redaction_required_before_external": true
+    },
+    {
+      "id": "customer_case_context",
+      "title": "Customer Case Context",
+      "sensitivity": "tenant_sensitive",
+      "default_decision": "allow_tenant_bound_egress",
+      "allowed_destination_classes": [
+        "tenant_mcp_gateway"
+      ],
+      "hold_destination_classes": [
+        "approved_model_provider",
+        "approved_remote_mcp_server",
+        "observability_sink"
+      ],
+      "prohibited_destination_classes": [
+        "securityrecipes_public_corpus",
+        "untrusted_remote_mcp_server",
+        "external_url_or_webhook"
+      ],
+      "required_controls": [
+        "tenant_id",
+        "redaction",
+        "audit_logging",
+        "retention_declared"
+      ],
+      "tenant_id_required": true,
+      "human_approval_required": true,
+      "redaction_required_before_external": true
+    },
+    {
+      "id": "customer_runtime_log",
+      "title": "Customer Runtime Log",
+      "sensitivity": "tenant_restricted",
+      "default_decision": "hold_for_redaction_or_dpa",
+      "allowed_destination_classes": [
+        "tenant_mcp_gateway"
+      ],
+      "hold_destination_classes": [
+        "approved_model_provider",
+        "observability_sink"
+      ],
+      "prohibited_destination_classes": [
+        "securityrecipes_public_corpus",
+        "approved_remote_mcp_server",
+        "untrusted_remote_mcp_server",
+        "external_url_or_webhook"
+      ],
+      "required_controls": [
+        "tenant_id",
+        "redaction",
+        "field_allowlist",
+        "retention_declared",
+        "human_review_on_sensitive_fields"
+      ],
+      "tenant_id_required": true,
+      "human_approval_required": true,
+      "redaction_required_before_external": true
+    },
+    {
+      "id": "regulated_personal_data",
+      "title": "Regulated Personal Data",
+      "sensitivity": "regulated",
+      "default_decision": "hold_for_redaction_or_dpa",
+      "allowed_destination_classes": [
+        "tenant_mcp_gateway"
+      ],
+      "hold_destination_classes": [
+        "approved_model_provider",
+        "observability_sink"
+      ],
+      "prohibited_destination_classes": [
+        "securityrecipes_public_corpus",
+        "approved_remote_mcp_server",
+        "untrusted_remote_mcp_server",
+        "external_url_or_webhook"
+      ],
+      "required_controls": [
+        "tenant_id",
+        "minimization",
+        "redaction",
+        "privacy_review",
+        "retention_declared"
+      ],
+      "tenant_id_required": true,
+      "human_approval_required": true,
+      "redaction_required_before_external": true
+    },
+    {
+      "id": "secret_or_token",
+      "title": "Secret or Token",
+      "sensitivity": "prohibited",
+      "default_decision": "kill_session_on_secret_egress",
+      "allowed_destination_classes": [],
+      "hold_destination_classes": [],
+      "prohibited_destination_classes": [
+        "securityrecipes_public_corpus",
+        "tenant_mcp_gateway",
+        "approved_model_provider",
+        "approved_remote_mcp_server",
+        "observability_sink",
+        "untrusted_remote_mcp_server",
+        "external_url_or_webhook"
+      ],
+      "required_controls": [
+        "deny_egress",
+        "kill_session",
+        "incident_evidence"
+      ],
+      "tenant_id_required": false,
+      "human_approval_required": false,
+      "redaction_required_before_external": true
+    },
+    {
+      "id": "signing_material",
+      "title": "Signing Material",
+      "sensitivity": "prohibited",
+      "default_decision": "kill_session_on_secret_egress",
+      "allowed_destination_classes": [],
+      "hold_destination_classes": [],
+      "prohibited_destination_classes": [
+        "securityrecipes_public_corpus",
+        "tenant_mcp_gateway",
+        "approved_model_provider",
+        "approved_remote_mcp_server",
+        "observability_sink",
+        "untrusted_remote_mcp_server",
+        "external_url_or_webhook"
+      ],
+      "required_controls": [
+        "deny_egress",
+        "kill_session",
+        "incident_evidence"
+      ],
+      "tenant_id_required": false,
+      "human_approval_required": false,
+      "redaction_required_before_external": true
+    }
+  ],
+  "source_trust_tier_data_class_map": {
+    "tier_0_public_reference": "public_reference",
+    "tier_1_curated_guidance": "curated_security_guidance",
+    "tier_2_policy_context": "generated_policy_evidence",
+    "tier_3_customer_runtime_context": "customer_runtime_log",
+    "tier_4_prohibited_context": "secret_or_token"
+  },
+  "namespace_data_class_map": [
+    {
+      "pattern": "advisories.*",
+      "data_class": "public_vulnerability_intelligence"
+    },
+    {
+      "pattern": "recipes.*",
+      "data_class": "curated_security_guidance"
+    },
+    {
+      "pattern": "sbom.*",
+      "data_class": "customer_asset_metadata"
+    },
+    {
+      "pattern": "repo.contents",
+      "data_class": "customer_source_code"
+    },
+    {
+      "pattern": "ci.*",
+      "data_class": "customer_pipeline_metadata"
+    },
+    {
+      "pattern": "tickets.*",
+      "data_class": "customer_case_context"
+    },
+    {
+      "pattern": "findings.*",
+      "data_class": "customer_finding_metadata"
+    },
+    {
+      "pattern": "inventory.*",
+      "data_class": "customer_asset_metadata"
+    },
+    {
+      "pattern": "registries.*",
+      "data_class": "customer_asset_metadata"
+    },
+    {
+      "pattern": "incidents.*",
+      "data_class": "customer_case_context"
+    },
+    {
+      "pattern": "images.*",
+      "data_class": "customer_asset_metadata"
+    },
+    {
+      "pattern": "payments.*",
+      "data_class": "customer_finding_metadata"
+    },
+    {
+      "pattern": "protocol.*",
+      "data_class": "customer_finding_metadata"
+    },
+    {
+      "pattern": "chain.*",
+      "data_class": "customer_asset_metadata"
+    }
+  ],
+  "enterprise_adoption_packet": {
+    "board_level_claim": "SecurityRecipes governs not only context retrieval, but context egress across model, MCP, tenant, telemetry, and third-party boundaries.",
+    "default_questions_answered": [
+      "Which data classes can leave a tenant-controlled MCP gateway?",
+      "Which model providers, remote MCP servers, telemetry sinks, or public corpus destinations are allowed?",
+      "Which requests hold for redaction, DPA, zero-data-retention, residency, or human approval evidence?",
+      "Which context egress attempts should deny by default?",
+      "Which secret or signing-material attempts kill the agent session?"
+    ],
+    "recommended_first_use": "Attach this pack to AI platform intake, remote MCP approval, model-provider review, privacy review, and customer trust-center evidence.",
+    "sales_motion": "Lead with open data-boundary evidence, then sell tenant-side egress enforcement, provider policy adapters, residency alerts, DLP integrations, and trust-center exports."
+  }
+}

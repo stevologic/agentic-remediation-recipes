@@ -93,15 +93,33 @@ and ships with:
   workflows, agent classes, identities, MCP connectors, policy
   components, evidence artifacts, knowledge sources, eval drills, and
   drift triggers.
+- **Agentic Run Receipts** - generated proof templates for every governed
+  agent run: identity issuance, secure-context retrieval, poisoning scan,
+  MCP tool decisions, context egress, human approvals, verifier output,
+  evidence retention, run closure, and identity revocation.
 - **Secure Context Trust Pack** - generated provenance, source-hash,
   trust-tier, retrieval-policy, and workflow context-package evidence for
   the secure context layer agents consume through MCP.
+- **Context Poisoning Guard** - generated pre-retrieval scan evidence for
+  prompt-injection, tool-poisoning, approval-bypass, hidden-instruction,
+  encoded-payload, and exfiltration markers across registered context
+  roots.
 - **Secure Context Firewall** - deterministic allow, hold, deny, and
   kill-session decisions before MCP-backed context is returned to an
   agent.
+- **Context Egress Boundary** - generated data-class, destination-class,
+  tenant-boundary, DPA, zero-data-retention, residency, and secret-egress
+  decisions before retrieved context leaves a model, MCP, telemetry,
+  public-corpus, or tenant boundary.
 - **Agentic Threat Radar** - generated source-backed threat signals,
   buyer triggers, mapped controls, and product roadmap priorities for
   agentic AI and MCP security.
+- **MCP Connector Intake Scanner** - generated admission decisions,
+  control gaps, registry patch previews, and red-team drills for new or
+  changed MCP servers before connector promotion.
+- **MCP Authorization Conformance** - generated resource, audience,
+  PKCE, token-passthrough, session-binding, and scope-drift decisions
+  before MCP tool calls execute.
 - **Automation, not agentic** — what deterministic tooling still does
   best, and where agents should *not* replace it.
 - **Contribute** — fork-and-PR guide for adding recipes, prompts, or
@@ -320,6 +338,25 @@ and is exposed through the MCP server as `recipes_agentic_system_bom`.
 
 ---
 
+### Generate the agentic run receipt pack
+
+The run receipt pack joins the workflow manifest, MCP gateway policy,
+agent identity ledger, secure context trust pack, context poisoning
+guard, context egress boundary, readiness scorecard, red-team drills,
+Agentic System BOM, and assurance pack into a proof template for each
+governed agent run:
+
+```bash
+python3 scripts/generate_agentic_run_receipt_pack.py
+python3 scripts/generate_agentic_run_receipt_pack.py --check
+```
+
+The generated artifact lives at
+`data/evidence/agentic-run-receipt-pack.json` and is exposed through the
+MCP server as `recipes_agentic_run_receipt_pack`.
+
+---
+
 ### Generate the secure context trust pack
 
 The secure context trust pack turns SecurityRecipes context roots into a
@@ -339,6 +376,25 @@ even when a local commit forgets to regenerate the JSON first.
 The generated artifact lives at
 `data/evidence/secure-context-trust-pack.json` and is exposed through
 the MCP server as `recipes_secure_context_trust_pack`.
+
+---
+
+### Generate the context poisoning guard pack
+
+The context poisoning guard pack scans every registered secure-context
+source before it is treated as MCP-retrievable context. It detects
+prompt-injection, tool-poisoning, approval-bypass, hidden-instruction,
+encoded-payload, and secret-exfiltration markers and classifies them as
+pass, documented adversarial examples, review holds, or blocks.
+
+```bash
+python3 scripts/generate_context_poisoning_guard_pack.py
+python3 scripts/generate_context_poisoning_guard_pack.py --check
+```
+
+The generated artifact lives at
+`data/evidence/context-poisoning-guard-pack.json` and is exposed through
+the MCP server as `recipes_context_poisoning_guard_pack`.
 
 ---
 
@@ -395,6 +451,41 @@ python3 scripts/generate_mcp_connector_trust_pack.py --check
 The generated artifact lives at
 `data/evidence/mcp-connector-trust-pack.json` and is exposed through the
 MCP server as `recipes_mcp_connector_trust_pack`.
+
+---
+
+### Generate the MCP connector intake pack
+
+The connector intake pack evaluates proposed or changed MCP servers
+before they are promoted into the connector trust registry:
+
+```bash
+python3 scripts/generate_mcp_connector_intake_pack.py
+python3 scripts/generate_mcp_connector_intake_pack.py --check
+```
+
+The generated artifact lives at
+`data/evidence/mcp-connector-intake-pack.json` and is exposed through
+the MCP server as `recipes_mcp_connector_intake_pack`.
+
+---
+
+### Generate the MCP authorization conformance pack
+
+The authorization conformance pack joins connector trust, connector
+intake, workflow policy, and MCP authorization rules into a
+machine-readable resource, audience, token, session, and scope-drift
+control layer:
+
+```bash
+python3 scripts/generate_mcp_authorization_conformance_pack.py
+python3 scripts/generate_mcp_authorization_conformance_pack.py --check
+```
+
+The generated artifact lives at
+`data/evidence/mcp-authorization-conformance-pack.json` and is exposed
+through the MCP server as `recipes_mcp_authorization_conformance_pack`.
+Runtime decisions are exposed as `recipes_evaluate_mcp_authorization_decision`.
 
 ---
 
@@ -496,7 +587,7 @@ the top nav's **Contribute** link points at) and `LICENSE`.
 | **Agents** | Per-tool recipes for GitHub Copilot, Claude, Cursor, Codex, Devin — each with Install → Configure → Dispatch → Guardrails, plus General and Enterprise onboarding. |
 | **Prompt Library** | Tool-agnostic prompts under `general/` (OWASP Top 10 2026 audit, OWASP Top 10 2026 remediate) plus per-tool prompts for CVE triage, vulnerable deps, and SDE remediation. |
 | **MCP Servers** | Why MCP exists; connector catalog (risk, ownership, ticket, knowledge, code, observability); MCP gateway patterns; integration on-ramp. |
-| **Security Remediation** | Reference workflows a security team can operate: SDE, vulnerable dependencies, SAST, base images, artifact quarantine, classic vulnerable defaults, crypto payments, and DeFi / blockchain security. Includes the agentic threat radar, workflow control plane, MCP gateway policy pack, runtime decision evaluator, MCP connector trust registry, secure context trust pack, secure context firewall, agentic assurance pack, readiness scorecard, red-team drill pack, agent identity ledger, Agentic System BOM, program metrics, reviewer playbook, rollout maturity model, and compliance mapping. |
+| **Security Remediation** | Reference workflows a security team can operate: SDE, vulnerable dependencies, SAST, base images, artifact quarantine, classic vulnerable defaults, crypto payments, and DeFi / blockchain security. Includes the agentic threat radar, workflow control plane, MCP gateway policy pack, runtime decision evaluator, MCP connector intake scanner, MCP connector trust registry, secure context trust pack, context poisoning guard, secure context firewall, agentic assurance pack, readiness scorecard, red-team drill pack, agent identity ledger, Agentic System BOM, agentic run receipts, program metrics, reviewer playbook, rollout maturity model, and compliance mapping. |
 | **Automation** | The "just use a linter" checklist — deterministic automation that earns its keep before an agent ever runs. |
 | **Contribute** | How to add a recipe, a prompt, or a new workflow. |
 
@@ -530,7 +621,9 @@ The project ships with a GitHub Actions workflow
 
 1. Installs Hugo (extended) + Go.
 2. Fetches the Hextra theme via Hugo Modules.
-3. Refreshes and validates the generated secure context trust pack.
+3. Validates generated governance packs, refreshes and validates the
+   secure context trust pack, then refreshes and validates agentic run
+   receipts against the current control artifacts.
 4. Runs `hugo --gc --minify` from the repository root with
    `HUGO_PARAMS_REPOURL` wired to the hosting repo.
 5. Verifies `public/recipes-index.json` is generated at the root build
@@ -619,6 +712,36 @@ owner, status, trust tier, access mode, controls, evidence records,
 promotion criteria, and runtime kill signals. CI runs the generator in
 `--check` mode so connector trust cannot drift from workflow policy.
 
+### MCP connector intake pack
+
+Proposed and changed MCP servers compile into a pre-promotion intake
+pack:
+
+- candidate registry: `data/mcp/connector-intake-candidates.json`
+- generator: `scripts/generate_mcp_connector_intake_pack.py`
+- pack: `data/evidence/mcp-connector-intake-pack.json`
+- MCP tool: `recipes_mcp_connector_intake_pack`
+
+The generated pack scores auth, token, network, schema, data, write,
+approval, and evidence risk. It returns an admission decision, control
+gaps, registry patch preview, promotion plan, and red-team drills before
+a connector can move into the production trust registry.
+
+### MCP authorization conformance pack
+
+MCP authorization profiles compile into a pre-call conformance pack:
+
+- profile: `data/assurance/mcp-authorization-conformance-profile.json`
+- generator: `scripts/generate_mcp_authorization_conformance_pack.py`
+- runtime evaluator: `scripts/evaluate_mcp_authorization_decision.py`
+- pack: `data/evidence/mcp-authorization-conformance-pack.json`
+- MCP tools: `recipes_mcp_authorization_conformance_pack`,
+  `recipes_evaluate_mcp_authorization_decision`
+
+The generated pack checks resource indicators, token audience, PKCE,
+token-passthrough denial, session binding, consent, audit correlation,
+workflow namespace scope, and candidate MCP server auth gaps.
+
 ### Agentic assurance pack
 
 The manifest, gateway policy, and control map also compile into a
@@ -698,6 +821,21 @@ evaluation drills, source hashes, readiness decisions, and update
 triggers. CI runs the generator in `--check` mode so the agentic system
 inventory cannot drift from the governed source artifacts.
 
+### Agentic run receipt pack
+
+The generated run receipt pack turns the same control artifacts into a
+portable proof template for every governed agent run:
+
+- receipt profile: `data/assurance/agentic-run-receipt-profile.json`
+- generator: `scripts/generate_agentic_run_receipt_pack.py`
+- pack: `data/evidence/agentic-run-receipt-pack.json`
+- MCP tool: `recipes_agentic_run_receipt_pack`
+
+The pack requires identity issuance, context retrieval decisions,
+context poisoning inspection, MCP tool decisions, context egress
+decisions, human approval, verifier output, evidence attachment, run
+closure, and identity revocation before a run is trusted.
+
 ### Secure context trust pack
 
 The generated secure context trust pack defines which context roots are
@@ -718,6 +856,23 @@ policy, evidence, or MCP runtime code. The runtime evaluator uses that
 pack as a default-deny context firewall: unregistered context is denied,
 workflow-unapproved context is denied, hash drift holds for
 recertification, and prohibited data classes kill the session.
+
+### Context poisoning guard pack
+
+The generated context poisoning guard pack adds deterministic inspection
+to the secure context layer:
+
+- profile: `data/assurance/context-poisoning-guard-profile.json`
+- generator: `scripts/generate_context_poisoning_guard_pack.py`
+- pack: `data/evidence/context-poisoning-guard-pack.json`
+- MCP tool: `recipes_context_poisoning_guard_pack`
+
+The pack scans registered context roots for direct instruction override,
+secret exfiltration, approval bypass, hidden HTML instruction, external
+callback, encoded payload, and zero-width control markers. It separates
+documented adversarial examples from actionable poisoning risk so MCP
+clients can hold or block unsafe context without removing red-team
+training material from the knowledge base.
 
 ### Agentic threat radar
 
@@ -787,15 +942,26 @@ Edit `mcp-server.toml`:
   through the `recipes_agent_identity_ledger` MCP tool
 - `connector_trust_pack_path` -> generated MCP connector trust pack
   exposed through the `recipes_mcp_connector_trust_pack` MCP tool
+- `connector_intake_pack_path` -> generated MCP connector intake pack
+  exposed through the `recipes_mcp_connector_intake_pack` MCP tool
+- `authorization_conformance_pack_path` -> generated MCP authorization
+  conformance pack exposed through
+  `recipes_mcp_authorization_conformance_pack` and
+  `recipes_evaluate_mcp_authorization_decision`
 - `red_team_drill_pack_path` -> generated agentic red-team drill pack
   exposed through the `recipes_agentic_red_team_drill_pack` MCP tool
 - `readiness_scorecard_path` -> generated agentic readiness scorecard
   exposed through the `recipes_agentic_readiness_scorecard` MCP tool
 - `agentic_system_bom_path` -> generated Agentic System BOM exposed
   through the `recipes_agentic_system_bom` MCP tool
+- `agentic_run_receipt_pack_path` -> generated run receipt pack exposed
+  through the `recipes_agentic_run_receipt_pack` MCP tool
 - `secure_context_trust_pack_path` -> generated secure context trust pack
   exposed through the `recipes_secure_context_trust_pack` and
   `recipes_evaluate_context_retrieval_decision` MCP tools
+- `context_poisoning_guard_pack_path` -> generated context poisoning
+  guard pack exposed through the `recipes_context_poisoning_guard_pack`
+  MCP tool
 - `threat_radar_path` -> generated agentic threat radar exposed through
   the `recipes_agentic_threat_radar` MCP tool
 

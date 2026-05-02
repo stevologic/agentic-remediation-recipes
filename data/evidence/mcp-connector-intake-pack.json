@@ -1,0 +1,547 @@
+{
+  "candidate_evaluations": [
+    {
+      "business_purpose": "Publish rebuilt images and delete compromised tags after supply-chain incidents, which is intentionally outside the safe default scope for autonomous remediation.",
+      "candidate_id": "registry-publisher",
+      "control_gaps": [
+        "audit_denied_attempts",
+        "hard_deny",
+        "kill_session_on_attempt"
+      ],
+      "declared_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "pin_tool_descriptions",
+        "pin_tool_schemas",
+        "audit_every_tool_call",
+        "session_binding",
+        "write_scope_enforcement"
+      ],
+      "evidence_available": [
+        "registry audit log",
+        "incident ticket approval",
+        "image attestation"
+      ],
+      "intake_decision": "deny_until_redesigned",
+      "namespace": "registries.publish",
+      "promotion_plan": [
+        "Remove prohibited data or high-impact execution from the connector surface.",
+        "Split read-only context from destructive operations before another intake review.",
+        "Re-submit with hard-deny controls for secrets, signing material, and live credentials."
+      ],
+      "recommended_trust_tier": "tier_4_prohibited",
+      "red_team_drills": [
+        {
+          "attack_family": "tool_result_injection",
+          "expected_decision": "deny_or_strip_untrusted_instructions",
+          "name": "Return hostile instructions inside a normal tool result."
+        },
+        {
+          "attack_family": "connector_schema_drift",
+          "expected_decision": "hold_for_connector_recertification",
+          "name": "Change a tool description, input schema, or output schema after approval."
+        }
+      ],
+      "registry_patch_preview": {
+        "access_modes": [
+          "approval_required"
+        ],
+        "category": "release_and_registry_sources",
+        "data_classes": [
+          "image_digest",
+          "registry_target",
+          "production_credential"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "id": "registry-publisher",
+        "namespace": "registries.publish",
+        "owner": {
+          "accountable_team": "Supply Chain Security",
+          "escalation": "security-incident-commander"
+        },
+        "required_controls": [
+          "hard_deny",
+          "audit_denied_attempts",
+          "kill_session_on_attempt"
+        ],
+        "status": "deprecated",
+        "title": "Container Registry Publisher",
+        "transport": "streamable-http",
+        "trust_tier": "tier_4_prohibited"
+      },
+      "requested_access_modes": [
+        "approval_required"
+      ],
+      "risk_findings": [
+        {
+          "control": "typed_human_approval",
+          "evidence": "publish_image",
+          "id": "destructive-without-two-key",
+          "severity": "critical",
+          "title": "Destructive tool lacks typed two-key approval"
+        },
+        {
+          "control": "typed_human_approval",
+          "evidence": "delete_tag",
+          "id": "destructive-without-two-key",
+          "severity": "critical",
+          "title": "Destructive tool lacks typed two-key approval"
+        },
+        {
+          "control": "typed_human_approval",
+          "evidence": "publish replacement image delete compromised tag change registry release pointer",
+          "id": "high-impact-operation-without-approval",
+          "severity": "critical",
+          "title": "High-impact operation lacks typed approval"
+        },
+        {
+          "control": "hard_deny",
+          "evidence": "production_credential",
+          "id": "prohibited-data-class",
+          "severity": "critical",
+          "title": "Connector requests prohibited data classes"
+        },
+        {
+          "control": "deny_token_passthrough",
+          "evidence": "oauth2_proxy",
+          "id": "token-passthrough",
+          "severity": "critical",
+          "title": "Token passthrough is declared or possible"
+        },
+        {
+          "control": "token_audience_validation",
+          "evidence": "{\"strategy\":\"oauth2_proxy\",\"resource_indicators\":true,\"audience_validation\":false,\"pkce\":true,\"token_passthrough\":true,\"short_lived_tokens\":true,\"command_allowlist\":false}",
+          "id": "missing-audience-validation",
+          "severity": "high",
+          "title": "Token audience validation is not declared"
+        },
+        {
+          "control": "deny_private_network_egress",
+          "evidence": "{\"allowed_external_hosts\":[\"registry.internal.example\"],\"allows_private_network\":true,\"allows_metadata_ip\":false,\"follows_redirects\":false}",
+          "id": "private-network-egress",
+          "severity": "high",
+          "title": "Connector can reach private network ranges"
+        },
+        {
+          "control": "pin_tool_schemas",
+          "evidence": "delete_tag",
+          "id": "unpinned-output-schema",
+          "severity": "medium",
+          "title": "Tool output schema is not pinned"
+        }
+      ],
+      "risk_score": 100,
+      "source": {
+        "distribution": "private registry",
+        "package": "registry-publish-mcp",
+        "publisher": "internal-platform",
+        "review_state": "architecture-review",
+        "version": "0.4.1"
+      },
+      "title": "Container Registry Publisher",
+      "tool_count": 2,
+      "transport": "streamable-http"
+    },
+    {
+      "business_purpose": "Let agents gather public security references during triage, while preventing browser context, local host access, and retrieved pages from becoming trusted instructions.",
+      "candidate_id": "browser-research-stdio",
+      "control_gaps": [
+        "deny_private_network_egress",
+        "deny_token_passthrough",
+        "per_client_consent",
+        "session_binding",
+        "short_lived_workload_identity",
+        "token_audience_validation"
+      ],
+      "declared_controls": [
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "audit_every_tool_call"
+      ],
+      "evidence_available": [
+        "package source URL",
+        "local client configuration"
+      ],
+      "intake_decision": "hold_for_controls",
+      "namespace": "research.browser",
+      "promotion_plan": [
+        "Close required control gaps: deny_private_network_egress, deny_token_passthrough, per_client_consent, session_binding, short_lived_workload_identity, token_audience_validation",
+        "Register owner, escalation path, namespace, access mode, data classes, and tool schema hashes.",
+        "Bind the connector to the MCP gateway with default-deny policy and correlation IDs.",
+        "Run connector-drift and tool-result-injection drills before production promotion."
+      ],
+      "recommended_trust_tier": "tier_1_internal_read",
+      "red_team_drills": [
+        {
+          "attack_family": "tool_result_injection",
+          "expected_decision": "deny_or_strip_untrusted_instructions",
+          "name": "Return hostile instructions inside a normal tool result."
+        },
+        {
+          "attack_family": "connector_schema_drift",
+          "expected_decision": "hold_for_connector_recertification",
+          "name": "Change a tool description, input schema, or output schema after approval."
+        },
+        {
+          "attack_family": "local_server_compromise",
+          "expected_decision": "deny_unapproved_command_or_kill_session",
+          "name": "Alter the local server launch command or package source."
+        }
+      ],
+      "registry_patch_preview": {
+        "access_modes": [
+          "read"
+        ],
+        "category": "knowledge_and_runbook_sources",
+        "data_classes": [
+          "public_reference",
+          "untrusted_web_content"
+        ],
+        "deployment_model": "developer_local",
+        "id": "browser-research-stdio",
+        "namespace": "research.browser",
+        "owner": {
+          "accountable_team": "Security Engineering",
+          "escalation": "agentic-research-review"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "token_audience_validation",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding"
+        ],
+        "status": "pilot",
+        "title": "Local Browser Research STDIO Server",
+        "transport": "stdio",
+        "trust_tier": "tier_1_internal_read"
+      },
+      "requested_access_modes": [
+        "read"
+      ],
+      "risk_findings": [
+        {
+          "control": "deny_metadata_ip_egress",
+          "evidence": "{\"allowed_external_hosts\":[\"*\"],\"allows_private_network\":true,\"allows_metadata_ip\":true,\"follows_redirects\":true}",
+          "id": "metadata-ip-egress",
+          "severity": "critical",
+          "title": "Connector can reach cloud metadata endpoints"
+        },
+        {
+          "control": "deny_private_network_egress",
+          "evidence": "{\"allowed_external_hosts\":[\"*\"],\"allows_private_network\":true,\"allows_metadata_ip\":true,\"follows_redirects\":true}",
+          "id": "private-network-egress",
+          "severity": "high",
+          "title": "Connector can reach private network ranges"
+        },
+        {
+          "control": "local_server_command_allowlist",
+          "evidence": "{\"publisher\":\"community\",\"package\":\"browser-research-mcp\",\"version\":\"1.2.0\",\"distribution\":\"public npm\",\"review_state\":\"unreviewed\"}",
+          "id": "stdio-command-not-allowlisted",
+          "severity": "high",
+          "title": "STDIO launch command lacks an allowlist"
+        },
+        {
+          "control": "session_binding",
+          "evidence": "[\"pin_tool_descriptions\",\"inspect_tool_results\",\"audit_every_tool_call\"]",
+          "id": "missing-session-binding",
+          "severity": "medium",
+          "title": "Session binding is not declared"
+        },
+        {
+          "control": "evidence_contract",
+          "evidence": "[\"package source URL\",\"local client configuration\"]",
+          "id": "thin-evidence",
+          "severity": "medium",
+          "title": "Fewer than three evidence records are available"
+        },
+        {
+          "control": "pin_tool_schemas",
+          "evidence": "search_web",
+          "id": "unpinned-input-schema",
+          "severity": "medium",
+          "title": "Tool input schema is not pinned"
+        },
+        {
+          "control": "pin_tool_schemas",
+          "evidence": "fetch_url",
+          "id": "unpinned-output-schema",
+          "severity": "medium",
+          "title": "Tool output schema is not pinned"
+        },
+        {
+          "control": "pin_tool_schemas",
+          "evidence": "search_web",
+          "id": "unpinned-output-schema",
+          "severity": "medium",
+          "title": "Tool output schema is not pinned"
+        }
+      ],
+      "risk_score": 83,
+      "source": {
+        "distribution": "public npm",
+        "package": "browser-research-mcp",
+        "publisher": "community",
+        "review_state": "unreviewed",
+        "version": "1.2.0"
+      },
+      "title": "Local Browser Research STDIO Server",
+      "tool_count": 2,
+      "transport": "stdio"
+    },
+    {
+      "business_purpose": "Allow approved remediation workflows to write bounded branches, open pull requests, and attach generated evidence without giving agents merge or release authority.",
+      "candidate_id": "github-remediation-writer",
+      "control_gaps": [],
+      "declared_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "token_audience_validation",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "pin_tool_schemas",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding",
+        "write_scope_enforcement",
+        "human_review_before_merge"
+      ],
+      "evidence_available": [
+        "source host branch-write audit log",
+        "branch protection export",
+        "pull request review events",
+        "MCP gateway tool-call audit"
+      ],
+      "intake_decision": "approve_for_registry_candidate",
+      "namespace": "repo.remediation",
+      "promotion_plan": [
+        "Register owner, escalation path, namespace, access mode, data classes, and tool schema hashes.",
+        "Bind the connector to the MCP gateway with default-deny policy and correlation IDs.",
+        "Run connector-drift and tool-result-injection drills before production promotion."
+      ],
+      "recommended_trust_tier": "tier_2_scoped_write",
+      "red_team_drills": [
+        {
+          "attack_family": "tool_result_injection",
+          "expected_decision": "deny_or_strip_untrusted_instructions",
+          "name": "Return hostile instructions inside a normal tool result."
+        },
+        {
+          "attack_family": "connector_schema_drift",
+          "expected_decision": "hold_for_connector_recertification",
+          "name": "Change a tool description, input schema, or output schema after approval."
+        },
+        {
+          "attack_family": "write_scope_bypass",
+          "expected_decision": "deny_or_hold_for_approval",
+          "name": "Attempt a write outside the declared project, branch, ticket, or target scope."
+        }
+      ],
+      "registry_patch_preview": {
+        "access_modes": [
+          "write_branch"
+        ],
+        "category": "code_and_build_sources",
+        "data_classes": [
+          "source_code",
+          "pull_request_metadata",
+          "scanner_evidence"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "id": "github-remediation-writer",
+        "namespace": "repo.remediation",
+        "owner": {
+          "accountable_team": "Engineering Platform",
+          "escalation": "source-control-platform"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "token_audience_validation",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding",
+          "write_scope_enforcement",
+          "human_review_before_merge"
+        ],
+        "status": "pilot",
+        "title": "GitHub Remediation Branch Writer",
+        "transport": "streamable-http",
+        "trust_tier": "tier_2_scoped_write"
+      },
+      "requested_access_modes": [
+        "write_branch"
+      ],
+      "risk_findings": [],
+      "risk_score": 0,
+      "source": {
+        "distribution": "private registry",
+        "package": "github-remediation-mcp",
+        "publisher": "internal-platform",
+        "review_state": "security-reviewed",
+        "version": "0.9.4"
+      },
+      "title": "GitHub Remediation Branch Writer",
+      "tool_count": 2,
+      "transport": "streamable-http"
+    }
+  ],
+  "enterprise_adoption_packet": {
+    "board_level_claim": "SecurityRecipes can evaluate MCP servers before they become trusted enterprise connectors.",
+    "default_questions_answered": [
+      "Which new MCP connectors are safe to pilot?",
+      "Which auth, token, network, schema, data, and approval gaps block promotion?",
+      "Which connector changes require recertification before agents can use them?",
+      "What registry patch would be created after the intake gates pass?",
+      "Which red-team drills should run before production approval?"
+    ],
+    "recommended_first_use": "Run this pack during MCP server intake, vendor review, local-server approval, and connector schema drift reviews.",
+    "sales_motion": "Lead with open intake scoring, then sell hosted connector discovery, schema diffing, approval receipts, and continuous recertification."
+  },
+  "failures": [],
+  "generated_at": "2026-05-02",
+  "intake_contract": {
+    "default_decision": "hold_for_intake_review",
+    "manual_review_required_for": [
+      "new remote MCP server",
+      "new local STDIO server",
+      "new namespace or access mode",
+      "tool description change",
+      "input or output schema change",
+      "OAuth metadata change",
+      "network egress expansion",
+      "data class expansion",
+      "write, publish, deploy, delete, signing, or funds movement capability"
+    ],
+    "minimum_required_controls": [
+      "owner_declared",
+      "per_client_consent",
+      "short_lived_workload_identity",
+      "token_audience_validation",
+      "deny_token_passthrough",
+      "pin_tool_descriptions",
+      "pin_tool_schemas",
+      "inspect_tool_results",
+      "deny_private_network_egress",
+      "audit_every_tool_call",
+      "session_binding"
+    ],
+    "risk_families": [
+      "confused_deputy",
+      "token_passthrough",
+      "scope_creep",
+      "ssrf",
+      "local_server_compromise",
+      "tool_poisoning",
+      "schema_drift",
+      "write_scope_bypass",
+      "approval_bypass",
+      "secret_exposure"
+    ]
+  },
+  "intake_summary": {
+    "candidate_count": 3,
+    "decision_counts": {
+      "approve_for_registry_candidate": 1,
+      "deny_until_redesigned": 1,
+      "hold_for_controls": 1
+    },
+    "highest_risk_candidates": [
+      {
+        "candidate_id": "registry-publisher",
+        "decision": "deny_until_redesigned",
+        "namespace": "registries.publish",
+        "risk_score": 100,
+        "title": "Container Registry Publisher"
+      },
+      {
+        "candidate_id": "browser-research-stdio",
+        "decision": "hold_for_controls",
+        "namespace": "research.browser",
+        "risk_score": 83,
+        "title": "Local Browser Research STDIO Server"
+      },
+      {
+        "candidate_id": "github-remediation-writer",
+        "decision": "approve_for_registry_candidate",
+        "namespace": "repo.remediation",
+        "risk_score": 0,
+        "title": "GitHub Remediation Branch Writer"
+      }
+    ],
+    "hold_or_deny_count": 2,
+    "tier_counts": {
+      "tier_1_internal_read": 1,
+      "tier_2_scoped_write": 1,
+      "tier_4_prohibited": 1
+    },
+    "transport_counts": {
+      "stdio": 1,
+      "streamable-http": 2
+    }
+  },
+  "intent": "Evaluate new and changed MCP connector candidates before they enter the production connector trust registry, so SecurityRecipes can turn fast MCP adoption into a governed intake workflow with repeatable auth, network, schema, data, approval, evidence, and red-team gates.",
+  "positioning": {
+    "buyer": "AI Platform, Product Security, IAM, GRC, procurement security, and enterprise architecture teams",
+    "category": "MCP connector intake and schema-drift gating",
+    "enterprise_promise": "SecurityRecipes can score MCP servers before agents use them, explain why a connector is approved, held, or denied, and produce the registry patch and red-team drills required for promotion.",
+    "why_now": "MCP servers are proliferating faster than platform teams can review them manually. The enterprise bottleneck is no longer whether a connector exists; it is whether the connector can be trusted with agent identity, private context, tool results, and write authority."
+  },
+  "schema_version": "1.0",
+  "source_artifacts": {
+    "connector_intake_candidates": {
+      "path": "data/mcp/connector-intake-candidates.json",
+      "sha256": "67627bc35a30623c011f09296e020e5fe07009799aecdf981dae130b4d3080bf"
+    },
+    "connector_trust_pack": {
+      "path": "data/evidence/mcp-connector-trust-pack.json",
+      "sha256": "2982b7ab2dea084cd78295ad257cc4c8606c52938197cf61bb2692156dcf92be"
+    }
+  },
+  "standards_alignment": [
+    {
+      "coverage": "OAuth 2.1 style authorization, resource indicators, token audience validation, PKCE, HTTPS, protected resource metadata, and strict bearer token handling.",
+      "id": "mcp-authorization-2025-11-25",
+      "name": "Model Context Protocol Authorization Specification",
+      "url": "https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization"
+    },
+    {
+      "coverage": "Confused deputy prevention, token passthrough denial, SSRF mitigation, session safety, local MCP server compromise controls, and scope minimization.",
+      "id": "mcp-security-best-practices",
+      "name": "Model Context Protocol Security Best Practices",
+      "url": "https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices"
+    },
+    {
+      "coverage": "Agent behavior hijacking, tool misuse, identity and privilege abuse, agentic supply chain, memory and context poisoning, cascading failures, and rogue agent behavior.",
+      "id": "owasp-agentic-top-10-2026",
+      "name": "OWASP Top 10 for Agentic Applications 2026",
+      "url": "https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/"
+    },
+    {
+      "coverage": "Agentic security lifecycle, third-party MCP server guidance, secure MCP server development, CTF practice, and agentic solution landscape work.",
+      "id": "owasp-agentic-security-initiative-2026",
+      "name": "OWASP Agentic Security Initiative",
+      "url": "https://genai.owasp.org/initiatives/agentic-security-initiative/"
+    },
+    {
+      "coverage": "Observed exploitation trends moving from model outputs toward agent identities, orchestration layers, permissions, validation controls, and AI supply chains.",
+      "id": "owasp-genai-exploit-roundup-q1-2026",
+      "name": "OWASP GenAI Exploit Round-up Report Q1 2026",
+      "url": "https://genai.owasp.org/2026/04/14/owasp-genai-exploit-round-up-report-q1-2026/"
+    },
+    {
+      "coverage": "Govern, Map, Measure, and Manage functions for AI system risk, including current 2026 critical-infrastructure profile work.",
+      "id": "nist-ai-rmf-2026",
+      "name": "NIST AI Risk Management Framework",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+    }
+  ]
+}

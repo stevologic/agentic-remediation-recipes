@@ -188,6 +188,38 @@
       "buyer_value": "Converts retrieval policy into deterministic allow, hold, deny, or kill-session decisions before agents receive context."
     },
     {
+      "id": "context-poisoning-guard",
+      "title": "Context Poisoning Guard",
+      "status": "implemented",
+      "evidence_paths": [
+        "data/assurance/context-poisoning-guard-profile.json",
+        "data/evidence/context-poisoning-guard-pack.json",
+        "scripts/generate_context_poisoning_guard_pack.py",
+        "content/security-remediation/context-poisoning-guard/_index.md"
+      ],
+      "mcp_tools": [
+        "recipes_context_poisoning_guard_pack"
+      ],
+      "buyer_value": "Inspects registered context roots for prompt-injection, tool-poisoning, hidden-instruction, approval-bypass, and exfiltration markers before MCP retrieval."
+    },
+    {
+      "id": "context-egress-boundary",
+      "title": "Context Egress Boundary",
+      "status": "implemented",
+      "evidence_paths": [
+        "data/assurance/context-egress-boundary-model.json",
+        "data/evidence/context-egress-boundary-pack.json",
+        "scripts/generate_context_egress_boundary_pack.py",
+        "scripts/evaluate_context_egress_decision.py",
+        "content/security-remediation/context-egress-boundary/_index.md"
+      ],
+      "mcp_tools": [
+        "recipes_context_egress_boundary_pack",
+        "recipes_evaluate_context_egress_decision"
+      ],
+      "buyer_value": "Turns data-class, destination, DPA, zero-data-retention, residency, and secret-egress requirements into deterministic MCP-readable decisions before context leaves a boundary."
+    },
+    {
       "id": "mcp-gateway-policy",
       "title": "MCP Gateway Policy Pack",
       "status": "implemented",
@@ -227,6 +259,38 @@
         "recipes_mcp_connector_trust_pack"
       ],
       "buyer_value": "Inventories MCP namespaces, owners, trust tiers, controls, promotion criteria, and kill signals."
+    },
+    {
+      "id": "mcp-connector-intake-scanner",
+      "title": "MCP Connector Intake Scanner",
+      "status": "implemented",
+      "evidence_paths": [
+        "data/mcp/connector-intake-candidates.json",
+        "data/evidence/mcp-connector-intake-pack.json",
+        "scripts/generate_mcp_connector_intake_pack.py",
+        "content/security-remediation/mcp-connector-intake-scanner/_index.md"
+      ],
+      "mcp_tools": [
+        "recipes_mcp_connector_intake_pack"
+      ],
+      "buyer_value": "Scores new or changed MCP servers before promotion, returning admission decisions, control gaps, registry patch previews, and red-team drills."
+    },
+    {
+      "id": "mcp-authorization-conformance",
+      "title": "MCP Authorization Conformance",
+      "status": "implemented",
+      "evidence_paths": [
+        "data/assurance/mcp-authorization-conformance-profile.json",
+        "data/evidence/mcp-authorization-conformance-pack.json",
+        "scripts/generate_mcp_authorization_conformance_pack.py",
+        "scripts/evaluate_mcp_authorization_decision.py",
+        "content/security-remediation/mcp-authorization-conformance/_index.md"
+      ],
+      "mcp_tools": [
+        "recipes_mcp_authorization_conformance_pack",
+        "recipes_evaluate_mcp_authorization_decision"
+      ],
+      "buyer_value": "Verifies MCP resource binding, token audience, PKCE, token-passthrough denial, session binding, and scope drift before tool calls execute."
     },
     {
       "id": "agentic-red-team-drill-pack",
@@ -309,6 +373,7 @@
       "mapped_capability_ids": [
         "secure-context-trust-pack",
         "secure-context-firewall",
+        "context-poisoning-guard",
         "agentic-red-team-drill-pack",
         "mcp-gateway-policy"
       ],
@@ -345,6 +410,8 @@
       "mapped_capability_ids": [
         "mcp-gateway-policy",
         "agent-identity-ledger",
+        "mcp-connector-intake-scanner",
+        "mcp-authorization-conformance",
         "mcp-connector-trust-pack",
         "agentic-assurance-pack"
       ],
@@ -415,6 +482,7 @@
         "Run connector-drift red-team drills before trust-tier promotion."
       ],
       "mapped_capability_ids": [
+        "mcp-connector-intake-scanner",
         "mcp-connector-trust-pack",
         "mcp-gateway-policy",
         "agentic-red-team-drill-pack",
@@ -453,6 +521,8 @@
       "mapped_capability_ids": [
         "secure-context-trust-pack",
         "secure-context-firewall",
+        "context-poisoning-guard",
+        "context-egress-boundary",
         "agentic-system-bom",
         "agentic-assurance-pack"
       ],
@@ -560,6 +630,8 @@
       ],
       "mapped_capability_ids": [
         "secure-context-trust-pack",
+        "context-egress-boundary",
+        "context-poisoning-guard",
         "agentic-assurance-pack",
         "agentic-system-bom",
         "agentic-threat-radar"
@@ -662,12 +734,34 @@
     {
       "id": "mcp-connector-intake-scanner",
       "title": "MCP connector intake scanner",
-      "status": "recommended_next",
-      "why": "Connector sprawl, tool poisoning, shadow MCP servers, and scope drift are strong enterprise pain points with a clear MCP-native monetization path.",
+      "status": "implemented",
+      "why": "Connector sprawl, tool poisoning, shadow MCP servers, and scope drift are strong enterprise pain points with a clear MCP-native monetization path; this run implemented the deterministic intake pack and MCP tool.",
       "related_signal_ids": [
         "tool-poisoning-and-shadow-mcp",
         "mcp-token-passthrough-and-scope-creep",
         "agent-identity-explosion"
+      ]
+    },
+    {
+      "id": "context-poisoning-guard",
+      "title": "Context poisoning guard",
+      "status": "implemented",
+      "why": "Prompt injection, MCP tool poisoning, context over-sharing, and AI data provenance guidance all point to deterministic inspection before context reaches agents; this run implemented the generated guard pack and MCP tool.",
+      "related_signal_ids": [
+        "indirect-prompt-injection-social-engineering",
+        "context-over-sharing-and-memory-poisoning",
+        "ai-data-security-and-provenance"
+      ]
+    },
+    {
+      "id": "mcp-authorization-conformance",
+      "title": "MCP authorization conformance and scope-drift checks",
+      "status": "implemented",
+      "why": "Remote MCP rollout makes resource indicators, token audience validation, token-passthrough denial, and scope drift board-level control questions; this run implemented the generated conformance pack and runtime evaluator.",
+      "related_signal_ids": [
+        "mcp-token-passthrough-and-scope-creep",
+        "agent-identity-explosion",
+        "audit-telemetry-and-evidence-chain"
       ]
     },
     {

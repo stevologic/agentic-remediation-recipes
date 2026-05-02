@@ -2722,7 +2722,7 @@
         "component_id": "evidence::agentic-readiness-scorecard",
         "component_type": "evidence_artifacts",
         "path": "data/evidence/agentic-readiness-scorecard.json",
-        "sha256": "d250827aca3322caaa5b10d7d3ca2ce6a517daafc3ed34a2cc266f2b1740ea5e",
+        "sha256": "442cecb2d6d32283436deb472e3f9397126cf2d6e9d222030cca3235d24286cb",
         "title": "Agentic readiness scorecard"
       },
       {
@@ -2730,7 +2730,7 @@
         "component_id": "evidence::agentic-assurance-pack",
         "component_type": "evidence_artifacts",
         "path": "data/evidence/agentic-assurance-pack.json",
-        "sha256": "4491438c29bab11e389aa3dd2479b62ab5171ae635dac5694016eaf21f9b59a9",
+        "sha256": "f97a022e915e0357b265f2546c5abaa4d7228ca4f636e0f5f063accfc5dba8f1",
         "title": "Agentic assurance pack"
       },
       {
@@ -3559,7 +3559,8 @@
           "SR-AI-06",
           "SR-AI-07",
           "SR-AI-08",
-          "SR-AI-09"
+          "SR-AI-09",
+          "SR-AI-10"
         ],
         "component_id": "workflow::artifact-cache-quarantine",
         "component_type": "workflows",
@@ -3660,7 +3661,8 @@
           "SR-AI-06",
           "SR-AI-07",
           "SR-AI-08",
-          "SR-AI-09"
+          "SR-AI-09",
+          "SR-AI-10"
         ],
         "component_id": "workflow::base-image-remediation",
         "component_type": "workflows",
@@ -3758,7 +3760,8 @@
           "SR-AI-06",
           "SR-AI-07",
           "SR-AI-08",
-          "SR-AI-09"
+          "SR-AI-09",
+          "SR-AI-10"
         ],
         "component_id": "workflow::classic-vulnerable-defaults",
         "component_type": "workflows",
@@ -3854,7 +3857,8 @@
           "SR-AI-06",
           "SR-AI-07",
           "SR-AI-08",
-          "SR-AI-09"
+          "SR-AI-09",
+          "SR-AI-10"
         ],
         "component_id": "workflow::crypto-payment-security",
         "component_type": "workflows",
@@ -3950,7 +3954,8 @@
           "SR-AI-06",
           "SR-AI-07",
           "SR-AI-08",
-          "SR-AI-09"
+          "SR-AI-09",
+          "SR-AI-10"
         ],
         "component_id": "workflow::defi-blockchain-security",
         "component_type": "workflows",
@@ -4048,7 +4053,8 @@
           "SR-AI-06",
           "SR-AI-07",
           "SR-AI-08",
-          "SR-AI-09"
+          "SR-AI-09",
+          "SR-AI-10"
         ],
         "component_id": "workflow::sast-finding-remediation",
         "component_type": "workflows",
@@ -4148,7 +4154,8 @@
           "SR-AI-06",
           "SR-AI-07",
           "SR-AI-08",
-          "SR-AI-09"
+          "SR-AI-09",
+          "SR-AI-10"
         ],
         "component_id": "workflow::sensitive-data-remediation",
         "component_type": "workflows",
@@ -4249,7 +4256,8 @@
           "SR-AI-06",
           "SR-AI-07",
           "SR-AI-08",
-          "SR-AI-09"
+          "SR-AI-09",
+          "SR-AI-10"
         ],
         "component_id": "workflow::vulnerable-dependency-remediation",
         "component_type": "workflows",
@@ -4357,11 +4365,11 @@
     },
     "agentic_assurance_pack": {
       "path": "data/evidence/agentic-assurance-pack.json",
-      "sha256": "4491438c29bab11e389aa3dd2479b62ab5171ae635dac5694016eaf21f9b59a9"
+      "sha256": "f97a022e915e0357b265f2546c5abaa4d7228ca4f636e0f5f063accfc5dba8f1"
     },
     "agentic_readiness_scorecard": {
       "path": "data/evidence/agentic-readiness-scorecard.json",
-      "sha256": "d250827aca3322caaa5b10d7d3ca2ce6a517daafc3ed34a2cc266f2b1740ea5e"
+      "sha256": "442cecb2d6d32283436deb472e3f9397126cf2d6e9d222030cca3235d24286cb"
     },
     "agentic_red_team_drill_pack": {
       "path": "data/evidence/agentic-red-team-drill-pack.json",

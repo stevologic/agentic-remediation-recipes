@@ -195,6 +195,48 @@ jobs:
         run: |
           python3 scripts/generate_mcp_connector_trust_pack.py --check
 
+      - name: Validate MCP connector intake pack
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_mcp_connector_intake_pack.py --check
+
+      - name: Validate MCP authorization conformance pack
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_mcp_authorization_conformance_pack.py --check
+
+      - name: Validate MCP authorization runtime decisions
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/evaluate_mcp_authorization_decision.py \
+            --workflow-id vulnerable-dependency-remediation \
+            --connector-id repository-contents \
+            --namespace repo.contents \
+            --requested-access-mode write_branch \
+            --resource-indicator https://mcp.security-recipes.ai/mcp \
+            --token-audience https://mcp.security-recipes.ai/mcp \
+            --token-scope repo.contents:write_branch \
+            --expect-decision allow_authorized_mcp_request
+
+          python3 scripts/evaluate_mcp_authorization_decision.py \
+            --workflow-id vulnerable-dependency-remediation \
+            --connector-id repository-contents \
+            --namespace repo.contents \
+            --requested-access-mode write_branch \
+            --token-audience https://wrong.example/mcp \
+            --token-scope repo.contents:write_branch \
+            --expect-decision deny_unbound_token
+
+          python3 scripts/evaluate_mcp_authorization_decision.py \
+            --workflow-id artifact-cache-quarantine \
+            --connector-id registry-quarantine \
+            --namespace registries.quarantine \
+            --requested-access-mode approval_required \
+            --resource-indicator https://mcp.security-recipes.ai/mcp \
+            --token-audience https://mcp.security-recipes.ai/mcp \
+            --token-scope live_funds_movement \
+            --expect-decision kill_session_on_secret_or_signer_scope
+
       - name: Validate agentic assurance pack
         working-directory: ${{ steps.hugo-dir.outputs.path }}
         run: |
@@ -219,6 +261,62 @@ jobs:
         working-directory: ${{ steps.hugo-dir.outputs.path }}
         run: |
           python3 scripts/generate_agentic_system_bom.py --check
+
+      - name: Refresh context poisoning guard pack
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_context_poisoning_guard_pack.py
+
+      - name: Validate context poisoning guard pack
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_context_poisoning_guard_pack.py --check
+
+      - name: Refresh context egress boundary pack
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_context_egress_boundary_pack.py
+
+      - name: Validate context egress boundary pack
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_context_egress_boundary_pack.py --check --update-if-stale
+
+      - name: Validate context egress boundary decisions
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/evaluate_context_egress_decision.py \
+            --workflow-id vulnerable-dependency-remediation \
+            --data-class curated_security_guidance \
+            --destination-class approved_model_provider \
+            --dpa-in-place \
+            --zero-data-retention \
+            --required-region us \
+            --residency-region us \
+            --expect-decision allow_public_egress_with_citation
+
+          python3 scripts/evaluate_context_egress_decision.py \
+            --workflow-id vulnerable-dependency-remediation \
+            --mcp-namespace repo.contents \
+            --destination-class approved_model_provider \
+            --tenant-id tenant-ci \
+            --dpa-in-place \
+            --zero-data-retention \
+            --required-region us \
+            --residency-region us \
+            --expect-decision hold_for_redaction_or_dpa
+
+          python3 scripts/evaluate_context_egress_decision.py \
+            --workflow-id sensitive-data-remediation \
+            --data-class secret_or_token \
+            --destination-class external_url_or_webhook \
+            --contains-secret \
+            --expect-decision kill_session_on_secret_egress
+
+      - name: Refresh agentic threat radar
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_agentic_threat_radar.py
 
       - name: Validate agentic threat radar
         working-directory: ${{ steps.hugo-dir.outputs.path }}
@@ -268,6 +366,16 @@ jobs:
             --retrieval-mode workflow_prompt_context \
             --data-class private_key \
             --expect-decision kill_session_on_prohibited_context
+
+      - name: Refresh agentic run receipt pack
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_agentic_run_receipt_pack.py
+
+      - name: Validate agentic run receipt pack
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_agentic_run_receipt_pack.py --check --update-if-stale
 
       - name: Build site
         working-directory: ${{ steps.hugo-dir.outputs.path }}

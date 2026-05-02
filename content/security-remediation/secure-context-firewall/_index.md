@@ -169,6 +169,8 @@ runtime context gates.
 
 - [Secure Context Trust Pack]({{< relref "/security-remediation/secure-context-trust-pack" >}})
   - source registry, trust tiers, hashes, and workflow context packages.
+- [Context Egress Boundary]({{< relref "/security-remediation/context-egress-boundary" >}})
+  - data-boundary decisions after context retrieval.
 - [MCP Runtime Decision Evaluator]({{< relref "/security-remediation/mcp-runtime-decision-evaluator" >}})
   - tool-call authorization for MCP actions.
 - [MCP Gateway Policy Pack]({{< relref "/security-remediation/mcp-gateway-policy" >}})

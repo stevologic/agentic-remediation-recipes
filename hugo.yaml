@@ -263,51 +263,61 @@ menu:
       name: MCP Gateway Policy
       pageRef: security-remediation/mcp-gateway-policy
       weight: 68
+    - identifier: secrem-connector-intake
+      parent: security-remediation
+      name: Connector Intake
+      pageRef: security-remediation/mcp-connector-intake-scanner
+      weight: 69
     - identifier: secrem-connector-trust
       parent: security-remediation
       name: MCP Connector Trust
       pageRef: security-remediation/mcp-connector-trust-registry
-      weight: 69
+      weight: 70
     - identifier: secrem-assurance-pack
       parent: security-remediation
       name: Agentic Assurance Pack
       pageRef: security-remediation/agentic-assurance-pack
-      weight: 70
+      weight: 71
     - identifier: secrem-readiness-scorecard
       parent: security-remediation
       name: Readiness Scorecard
       pageRef: security-remediation/agentic-readiness-scorecard
-      weight: 71
+      weight: 72
     - identifier: secrem-red-team-drills
       parent: security-remediation
       name: Red-Team Drill Pack
       pageRef: security-remediation/agentic-red-team-drills
-      weight: 72
+      weight: 73
     - identifier: secrem-agent-identity-ledger
       parent: security-remediation
       name: Agent Identity Ledger
       pageRef: security-remediation/agent-identity-ledger
-      weight: 73
+      weight: 74
+    - identifier: secrem-context-poisoning-guard
+      parent: security-remediation
+      name: Context Poisoning Guard
+      pageRef: security-remediation/context-poisoning-guard
+      weight: 74
     - identifier: secrem-reviewer
       parent: security-remediation
       name: Reviewer Playbook
       pageRef: security-remediation/reviewer-playbook
-      weight: 74
+      weight: 75
     - identifier: secrem-gatekeeping
       parent: security-remediation
       name: Gatekeeping Patterns
       pageRef: security-remediation/gatekeeping
-      weight: 75
+      weight: 76
     - identifier: secrem-runtime-controls
       parent: security-remediation
       name: Runtime Controls
       pageRef: security-remediation/runtime-controls
-      weight: 76
+      weight: 77
     - identifier: secrem-compliance
       parent: security-remediation
       name: Compliance & Audit
       pageRef: security-remediation/compliance
-      weight: 77
+      weight: 78
 
     - identifier: automation
       name: Automation

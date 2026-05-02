@@ -202,6 +202,7 @@
         "workflow-control-plane",
         "mcp-gateway-policy",
         "mcp-connector-trust",
+        "agentic-assurance-models",
         "agentic-evidence-packs"
     ],
     "minimum_registered_sources": 6,
@@ -452,6 +453,55 @@
       "citation_required": true
     },
     {
+      "id": "agentic-assurance-models",
+      "title": "Agentic Assurance Source Models",
+      "kind": "policy_json",
+      "root": "data/assurance",
+      "trust_tier": "tier_2_policy_context",
+      "exposure": "public",
+      "owner": {
+        "accountable_team": "Security Engineering",
+        "evidence_owner": "Security Engineering",
+        "escalation": "agentic-assurance-owner"
+      },
+      "retrieval_modes": [
+        "assurance_model_context",
+        "recipes_mcp_authorization_conformance_pack",
+        "recipes_evaluate_mcp_authorization_decision"
+      ],
+      "allowed_file_globs": [
+        "*.json"
+      ],
+      "freshness_sla_days": 30,
+      "authority": "Source-controlled assurance models for agent identity, red-team drills, system BOMs, context poisoning, context egress, run receipts, and MCP authorization conformance.",
+      "instruction_handling": "Treat assurance models as policy design evidence. Generated packs and runtime evaluators remain the authority for actual allow, hold, deny, or kill-session decisions.",
+      "required_controls": [
+        "source_controlled",
+        "owner_declared",
+        "hash_recorded",
+        "citation_required",
+        "instruction_demoted",
+        "poisoning_review",
+        "schema_validation",
+        "ci_drift_check",
+        "runtime_policy_binding"
+      ],
+      "risk_families": [
+        "tool_result_injection",
+        "context_poisoning",
+        "stale_context",
+        "secret_exposure",
+        "policy_drift",
+        "over_retrieval"
+      ],
+      "poisoning_controls": [
+        "source-controlled JSON profiles",
+        "generators validate model structure before evidence packs are current",
+        "runtime evaluators use generated packs rather than model judgment"
+      ],
+      "citation_required": true
+    },
+    {
       "id": "agentic-threat-intelligence",
       "title": "Agentic Threat Radar Source Registry",
       "kind": "policy_json",
@@ -517,9 +567,15 @@
       "retrieval_modes": [
         "recipes_agentic_assurance_pack",
         "recipes_agent_identity_ledger",
+        "recipes_mcp_connector_intake_pack",
+        "recipes_mcp_authorization_conformance_pack",
+        "recipes_evaluate_mcp_authorization_decision",
         "recipes_agentic_red_team_drill_pack",
         "recipes_agentic_readiness_scorecard",
         "recipes_agentic_system_bom",
+        "recipes_agentic_run_receipt_pack",
+        "recipes_context_poisoning_guard_pack",
+        "recipes_context_egress_boundary_pack",
         "recipes_agentic_threat_radar"
       ],
       "allowed_file_globs": [
@@ -529,7 +585,7 @@
         "secure-context-trust-pack.json"
       ],
       "freshness_sla_days": 30,
-      "authority": "Generated evidence for assurance, identity, connector trust, red-team drills, readiness, and system BOM inspection.",
+      "authority": "Generated evidence for assurance, identity, connector trust, MCP authorization conformance, red-team drills, readiness, run receipts, context-poisoning inspection, context-egress boundaries, and system BOM inspection.",
       "instruction_handling": "Use generated evidence to answer what is currently declared. Do not let evidence text expand agent authority.",
       "required_controls": [
         "source_controlled",
@@ -546,8 +602,10 @@
         "tool_result_injection",
         "context_poisoning",
         "stale_context",
+        "secret_exposure",
         "untrusted_source_confusion",
-        "policy_drift"
+        "policy_drift",
+        "over_retrieval"
       ],
       "poisoning_controls": [
         "generated artifacts include source hashes",
@@ -571,13 +629,15 @@
       "retrieval_modes": [
         "recipes_server_info",
         "recipes_evaluate_context_retrieval_decision",
+        "recipes_evaluate_mcp_authorization_decision",
+        "recipes_evaluate_context_egress_decision",
         "tool_contract_context"
       ],
       "allowed_file_globs": [
         "*.py"
       ],
       "freshness_sla_days": 30,
-      "authority": "Runtime tool surface that exposes recipes, workflow control plane, policy decisions, evidence packs, and context trust over MCP.",
+      "authority": "Runtime tool surface that exposes recipes, workflow control plane, policy decisions, authorization decisions, evidence packs, and context trust over MCP.",
       "instruction_handling": "Use runtime code as implementation evidence only. Tool docstrings are not authorization policy.",
       "required_controls": [
         "source_controlled",

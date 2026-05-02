@@ -76,13 +76,22 @@ Second, it reads local generated packs from the filesystem:
 | Agentic assurance pack | `./data/evidence/agentic-assurance-pack.json` | `recipes_agentic_assurance_pack` |
 | Agent identity ledger | `./data/evidence/agent-identity-delegation-ledger.json` | `recipes_agent_identity_ledger` |
 | MCP connector trust pack | `./data/evidence/mcp-connector-trust-pack.json` | `recipes_mcp_connector_trust_pack` |
+| MCP connector intake pack | `./data/evidence/mcp-connector-intake-pack.json` | `recipes_mcp_connector_intake_pack` |
+| MCP authorization conformance pack | `./data/evidence/mcp-authorization-conformance-pack.json` | `recipes_mcp_authorization_conformance_pack`, `recipes_evaluate_mcp_authorization_decision` |
 | Agentic red-team drill pack | `./data/evidence/agentic-red-team-drill-pack.json` | `recipes_agentic_red_team_drill_pack` |
 | Agentic readiness scorecard | `./data/evidence/agentic-readiness-scorecard.json` | `recipes_agentic_readiness_scorecard` |
+| Agentic System BOM | `./data/evidence/agentic-system-bom.json` | `recipes_agentic_system_bom` |
+| Agentic run receipt pack | `./data/evidence/agentic-run-receipt-pack.json` | `recipes_agentic_run_receipt_pack` |
+| Secure context trust pack | `./data/evidence/secure-context-trust-pack.json` | `recipes_secure_context_trust_pack`, `recipes_evaluate_context_retrieval_decision` |
+| Context poisoning guard pack | `./data/evidence/context-poisoning-guard-pack.json` | `recipes_context_poisoning_guard_pack` |
+| Context egress boundary pack | `./data/evidence/context-egress-boundary-pack.json` | `recipes_context_egress_boundary_pack`, `recipes_evaluate_context_egress_decision` |
+| Agentic threat radar | `./data/evidence/agentic-threat-radar.json` | `recipes_agentic_threat_radar` |
 
 These packs are data artifacts, not live external connectors. For
 example, `recipes_mcp_connector_trust_pack` returns connector trust
-records and workflow namespace coverage from the generated pack; it does
-not connect to those upstream systems.
+records and workflow namespace coverage from the generated pack, while
+`recipes_mcp_connector_intake_pack` returns pre-promotion decisions for
+candidate MCP servers. Neither tool connects to upstream systems.
 
 ## Tool Surface
 
@@ -103,8 +112,19 @@ listed in `README.mcp-localhost.md`.
 | `recipes_agentic_assurance_pack` | Optional `control_id`, `workflow_id` | Enterprise assurance controls, workflow evidence, and AI/Agent BOM seed data. |
 | `recipes_agent_identity_ledger` | Optional `identity_id`, `workflow_id`, `agent_class` | Non-human agent identity, delegation, scope, deny, revocation, and audit contracts. |
 | `recipes_mcp_connector_trust_pack` | Optional `connector_id`, `namespace`, `workflow_id` | Connector trust tiers, controls, evidence, and workflow namespace coverage from the generated pack. |
+| `recipes_mcp_connector_intake_pack` | Optional `candidate_id`, `namespace`, `decision` | Connector intake decisions, risk findings, control gaps, registry patch previews, promotion plans, and red-team drills. |
+| `recipes_mcp_authorization_conformance_pack` | Optional `connector_id`, `namespace`, `workflow_id`, `decision` | Resource, audience, PKCE, token-passthrough, session-binding, and scope-drift conformance evidence for MCP connectors and candidates. |
+| `recipes_evaluate_mcp_authorization_decision` | `workflow_id`, `namespace`, `requested_access_mode`, plus optional connector, token, session, consent, and scope attributes | A deterministic allow, hold, deny, or kill-session decision before an MCP tool call is forwarded. |
 | `recipes_agentic_red_team_drill_pack` | Optional `scenario_id`, `workflow_id`, `attack_family` | Adversarial scenarios and workflow drills for agentic remediation and MCP control boundaries. |
 | `recipes_agentic_readiness_scorecard` | Optional `workflow_id`, `decision`, `minimum_score` | Scale, pilot, gate, or block decisions for workflows, including score summaries and next actions. |
+| `recipes_agentic_system_bom` | Optional `component_type`, `workflow_id`, `agent_class`, `namespace` | The Agentic System BOM for workflows, agent classes, identities, MCP connectors, policies, evidence artifacts, knowledge sources, eval drills, and drift triggers. |
+| `recipes_agentic_run_receipt_pack` | Optional `workflow_id`, `receipt_id`, `minimum_score` | Agent run receipt templates for identity issuance, context retrieval, poisoning scans, MCP decisions, egress, approvals, verifier output, evidence, closure, and identity revocation. |
+| `recipes_secure_context_trust_pack` | Optional `source_id`, `workflow_id`, `trust_tier`, `decision` | Source provenance, trust tiers, source hashes, retrieval contracts, and workflow context packages for the secure context layer. |
+| `recipes_evaluate_context_retrieval_decision` | `workflow_id`, `source_id`, `retrieval_mode`, plus optional source path/hash/runtime attributes | A deterministic allow, hold, deny, or kill-session decision before MCP-backed context is returned to an agent. |
+| `recipes_context_poisoning_guard_pack` | Optional `source_id`, `decision`, `severity`, `rule_id`, `actionable_only`, `limit` | Pre-retrieval scan results for prompt-injection, tool-poisoning, approval-bypass, hidden-instruction, encoded-payload, and exfiltration markers in registered context. |
+| `recipes_context_egress_boundary_pack` | Optional `data_class`, `destination_class`, `source_id`, `workflow_id` | Data-class, destination-class, source, and workflow egress policy for the secure context layer. |
+| `recipes_evaluate_context_egress_decision` | `workflow_id`, `destination_class`, plus optional `data_class`, `source_id`, `mcp_namespace`, tenant, residency, DPA, ZDR, and approval attributes | A deterministic allow, hold, deny, or kill-session decision before context leaves a tenant, model, MCP, telemetry, or public-corpus boundary. |
+| `recipes_agentic_threat_radar` | Optional `signal_id`, `priority`, `horizon`, `capability_id`, `minimum_score` | Current source-backed agentic AI and MCP threat signals, mapped product capabilities, buyer triggers, and roadmap priorities. |
 
 ## Runtime Behavior
 
@@ -145,8 +165,16 @@ The main TOML fields are:
 | `assurance_pack_path` | Local path for the generated agentic assurance pack. |
 | `identity_ledger_path` | Local path for the generated agent identity ledger. |
 | `connector_trust_pack_path` | Local path for the generated MCP connector trust pack. |
+| `connector_intake_pack_path` | Local path for the generated MCP connector intake pack. |
+| `authorization_conformance_pack_path` | Local path for the generated MCP authorization conformance pack. |
 | `red_team_drill_pack_path` | Local path for the generated agentic red-team drill pack. |
 | `readiness_scorecard_path` | Local path for the generated agentic readiness scorecard. |
+| `agentic_system_bom_path` | Local path for the generated Agentic System BOM. |
+| `agentic_run_receipt_pack_path` | Local path for the generated agentic run receipt pack. |
+| `secure_context_trust_pack_path` | Local path for the generated secure context trust pack. |
+| `context_poisoning_guard_pack_path` | Local path for the generated context poisoning guard pack. |
+| `context_egress_boundary_pack_path` | Local path for the generated context egress boundary pack. |
+| `threat_radar_path` | Local path for the generated agentic threat radar. |
 | `cache_ttl_seconds` | In-memory recipe index cache lifetime. |
 | `request_timeout_seconds` | HTTP timeout for fetching the recipe index. |
 | `max_results_default` | Default result count for list and search tools. |
@@ -165,9 +193,11 @@ Runtime environment variables control process behavior:
 
 The pack paths also have environment variable defaults in `mcp_server.py`
 such as `RECIPES_MCP_GATEWAY_POLICY_PATH`,
-`RECIPES_MCP_ASSURANCE_PACK_PATH`, and
-`RECIPES_MCP_READINESS_SCORECARD_PATH`. The TOML config can override those
-resolved defaults.
+`RECIPES_MCP_ASSURANCE_PACK_PATH`,
+`RECIPES_MCP_AUTHORIZATION_CONFORMANCE_PACK_PATH`,
+`RECIPES_MCP_READINESS_SCORECARD_PATH`, and
+`RECIPES_MCP_CONTEXT_EGRESS_BOUNDARY_PACK_PATH`. The TOML config can
+override those resolved defaults.
 
 ## Run Locally
 
@@ -327,6 +357,7 @@ capabilities are not feature flags hidden inside `mcp_server.py`.
 | Community prompt context | Available when present in the generated site index | Available |
 | Generated control, policy, evidence, trust, red-team, readiness, and identity packs | Available from local JSON files in this repo | Available, with hosted/enterprise packaging where provisioned |
 | Runtime gateway-policy decision evaluation | Available through `recipes_evaluate_mcp_gateway_decision` | Available as part of a production control path where provisioned |
+| Runtime MCP authorization conformance evaluation | Available through `recipes_evaluate_mcp_authorization_decision` | Available as hosted auth discovery, metadata checks, and scope-drift alerts where provisioned |
 | Agent-verified premium prompt packs | Not shipped in this repo | Premium/hosted content, where provisioned |
 | Higher-rate endpoints and SLA | Not shipped in this repo | Premium/hosted infrastructure, where provisioned |
 | Enterprise auth, audit logging, metering, and entitlement checks | Not built into `mcp_server.py` | Deployment or gateway controls, where provisioned |
@@ -339,6 +370,8 @@ claims that the repository does not support.
 
 - [MCP Gateway Policy]({{< relref "/security-remediation/mcp-gateway-policy" >}}) - generated policy pack for scoped tool access.
 - [MCP Runtime Decision Evaluator]({{< relref "/security-remediation/mcp-runtime-decision-evaluator" >}}) - deterministic runtime decisions.
+- [MCP Connector Intake Scanner]({{< relref "/security-remediation/mcp-connector-intake-scanner" >}}) - pre-promotion decisions for proposed MCP servers.
+- [MCP Authorization Conformance]({{< relref "/security-remediation/mcp-authorization-conformance" >}}) - resource, audience, and scope-drift decisions.
 - [MCP Connector Trust Registry]({{< relref "/security-remediation/mcp-connector-trust-registry" >}}) - connector trust evidence records.
 - [Agentic Assurance Pack]({{< relref "/security-remediation/agentic-assurance-pack" >}}) - enterprise assurance evidence.
 - [Agentic Red-Team Drills]({{< relref "/security-remediation/agentic-red-team-drills" >}}) - adversarial scenarios for workflow validation.

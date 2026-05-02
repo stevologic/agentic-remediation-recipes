@@ -1,6 +1,6 @@
 /*
  * Global docs search for non-home Hugo/Hextra pages.
- * Reuses the same recipes-index.json data source and ranking model as
+ * Reuses the same docs index data source and ranking model as
  * the landing page search so users can search from anywhere.
  */
 (function () {
@@ -53,7 +53,7 @@
           lastError = e;
         }
       }
-      if (lastError) console.warn('[docs-search] failed to load recipes index');
+      if (lastError) console.warn('[docs-search] failed to load docs index');
       docs = [];
       return docs;
     })();
@@ -122,7 +122,7 @@
       '<div class="docs-search-modal" hidden>' +
         '<div class="docs-search-backdrop" data-close="1"></div>' +
         '<div class="docs-search-panel" role="dialog" aria-modal="true" aria-label="Search docs">' +
-          '<label class="docs-search-label" for="docs-search-input">Search recipes</label>' +
+          '<label class="docs-search-label" for="docs-search-input">Search docs</label>' +
           '<div class="docs-search-input-wrap">' +
             '<input id="docs-search-input" class="docs-search-input" type="search" placeholder="Find docs, agents, prompts, and remediation workflows…" autocomplete="off" />' +
             '<button type="button" class="docs-search-close" data-close="1" aria-label="Close search">✕</button>' +

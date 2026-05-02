@@ -74,11 +74,15 @@ Copilot, Claude, Cursor, Codex, and Devin.
   {{< card link="/docs/agent-integration/" title="Integrate an AI Agent →" subtitle="Five integration shapes, per-agent walkthroughs, and the cross-cutting concerns (pinning, audit, fetched-content hygiene) that keep an integration trustworthy." >}}
   {{< card link="/security-remediation/control-plane/" title="Workflow Control Plane ->" subtitle="Declarative workflow manifests for scope, MCP context, gates, evidence, KPIs, and kill signals." >}}
   {{< card link="/security-remediation/mcp-gateway-policy/" title="MCP Gateway Policy Pack ->" subtitle="Generated policy contract for enforcing scoped MCP tool access and runtime kill signals." >}}
+  {{< card link="/security-remediation/mcp-connector-intake-scanner/" title="Connector Intake Scanner ->" subtitle="Generated admission decisions, control gaps, registry patch previews, and red-team drills for new or changed MCP servers." >}}
+  {{< card link="/security-remediation/mcp-authorization-conformance/" title="MCP Authorization Conformance ->" subtitle="Generated resource, audience, PKCE, token-passthrough, session-binding, and scope-drift decisions for MCP tool calls." >}}
   {{< card link="/security-remediation/mcp-connector-trust-registry/" title="MCP Connector Trust Registry ->" subtitle="Generated MCP namespace inventory with trust tiers, controls, evidence, promotion criteria, and kill signals." >}}
   {{< card link="/security-remediation/agentic-assurance-pack/" title="Agentic Assurance Pack ->" subtitle="Generated control evidence and AI/Agent BOM seed for enterprise review, procurement, and audit." >}}
   {{< card link="/security-remediation/agentic-readiness-scorecard/" title="Readiness Scorecard ->" subtitle="Generated scale, pilot, gate, and block decisions for enterprise workflow promotion." >}}
   {{< card link="/security-remediation/agentic-red-team-drills/" title="Red-Team Drill Pack ->" subtitle="Generated adversarial eval coverage for agentic workflows, MCP policy, connector trust, and runtime evidence." >}}
   {{< card link="/security-remediation/agent-identity-ledger/" title="Agent Identity Ledger ->" subtitle="Generated non-human identity and delegation contracts for approved workflows, agents, MCP scopes, and revocation." >}}
+  {{< card link="/security-remediation/agentic-run-receipts/" title="Agentic Run Receipts ->" subtitle="Generated proof templates for identity, context, tool decisions, egress, approvals, verifier output, evidence, and revocation." >}}
+  {{< card link="/security-remediation/context-egress-boundary/" title="Context Egress Boundary ->" subtitle="Generated data-class, destination-class, tenant-boundary, residency, DPA, and secret-egress decisions for MCP-backed context movement." >}}
 {{< /cards >}}
 
 ## How the site is organised

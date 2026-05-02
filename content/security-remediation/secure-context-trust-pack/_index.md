@@ -167,6 +167,9 @@ it.
   - the runtime enforcement contract.
 - [Secure Context Firewall]({{< relref "/security-remediation/secure-context-firewall" >}})
   - the runtime retrieval gate for context requests.
+- [Context Egress Boundary]({{< relref "/security-remediation/context-egress-boundary" >}})
+  - data-class and destination decisions before retrieved context leaves
+    a tenant, model, MCP, telemetry, or public-corpus boundary.
 - [MCP Connector Trust Registry]({{< relref "/security-remediation/mcp-connector-trust-registry" >}})
   - connector trust tiers and promotion criteria.
 - [Agentic System BOM]({{< relref "/security-remediation/agentic-system-bom" >}})

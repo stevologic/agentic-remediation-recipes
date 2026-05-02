@@ -22,9 +22,13 @@ import tomli
 from fastmcp import FastMCP
 
 try:
+    from scripts.evaluate_context_egress_decision import evaluate_context_egress_decision
+    from scripts.evaluate_mcp_authorization_decision import evaluate_mcp_authorization_decision
     from scripts.evaluate_mcp_gateway_decision import evaluate_policy_decision
     from scripts.evaluate_secure_context_retrieval import evaluate_context_retrieval_decision
 except ImportError:  # pragma: no cover - supports direct script-directory execution.
+    from evaluate_context_egress_decision import evaluate_context_egress_decision
+    from evaluate_mcp_authorization_decision import evaluate_mcp_authorization_decision
     from evaluate_mcp_gateway_decision import evaluate_policy_decision
     from evaluate_secure_context_retrieval import evaluate_context_retrieval_decision
 
@@ -66,6 +70,14 @@ class ServerConfig:
         "RECIPES_MCP_CONNECTOR_TRUST_PACK_PATH",
         "./data/evidence/mcp-connector-trust-pack.json",
     )
+    connector_intake_pack_path: str = os.environ.get(
+        "RECIPES_MCP_CONNECTOR_INTAKE_PACK_PATH",
+        "./data/evidence/mcp-connector-intake-pack.json",
+    )
+    authorization_conformance_pack_path: str = os.environ.get(
+        "RECIPES_MCP_AUTHORIZATION_CONFORMANCE_PACK_PATH",
+        "./data/evidence/mcp-authorization-conformance-pack.json",
+    )
     red_team_drill_pack_path: str = os.environ.get(
         "RECIPES_MCP_RED_TEAM_DRILL_PACK_PATH",
         "./data/evidence/agentic-red-team-drill-pack.json",
@@ -78,9 +90,21 @@ class ServerConfig:
         "RECIPES_MCP_AGENTIC_SYSTEM_BOM_PATH",
         "./data/evidence/agentic-system-bom.json",
     )
+    agentic_run_receipt_pack_path: str = os.environ.get(
+        "RECIPES_MCP_AGENTIC_RUN_RECEIPT_PACK_PATH",
+        "./data/evidence/agentic-run-receipt-pack.json",
+    )
     secure_context_trust_pack_path: str = os.environ.get(
         "RECIPES_MCP_SECURE_CONTEXT_TRUST_PACK_PATH",
         "./data/evidence/secure-context-trust-pack.json",
+    )
+    context_poisoning_guard_pack_path: str = os.environ.get(
+        "RECIPES_MCP_CONTEXT_POISONING_GUARD_PACK_PATH",
+        "./data/evidence/context-poisoning-guard-pack.json",
+    )
+    context_egress_boundary_pack_path: str = os.environ.get(
+        "RECIPES_MCP_CONTEXT_EGRESS_BOUNDARY_PACK_PATH",
+        "./data/evidence/context-egress-boundary-pack.json",
     )
     threat_radar_path: str = os.environ.get(
         "RECIPES_MCP_THREAT_RADAR_PATH",
@@ -806,6 +830,293 @@ class MCPConnectorTrustPack:
         }
 
 
+class MCPConnectorIntakePack:
+    def __init__(self, pack_path: str):
+        self.path = Path(pack_path)
+        self._mtime: float | None = None
+        self._pack: dict[str, Any] | None = None
+        self._candidate_by_id: dict[str, dict[str, Any]] = {}
+        self._candidate_by_namespace: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._pack is not None and self._mtime == stat.st_mtime:
+            return self._pack
+
+        pack = json.loads(self.path.read_text(encoding="utf-8"))
+        candidates = pack.get("candidate_evaluations") if isinstance(pack, dict) else []
+        self._candidate_by_id = {
+            str(candidate.get("candidate_id")): candidate
+            for candidate in candidates
+            if isinstance(candidate, dict) and candidate.get("candidate_id")
+        }
+        self._candidate_by_namespace = {
+            str(candidate.get("namespace")): candidate
+            for candidate in candidates
+            if isinstance(candidate, dict) and candidate.get("namespace")
+        }
+        self._pack = pack
+        self._mtime = stat.st_mtime
+        return pack
+
+    @staticmethod
+    def _preview(candidate: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "candidate_id": candidate.get("candidate_id"),
+            "control_gap_count": len(candidate.get("control_gaps", []) or []),
+            "intake_decision": candidate.get("intake_decision"),
+            "namespace": candidate.get("namespace"),
+            "recommended_trust_tier": candidate.get("recommended_trust_tier"),
+            "risk_score": candidate.get("risk_score"),
+            "title": candidate.get("title"),
+            "transport": candidate.get("transport"),
+        }
+
+    def get(
+        self,
+        candidate_id: str | None = None,
+        namespace: str | None = None,
+        decision: str | None = None,
+    ) -> dict[str, Any]:
+        try:
+            pack = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "error": f"failed to load MCP connector intake pack: {exc}",
+                "pack_path": str(self.path),
+            }
+
+        if pack is None:
+            return {
+                "available": False,
+                "error": "MCP connector intake pack is not present",
+                "pack_path": str(self.path),
+            }
+
+        if not isinstance(pack, dict):
+            return {
+                "available": False,
+                "error": "MCP connector intake pack root must be an object",
+                "pack_path": str(self.path),
+            }
+
+        if candidate_id:
+            candidate = self._candidate_by_id.get(candidate_id.strip())
+            return {
+                "available": True,
+                "candidate": candidate,
+                "candidate_id": candidate_id,
+                "found": candidate is not None,
+            }
+
+        if namespace:
+            candidate = self._candidate_by_namespace.get(namespace.strip())
+            return {
+                "available": True,
+                "candidate": candidate,
+                "found": candidate is not None,
+                "namespace": namespace,
+            }
+
+        candidates = list(self._candidate_by_id.values())
+        if decision:
+            key = decision.strip()
+            candidates = [
+                candidate
+                for candidate in candidates
+                if str(candidate.get("intake_decision")) == key
+            ]
+
+        return {
+            "available": True,
+            "candidate_evaluations": [self._preview(candidate) for candidate in candidates],
+            "decision": decision,
+            "enterprise_adoption_packet": pack.get("enterprise_adoption_packet"),
+            "generated_at": pack.get("generated_at"),
+            "intake_contract": pack.get("intake_contract"),
+            "intake_summary": pack.get("intake_summary"),
+            "schema_version": pack.get("schema_version"),
+            "source_artifacts": pack.get("source_artifacts"),
+            "standards_alignment": pack.get("standards_alignment", []),
+        }
+
+
+class MCPAuthorizationConformancePack:
+    def __init__(self, pack_path: str):
+        self.path = Path(pack_path)
+        self._mtime: float | None = None
+        self._pack: dict[str, Any] | None = None
+        self._profile_by_id: dict[str, dict[str, Any]] = {}
+        self._profile_by_namespace: dict[str, dict[str, Any]] = {}
+        self._workflow_by_id: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._pack is not None and self._mtime == stat.st_mtime:
+            return self._pack
+
+        pack = json.loads(self.path.read_text(encoding="utf-8"))
+        registered = pack.get("registered_connector_authorization") if isinstance(pack, dict) else []
+        candidates = pack.get("candidate_authorization") if isinstance(pack, dict) else []
+        profiles = [
+            profile
+            for profile in [*registered, *candidates]
+            if isinstance(profile, dict)
+        ]
+        self._profile_by_id = {
+            str(profile.get("connector_id") or profile.get("candidate_id")): profile
+            for profile in profiles
+            if profile.get("connector_id") or profile.get("candidate_id")
+        }
+        self._profile_by_namespace = {
+            str(profile.get("namespace")): profile
+            for profile in profiles
+            if profile.get("namespace")
+        }
+        self._workflow_by_id = {
+            str(workflow.get("workflow_id")): workflow
+            for workflow in pack.get("workflow_authorization_map", [])
+            if isinstance(workflow, dict) and workflow.get("workflow_id")
+        }
+        self._pack = pack
+        self._mtime = stat.st_mtime
+        return pack
+
+    @staticmethod
+    def _profile_preview(profile: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "access_modes": profile.get("access_modes", []),
+            "canonical_resource_uri": profile.get("canonical_resource_uri"),
+            "conformance_decision": profile.get("conformance_decision"),
+            "connector_id": profile.get("connector_id") or profile.get("candidate_id"),
+            "control_gap_count": len(profile.get("control_gaps", []) or []),
+            "evidence_mode": profile.get("evidence_mode"),
+            "metadata_evidence_required_count": len(profile.get("metadata_evidence_required", []) or []),
+            "namespace": profile.get("namespace"),
+            "title": profile.get("title"),
+            "transport": profile.get("transport"),
+        }
+
+    def get(
+        self,
+        connector_id: str | None = None,
+        namespace: str | None = None,
+        workflow_id: str | None = None,
+        decision: str | None = None,
+    ) -> dict[str, Any]:
+        try:
+            pack = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "error": f"failed to load MCP authorization conformance pack: {exc}",
+                "pack_path": str(self.path),
+            }
+
+        if pack is None:
+            return {
+                "available": False,
+                "error": "MCP authorization conformance pack is not present",
+                "pack_path": str(self.path),
+            }
+
+        if not isinstance(pack, dict):
+            return {
+                "available": False,
+                "error": "MCP authorization conformance pack root must be an object",
+                "pack_path": str(self.path),
+            }
+
+        if connector_id:
+            key = connector_id.strip()
+            profile = self._profile_by_id.get(key)
+            return {
+                "available": True,
+                "authorization_profile": profile,
+                "connector_id": key,
+                "found": profile is not None,
+            }
+
+        if namespace:
+            key = namespace.strip()
+            profile = self._profile_by_namespace.get(key)
+            return {
+                "available": True,
+                "authorization_profile": profile,
+                "found": profile is not None,
+                "namespace": key,
+            }
+
+        if workflow_id:
+            key = workflow_id.strip()
+            workflow = self._workflow_by_id.get(key)
+            return {
+                "available": True,
+                "found": workflow is not None,
+                "workflow_authorization": workflow,
+                "workflow_id": key,
+            }
+
+        profiles = list(self._profile_by_id.values())
+        if decision:
+            key = decision.strip()
+            profiles = [
+                profile
+                for profile in profiles
+                if str(profile.get("conformance_decision")) == key
+            ]
+
+        return {
+            "available": True,
+            "authorization_contract": pack.get("authorization_contract"),
+            "authorization_summary": pack.get("authorization_summary"),
+            "connector_authorization": [self._profile_preview(profile) for profile in profiles],
+            "control_checks": pack.get("control_checks", []),
+            "decision": decision,
+            "enterprise_adoption_packet": pack.get("enterprise_adoption_packet"),
+            "generated_at": pack.get("generated_at"),
+            "schema_version": pack.get("schema_version"),
+            "source_artifacts": pack.get("source_artifacts"),
+            "standards_alignment": pack.get("standards_alignment", []),
+        }
+
+    def evaluate(self, runtime_request: dict[str, Any]) -> dict[str, Any]:
+        try:
+            pack = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "error": f"failed to load MCP authorization conformance pack: {exc}",
+                "pack_path": str(self.path),
+            }
+
+        if pack is None:
+            return {
+                "available": False,
+                "error": "MCP authorization conformance pack is not present",
+                "pack_path": str(self.path),
+            }
+
+        try:
+            decision = evaluate_mcp_authorization_decision(pack, runtime_request)
+        except Exception as exc:
+            return {
+                "available": False,
+                "error": f"failed to evaluate MCP authorization decision: {exc}",
+                "pack_path": str(self.path),
+            }
+
+        decision["available"] = True
+        return decision
+
+
 class AgenticRedTeamDrillPack:
     def __init__(self, pack_path: str):
         self.path = Path(pack_path)
@@ -1248,6 +1559,133 @@ class AgenticSystemBOM:
         }
 
 
+class AgenticRunReceiptPack:
+    def __init__(self, pack_path: str):
+        self.path = Path(pack_path)
+        self._mtime: float | None = None
+        self._pack: dict[str, Any] | None = None
+        self._template_by_receipt_id: dict[str, dict[str, Any]] = {}
+        self._template_by_workflow_id: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._pack is not None and self._mtime == stat.st_mtime:
+            return self._pack
+
+        pack = json.loads(self.path.read_text(encoding="utf-8"))
+        templates = pack.get("workflow_receipt_templates") if isinstance(pack, dict) else []
+        self._template_by_receipt_id = {
+            str(template.get("receipt_id")): template
+            for template in templates
+            if isinstance(template, dict) and template.get("receipt_id")
+        }
+        self._template_by_workflow_id = {
+            str(template.get("workflow_id")): template
+            for template in templates
+            if isinstance(template, dict) and template.get("workflow_id")
+        }
+        self._pack = pack
+        self._mtime = stat.st_mtime
+        return pack
+
+    @staticmethod
+    def _template_preview(template: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "agent_classes": template.get("agent_classes", []),
+            "approval_required_namespaces": template.get("approval_required_namespaces", []),
+            "context_package_hash": template.get("context_package_hash"),
+            "egress_policy_hash": template.get("egress_policy_hash"),
+            "mcp_namespaces": template.get("mcp_namespaces", []),
+            "readiness_decision": template.get("readiness_decision"),
+            "readiness_score": template.get("readiness_score"),
+            "receipt_id": template.get("receipt_id"),
+            "receipt_status": template.get("receipt_status"),
+            "red_team_drill_count": template.get("red_team_drill_count"),
+            "required_event_class_count": template.get("required_event_class_count"),
+            "title": template.get("title"),
+            "workflow_id": template.get("workflow_id"),
+        }
+
+    def get(
+        self,
+        workflow_id: str | None = None,
+        receipt_id: str | None = None,
+        minimum_score: int | None = None,
+    ) -> dict[str, Any]:
+        try:
+            pack = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "error": f"failed to load agentic run receipt pack: {exc}",
+                "pack_path": str(self.path),
+            }
+
+        if pack is None:
+            return {
+                "available": False,
+                "error": "agentic run receipt pack is not present",
+                "pack_path": str(self.path),
+            }
+
+        if not isinstance(pack, dict):
+            return {
+                "available": False,
+                "error": "agentic run receipt pack root must be an object",
+                "pack_path": str(self.path),
+            }
+
+        if receipt_id:
+            key = receipt_id.strip()
+            template = self._template_by_receipt_id.get(key)
+            return {
+                "available": True,
+                "found": template is not None,
+                "receipt_id": key,
+                "receipt_template": template,
+            }
+
+        if workflow_id:
+            key = workflow_id.strip()
+            template = self._template_by_workflow_id.get(key)
+            return {
+                "available": True,
+                "found": template is not None,
+                "receipt_template": template,
+                "workflow_id": key,
+            }
+
+        templates = list(self._template_by_workflow_id.values())
+        if minimum_score is not None:
+            templates = [
+                template
+                for template in templates
+                if isinstance(template.get("readiness_score"), int)
+                and template.get("readiness_score") >= minimum_score
+            ]
+
+        return {
+            "available": True,
+            "enterprise_adoption_packet": pack.get("enterprise_adoption_packet"),
+            "example_receipt_envelope": pack.get("example_receipt_envelope"),
+            "generated_at": pack.get("generated_at"),
+            "minimum_score": minimum_score,
+            "receipt_contract": pack.get("receipt_contract"),
+            "receipt_pack_id": pack.get("receipt_pack_id"),
+            "receipt_summary": pack.get("receipt_summary"),
+            "schema_version": pack.get("schema_version"),
+            "source_artifacts": pack.get("source_artifacts"),
+            "standards_alignment": pack.get("standards_alignment", []),
+            "workflow_receipt_templates": [
+                self._template_preview(template)
+                for template in templates
+            ],
+        }
+
+
 class SecureContextTrustPack:
     def __init__(self, pack_path: str):
         self.path = Path(pack_path)
@@ -1556,6 +1994,404 @@ class AgenticThreatRadar:
         }
 
 
+class ContextPoisoningGuardPack:
+    def __init__(self, pack_path: str):
+        self.path = Path(pack_path)
+        self._mtime: float | None = None
+        self._pack: dict[str, Any] | None = None
+        self._source_by_id: dict[str, dict[str, Any]] = {}
+        self._finding_by_rule: dict[str, list[dict[str, Any]]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._pack is not None and self._mtime == stat.st_mtime:
+            return self._pack
+
+        pack = json.loads(self.path.read_text(encoding="utf-8"))
+        sources = pack.get("source_results") if isinstance(pack, dict) else []
+        findings = pack.get("findings") if isinstance(pack, dict) else []
+        self._source_by_id = {
+            str(source.get("source_id")): source
+            for source in sources
+            if isinstance(source, dict) and source.get("source_id")
+        }
+        by_rule: dict[str, list[dict[str, Any]]] = {}
+        for finding in findings:
+            if not isinstance(finding, dict) or not finding.get("rule_id"):
+                continue
+            by_rule.setdefault(str(finding.get("rule_id")), []).append(finding)
+        self._finding_by_rule = by_rule
+        self._pack = pack
+        self._mtime = stat.st_mtime
+        return pack
+
+    @staticmethod
+    def _source_preview(source: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "actionable_finding_count": source.get("actionable_finding_count"),
+            "decision": source.get("decision"),
+            "file_count": source.get("file_count"),
+            "finding_count": source.get("finding_count"),
+            "risk_family_counts": source.get("risk_family_counts", {}),
+            "root": source.get("root"),
+            "severity_counts": source.get("severity_counts", {}),
+            "source_hash": source.get("source_hash"),
+            "source_id": source.get("source_id"),
+            "title": source.get("title"),
+            "trust_tier": source.get("trust_tier"),
+        }
+
+    @staticmethod
+    def _finding_preview(finding: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "actionable": finding.get("actionable"),
+            "disposition": finding.get("disposition"),
+            "line": finding.get("line"),
+            "match": finding.get("match"),
+            "path": finding.get("path"),
+            "risk_family": finding.get("risk_family"),
+            "rule_id": finding.get("rule_id"),
+            "severity": finding.get("severity"),
+            "source_id": finding.get("source_id"),
+        }
+
+    def get(
+        self,
+        source_id: str | None = None,
+        decision: str | None = None,
+        severity: str | None = None,
+        rule_id: str | None = None,
+        actionable_only: bool = False,
+        limit: int | None = None,
+    ) -> dict[str, Any]:
+        try:
+            pack = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "error": f"failed to load context poisoning guard pack: {exc}",
+                "pack_path": str(self.path),
+            }
+
+        if pack is None:
+            return {
+                "available": False,
+                "error": "context poisoning guard pack is not present",
+                "pack_path": str(self.path),
+            }
+
+        if not isinstance(pack, dict):
+            return {
+                "available": False,
+                "error": "context poisoning guard pack root must be an object",
+                "pack_path": str(self.path),
+            }
+
+        if source_id:
+            source = self._source_by_id.get(source_id.strip())
+            findings = [
+                finding
+                for finding in pack.get("findings", [])
+                if isinstance(finding, dict)
+                and str(finding.get("source_id")) == source_id.strip()
+            ]
+            if severity:
+                findings = [
+                    finding
+                    for finding in findings
+                    if str(finding.get("severity")) == severity.strip()
+                ]
+            if rule_id:
+                findings = [
+                    finding
+                    for finding in findings
+                    if str(finding.get("rule_id")) == rule_id.strip()
+                ]
+            if actionable_only:
+                findings = [finding for finding in findings if finding.get("actionable")]
+            cap = max(1, min(limit or 25, 100))
+            return {
+                "available": True,
+                "finding_count": len(findings),
+                "findings": [self._finding_preview(finding) for finding in findings[:cap]],
+                "found": source is not None,
+                "source": source,
+                "source_id": source_id,
+            }
+
+        sources = list(self._source_by_id.values())
+        if decision:
+            key = decision.strip()
+            sources = [
+                source
+                for source in sources
+                if str(source.get("decision")) == key
+            ]
+
+        findings = [
+            finding
+            for finding in pack.get("findings", [])
+            if isinstance(finding, dict)
+        ]
+        if severity:
+            findings = [
+                finding
+                for finding in findings
+                if str(finding.get("severity")) == severity.strip()
+            ]
+        if rule_id:
+            findings = [
+                finding
+                for finding in findings
+                if str(finding.get("rule_id")) == rule_id.strip()
+            ]
+        if actionable_only:
+            findings = [finding for finding in findings if finding.get("actionable")]
+        cap = max(1, min(limit or 25, 100))
+
+        return {
+            "available": True,
+            "decision": decision,
+            "decision_contract": pack.get("decision_contract"),
+            "enterprise_adoption_packet": pack.get("enterprise_adoption_packet"),
+            "finding_count": len(findings),
+            "findings": [self._finding_preview(finding) for finding in findings[:cap]],
+            "generated_at": pack.get("generated_at"),
+            "guard_summary": pack.get("guard_summary"),
+            "schema_version": pack.get("schema_version"),
+            "scanner_rules": pack.get("scanner_rules", []),
+            "severity": severity,
+            "source_artifacts": pack.get("source_artifacts"),
+            "source_count": len(sources),
+            "sources": [self._source_preview(source) for source in sources],
+            "standards_alignment": pack.get("standards_alignment", []),
+        }
+
+
+class ContextEgressBoundaryPack:
+    def __init__(self, pack_path: str):
+        self.path = Path(pack_path)
+        self._mtime: float | None = None
+        self._pack: dict[str, Any] | None = None
+        self._source_by_id: dict[str, dict[str, Any]] = {}
+        self._workflow_by_id: dict[str, dict[str, Any]] = {}
+        self._policy_by_data_class: dict[str, dict[str, Any]] = {}
+        self._destination_by_id: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._pack is not None and self._mtime == stat.st_mtime:
+            return self._pack
+
+        pack = json.loads(self.path.read_text(encoding="utf-8"))
+        sources = pack.get("source_egress_map") if isinstance(pack, dict) else []
+        workflows = pack.get("workflow_egress_map") if isinstance(pack, dict) else []
+        policies = pack.get("data_class_policies") if isinstance(pack, dict) else []
+        destinations = pack.get("destination_classes") if isinstance(pack, dict) else []
+        self._source_by_id = {
+            str(source.get("source_id")): source
+            for source in sources
+            if isinstance(source, dict) and source.get("source_id")
+        }
+        self._workflow_by_id = {
+            str(workflow.get("workflow_id")): workflow
+            for workflow in workflows
+            if isinstance(workflow, dict) and workflow.get("workflow_id")
+        }
+        self._policy_by_data_class = {
+            str(policy.get("id")): policy
+            for policy in policies
+            if isinstance(policy, dict) and policy.get("id")
+        }
+        self._destination_by_id = {
+            str(destination.get("id")): destination
+            for destination in destinations
+            if isinstance(destination, dict) and destination.get("id")
+        }
+        self._pack = pack
+        self._mtime = stat.st_mtime
+        return pack
+
+    @staticmethod
+    def _source_preview(source: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "data_class": source.get("data_class"),
+            "default_decision": source.get("default_decision"),
+            "exposure": source.get("exposure"),
+            "root": source.get("root"),
+            "sensitivity": source.get("sensitivity"),
+            "source_hash": source.get("source_hash"),
+            "source_id": source.get("source_id"),
+            "title": source.get("title"),
+            "trust_tier": source.get("trust_tier"),
+        }
+
+    @staticmethod
+    def _workflow_preview(workflow: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "egress_policy_hash": workflow.get("egress_policy_hash"),
+            "maturity_stage": workflow.get("maturity_stage"),
+            "namespace_count": len(workflow.get("namespace_policies", []) or []),
+            "public_path": workflow.get("public_path"),
+            "status": workflow.get("status"),
+            "title": workflow.get("title"),
+            "workflow_id": workflow.get("workflow_id"),
+        }
+
+    @staticmethod
+    def _policy_preview(policy: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "allowed_destination_classes": policy.get("allowed_destination_classes", []),
+            "default_decision": policy.get("default_decision"),
+            "hold_destination_classes": policy.get("hold_destination_classes", []),
+            "id": policy.get("id"),
+            "prohibited_destination_classes": policy.get("prohibited_destination_classes", []),
+            "sensitivity": policy.get("sensitivity"),
+            "title": policy.get("title"),
+        }
+
+    @staticmethod
+    def _destination_preview(destination: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "category": destination.get("category"),
+            "external_processor": destination.get("external_processor"),
+            "id": destination.get("id"),
+            "requires_dpa": destination.get("requires_dpa"),
+            "requires_residency_match": destination.get("requires_residency_match"),
+            "requires_zero_data_retention": destination.get("requires_zero_data_retention"),
+            "title": destination.get("title"),
+            "trusted": destination.get("trusted"),
+        }
+
+    def get(
+        self,
+        data_class: str | None = None,
+        destination_class: str | None = None,
+        source_id: str | None = None,
+        workflow_id: str | None = None,
+    ) -> dict[str, Any]:
+        try:
+            pack = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "error": f"failed to load context egress boundary pack: {exc}",
+                "pack_path": str(self.path),
+            }
+
+        if pack is None:
+            return {
+                "available": False,
+                "error": "context egress boundary pack is not present",
+                "pack_path": str(self.path),
+            }
+
+        if not isinstance(pack, dict):
+            return {
+                "available": False,
+                "error": "context egress boundary pack root must be an object",
+                "pack_path": str(self.path),
+            }
+
+        if source_id:
+            source = self._source_by_id.get(source_id.strip())
+            return {
+                "available": True,
+                "found": source is not None,
+                "source": source,
+                "source_id": source_id,
+            }
+
+        if workflow_id:
+            workflow = self._workflow_by_id.get(workflow_id.strip())
+            return {
+                "available": True,
+                "found": workflow is not None,
+                "workflow_egress": workflow,
+                "workflow_id": workflow_id,
+            }
+
+        if data_class:
+            policy = self._policy_by_data_class.get(data_class.strip())
+            return {
+                "available": True,
+                "data_class": data_class,
+                "found": policy is not None,
+                "policy": policy,
+            }
+
+        if destination_class:
+            destination = self._destination_by_id.get(destination_class.strip())
+            return {
+                "available": True,
+                "destination": destination,
+                "destination_class": destination_class,
+                "found": destination is not None,
+            }
+
+        return {
+            "available": True,
+            "data_class_policies": [
+                self._policy_preview(policy)
+                for policy in self._policy_by_data_class.values()
+            ],
+            "destination_classes": [
+                self._destination_preview(destination)
+                for destination in self._destination_by_id.values()
+            ],
+            "egress_boundary_summary": pack.get("egress_boundary_summary"),
+            "egress_decision_contract": pack.get("egress_decision_contract"),
+            "enterprise_adoption_packet": pack.get("enterprise_adoption_packet"),
+            "generated_at": pack.get("generated_at"),
+            "schema_version": pack.get("schema_version"),
+            "source_artifacts": pack.get("source_artifacts"),
+            "sources": [
+                self._source_preview(source)
+                for source in self._source_by_id.values()
+            ],
+            "standards_alignment": pack.get("standards_alignment", []),
+            "workflows": [
+                self._workflow_preview(workflow)
+                for workflow in self._workflow_by_id.values()
+            ],
+        }
+
+    def evaluate(self, runtime_request: dict[str, Any]) -> dict[str, Any]:
+        try:
+            pack = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "error": f"failed to load context egress boundary pack: {exc}",
+                "pack_path": str(self.path),
+            }
+
+        if pack is None:
+            return {
+                "available": False,
+                "error": "context egress boundary pack is not present",
+                "pack_path": str(self.path),
+            }
+
+        try:
+            decision = evaluate_context_egress_decision(pack, runtime_request)
+        except Exception as exc:
+            return {
+                "available": False,
+                "error": f"failed to evaluate context egress decision: {exc}",
+                "pack_path": str(self.path),
+            }
+
+        decision["available"] = True
+        return decision
+
+
 def load_config(config_path: str) -> ServerConfig:
     path = Path(config_path)
     cfg = ServerConfig()
@@ -1582,6 +2418,14 @@ def load_config(config_path: str) -> ServerConfig:
         "connector_trust_pack_path",
         cfg.connector_trust_pack_path,
     )
+    cfg.connector_intake_pack_path = data.get(
+        "connector_intake_pack_path",
+        cfg.connector_intake_pack_path,
+    )
+    cfg.authorization_conformance_pack_path = data.get(
+        "authorization_conformance_pack_path",
+        cfg.authorization_conformance_pack_path,
+    )
     cfg.red_team_drill_pack_path = data.get(
         "red_team_drill_pack_path",
         cfg.red_team_drill_pack_path,
@@ -1594,9 +2438,21 @@ def load_config(config_path: str) -> ServerConfig:
         "agentic_system_bom_path",
         cfg.agentic_system_bom_path,
     )
+    cfg.agentic_run_receipt_pack_path = data.get(
+        "agentic_run_receipt_pack_path",
+        cfg.agentic_run_receipt_pack_path,
+    )
     cfg.secure_context_trust_pack_path = data.get(
         "secure_context_trust_pack_path",
         cfg.secure_context_trust_pack_path,
+    )
+    cfg.context_poisoning_guard_pack_path = data.get(
+        "context_poisoning_guard_pack_path",
+        cfg.context_poisoning_guard_pack_path,
+    )
+    cfg.context_egress_boundary_pack_path = data.get(
+        "context_egress_boundary_pack_path",
+        cfg.context_egress_boundary_pack_path,
     )
     cfg.threat_radar_path = data.get("threat_radar_path", cfg.threat_radar_path)
     return cfg
@@ -1649,10 +2505,15 @@ gateway_policy = MCPGatewayPolicyPack(config.gateway_policy_path)
 assurance_pack = AgenticAssurancePack(config.assurance_pack_path)
 identity_ledger = AgentIdentityDelegationLedger(config.identity_ledger_path)
 connector_trust_pack = MCPConnectorTrustPack(config.connector_trust_pack_path)
+connector_intake_pack = MCPConnectorIntakePack(config.connector_intake_pack_path)
+authorization_conformance_pack = MCPAuthorizationConformancePack(config.authorization_conformance_pack_path)
 red_team_drill_pack = AgenticRedTeamDrillPack(config.red_team_drill_pack_path)
 readiness_scorecard = AgenticReadinessScorecard(config.readiness_scorecard_path)
 agentic_system_bom = AgenticSystemBOM(config.agentic_system_bom_path)
+agentic_run_receipt_pack = AgenticRunReceiptPack(config.agentic_run_receipt_pack_path)
 secure_context_trust_pack = SecureContextTrustPack(config.secure_context_trust_pack_path)
+context_poisoning_guard_pack = ContextPoisoningGuardPack(config.context_poisoning_guard_pack_path)
+context_egress_boundary_pack = ContextEgressBoundaryPack(config.context_egress_boundary_pack_path)
 threat_radar = AgenticThreatRadar(config.threat_radar_path)
 mcp = FastMCP(name="security-recipes-mcp")
 
@@ -1671,10 +2532,15 @@ async def recipes_server_info() -> dict[str, Any]:
         "assurance_pack_path": config.assurance_pack_path,
         "identity_ledger_path": config.identity_ledger_path,
         "connector_trust_pack_path": config.connector_trust_pack_path,
+        "connector_intake_pack_path": config.connector_intake_pack_path,
+        "authorization_conformance_pack_path": config.authorization_conformance_pack_path,
         "red_team_drill_pack_path": config.red_team_drill_pack_path,
         "readiness_scorecard_path": config.readiness_scorecard_path,
         "agentic_system_bom_path": config.agentic_system_bom_path,
+        "agentic_run_receipt_pack_path": config.agentic_run_receipt_pack_path,
         "secure_context_trust_pack_path": config.secure_context_trust_pack_path,
+        "context_poisoning_guard_pack_path": config.context_poisoning_guard_pack_path,
+        "context_egress_boundary_pack_path": config.context_egress_boundary_pack_path,
         "threat_radar_path": config.threat_radar_path,
     }
 
@@ -1808,6 +2674,82 @@ async def recipes_mcp_connector_trust_pack(
 
 
 @mcp.tool()
+async def recipes_mcp_connector_intake_pack(
+    candidate_id: str | None = None,
+    namespace: str | None = None,
+    decision: str | None = None,
+) -> dict[str, Any]:
+    """Return MCP connector intake decisions, risk findings, gaps, and promotion plans."""
+    return connector_intake_pack.get(
+        candidate_id=candidate_id,
+        namespace=namespace,
+        decision=decision,
+    )
+
+
+@mcp.tool()
+async def recipes_mcp_authorization_conformance_pack(
+    connector_id: str | None = None,
+    namespace: str | None = None,
+    workflow_id: str | None = None,
+    decision: str | None = None,
+) -> dict[str, Any]:
+    """Return MCP authorization conformance, scope-drift, and token-boundary evidence."""
+    return authorization_conformance_pack.get(
+        connector_id=connector_id,
+        namespace=namespace,
+        workflow_id=workflow_id,
+        decision=decision,
+    )
+
+
+@mcp.tool()
+async def recipes_evaluate_mcp_authorization_decision(
+    workflow_id: str,
+    namespace: str,
+    requested_access_mode: str,
+    connector_id: str | None = None,
+    agent_id: str | None = None,
+    run_id: str | None = None,
+    client_id: str | None = None,
+    resource_indicator: str | None = None,
+    token_audience: str | None = None,
+    token_issuer: str | None = None,
+    token_expires_at: str | None = None,
+    token_scopes: list[str] | None = None,
+    consent_record_id: str | None = None,
+    session_id: str | None = None,
+    correlation_id: str | None = None,
+    gateway_policy_hash: str | None = None,
+    token_passthrough: bool = False,
+    contains_secret_scope: bool = False,
+) -> dict[str, Any]:
+    """Return a deterministic MCP authorization decision before a tool call is forwarded."""
+    return authorization_conformance_pack.evaluate(
+        {
+            "agent_id": agent_id,
+            "client_id": client_id,
+            "connector_id": connector_id,
+            "consent_record_id": consent_record_id,
+            "contains_secret_scope": contains_secret_scope,
+            "correlation_id": correlation_id,
+            "gateway_policy_hash": gateway_policy_hash,
+            "namespace": namespace,
+            "requested_access_mode": requested_access_mode,
+            "resource_indicator": resource_indicator,
+            "run_id": run_id,
+            "session_id": session_id,
+            "token_audience": token_audience,
+            "token_expires_at": token_expires_at,
+            "token_issuer": token_issuer,
+            "token_passthrough": token_passthrough,
+            "token_scopes": token_scopes or [],
+            "workflow_id": workflow_id,
+        }
+    )
+
+
+@mcp.tool()
 async def recipes_agentic_red_team_drill_pack(
     scenario_id: str | None = None,
     workflow_id: str | None = None,
@@ -1852,6 +2794,20 @@ async def recipes_agentic_system_bom(
 
 
 @mcp.tool()
+async def recipes_agentic_run_receipt_pack(
+    workflow_id: str | None = None,
+    receipt_id: str | None = None,
+    minimum_score: int | None = None,
+) -> dict[str, Any]:
+    """Return agent run receipt templates for identity, context, tools, egress, approval, and evidence."""
+    return agentic_run_receipt_pack.get(
+        workflow_id=workflow_id,
+        receipt_id=receipt_id,
+        minimum_score=minimum_score,
+    )
+
+
+@mcp.tool()
 async def recipes_secure_context_trust_pack(
     source_id: str | None = None,
     workflow_id: str | None = None,
@@ -1891,6 +2847,82 @@ async def recipes_evaluate_context_retrieval_decision(
             "source_id": source_id,
             "tenant_id": tenant_id,
             "workflow_id": workflow_id,
+        }
+    )
+
+
+@mcp.tool()
+async def recipes_context_poisoning_guard_pack(
+    source_id: str | None = None,
+    decision: str | None = None,
+    severity: str | None = None,
+    rule_id: str | None = None,
+    actionable_only: bool = False,
+    limit: int | None = None,
+) -> dict[str, Any]:
+    """Return context-poisoning scan results for registered secure-context sources."""
+    return context_poisoning_guard_pack.get(
+        source_id=source_id,
+        decision=decision,
+        severity=severity,
+        rule_id=rule_id,
+        actionable_only=actionable_only,
+        limit=limit,
+    )
+
+
+@mcp.tool()
+async def recipes_context_egress_boundary_pack(
+    data_class: str | None = None,
+    destination_class: str | None = None,
+    source_id: str | None = None,
+    workflow_id: str | None = None,
+) -> dict[str, Any]:
+    """Return context egress data classes, destination classes, and workflow boundary policy."""
+    return context_egress_boundary_pack.get(
+        data_class=data_class,
+        destination_class=destination_class,
+        source_id=source_id,
+        workflow_id=workflow_id,
+    )
+
+
+@mcp.tool()
+async def recipes_evaluate_context_egress_decision(
+    workflow_id: str,
+    destination_class: str,
+    data_class: str | None = None,
+    source_id: str | None = None,
+    mcp_namespace: str | None = None,
+    tenant_id: str | None = None,
+    destination_trust_tier: str | None = None,
+    contains_secret: bool = False,
+    contains_unredacted_pii: bool = False,
+    dpa_in_place: bool = False,
+    zero_data_retention: bool = False,
+    residency_region: str | None = None,
+    required_region: str | None = None,
+    human_approval_record: dict[str, Any] | None = None,
+    egress_path: str | None = None,
+) -> dict[str, Any]:
+    """Return a deterministic allow, hold, deny, or kill decision before context egress."""
+    return context_egress_boundary_pack.evaluate(
+        {
+            "contains_secret": contains_secret,
+            "contains_unredacted_pii": contains_unredacted_pii,
+            "data_class": data_class,
+            "destination_class": destination_class,
+            "destination_trust_tier": destination_trust_tier,
+            "dpa_in_place": dpa_in_place,
+            "egress_path": egress_path,
+            "human_approval_record": human_approval_record,
+            "mcp_namespace": mcp_namespace,
+            "residency_region": residency_region,
+            "required_region": required_region,
+            "source_id": source_id,
+            "tenant_id": tenant_id,
+            "workflow_id": workflow_id,
+            "zero_data_retention": zero_data_retention,
         }
     )
 
