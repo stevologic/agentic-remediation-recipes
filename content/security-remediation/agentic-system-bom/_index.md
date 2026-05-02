@@ -171,6 +171,8 @@ changes, and the site cannot claim inspectability with stale evidence.
   - the runtime enforcement contract.
 - [MCP Connector Trust Registry]({{< relref "/security-remediation/mcp-connector-trust-registry" >}})
   - connector trust tiers and promotion criteria.
+- [Secure Context Trust Pack]({{< relref "/security-remediation/secure-context-trust-pack" >}})
+  - context provenance, retrieval policy, source hashes, and workflow context packages.
 - [Agent Identity & Delegation Ledger]({{< relref "/security-remediation/agent-identity-ledger" >}})
   - non-human identity and delegated authority.
 - [Agentic Red-Team Drill Pack]({{< relref "/security-remediation/agentic-red-team-drills" >}})

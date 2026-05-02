@@ -220,6 +220,11 @@ jobs:
         run: |
           python3 scripts/generate_agentic_system_bom.py --check
 
+      - name: Validate secure context trust pack
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_secure_context_trust_pack.py --check
+
       - name: Build site
         working-directory: ${{ steps.hugo-dir.outputs.path }}
         env:

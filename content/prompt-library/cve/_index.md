@@ -27,8 +27,9 @@ where those recipes live.
 
 Every recipe follows the same outline:
 
-- **Frontmatter** — `cve`, `aliases`, `kev` flag (CISA Known
-  Exploited Vulnerability), severity, ecosystem, dates.
+- **Frontmatter** — `cve` or `ghsa`, `aliases`, `kev` flag
+  (CISA Known Exploited Vulnerability), severity, ecosystem,
+  dates.
 - **Summary** — what the CVE is and what it lets an attacker
   do. Plain language.
 - **Affected versions** — the canonical version range, with a
@@ -98,7 +99,9 @@ no edits to this hub or to `hugo.yaml` required.
 
 Required frontmatter for the listing to be useful:
 
-- `cve` — the canonical ID (e.g., `"CVE-2021-44228"`).
+- `cve` or `ghsa` — the canonical ID (e.g.,
+  `"CVE-2021-44228"` or `"GHSA-v4p8-mg3p-g94g"`). Use `ghsa`
+  only when GitHub has not assigned a CVE.
 - `severity` — `critical` / `high` / `medium` / `low`.
 - `ecosystem` — the rough family the recipe targets (e.g.,
   `java/maven`, `python/pypi`, `linux/system`,

@@ -76,6 +76,10 @@ class ServerConfig:
         "RECIPES_MCP_AGENTIC_SYSTEM_BOM_PATH",
         "./data/evidence/agentic-system-bom.json",
     )
+    secure_context_trust_pack_path: str = os.environ.get(
+        "RECIPES_MCP_SECURE_CONTEXT_TRUST_PACK_PATH",
+        "./data/evidence/secure-context-trust-pack.json",
+    )
 
 
 class RecipeIndex:
@@ -1238,6 +1242,163 @@ class AgenticSystemBOM:
         }
 
 
+class SecureContextTrustPack:
+    def __init__(self, pack_path: str):
+        self.path = Path(pack_path)
+        self._mtime: float | None = None
+        self._pack: dict[str, Any] | None = None
+        self._source_by_id: dict[str, dict[str, Any]] = {}
+        self._workflow_by_id: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._pack is not None and self._mtime == stat.st_mtime:
+            return self._pack
+
+        pack = json.loads(self.path.read_text(encoding="utf-8"))
+        sources = pack.get("context_sources") if isinstance(pack, dict) else []
+        workflows = pack.get("workflow_context_map") if isinstance(pack, dict) else []
+        self._source_by_id = {
+            str(source.get("source_id")): source
+            for source in sources
+            if isinstance(source, dict) and source.get("source_id")
+        }
+        self._workflow_by_id = {
+            str(workflow.get("workflow_id")): workflow
+            for workflow in workflows
+            if isinstance(workflow, dict) and workflow.get("workflow_id")
+        }
+        self._pack = pack
+        self._mtime = stat.st_mtime
+        return pack
+
+    @staticmethod
+    def _source_preview(source: dict[str, Any]) -> dict[str, Any]:
+        trust_tier = source.get("trust_tier") if isinstance(source.get("trust_tier"), dict) else {}
+        return {
+            "citation_required": source.get("citation_required"),
+            "decision": source.get("decision"),
+            "exposure": source.get("exposure"),
+            "file_count": source.get("file_count"),
+            "freshness_state": source.get("freshness_state"),
+            "kind": source.get("kind"),
+            "root": source.get("root"),
+            "source_hash": source.get("source_hash"),
+            "source_id": source.get("source_id"),
+            "title": source.get("title"),
+            "trust_tier": trust_tier.get("id"),
+        }
+
+    @staticmethod
+    def _workflow_preview(workflow: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "context_package_hash": workflow.get("context_package_hash"),
+            "context_source_count": workflow.get("context_source_count"),
+            "freshness_state": workflow.get("freshness_state"),
+            "maturity_stage": workflow.get("maturity_stage"),
+            "mcp_namespaces": workflow.get("mcp_namespaces", []),
+            "source_ids": workflow.get("source_ids", []),
+            "status": workflow.get("status"),
+            "title": workflow.get("title"),
+            "workflow_id": workflow.get("workflow_id"),
+        }
+
+    def get(
+        self,
+        source_id: str | None = None,
+        workflow_id: str | None = None,
+        trust_tier: str | None = None,
+        decision: str | None = None,
+    ) -> dict[str, Any]:
+        try:
+            pack = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "error": f"failed to load secure context trust pack: {exc}",
+                "pack_path": str(self.path),
+            }
+
+        if pack is None:
+            return {
+                "available": False,
+                "error": "secure context trust pack is not present",
+                "pack_path": str(self.path),
+            }
+
+        if not isinstance(pack, dict):
+            return {
+                "available": False,
+                "error": "secure context trust pack root must be an object",
+                "pack_path": str(self.path),
+            }
+
+        if source_id:
+            source = self._source_by_id.get(source_id.strip())
+            return {
+                "available": True,
+                "found": source is not None,
+                "source": source,
+                "source_id": source_id,
+            }
+
+        if workflow_id:
+            workflow = self._workflow_by_id.get(workflow_id.strip())
+            sources = []
+            if workflow:
+                sources = [
+                    self._source_preview(self._source_by_id[source])
+                    for source in workflow.get("source_ids", [])
+                    if source in self._source_by_id
+                ]
+            return {
+                "available": True,
+                "found": workflow is not None,
+                "sources": sources,
+                "workflow_context": workflow,
+                "workflow_id": workflow_id,
+            }
+
+        sources = list(self._source_by_id.values())
+        if trust_tier:
+            key = trust_tier.strip()
+            sources = [
+                source
+                for source in sources
+                if isinstance(source.get("trust_tier"), dict)
+                and source.get("trust_tier", {}).get("id") == key
+            ]
+        if decision:
+            key = decision.strip()
+            sources = [
+                source
+                for source in sources
+                if str(source.get("decision")) == key
+            ]
+
+        return {
+            "available": True,
+            "context_sources": [self._source_preview(source) for source in sources],
+            "context_trust_summary": pack.get("context_trust_summary"),
+            "decision": decision,
+            "enterprise_adoption_packet": pack.get("enterprise_adoption_packet"),
+            "generated_at": pack.get("generated_at"),
+            "retrieval_decision_contract": pack.get("retrieval_decision_contract"),
+            "schema_version": pack.get("schema_version"),
+            "source_artifacts": pack.get("source_artifacts"),
+            "source_contract": pack.get("source_contract"),
+            "standards_alignment": pack.get("standards_alignment", []),
+            "trust_tier": trust_tier,
+            "workflow_context_map": [
+                self._workflow_preview(workflow)
+                for workflow in self._workflow_by_id.values()
+            ],
+        }
+
+
 def load_config(config_path: str) -> ServerConfig:
     path = Path(config_path)
     cfg = ServerConfig()
@@ -1275,6 +1436,10 @@ def load_config(config_path: str) -> ServerConfig:
     cfg.agentic_system_bom_path = data.get(
         "agentic_system_bom_path",
         cfg.agentic_system_bom_path,
+    )
+    cfg.secure_context_trust_pack_path = data.get(
+        "secure_context_trust_pack_path",
+        cfg.secure_context_trust_pack_path,
     )
     return cfg
 
@@ -1329,6 +1494,7 @@ connector_trust_pack = MCPConnectorTrustPack(config.connector_trust_pack_path)
 red_team_drill_pack = AgenticRedTeamDrillPack(config.red_team_drill_pack_path)
 readiness_scorecard = AgenticReadinessScorecard(config.readiness_scorecard_path)
 agentic_system_bom = AgenticSystemBOM(config.agentic_system_bom_path)
+secure_context_trust_pack = SecureContextTrustPack(config.secure_context_trust_pack_path)
 mcp = FastMCP(name="security-recipes-mcp")
 
 
@@ -1349,6 +1515,7 @@ async def recipes_server_info() -> dict[str, Any]:
         "red_team_drill_pack_path": config.red_team_drill_pack_path,
         "readiness_scorecard_path": config.readiness_scorecard_path,
         "agentic_system_bom_path": config.agentic_system_bom_path,
+        "secure_context_trust_pack_path": config.secure_context_trust_pack_path,
     }
 
 
@@ -1521,6 +1688,22 @@ async def recipes_agentic_system_bom(
         workflow_id=workflow_id,
         agent_class=agent_class,
         namespace=namespace,
+    )
+
+
+@mcp.tool()
+async def recipes_secure_context_trust_pack(
+    source_id: str | None = None,
+    workflow_id: str | None = None,
+    trust_tier: str | None = None,
+    decision: str | None = None,
+) -> dict[str, Any]:
+    """Return context provenance, retrieval policy, source hashes, and workflow context packages."""
+    return secure_context_trust_pack.get(
+        source_id=source_id,
+        workflow_id=workflow_id,
+        trust_tier=trust_tier,
+        decision=decision,
     )
 
 
