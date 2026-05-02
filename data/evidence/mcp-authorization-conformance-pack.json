@@ -1434,7 +1434,7 @@
       "namespaces": [
         {
           "access": "read",
-          "authorization_decision": "hold_for_authorization_evidence",
+          "authorization_decision": "approve_public_context_no_auth",
           "canonical_resource_uri": "https://mcp.security-recipes.ai/mcp",
           "connector_id": "approved-defaults-recipes",
           "namespace": "recipes.defaults",
