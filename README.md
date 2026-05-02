@@ -106,7 +106,6 @@ repo hosts the site — no find-and-replace required before forking.
 ### Run locally
 
 ```bash
-cd hugo-site
 hugo mod get -u           # fetch the Hextra theme
 hugo server -D            # http://localhost:1313
 ```
@@ -117,7 +116,6 @@ A multi-stage `Dockerfile` builds the site with Hugo extended and
 serves it from `nginx:alpine`:
 
 ```bash
-cd hugo-site
 docker build -t security-recipes .
 docker run --rm -p 8080:80 security-recipes
 # open http://localhost:8080
@@ -258,7 +256,7 @@ MCP server as `recipes_mcp_connector_trust_pack`.
 ## Project layout
 
 ```
-hugo-site/
+.
 ├── hugo.yaml                       # Site config (menus, params, dynamic repoURL)
 ├── go.mod                          # Hugo module deps (Hextra)
 ├── archetypes/default.md           # `hugo new` template
@@ -336,7 +334,7 @@ time:
 ```yaml
 env:
   HUGO_PARAMS_REPOURL: "https://github.com/${{ github.repository }}"
-  HUGO_PARAMS_EDITURL_BASE: "https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/hugo-site/content"
+  HUGO_PARAMS_EDITURL_BASE: "https://github.com/${{ github.repository }}/edit/${{ github.ref_name }}/content"
 ```
 
 This means you can fork the repo under any org/user and the links
@@ -554,10 +552,10 @@ without changing code.
 
 ### One-time setup
 
-1. **Push `hugo-site/` into a GitHub repo.**
-   The workflow expects the Hugo project to live under `hugo-site/`.
-   If you move it to the repo root, update `working-directory` and
-   `publish_dir` in the workflow.
+1. **Push this repo to GitHub.**
+   The Hugo project lives at the repository root. Keep `hugo.yaml`,
+   `content/`, `layouts/`, `assets/`, `static/`, `data/`, and
+   `.github/workflows/hugo.yml` together at the top level.
 
 2. **Update `baseURL`.**
    In `hugo.yaml`, set `baseURL` to your GitHub Pages URL (e.g.

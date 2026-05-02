@@ -66,6 +66,7 @@ has one workflow or ten.
 {{< cards >}}
   {{< card link="/security-remediation/control-plane/" title="Workflow Control Plane" subtitle="Machine-readable workflow manifests for scope, MCP context, gates, evidence, KPIs, and kill signals that agents and auditors can consume directly." >}}
   {{< card link="/security-remediation/mcp-gateway-policy/" title="MCP Gateway Policy Pack" subtitle="Generated enforcement policy for scoped tool access, branch writes, runtime kill signals, and evidence records." >}}
+  {{< card link="/security-remediation/mcp-runtime-decision-evaluator/" title="MCP Runtime Decision Evaluator" subtitle="Deterministic allow, hold, deny, and kill-session decisions for each agent tool call before it reaches enterprise systems." >}}
   {{< card link="/security-remediation/mcp-connector-trust-registry/" title="MCP Connector Trust Registry" subtitle="Generated connector trust pack for MCP namespaces, tiers, access modes, evidence, promotion criteria, and runtime kill signals." >}}
   {{< card link="/security-remediation/agentic-assurance-pack/" title="Agentic Assurance Pack" subtitle="Generated trust pack for AI platform review, procurement, audit evidence, and AI/Agent BOM readiness." >}}
   {{< card link="/security-remediation/agentic-readiness-scorecard/" title="Agentic Readiness Scorecard" subtitle="Generated scale, pilot, gate, and block decisions from workflow, MCP policy, connector trust, identity, assurance, and red-team evidence." >}}

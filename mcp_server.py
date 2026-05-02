@@ -21,6 +21,11 @@ import httpx
 import tomli
 from fastmcp import FastMCP
 
+try:
+    from scripts.evaluate_mcp_gateway_decision import evaluate_policy_decision
+except ImportError:  # pragma: no cover - supports direct script-directory execution.
+    from evaluate_mcp_gateway_decision import evaluate_policy_decision
+
 DEFAULT_CONFIG_PATH = os.environ.get("RECIPES_MCP_CONFIG", "./mcp-server.toml")
 DEFAULT_TRANSPORT = os.environ.get("RECIPES_MCP_TRANSPORT", "streamable-http")
 DEFAULT_HOST = os.environ.get("RECIPES_MCP_HOST", "0.0.0.0")
@@ -407,6 +412,41 @@ class MCPGatewayPolicyPack:
                 }
                 for policy in self._policy_by_workflow_id.values()
             ],
+        }
+
+    def evaluate(self, runtime_request: dict[str, Any]) -> dict[str, Any]:
+        try:
+            policy_pack = self._load()
+        except Exception as exc:
+            return {
+                "allowed": False,
+                "available": False,
+                "decision": "deny",
+                "error": f"failed to load MCP gateway policy pack: {exc}",
+                "policy_path": str(self.path),
+            }
+
+        if policy_pack is None:
+            return {
+                "allowed": False,
+                "available": False,
+                "decision": "deny",
+                "error": "MCP gateway policy pack is not present",
+                "policy_path": str(self.path),
+            }
+
+        if not isinstance(policy_pack, dict):
+            return {
+                "allowed": False,
+                "available": False,
+                "decision": "deny",
+                "error": "MCP gateway policy pack root must be an object",
+                "policy_path": str(self.path),
+            }
+
+        return {
+            "available": True,
+            **evaluate_policy_decision(policy_pack, runtime_request),
         }
 
 
@@ -1185,6 +1225,42 @@ async def recipes_workflow_control_plane(workflow_id: str | None = None) -> dict
 async def recipes_mcp_gateway_policy(workflow_id: str | None = None) -> dict[str, Any]:
     """Return generated MCP gateway policy for scoped tool access and runtime controls."""
     return gateway_policy.get(workflow_id=workflow_id)
+
+
+@mcp.tool()
+async def recipes_evaluate_mcp_gateway_decision(
+    workflow_id: str,
+    agent_id: str,
+    run_id: str,
+    tool_namespace: str,
+    tool_access_mode: str,
+    gate_phase: str,
+    branch_name: str | None = None,
+    changed_paths: list[str] | None = None,
+    diff_line_count: int | None = 0,
+    human_approval_record: dict[str, Any] | None = None,
+    runtime_kill_signal: str | None = None,
+    agent_class: str | None = None,
+    change_class: str | None = None,
+) -> dict[str, Any]:
+    """Evaluate one runtime MCP tool call against the generated gateway policy."""
+    return gateway_policy.evaluate(
+        {
+            "agent_class": agent_class,
+            "agent_id": agent_id,
+            "branch_name": branch_name,
+            "change_class": change_class,
+            "changed_paths": changed_paths or [],
+            "diff_line_count": diff_line_count or 0,
+            "gate_phase": gate_phase,
+            "human_approval_record": human_approval_record,
+            "run_id": run_id,
+            "runtime_kill_signal": runtime_kill_signal,
+            "tool_access_mode": tool_access_mode,
+            "tool_namespace": tool_namespace,
+            "workflow_id": workflow_id,
+        }
+    )
 
 
 @mcp.tool()

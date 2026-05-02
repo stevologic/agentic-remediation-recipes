@@ -8,9 +8,7 @@
 #
 # The `gh-pages` branch is created automatically on first deploy.
 #
-# This workflow auto-detects whether the Hugo project lives at the repo
-# root OR nested under `hugo-site/`, so you can host the site either way
-# without editing this file.
+# This workflow expects the Hugo project to live at the repo root.
 # ============================================================================
 name: Build & deploy Hugo to gh-pages
 
@@ -54,27 +52,21 @@ jobs:
           fetch-depth: 0            # needed for .GitInfo / .Lastmod
 
       # ----------------------------------------------------------------
-      # Auto-detect whether hugo.yaml lives at the repo root or inside a
-      # `hugo-site/` subfolder. Exports:
-      #   steps.hugo-dir.outputs.path    →  "." or "./hugo-site"
-      #   steps.hugo-dir.outputs.gomod   →  path to go.sum (or empty)
-      #   steps.hugo-dir.outputs.publish →  publish dir, "./public" or "./hugo-site/public"
+      # Verify the root Hugo layout and export paths used by later steps.
+      #   steps.hugo-dir.outputs.path    →  "."
+      #   steps.hugo-dir.outputs.gomod   →  "go.sum"
+      #   steps.hugo-dir.outputs.publish →  "./public"
       # ----------------------------------------------------------------
       - name: Detect Hugo project location
         id: hugo-dir
         run: |
-          if [ -f ./hugo-site/hugo.yaml ]; then
-            echo "path=./hugo-site"            >> "$GITHUB_OUTPUT"
-            echo "gomod=hugo-site/go.sum"      >> "$GITHUB_OUTPUT"
-            echo "publish=./hugo-site/public"  >> "$GITHUB_OUTPUT"
-            echo "editprefix=/hugo-site/content" >> "$GITHUB_OUTPUT"
-          elif [ -f ./hugo.yaml ]; then
+          if [ -f ./hugo.yaml ]; then
             echo "path=."                      >> "$GITHUB_OUTPUT"
             echo "gomod=go.sum"                >> "$GITHUB_OUTPUT"
             echo "publish=./public"            >> "$GITHUB_OUTPUT"
             echo "editprefix=/content"         >> "$GITHUB_OUTPUT"
           else
-            echo "::error::Could not find hugo.yaml at the repo root or under ./hugo-site/"
+            echo "::error::Could not find hugo.yaml at the repo root"
             exit 1
           fi
 
@@ -197,9 +189,8 @@ jobs:
           find content -type f -name "*.md" -exec sed -i \
             "s|stevologic/agentic-remediation-recipes|${{ github.repository }}|g" {} +
           # Refresh the editURL branch segment so "Edit on GitHub" points at
-          # the actual deploy branch, and swap /hugo-site/content → /content
-          # (or leave as-is) depending on where the project actually lives.
-          sed -i "s|/edit/main/hugo-site/content|/edit/${{ github.ref_name }}${{ steps.hugo-dir.outputs.editprefix }}|g" hugo.yaml
+          # the actual deploy branch and root-level content directory.
+          sed -i "s|/edit/main/content|/edit/${{ github.ref_name }}${{ steps.hugo-dir.outputs.editprefix }}|g" hugo.yaml
 
           # Belt-and-braces: ALSO rewrite the top-level baseURL value inside
           # hugo.yaml itself (not just pass --baseURL). The --baseURL CLI flag

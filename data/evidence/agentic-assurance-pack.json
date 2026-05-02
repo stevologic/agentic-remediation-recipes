@@ -119,6 +119,7 @@
         {
           "availability": "external",
           "id": "runtime_gateway_audit",
+          "path": null,
           "title": "Runtime MCP gateway audit log"
         }
       ],
@@ -161,6 +162,7 @@
         {
           "availability": "external",
           "id": "reviewer_decision_records",
+          "path": null,
           "title": "Human reviewer decision records"
         },
         {
@@ -264,11 +266,13 @@
         {
           "availability": "external",
           "id": "runtime_gateway_audit",
+          "path": null,
           "title": "Runtime MCP gateway audit log"
         },
         {
           "availability": "external",
           "id": "reviewer_decision_records",
+          "path": null,
           "title": "Human reviewer decision records"
         }
       ],
@@ -311,6 +315,7 @@
         {
           "availability": "external",
           "id": "runtime_gateway_audit",
+          "path": null,
           "title": "Runtime MCP gateway audit log"
         },
         {
@@ -359,11 +364,13 @@
         {
           "availability": "external",
           "id": "model_provider_contract",
+          "path": null,
           "title": "Model-provider data handling contract"
         },
         {
           "availability": "external",
           "id": "runtime_gateway_audit",
+          "path": null,
           "title": "Runtime MCP gateway audit log"
         }
       ],
@@ -462,11 +469,13 @@
         {
           "availability": "external",
           "id": "runtime_gateway_audit",
+          "path": null,
           "title": "Runtime MCP gateway audit log"
         },
         {
           "availability": "external",
           "id": "reviewer_decision_records",
+          "path": null,
           "title": "Human reviewer decision records"
         },
         {

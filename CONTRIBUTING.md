@@ -25,7 +25,7 @@ fork-and-PR workflow we use to land changes.
 1. **Fork** the repo on GitHub.
 2. **Branch** off `main` — `recipe/<tool>-<topic>` or
    `prompt/<short-name>`.
-3. **Make your change** under `hugo-site/content/…`.
+3. **Make your change** under `content/…`.
 4. **Preview locally** with `hugo server -D` (see [Running the site
    locally](#running-the-site-locally)).
 5. **Open a PR** against `main` on the upstream repo.
@@ -90,7 +90,7 @@ Closes #42.
 ```
 
 ```bash
-git add hugo-site/content/…
+git add content/…
 git commit
 git push origin recipe/claude-triage-skill
 ```
@@ -154,7 +154,6 @@ four-section skeleton so teams can skim and compare:
 Use the archetype to scaffold:
 
 ```bash
-cd hugo-site
 hugo new content <tool>/_index.md
 ```
 
@@ -170,7 +169,7 @@ Things reviewers look for in a recipe PR:
 
 ## Contributing a prompt
 
-The Prompt Library lives under `hugo-site/content/prompt-library/`.
+The Prompt Library lives under `content/prompt-library/`.
 Every prompt file has the same frontmatter:
 
 ```markdown
@@ -355,13 +354,13 @@ shortcodes.
 ## SEO and discoverability
 
 The site is built so contributors don't have to think about SEO —
-the [SEO partial](hugo-site/layouts/partials/custom/seo.html)
+the [SEO partial](layouts/partials/custom/seo.html)
 emits Open Graph, Twitter Card, JSON-LD (Article, Organization,
 WebSite, BreadcrumbList), canonical URLs, and robots / theme
 meta on every page from page-level frontmatter, with sensible
 fallbacks to site-level defaults in `hugo.yaml`. Hugo's
 auto-generated `sitemap.xml` and the
-[robots.txt template](hugo-site/layouts/robots.txt) are wired
+[robots.txt template](layouts/robots.txt) are wired
 to surface the new content to search engines and AI crawlers
 on the next deploy.
 
@@ -465,7 +464,6 @@ Prereqs:
 - Git
 
 ```bash
-cd hugo-site
 hugo mod get -u              # fetch the Hextra theme
 hugo server -D               # http://localhost:1313
 ```
@@ -473,7 +471,7 @@ hugo server -D               # http://localhost:1313
 Prefer Docker?
 
 ```bash
-docker build -t arr hugo-site/
+docker build -t arr .
 docker run --rm -p 3000:80 arr
 # → http://localhost:3000
 ```

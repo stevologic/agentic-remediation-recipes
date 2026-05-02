@@ -45,8 +45,12 @@ The policy pack is generated from the workflow control-plane manifest:
 - `data/policy/mcp-gateway-policy.json` - the generated policy bundle.
 - `scripts/generate_mcp_gateway_policy.py` - a dependency-free generator
   with `--check` mode for CI drift detection.
+- `scripts/evaluate_mcp_gateway_decision.py` - a dependency-free runtime
+  evaluator that turns the generated policy into per-call decisions.
 - `recipes_mcp_gateway_policy` - an MCP tool that exposes the pack to
   connected agents and gateways.
+- `recipes_evaluate_mcp_gateway_decision` - an MCP tool that lets an
+  agent host or gateway evaluate one runtime request against the pack.
 
 Run it from the repo root:
 
@@ -150,6 +154,8 @@ could not do it."
   - the source manifest this pack is generated from.
 - [MCP Connector Trust Registry]({{< relref "/security-remediation/mcp-connector-trust-registry" >}})
   - the connector inventory and trust-tier contract for every MCP namespace.
+- [MCP Runtime Decision Evaluator]({{< relref "/security-remediation/mcp-runtime-decision-evaluator" >}})
+  - how to execute the policy pack before an agent tool call runs.
 - [Runtime Controls]({{< relref "/security-remediation/runtime-controls" >}})
   - how inline proxies and session disablement enforce the pack.
 - [Agentic Assurance Pack]({{< relref "/security-remediation/agentic-assurance-pack" >}})

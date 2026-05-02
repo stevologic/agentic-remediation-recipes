@@ -27,8 +27,7 @@ two copies are intentionally redundant.
 1. **Fork** the repo on GitHub.
 2. **Branch** off `main` — `recipe/<tool>-<topic>` or
    `prompt/<tool>/<short-name>`.
-3. **Make your change** under `hugo-site/content/…` (or
-   `content/…` if the Hugo site lives at the repo root).
+3. **Make your change** under `content/…`.
 4. **Preview locally** with `hugo server -D` (see
    [Running the site locally](#running-the-site-locally)).
 5. **Open a PR** against `main` on
@@ -154,7 +153,6 @@ four-section skeleton so teams can skim and compare:
 Use the archetype to scaffold:
 
 ```bash
-cd hugo-site
 hugo new content <tool>/_index.md
 ```
 
