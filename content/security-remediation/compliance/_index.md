@@ -333,5 +333,8 @@ fix the instrumentation.
 
 - [Program Metrics & KPIs]({{< relref "/security-remediation/metrics" >}}) — the metrics auditors expect to see dashboards for
 - [Reviewer Playbook]({{< relref "/security-remediation/reviewer-playbook" >}}) — the human-review control evidence
+- [Agentic Assurance Pack]({{< relref "/security-remediation/agentic-assurance-pack" >}}) — the generated index for control evidence and AI/Agent BOM readiness
+- [Agentic Readiness Scorecard]({{< relref "/security-remediation/agentic-readiness-scorecard" >}}) - the generated workflow promotion gate for scale and pilot decisions
+- [Agentic Red-Team Drill Pack]({{< relref "/security-remediation/agentic-red-team-drills" >}}) - the adversarial eval evidence layer
 - [Threat Model]({{< relref "/fundamentals/threat-model" >}}) — the basis of the anomaly-detection answer
 - [MCP Server Access]({{< relref "/mcp-servers" >}}) — the access-logging layer

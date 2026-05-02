@@ -7,6 +7,7 @@ Exposes a read-only MCP tool surface backed by Hugo's recipes-index.json.
 from __future__ import annotations
 
 import asyncio
+import json
 import math
 import os
 import re
@@ -21,6 +22,11 @@ import tomli
 from fastmcp import FastMCP
 
 DEFAULT_CONFIG_PATH = os.environ.get("RECIPES_MCP_CONFIG", "./mcp-server.toml")
+DEFAULT_TRANSPORT = os.environ.get("RECIPES_MCP_TRANSPORT", "streamable-http")
+DEFAULT_HOST = os.environ.get("RECIPES_MCP_HOST", "0.0.0.0")
+DEFAULT_PORT = os.environ.get("RECIPES_MCP_PORT", "8000")
+DEFAULT_PATH = os.environ.get("RECIPES_MCP_PATH")
+DEFAULT_LOG_LEVEL = os.environ.get("RECIPES_MCP_LOG_LEVEL")
 
 
 @dataclass
@@ -33,6 +39,34 @@ class ServerConfig:
     max_results_cap: int = 25
     # Public-facing URL for this MCP server (metadata only).
     server_public_base_url: str = "https://mcp.security-recipes.ai"
+    control_plane_manifest_path: str = os.environ.get(
+        "RECIPES_MCP_CONTROL_PLANE_PATH",
+        "./data/control-plane/workflow-manifests.json",
+    )
+    gateway_policy_path: str = os.environ.get(
+        "RECIPES_MCP_GATEWAY_POLICY_PATH",
+        "./data/policy/mcp-gateway-policy.json",
+    )
+    assurance_pack_path: str = os.environ.get(
+        "RECIPES_MCP_ASSURANCE_PACK_PATH",
+        "./data/evidence/agentic-assurance-pack.json",
+    )
+    identity_ledger_path: str = os.environ.get(
+        "RECIPES_MCP_IDENTITY_LEDGER_PATH",
+        "./data/evidence/agent-identity-delegation-ledger.json",
+    )
+    connector_trust_pack_path: str = os.environ.get(
+        "RECIPES_MCP_CONNECTOR_TRUST_PACK_PATH",
+        "./data/evidence/mcp-connector-trust-pack.json",
+    )
+    red_team_drill_pack_path: str = os.environ.get(
+        "RECIPES_MCP_RED_TEAM_DRILL_PACK_PATH",
+        "./data/evidence/agentic-red-team-drill-pack.json",
+    )
+    readiness_scorecard_path: str = os.environ.get(
+        "RECIPES_MCP_READINESS_SCORECARD_PATH",
+        "./data/evidence/agentic-readiness-scorecard.json",
+    )
 
 
 class RecipeIndex:
@@ -223,6 +257,769 @@ class RecipeIndex:
         return out
 
 
+class WorkflowControlPlane:
+    def __init__(self, manifest_path: str):
+        self.path = Path(manifest_path)
+        self._mtime: float | None = None
+        self._manifest: dict[str, Any] | None = None
+        self._workflow_by_id: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._manifest is not None and self._mtime == stat.st_mtime:
+            return self._manifest
+
+        manifest = json.loads(self.path.read_text(encoding="utf-8"))
+        workflows = manifest.get("workflows") if isinstance(manifest, dict) else []
+        self._workflow_by_id = {
+            str(workflow.get("id")): workflow
+            for workflow in workflows
+            if isinstance(workflow, dict) and workflow.get("id")
+        }
+        self._manifest = manifest
+        self._mtime = stat.st_mtime
+        return manifest
+
+    def get(self, workflow_id: str | None = None) -> dict[str, Any]:
+        try:
+            manifest = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "manifest_path": str(self.path),
+                "error": f"failed to load workflow control plane manifest: {exc}",
+            }
+
+        if manifest is None:
+            return {
+                "available": False,
+                "manifest_path": str(self.path),
+                "error": "workflow control plane manifest is not present",
+            }
+
+        if workflow_id:
+            workflow = self._workflow_by_id.get(workflow_id.strip())
+            return {
+                "available": True,
+                "found": workflow is not None,
+                "workflow_id": workflow_id,
+                "workflow": workflow,
+            }
+
+        return {
+            "available": True,
+            "schema_version": manifest.get("schema_version"),
+            "last_reviewed": manifest.get("last_reviewed"),
+            "required_gate_phases": manifest.get("required_gate_phases", []),
+            "standards_alignment": manifest.get("standards_alignment", []),
+            "workflow_count": len(self._workflow_by_id),
+            "workflows": [
+                {
+                    "id": workflow.get("id"),
+                    "title": workflow.get("title"),
+                    "status": workflow.get("status"),
+                    "maturity_stage": workflow.get("maturity_stage"),
+                    "public_path": workflow.get("public_path"),
+                }
+                for workflow in self._workflow_by_id.values()
+            ],
+        }
+
+
+class MCPGatewayPolicyPack:
+    def __init__(self, policy_path: str):
+        self.path = Path(policy_path)
+        self._mtime: float | None = None
+        self._policy_pack: dict[str, Any] | None = None
+        self._policy_by_workflow_id: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._policy_pack is not None and self._mtime == stat.st_mtime:
+            return self._policy_pack
+
+        policy_pack = json.loads(self.path.read_text(encoding="utf-8"))
+        policies = policy_pack.get("workflow_policies") if isinstance(policy_pack, dict) else []
+        self._policy_by_workflow_id = {
+            str(policy.get("workflow_id")): policy
+            for policy in policies
+            if isinstance(policy, dict) and policy.get("workflow_id")
+        }
+        self._policy_pack = policy_pack
+        self._mtime = stat.st_mtime
+        return policy_pack
+
+    def get(self, workflow_id: str | None = None) -> dict[str, Any]:
+        try:
+            policy_pack = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "policy_path": str(self.path),
+                "error": f"failed to load MCP gateway policy pack: {exc}",
+            }
+
+        if policy_pack is None:
+            return {
+                "available": False,
+                "policy_path": str(self.path),
+                "error": "MCP gateway policy pack is not present",
+            }
+
+        if not isinstance(policy_pack, dict):
+            return {
+                "available": False,
+                "policy_path": str(self.path),
+                "error": "MCP gateway policy pack root must be an object",
+            }
+
+        if workflow_id:
+            policy = self._policy_by_workflow_id.get(workflow_id.strip())
+            return {
+                "available": True,
+                "found": policy is not None,
+                "workflow_id": workflow_id,
+                "policy": policy,
+            }
+
+        return {
+            "available": True,
+            "schema_version": policy_pack.get("schema_version"),
+            "generated_at": policy_pack.get("generated_at"),
+            "policy_id": policy_pack.get("policy_id"),
+            "source_manifest": policy_pack.get("source_manifest"),
+            "decision_contract": policy_pack.get("decision_contract"),
+            "policy_summary": policy_pack.get("policy_summary"),
+            "workflow_policies": [
+                {
+                    "workflow_id": policy.get("workflow_id"),
+                    "title": policy.get("title"),
+                    "status": policy.get("status"),
+                    "maturity_stage": policy.get("maturity_stage"),
+                    "public_path": policy.get("public_path"),
+                    "default_decision": policy.get("default_decision"),
+                }
+                for policy in self._policy_by_workflow_id.values()
+            ],
+        }
+
+
+class AgenticAssurancePack:
+    def __init__(self, pack_path: str):
+        self.path = Path(pack_path)
+        self._mtime: float | None = None
+        self._pack: dict[str, Any] | None = None
+        self._control_by_id: dict[str, dict[str, Any]] = {}
+        self._workflow_by_id: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._pack is not None and self._mtime == stat.st_mtime:
+            return self._pack
+
+        pack = json.loads(self.path.read_text(encoding="utf-8"))
+        controls = pack.get("control_objectives") if isinstance(pack, dict) else []
+        workflows = pack.get("workflow_assurance") if isinstance(pack, dict) else []
+        self._control_by_id = {
+            str(control.get("id")): control
+            for control in controls
+            if isinstance(control, dict) and control.get("id")
+        }
+        self._workflow_by_id = {
+            str(workflow.get("workflow_id")): workflow
+            for workflow in workflows
+            if isinstance(workflow, dict) and workflow.get("workflow_id")
+        }
+        self._pack = pack
+        self._mtime = stat.st_mtime
+        return pack
+
+    def get(self, control_id: str | None = None, workflow_id: str | None = None) -> dict[str, Any]:
+        try:
+            pack = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "pack_path": str(self.path),
+                "error": f"failed to load agentic assurance pack: {exc}",
+            }
+
+        if pack is None:
+            return {
+                "available": False,
+                "pack_path": str(self.path),
+                "error": "agentic assurance pack is not present",
+            }
+
+        if not isinstance(pack, dict):
+            return {
+                "available": False,
+                "pack_path": str(self.path),
+                "error": "agentic assurance pack root must be an object",
+            }
+
+        if control_id:
+            control = self._control_by_id.get(control_id.strip())
+            return {
+                "available": True,
+                "control_id": control_id,
+                "found": control is not None,
+                "control": control,
+            }
+
+        if workflow_id:
+            workflow = self._workflow_by_id.get(workflow_id.strip())
+            return {
+                "available": True,
+                "found": workflow is not None,
+                "workflow_id": workflow_id,
+                "workflow_assurance": workflow,
+            }
+
+        return {
+            "agent_bom_seed": pack.get("agent_bom_seed"),
+            "assurance_summary": pack.get("assurance_summary"),
+            "available": True,
+            "control_objectives": [
+                {
+                    "id": control.get("id"),
+                    "title": control.get("title"),
+                    "buyer_value": control.get("buyer_value"),
+                }
+                for control in self._control_by_id.values()
+            ],
+            "generated_at": pack.get("generated_at"),
+            "positioning": pack.get("positioning"),
+            "schema_version": pack.get("schema_version"),
+            "source_artifacts": pack.get("source_artifacts"),
+            "standards_alignment": pack.get("standards_alignment", []),
+            "workflow_assurance": [
+                {
+                    "workflow_id": workflow.get("workflow_id"),
+                    "title": workflow.get("title"),
+                    "status": workflow.get("status"),
+                    "maturity_stage": workflow.get("maturity_stage"),
+                    "gateway_decisions": workflow.get("gateway_decisions", []),
+                }
+                for workflow in self._workflow_by_id.values()
+            ],
+        }
+
+
+class AgentIdentityDelegationLedger:
+    def __init__(self, ledger_path: str):
+        self.path = Path(ledger_path)
+        self._mtime: float | None = None
+        self._ledger: dict[str, Any] | None = None
+        self._identity_by_id: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._ledger is not None and self._mtime == stat.st_mtime:
+            return self._ledger
+
+        ledger = json.loads(self.path.read_text(encoding="utf-8"))
+        identities = ledger.get("agent_identities") if isinstance(ledger, dict) else []
+        self._identity_by_id = {
+            str(identity.get("identity_id")): identity
+            for identity in identities
+            if isinstance(identity, dict) and identity.get("identity_id")
+        }
+        self._ledger = ledger
+        self._mtime = stat.st_mtime
+        return ledger
+
+    @staticmethod
+    def _preview(identity: dict[str, Any]) -> dict[str, Any]:
+        authority = identity.get("delegated_authority") if isinstance(identity.get("delegated_authority"), dict) else {}
+        return {
+            "agent_class": identity.get("agent_class"),
+            "identity_id": identity.get("identity_id"),
+            "maturity_stage": identity.get("maturity_stage"),
+            "mcp_namespaces": [
+                scope.get("namespace")
+                for scope in authority.get("mcp_scopes", [])
+                if isinstance(scope, dict)
+            ],
+            "owner": identity.get("owner"),
+            "risk_tier": identity.get("risk_tier"),
+            "status": identity.get("status"),
+            "workflow_id": identity.get("workflow_id"),
+            "workflow_title": identity.get("workflow_title"),
+        }
+
+    def get(
+        self,
+        identity_id: str | None = None,
+        workflow_id: str | None = None,
+        agent_class: str | None = None,
+    ) -> dict[str, Any]:
+        try:
+            ledger = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "ledger_path": str(self.path),
+                "error": f"failed to load agent identity delegation ledger: {exc}",
+            }
+
+        if ledger is None:
+            return {
+                "available": False,
+                "ledger_path": str(self.path),
+                "error": "agent identity delegation ledger is not present",
+            }
+
+        if not isinstance(ledger, dict):
+            return {
+                "available": False,
+                "ledger_path": str(self.path),
+                "error": "agent identity delegation ledger root must be an object",
+            }
+
+        if identity_id:
+            identity = self._identity_by_id.get(identity_id.strip())
+            return {
+                "available": True,
+                "found": identity is not None,
+                "identity": identity,
+                "identity_id": identity_id,
+            }
+
+        identities = [
+            identity
+            for identity in self._identity_by_id.values()
+            if (not workflow_id or str(identity.get("workflow_id")) == workflow_id.strip())
+            and (not agent_class or str(identity.get("agent_class")) == agent_class.strip())
+        ]
+
+        if workflow_id or agent_class:
+            return {
+                "available": True,
+                "agent_class": agent_class,
+                "count": len(identities),
+                "identities": identities,
+                "workflow_id": workflow_id,
+            }
+
+        return {
+            "available": True,
+            "delegation_graph": ledger.get("delegation_graph", []),
+            "enterprise_iam_contract": ledger.get("enterprise_iam_contract"),
+            "generated_at": ledger.get("generated_at"),
+            "identity_summary": ledger.get("identity_summary"),
+            "ledger_id": ledger.get("ledger_id"),
+            "schema_version": ledger.get("schema_version"),
+            "source_artifacts": ledger.get("source_artifacts"),
+            "standards_alignment": ledger.get("standards_alignment", []),
+            "identities": [self._preview(identity) for identity in identities],
+        }
+
+
+class MCPConnectorTrustPack:
+    def __init__(self, pack_path: str):
+        self.path = Path(pack_path)
+        self._mtime: float | None = None
+        self._pack: dict[str, Any] | None = None
+        self._connector_by_id: dict[str, dict[str, Any]] = {}
+        self._connector_by_namespace: dict[str, dict[str, Any]] = {}
+        self._workflow_by_id: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._pack is not None and self._mtime == stat.st_mtime:
+            return self._pack
+
+        pack = json.loads(self.path.read_text(encoding="utf-8"))
+        connectors = pack.get("connectors") if isinstance(pack, dict) else []
+        workflows = pack.get("workflow_connector_map") if isinstance(pack, dict) else []
+        self._connector_by_id = {
+            str(connector.get("connector_id")): connector
+            for connector in connectors
+            if isinstance(connector, dict) and connector.get("connector_id")
+        }
+        self._connector_by_namespace = {
+            str(connector.get("namespace")): connector
+            for connector in connectors
+            if isinstance(connector, dict) and connector.get("namespace")
+        }
+        self._workflow_by_id = {
+            str(workflow.get("workflow_id")): workflow
+            for workflow in workflows
+            if isinstance(workflow, dict) and workflow.get("workflow_id")
+        }
+        self._pack = pack
+        self._mtime = stat.st_mtime
+        return pack
+
+    @staticmethod
+    def _preview(connector: dict[str, Any]) -> dict[str, Any]:
+        trust_tier = connector.get("trust_tier") if isinstance(connector.get("trust_tier"), dict) else {}
+        return {
+            "access_modes": connector.get("access_modes", []),
+            "category": connector.get("category"),
+            "connector_id": connector.get("connector_id"),
+            "namespace": connector.get("namespace"),
+            "owner": connector.get("owner"),
+            "status": connector.get("status"),
+            "title": connector.get("title"),
+            "trust_tier": trust_tier.get("id"),
+        }
+
+    def get(
+        self,
+        connector_id: str | None = None,
+        namespace: str | None = None,
+        workflow_id: str | None = None,
+    ) -> dict[str, Any]:
+        try:
+            pack = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "pack_path": str(self.path),
+                "error": f"failed to load MCP connector trust pack: {exc}",
+            }
+
+        if pack is None:
+            return {
+                "available": False,
+                "pack_path": str(self.path),
+                "error": "MCP connector trust pack is not present",
+            }
+
+        if not isinstance(pack, dict):
+            return {
+                "available": False,
+                "pack_path": str(self.path),
+                "error": "MCP connector trust pack root must be an object",
+            }
+
+        if connector_id:
+            connector = self._connector_by_id.get(connector_id.strip())
+            return {
+                "available": True,
+                "connector": connector,
+                "connector_id": connector_id,
+                "found": connector is not None,
+            }
+
+        if namespace:
+            connector = self._connector_by_namespace.get(namespace.strip())
+            return {
+                "available": True,
+                "connector": connector,
+                "found": connector is not None,
+                "namespace": namespace,
+            }
+
+        if workflow_id:
+            workflow = self._workflow_by_id.get(workflow_id.strip())
+            return {
+                "available": True,
+                "found": workflow is not None,
+                "workflow_connector_map": workflow,
+                "workflow_id": workflow_id,
+            }
+
+        return {
+            "available": True,
+            "connector_trust_summary": pack.get("connector_trust_summary"),
+            "connectors": [self._preview(connector) for connector in self._connector_by_id.values()],
+            "enterprise_adoption_packet": pack.get("enterprise_adoption_packet"),
+            "generated_at": pack.get("generated_at"),
+            "global_control_objectives": pack.get("global_control_objectives", []),
+            "policy_alignment": pack.get("policy_alignment"),
+            "schema_version": pack.get("schema_version"),
+            "source_artifacts": pack.get("source_artifacts"),
+            "standards_alignment": pack.get("standards_alignment", []),
+            "trust_tiers": pack.get("trust_tiers", []),
+        }
+
+
+class AgenticRedTeamDrillPack:
+    def __init__(self, pack_path: str):
+        self.path = Path(pack_path)
+        self._mtime: float | None = None
+        self._pack: dict[str, Any] | None = None
+        self._scenario_by_id: dict[str, dict[str, Any]] = {}
+        self._workflow_by_id: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._pack is not None and self._mtime == stat.st_mtime:
+            return self._pack
+
+        pack = json.loads(self.path.read_text(encoding="utf-8"))
+        scenarios = pack.get("scenario_library") if isinstance(pack, dict) else []
+        workflows = pack.get("workflow_drills") if isinstance(pack, dict) else []
+        self._scenario_by_id = {
+            str(scenario.get("id")): scenario
+            for scenario in scenarios
+            if isinstance(scenario, dict) and scenario.get("id")
+        }
+        self._workflow_by_id = {
+            str(workflow.get("workflow_id")): workflow
+            for workflow in workflows
+            if isinstance(workflow, dict) and workflow.get("workflow_id")
+        }
+        self._pack = pack
+        self._mtime = stat.st_mtime
+        return pack
+
+    @staticmethod
+    def _workflow_preview(workflow: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "drill_count": workflow.get("drill_count"),
+            "maturity_stage": workflow.get("maturity_stage"),
+            "public_path": workflow.get("public_path"),
+            "status": workflow.get("status"),
+            "title": workflow.get("title"),
+            "workflow_id": workflow.get("workflow_id"),
+        }
+
+    @staticmethod
+    def _drill_preview(workflow: dict[str, Any], drill: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "attack_family": drill.get("attack_family"),
+            "drill_id": drill.get("drill_id"),
+            "expected_policy_decisions": drill.get("expected_policy_decisions", []),
+            "matched_namespaces": drill.get("matched_namespaces", []),
+            "required_gate_phases": drill.get("required_gate_phases", []),
+            "scenario_id": drill.get("scenario_id"),
+            "scenario_title": drill.get("scenario_title"),
+            "severity": drill.get("severity"),
+            "workflow_id": workflow.get("workflow_id"),
+            "workflow_title": workflow.get("title"),
+        }
+
+    def get(
+        self,
+        scenario_id: str | None = None,
+        workflow_id: str | None = None,
+        attack_family: str | None = None,
+    ) -> dict[str, Any]:
+        try:
+            pack = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "pack_path": str(self.path),
+                "error": f"failed to load agentic red-team drill pack: {exc}",
+            }
+
+        if pack is None:
+            return {
+                "available": False,
+                "pack_path": str(self.path),
+                "error": "agentic red-team drill pack is not present",
+            }
+
+        if not isinstance(pack, dict):
+            return {
+                "available": False,
+                "pack_path": str(self.path),
+                "error": "agentic red-team drill pack root must be an object",
+            }
+
+        workflows = list(self._workflow_by_id.values())
+
+        if workflow_id:
+            workflow = self._workflow_by_id.get(workflow_id.strip())
+            return {
+                "available": True,
+                "found": workflow is not None,
+                "workflow_drills": workflow,
+                "workflow_id": workflow_id,
+            }
+
+        if scenario_id:
+            key = scenario_id.strip()
+            scenario = self._scenario_by_id.get(key)
+            drills = [
+                self._drill_preview(workflow, drill)
+                for workflow in workflows
+                for drill in workflow.get("drills", [])
+                if isinstance(drill, dict) and str(drill.get("scenario_id")) == key
+            ]
+            return {
+                "available": True,
+                "drill_count": len(drills),
+                "drills": drills,
+                "found": scenario is not None,
+                "scenario": scenario,
+                "scenario_id": scenario_id,
+            }
+
+        if attack_family:
+            key = attack_family.strip()
+            drills = [
+                self._drill_preview(workflow, drill)
+                for workflow in workflows
+                for drill in workflow.get("drills", [])
+                if isinstance(drill, dict) and str(drill.get("attack_family")) == key
+            ]
+            scenarios = [
+                scenario
+                for scenario in self._scenario_by_id.values()
+                if str(scenario.get("attack_family")) == key
+            ]
+            return {
+                "available": True,
+                "attack_family": attack_family,
+                "drill_count": len(drills),
+                "drills": drills,
+                "scenario_count": len(scenarios),
+                "scenarios": scenarios,
+            }
+
+        return {
+            "available": True,
+            "enterprise_adoption_packet": pack.get("enterprise_adoption_packet"),
+            "generated_at": pack.get("generated_at"),
+            "red_team_summary": pack.get("red_team_summary"),
+            "scenario_contract": pack.get("scenario_contract"),
+            "scenario_library": list(self._scenario_by_id.values()),
+            "schema_version": pack.get("schema_version"),
+            "source_artifacts": pack.get("source_artifacts"),
+            "standards_alignment": pack.get("standards_alignment", []),
+            "workflow_drills": [self._workflow_preview(workflow) for workflow in workflows],
+        }
+
+
+class AgenticReadinessScorecard:
+    def __init__(self, scorecard_path: str):
+        self.path = Path(scorecard_path)
+        self._mtime: float | None = None
+        self._scorecard: dict[str, Any] | None = None
+        self._workflow_by_id: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._scorecard is not None and self._mtime == stat.st_mtime:
+            return self._scorecard
+
+        scorecard = json.loads(self.path.read_text(encoding="utf-8"))
+        workflows = scorecard.get("workflow_readiness") if isinstance(scorecard, dict) else []
+        self._workflow_by_id = {
+            str(workflow.get("workflow_id")): workflow
+            for workflow in workflows
+            if isinstance(workflow, dict) and workflow.get("workflow_id")
+        }
+        self._scorecard = scorecard
+        self._mtime = stat.st_mtime
+        return scorecard
+
+    @staticmethod
+    def _preview(workflow: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "blocker_count": len(workflow.get("blockers", []) or []),
+            "decision": workflow.get("decision"),
+            "maturity_stage": workflow.get("maturity_stage"),
+            "next_actions": workflow.get("next_actions", []),
+            "pilot_connectors": [
+                connector.get("namespace")
+                for connector in workflow.get("connector_statuses", [])
+                if isinstance(connector, dict) and connector.get("status") == "pilot"
+            ],
+            "public_path": workflow.get("public_path"),
+            "score": workflow.get("score"),
+            "status": workflow.get("status"),
+            "title": workflow.get("title"),
+            "workflow_id": workflow.get("workflow_id"),
+        }
+
+    def get(
+        self,
+        workflow_id: str | None = None,
+        decision: str | None = None,
+        minimum_score: int | None = None,
+    ) -> dict[str, Any]:
+        try:
+            scorecard = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "scorecard_path": str(self.path),
+                "error": f"failed to load agentic readiness scorecard: {exc}",
+            }
+
+        if scorecard is None:
+            return {
+                "available": False,
+                "scorecard_path": str(self.path),
+                "error": "agentic readiness scorecard is not present",
+            }
+
+        if not isinstance(scorecard, dict):
+            return {
+                "available": False,
+                "scorecard_path": str(self.path),
+                "error": "agentic readiness scorecard root must be an object",
+            }
+
+        if workflow_id:
+            workflow = self._workflow_by_id.get(workflow_id.strip())
+            return {
+                "available": True,
+                "found": workflow is not None,
+                "workflow_id": workflow_id,
+                "workflow_readiness": workflow,
+            }
+
+        workflows = list(self._workflow_by_id.values())
+        if decision:
+            key = decision.strip()
+            workflows = [
+                workflow
+                for workflow in workflows
+                if str(workflow.get("decision")) == key
+            ]
+        if minimum_score is not None:
+            workflows = [
+                workflow
+                for workflow in workflows
+                if int(workflow.get("score") or 0) >= minimum_score
+            ]
+
+        return {
+            "available": True,
+            "decision": decision,
+            "decision_contract": scorecard.get("decision_contract"),
+            "enterprise_adoption_packet": scorecard.get("enterprise_adoption_packet"),
+            "generated_at": scorecard.get("generated_at"),
+            "minimum_score": minimum_score,
+            "readiness_summary": scorecard.get("readiness_summary"),
+            "scale_plan": scorecard.get("scale_plan"),
+            "schema_version": scorecard.get("schema_version"),
+            "score_dimensions": scorecard.get("score_dimensions", []),
+            "source_artifacts": scorecard.get("source_artifacts"),
+            "standards_alignment": scorecard.get("standards_alignment", []),
+            "workflows": [self._preview(workflow) for workflow in workflows],
+        }
+
+
 def load_config(config_path: str) -> ServerConfig:
     path = Path(config_path)
     cfg = ServerConfig()
@@ -238,11 +1035,77 @@ def load_config(config_path: str) -> ServerConfig:
     cfg.max_results_default = int(data.get("max_results_default", cfg.max_results_default))
     cfg.max_results_cap = int(data.get("max_results_cap", cfg.max_results_cap))
     cfg.server_public_base_url = data.get("server_public_base_url", cfg.server_public_base_url)
+    cfg.control_plane_manifest_path = data.get(
+        "control_plane_manifest_path",
+        cfg.control_plane_manifest_path,
+    )
+    cfg.gateway_policy_path = data.get("gateway_policy_path", cfg.gateway_policy_path)
+    cfg.assurance_pack_path = data.get("assurance_pack_path", cfg.assurance_pack_path)
+    cfg.identity_ledger_path = data.get("identity_ledger_path", cfg.identity_ledger_path)
+    cfg.connector_trust_pack_path = data.get(
+        "connector_trust_pack_path",
+        cfg.connector_trust_pack_path,
+    )
+    cfg.red_team_drill_pack_path = data.get(
+        "red_team_drill_pack_path",
+        cfg.red_team_drill_pack_path,
+    )
+    cfg.readiness_scorecard_path = data.get(
+        "readiness_scorecard_path",
+        cfg.readiness_scorecard_path,
+    )
     return cfg
+
+
+def _optional_env(value: str | None) -> str | None:
+    if value is None:
+        return None
+    value = value.strip()
+    return value or None
+
+
+def _env_int(name: str, value: str, default: int) -> int:
+    value = value.strip()
+    if not value:
+        return default
+    try:
+        return int(value)
+    except ValueError as exc:
+        raise ValueError(f"{name} must be an integer, got {value!r}") from exc
+
+
+def run_mcp_server() -> None:
+    transport = (_optional_env(DEFAULT_TRANSPORT) or "streamable-http").lower()
+    log_level = _optional_env(DEFAULT_LOG_LEVEL)
+
+    if transport == "stdio":
+        mcp.run(transport="stdio", log_level=log_level)
+        return
+
+    if transport not in {"http", "streamable-http", "sse"}:
+        raise ValueError(
+            "RECIPES_MCP_TRANSPORT must be one of: stdio, http, streamable-http, sse"
+        )
+
+    default_path = "/sse" if transport == "sse" else "/mcp"
+    mcp.run(
+        transport=transport,
+        host=_optional_env(DEFAULT_HOST) or "0.0.0.0",
+        port=_env_int("RECIPES_MCP_PORT", DEFAULT_PORT, 8000),
+        path=_optional_env(DEFAULT_PATH) or default_path,
+        log_level=log_level,
+    )
 
 
 config = load_config(DEFAULT_CONFIG_PATH)
 index = RecipeIndex(config)
+control_plane = WorkflowControlPlane(config.control_plane_manifest_path)
+gateway_policy = MCPGatewayPolicyPack(config.gateway_policy_path)
+assurance_pack = AgenticAssurancePack(config.assurance_pack_path)
+identity_ledger = AgentIdentityDelegationLedger(config.identity_ledger_path)
+connector_trust_pack = MCPConnectorTrustPack(config.connector_trust_pack_path)
+red_team_drill_pack = AgenticRedTeamDrillPack(config.red_team_drill_pack_path)
+readiness_scorecard = AgenticReadinessScorecard(config.readiness_scorecard_path)
 mcp = FastMCP(name="security-recipes-mcp")
 
 
@@ -255,6 +1118,13 @@ async def recipes_server_info() -> dict[str, Any]:
         "source_index_url": config.source_index_url,
         "allowed_source_hosts": config.allowed_source_hosts,
         "cache_ttl_seconds": config.cache_ttl_seconds,
+        "control_plane_manifest_path": config.control_plane_manifest_path,
+        "gateway_policy_path": config.gateway_policy_path,
+        "assurance_pack_path": config.assurance_pack_path,
+        "identity_ledger_path": config.identity_ledger_path,
+        "connector_trust_pack_path": config.connector_trust_pack_path,
+        "red_team_drill_pack_path": config.red_team_drill_pack_path,
+        "readiness_scorecard_path": config.readiness_scorecard_path,
     }
 
 
@@ -306,6 +1176,79 @@ async def recipes_get(slug_or_path: str) -> dict[str, Any]:
 
 
 @mcp.tool()
+async def recipes_workflow_control_plane(workflow_id: str | None = None) -> dict[str, Any]:
+    """Return workflow control-plane policy for agents, reviewers, and MCP gateways."""
+    return control_plane.get(workflow_id=workflow_id)
+
+
+@mcp.tool()
+async def recipes_mcp_gateway_policy(workflow_id: str | None = None) -> dict[str, Any]:
+    """Return generated MCP gateway policy for scoped tool access and runtime controls."""
+    return gateway_policy.get(workflow_id=workflow_id)
+
+
+@mcp.tool()
+async def recipes_agentic_assurance_pack(
+    control_id: str | None = None,
+    workflow_id: str | None = None,
+) -> dict[str, Any]:
+    """Return enterprise assurance controls, workflow evidence, and AI/Agent BOM seed."""
+    return assurance_pack.get(control_id=control_id, workflow_id=workflow_id)
+
+
+@mcp.tool()
+async def recipes_agent_identity_ledger(
+    identity_id: str | None = None,
+    workflow_id: str | None = None,
+    agent_class: str | None = None,
+) -> dict[str, Any]:
+    """Return agent non-human identity, delegation, scope, and audit contracts."""
+    return identity_ledger.get(identity_id=identity_id, workflow_id=workflow_id, agent_class=agent_class)
+
+
+@mcp.tool()
+async def recipes_mcp_connector_trust_pack(
+    connector_id: str | None = None,
+    namespace: str | None = None,
+    workflow_id: str | None = None,
+) -> dict[str, Any]:
+    """Return MCP connector trust tiers, controls, evidence, and workflow namespace coverage."""
+    return connector_trust_pack.get(
+        connector_id=connector_id,
+        namespace=namespace,
+        workflow_id=workflow_id,
+    )
+
+
+@mcp.tool()
+async def recipes_agentic_red_team_drill_pack(
+    scenario_id: str | None = None,
+    workflow_id: str | None = None,
+    attack_family: str | None = None,
+) -> dict[str, Any]:
+    """Return adversarial drills for agentic remediation workflows and MCP controls."""
+    return red_team_drill_pack.get(
+        scenario_id=scenario_id,
+        workflow_id=workflow_id,
+        attack_family=attack_family,
+    )
+
+
+@mcp.tool()
+async def recipes_agentic_readiness_scorecard(
+    workflow_id: str | None = None,
+    decision: str | None = None,
+    minimum_score: int | None = None,
+) -> dict[str, Any]:
+    """Return generated scale, pilot, gate, or block decisions for agentic workflows."""
+    return readiness_scorecard.get(
+        workflow_id=workflow_id,
+        decision=decision,
+        minimum_score=minimum_score,
+    )
+
+
+@mcp.tool()
 async def recipes_match_finding(
     cve: str | None = None,
     package: str | None = None,
@@ -341,7 +1284,7 @@ async def recipes_match_finding(
 def main() -> None:
     # Validate config and do an eager refresh to fail fast if misconfigured.
     asyncio.run(index.refresh(force=False))
-    mcp.run()
+    run_mcp_server()
 
 
 if __name__ == "__main__":

@@ -2,7 +2,11 @@ FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    RECIPES_MCP_CONFIG=/app/mcp-server.toml
+    RECIPES_MCP_CONFIG=/app/mcp-server.toml \
+    RECIPES_MCP_TRANSPORT=streamable-http \
+    RECIPES_MCP_HOST=0.0.0.0 \
+    RECIPES_MCP_PORT=80 \
+    RECIPES_MCP_PATH=/mcp
 
 WORKDIR /app
 
@@ -11,8 +15,13 @@ RUN pip install --no-cache-dir -r /app/requirements-mcp-server.txt
 
 COPY mcp_server.py /app/mcp_server.py
 COPY mcp-server.toml.example /app/mcp-server.toml.example
+COPY data/control-plane /app/data/control-plane
+COPY data/policy /app/data/policy
+COPY data/evidence /app/data/evidence
 
 # Copy default config if the caller doesn't mount one.
 RUN cp /app/mcp-server.toml.example /app/mcp-server.toml
+
+EXPOSE 80
 
 CMD ["python", "/app/mcp_server.py"]

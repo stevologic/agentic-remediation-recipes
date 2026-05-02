@@ -1,0 +1,169 @@
+{
+  "active_workflow_count": 8,
+  "failure_count": 0,
+  "failures": [],
+  "generated_at": "2026-05-02",
+  "last_reviewed": "2026-05-02",
+  "required_gate_phases": [
+    "admission",
+    "tool_call",
+    "output",
+    "pre_merge",
+    "post_merge",
+    "runtime"
+  ],
+  "schema_version": "1.0",
+  "standards_alignment": [
+    {
+      "id": "nist-ai-rmf",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+    },
+    {
+      "id": "nist-ssdf-800-218",
+      "url": "https://csrc.nist.gov/pubs/sp/800/218/final"
+    },
+    {
+      "id": "cisa-secure-by-design",
+      "url": "https://www.cisa.gov/securebydesign"
+    },
+    {
+      "id": "owasp-genai",
+      "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications"
+    },
+    {
+      "id": "mcp-security",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices"
+    }
+  ],
+  "workflow_count": 8,
+  "workflows": [
+    {
+      "content_path": "content/security-remediation/sensitive-data/_index.md",
+      "evidence_count": 3,
+      "gate_phase_count": 6,
+      "id": "sensitive-data-remediation",
+      "kpi_count": 3,
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "findings.sde",
+        "repo.contents",
+        "tickets.security"
+      ],
+      "public_path": "/security-remediation/sensitive-data/",
+      "status": "active",
+      "title": "Sensitive Data Element Remediation"
+    },
+    {
+      "content_path": "content/security-remediation/vulnerable-dependencies/_index.md",
+      "evidence_count": 3,
+      "gate_phase_count": 6,
+      "id": "vulnerable-dependency-remediation",
+      "kpi_count": 3,
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "advisories.vulnerability",
+        "sbom.inventory",
+        "repo.contents"
+      ],
+      "public_path": "/security-remediation/vulnerable-dependencies/",
+      "status": "active",
+      "title": "Vulnerable Dependency Remediation"
+    },
+    {
+      "content_path": "content/security-remediation/sast-findings/_index.md",
+      "evidence_count": 3,
+      "gate_phase_count": 6,
+      "id": "sast-finding-remediation",
+      "kpi_count": 3,
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "findings.sast",
+        "repo.contents",
+        "ci.runs"
+      ],
+      "public_path": "/security-remediation/sast-findings/",
+      "status": "active",
+      "title": "SAST Finding Remediation"
+    },
+    {
+      "content_path": "content/security-remediation/base-images/_index.md",
+      "evidence_count": 3,
+      "gate_phase_count": 6,
+      "id": "base-image-remediation",
+      "kpi_count": 3,
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "images.golden",
+        "repo.contents",
+        "ci.runs"
+      ],
+      "public_path": "/security-remediation/base-images/",
+      "status": "active",
+      "title": "Base Image and Container Layer Remediation"
+    },
+    {
+      "content_path": "content/security-remediation/artifact-cache-purge/_index.md",
+      "evidence_count": 3,
+      "gate_phase_count": 6,
+      "id": "artifact-cache-quarantine",
+      "kpi_count": 3,
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "inventory.artifacts",
+        "registries.quarantine",
+        "incidents.security"
+      ],
+      "public_path": "/security-remediation/artifact-cache-purge/",
+      "status": "active",
+      "title": "Artifact Cache and Mirror Quarantine"
+    },
+    {
+      "content_path": "content/security-remediation/classic-vulnerable-defaults/_index.md",
+      "evidence_count": 3,
+      "gate_phase_count": 6,
+      "id": "classic-vulnerable-defaults",
+      "kpi_count": 3,
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "recipes.defaults",
+        "repo.contents",
+        "ci.runs"
+      ],
+      "public_path": "/security-remediation/classic-vulnerable-defaults/",
+      "status": "active",
+      "title": "Classic Vulnerable Defaults"
+    },
+    {
+      "content_path": "content/security-remediation/crypto-payments/_index.md",
+      "evidence_count": 3,
+      "gate_phase_count": 6,
+      "id": "crypto-payment-security",
+      "kpi_count": 3,
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "payments.findings",
+        "repo.contents",
+        "payments.simulation"
+      ],
+      "public_path": "/security-remediation/crypto-payments/",
+      "status": "active",
+      "title": "Cryptocurrency and Crypto Payments Security"
+    },
+    {
+      "content_path": "content/security-remediation/defi-blockchain/_index.md",
+      "evidence_count": 3,
+      "gate_phase_count": 6,
+      "id": "defi-blockchain-security",
+      "kpi_count": 3,
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "protocol.findings",
+        "repo.contents",
+        "chain.simulation"
+      ],
+      "public_path": "/security-remediation/defi-blockchain/",
+      "status": "active",
+      "title": "DeFi and Blockchain Protocol Security"
+    }
+  ]
+}

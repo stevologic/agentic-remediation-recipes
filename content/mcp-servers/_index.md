@@ -140,6 +140,56 @@ it routes any workload, the following should be true:
 - **Versioning.** Tool schemas are versioned so a backend change
   doesn't break every agent at once.
 
+### Connector trust registry
+
+The gateway policy says whether a workflow may call a namespace. The
+[MCP Connector Trust Registry]({{< relref "/security-remediation/mcp-connector-trust-registry" >}})
+says whether that namespace is attached to a connector mature enough to
+trust.
+
+Before a connector is promoted, the registry records:
+
+- owner and escalation path,
+- trust tier and access mode,
+- data classes the connector may return,
+- allowed and forbidden operations,
+- required auth, consent, audit, network, result-inspection, and session
+  controls,
+- evidence records and retention owners,
+- promotion criteria and runtime kill signals.
+
+The generated trust pack is exposed through
+`recipes_mcp_connector_trust_pack`, so an agent host or gateway can load
+the same connector contract that reviewers and auditors inspect. This is
+the bridge between "MCP connector catalog" and "enterprise connector
+governance."
+
+### Red-team drill pack
+
+Connector trust answers whether a tool namespace is approved. The
+[Agentic Red-Team Drill Pack]({{< relref "/security-remediation/agentic-red-team-drills" >}})
+answers whether workflows keep that approval boundary under hostile
+inputs.
+
+The generated pack is exposed through
+`recipes_agentic_red_team_drill_pack`, so an eval harness or agent host
+can load the same adversarial scenarios reviewers inspect: tool-result
+injection, goal hijack, credential access, approval bypass, token
+passthrough, connector drift, runaway loops, and evidence integrity.
+
+### Readiness scorecard
+
+The red-team pack answers whether a workflow holds under hostile inputs.
+The
+[Agentic Readiness Scorecard]({{< relref "/security-remediation/agentic-readiness-scorecard" >}})
+answers whether the workflow is ready to scale.
+
+The generated scorecard is exposed through
+`recipes_agentic_readiness_scorecard`, so an AI platform, eval harness,
+or internal control portal can ask for `scale_ready` workflows, inspect a
+single workflow's blockers, or filter by minimum score without parsing
+the full documentation set.
+
 ### When to introduce a gateway
 
 You probably don't need one on day one. Start with a single MCP

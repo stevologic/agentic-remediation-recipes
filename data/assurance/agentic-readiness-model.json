@@ -1,0 +1,187 @@
+{
+  "schema_version": "1.0",
+  "last_reviewed": "2026-05-02",
+  "intent": "Turn SecurityRecipes assurance artifacts into an enterprise adoption decision system: every approved agentic remediation workflow receives a repeatable scale, pilot, gate, or block decision from control evidence rather than product intuition.",
+  "positioning": {
+    "buyer": "AI Platform, Security Engineering, Product Security, GRC, procurement security, and acquisition diligence teams",
+    "category": "Agentic AI remediation readiness scoring",
+    "enterprise_promise": "Security teams can decide which agentic remediation workflows are safe to scale using generated evidence across workflow scope, MCP policy, connector trust, agent identity, adversarial evals, and audit readiness.",
+    "why_now": "Agentic AI programs are moving from pilots to enterprise rollout. Buyers need a machine-readable way to separate workflows that are safe to scale from workflows that should remain gated, especially as MCP connectors, agent identities, and tool-calling systems become production control surfaces."
+  },
+  "standards_alignment": [
+    {
+      "id": "nist-ai-rmf-1.0",
+      "name": "NIST AI Risk Management Framework 1.0",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "coverage": "Govern, Map, Measure, and Manage functions for AI systems, including the April 2026 concept note direction for trustworthy AI in critical infrastructure."
+    },
+    {
+      "id": "nist-ai-600-1",
+      "name": "NIST AI RMF Generative AI Profile",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+      "coverage": "Generative AI risk actions for lifecycle governance, measurement, third-party dependencies, and data boundaries."
+    },
+    {
+      "id": "owasp-agentic-top-10-2026",
+      "name": "OWASP Top 10 for Agentic Applications 2026",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "coverage": "Autonomous and agentic systems that plan, act, and make decisions across complex workflows."
+    },
+    {
+      "id": "mcp-security-best-practices",
+      "name": "Model Context Protocol Security Best Practices",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices",
+      "coverage": "Confused deputy prevention, token passthrough avoidance, SSRF, session hijacking, local server compromise, and scope minimization."
+    },
+    {
+      "id": "cisa-secure-by-design",
+      "name": "CISA Secure by Design",
+      "url": "https://www.cisa.gov/securebydesign",
+      "coverage": "Secure defaults, transparency, executive ownership, and measurable security outcomes."
+    },
+    {
+      "id": "owasp-aibom",
+      "name": "OWASP AI Bill of Materials Project",
+      "url": "https://owaspaibom.org/",
+      "coverage": "AI system component inventory, transparency, provenance, and risk-relevant dependencies."
+    }
+  ],
+  "score_dimensions": [
+    {
+      "id": "control_plane",
+      "title": "Workflow Control Plane",
+      "weight": 18,
+      "question": "Is the workflow owned, scoped, gated, measurable, and stoppable?"
+    },
+    {
+      "id": "gateway_policy",
+      "title": "MCP Gateway Policy",
+      "weight": 15,
+      "question": "Are tool calls denied by default and constrained to declared decisions, paths, and runtime attributes?"
+    },
+    {
+      "id": "identity_delegation",
+      "title": "Agent Identity and Delegation",
+      "weight": 15,
+      "question": "Does every allowed agent class have a non-human identity contract with explicit denies and runtime revocation?"
+    },
+    {
+      "id": "connector_trust",
+      "title": "MCP Connector Trust",
+      "weight": 14,
+      "question": "Are all MCP namespaces registered, trusted, and appropriate for production or pilot use?"
+    },
+    {
+      "id": "adversarial_eval",
+      "title": "Adversarial Evaluation",
+      "weight": 14,
+      "question": "Does the workflow have repeatable red-team drills for hostile tool and agentic inputs?"
+    },
+    {
+      "id": "evidence_chain",
+      "title": "Evidence Chain",
+      "weight": 12,
+      "question": "Can buyers and auditors trace claims to source-controlled and runtime evidence?"
+    },
+    {
+      "id": "maturity_signal",
+      "title": "Operational Maturity",
+      "weight": 12,
+      "question": "Is the workflow mature enough to expand beyond a controlled pilot?"
+    }
+  ],
+  "minimum_contract": {
+    "required_gate_phases": [
+      "admission",
+      "tool_call",
+      "output",
+      "pre_merge",
+      "post_merge",
+      "runtime"
+    ],
+    "minimum_evidence_records": 3,
+    "minimum_kpis": 3,
+    "minimum_red_team_drills": 5,
+    "critical_denied_actions": [
+      "deploy_or_release",
+      "merge_pull_request",
+      "read_secret_store"
+    ],
+    "must_default_gateway_to_deny": true,
+    "must_require_human_review": true,
+    "must_require_session_disablement": true
+  },
+  "decision_contract": {
+    "scale_ready": {
+      "minimum_score": 90,
+      "allowed_maturity_stages": [
+        "walk",
+        "run"
+      ],
+      "requires_all_connectors_production": true,
+      "requires_no_blockers": true,
+      "meaning": "Ready for controlled enterprise expansion with standard change controls."
+    },
+    "pilot_guarded": {
+      "minimum_score": 78,
+      "allowed_maturity_stages": [
+        "crawl",
+        "walk",
+        "run"
+      ],
+      "requires_no_blockers": true,
+      "meaning": "Approved for a bounded pilot or existing active use, but not for broad scale without the listed next actions."
+    },
+    "manual_gate": {
+      "minimum_score": 0,
+      "meaning": "Human program owner must approve before use; evidence is incomplete or maturity is too low for autonomous expansion."
+    },
+    "blocked": {
+      "meaning": "Do not run until blockers are remediated."
+    }
+  },
+  "blocker_rules": [
+    {
+      "id": "source_hash_drift",
+      "title": "Source Hash Drift",
+      "condition": "Generated evidence artifacts do not agree on the workflow manifest hash."
+    },
+    {
+      "id": "gateway_not_default_deny",
+      "title": "Gateway Not Default Deny",
+      "condition": "Gateway policy default decision is not deny."
+    },
+    {
+      "id": "missing_identity_contract",
+      "title": "Missing Agent Identity Contract",
+      "condition": "A workflow default agent lacks a generated identity ledger entry."
+    },
+    {
+      "id": "missing_connector_registration",
+      "title": "Missing Connector Registration",
+      "condition": "A workflow MCP namespace is absent from the connector trust pack."
+    },
+    {
+      "id": "missing_red_team_coverage",
+      "title": "Missing Red-Team Coverage",
+      "condition": "A workflow has fewer than the required red-team drills."
+    },
+    {
+      "id": "missing_runtime_kill_signal",
+      "title": "Missing Runtime Kill Signal",
+      "condition": "Workflow or gateway policy lacks session disablement and kill-signal coverage."
+    }
+  ],
+  "enterprise_adoption_packet": {
+    "board_level_claim": "Agentic remediation expansion decisions are generated from enforceable controls, identity contracts, connector trust, red-team coverage, and evidence readiness.",
+    "default_questions_answered": [
+      "Which workflows can scale now?",
+      "Which workflows remain pilot-only and why?",
+      "Which controls prevent tool misuse or rogue agent behavior?",
+      "Which MCP namespaces are still pilot dependencies?",
+      "Which source artifacts prove the readiness decision?"
+    ],
+    "recommended_first_use": "Use the scorecard as the AI platform promotion gate before expanding a workflow to more repositories, teams, or agent hosts.",
+    "sales_motion": "Lead with open readiness scoring, then sell hosted score monitoring, enterprise evidence ingestion, custom control weighting, workflow promotion gates, and trust-center exports."
+  }
+}

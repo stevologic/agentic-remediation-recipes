@@ -10,6 +10,32 @@ allowed_source_hosts = ["security-recipes.ai"]
 # Change this to your own hostname/subdomain when self-hosting.
 server_public_base_url = "https://mcp.security-recipes.ai"
 
+# Local workflow-control-plane manifest exposed through the
+# recipes_workflow_control_plane MCP tool.
+control_plane_manifest_path = "./data/control-plane/workflow-manifests.json"
+
+# Generated policy pack exposed through the recipes_mcp_gateway_policy MCP tool.
+gateway_policy_path = "./data/policy/mcp-gateway-policy.json"
+
+# Generated assurance pack exposed through the recipes_agentic_assurance_pack MCP tool.
+assurance_pack_path = "./data/evidence/agentic-assurance-pack.json"
+
+# Generated non-human identity and delegation ledger exposed through the
+# recipes_agent_identity_ledger MCP tool.
+identity_ledger_path = "./data/evidence/agent-identity-delegation-ledger.json"
+
+# Generated MCP connector trust pack exposed through the
+# recipes_mcp_connector_trust_pack MCP tool.
+connector_trust_pack_path = "./data/evidence/mcp-connector-trust-pack.json"
+
+# Generated agentic red-team drill pack exposed through the
+# recipes_agentic_red_team_drill_pack MCP tool.
+red_team_drill_pack_path = "./data/evidence/agentic-red-team-drill-pack.json"
+
+# Generated agentic readiness scorecard exposed through the
+# recipes_agentic_readiness_scorecard MCP tool.
+readiness_scorecard_path = "./data/evidence/agentic-readiness-scorecard.json"
+
 # Cache and behavior tuning
 cache_ttl_seconds = 3600
 request_timeout_seconds = 15

@@ -1,0 +1,1459 @@
+{
+  "agent_bom_seed": {
+    "agent_classes": [
+      "claude",
+      "codex",
+      "cursor",
+      "devin",
+      "github_copilot"
+    ],
+    "mcp_namespaces": [
+      "advisories.vulnerability",
+      "chain.simulation",
+      "ci.runs",
+      "findings.sast",
+      "findings.sde",
+      "images.golden",
+      "incidents.security",
+      "inventory.artifacts",
+      "payments.findings",
+      "payments.simulation",
+      "protocol.findings",
+      "recipes.defaults",
+      "registries.quarantine",
+      "repo.contents",
+      "sbom.inventory",
+      "tickets.security"
+    ],
+    "policy_decisions": [
+      "allow",
+      "allow_scoped_branch",
+      "allow_scoped_ticket",
+      "deny",
+      "hold_for_approval",
+      "kill_session"
+    ],
+    "prompt_asset_roots": [
+      "content/prompt-library",
+      "content/security-remediation",
+      "data/control-plane",
+      "data/policy"
+    ],
+    "workflow_count": 8
+  },
+  "assurance_summary": {
+    "active_workflow_count": 8,
+    "control_count": 9,
+    "external_evidence_artifact_count": 3,
+    "failure_count": 0,
+    "gateway_default_decision": "deny",
+    "standards_count": 9,
+    "workflow_count": 8
+  },
+  "control_objectives": [
+    {
+      "ai_easy_default": "Agents and reviewers can ask for one workflow ID and receive the approved scope, owner, gates, and evidence contract without reading multiple docs pages.",
+      "buyer_value": "Turns a collection of recipes into a governed deployment inventory that GRC and AI platform teams can approve.",
+      "evidence_sources": [
+        {
+          "availability": "source-controlled",
+          "id": "workflow_manifest",
+          "path": "data/control-plane/workflow-manifests.json",
+          "title": "Workflow control-plane manifest"
+        },
+        {
+          "availability": "generated",
+          "id": "control_plane_report",
+          "path": "data/evidence/workflow-control-plane-report.json",
+          "title": "Workflow control-plane validation report"
+        },
+        {
+          "availability": "source-controlled",
+          "id": "mcp_tool_surface",
+          "path": "mcp_server.py",
+          "title": "MCP server tool surface"
+        }
+      ],
+      "framework_mappings": [
+        {
+          "control": "Govern and Map",
+          "rationale": "The workflow manifest establishes ownership, context, and intended use before an AI system acts.",
+          "standard_id": "nist-ai-rmf-1.0"
+        },
+        {
+          "control": "Governance, Risk Management, and AI Asset Management",
+          "rationale": "The manifest is the AI remediation asset inventory and control owner register.",
+          "standard_id": "csa-aicm"
+        },
+        {
+          "control": "Executive ownership and transparency",
+          "rationale": "Workflows name accountable teams and measurable operating expectations.",
+          "standard_id": "cisa-secure-by-design"
+        }
+      ],
+      "id": "SR-AI-01",
+      "objective": "Every agentic remediation workflow has a declared owner, status, maturity stage, eligible finding classes, public documentation path, and escalation path.",
+      "product_surface": [
+        "workflow-control-plane",
+        "MCP server context",
+        "security-remediation documentation"
+      ],
+      "title": "Workflow Inventory and Ownership"
+    },
+    {
+      "ai_easy_default": "The policy pack gives an enforcer a simple allow, hold, deny, or kill decision instead of expecting the model to remember policy text.",
+      "buyer_value": "Makes agent access enforceable at the platform layer and limits tool misuse before it becomes an incident.",
+      "evidence_sources": [
+        {
+          "availability": "generated",
+          "id": "gateway_policy_pack",
+          "path": "data/policy/mcp-gateway-policy.json",
+          "title": "Generated MCP gateway policy pack"
+        },
+        {
+          "availability": "source-controlled",
+          "id": "workflow_manifest",
+          "path": "data/control-plane/workflow-manifests.json",
+          "title": "Workflow control-plane manifest"
+        },
+        {
+          "availability": "external",
+          "id": "runtime_gateway_audit",
+          "title": "Runtime MCP gateway audit log"
+        }
+      ],
+      "framework_mappings": [
+        {
+          "control": "Scope minimization, confused deputy prevention, and token-passthrough avoidance",
+          "rationale": "The gateway policy narrows each run to explicit namespaces and access modes.",
+          "standard_id": "mcp-security-best-practices"
+        },
+        {
+          "control": "ASI02 Tool Misuse and ASI03 Identity and Privilege Abuse",
+          "rationale": "Default-deny tool scopes reduce misuse of legitimate tools and limit privilege inheritance.",
+          "standard_id": "owasp-agentic-top-10-2026"
+        },
+        {
+          "control": "Insecure plugin design and excessive agency",
+          "rationale": "Scoped, auditable tool access prevents broad plugin authority from being delegated to the model.",
+          "standard_id": "owasp-llm-top-10"
+        }
+      ],
+      "id": "SR-AI-02",
+      "objective": "Agent tool calls are denied by default and allowed only inside declared MCP namespaces, access modes, branch prefixes, and changed-file limits.",
+      "product_surface": [
+        "MCP gateway policy pack",
+        "runtime controls",
+        "workflow manifests"
+      ],
+      "title": "Default-Deny Tool Access"
+    },
+    {
+      "ai_easy_default": "The workflow contract tells the agent exactly when to stop and what review evidence to attach instead of negotiating approvals in chat.",
+      "buyer_value": "Lets enterprises scale AI-authored fixes while preserving the change-management controls their auditors already expect.",
+      "evidence_sources": [
+        {
+          "availability": "source-controlled",
+          "id": "workflow_manifest",
+          "path": "data/control-plane/workflow-manifests.json",
+          "title": "Workflow control-plane manifest"
+        },
+        {
+          "availability": "external",
+          "id": "reviewer_decision_records",
+          "title": "Human reviewer decision records"
+        },
+        {
+          "availability": "generated",
+          "id": "control_plane_report",
+          "path": "data/evidence/workflow-control-plane-report.json",
+          "title": "Workflow control-plane validation report"
+        }
+      ],
+      "framework_mappings": [
+        {
+          "control": "PW.7 review and analyze code; RV.1 identify and confirm vulnerabilities",
+          "rationale": "Agent-authored changes remain subject to review, scanner confirmation, and finding-to-PR traceability.",
+          "standard_id": "nist-ssdf-800-218"
+        },
+        {
+          "control": "Measure and Manage",
+          "rationale": "Reviewer gates measure output quality and manage residual risk before deployment.",
+          "standard_id": "nist-ai-rmf-1.0"
+        },
+        {
+          "control": "Secure outcomes over user burden",
+          "rationale": "The platform owns safe defaults while humans approve risk-bearing changes.",
+          "standard_id": "cisa-secure-by-design"
+        }
+      ],
+      "id": "SR-AI-03",
+      "objective": "Agents can propose remediations but cannot merge them; source-host controls and reviewer pools preserve human accountability for change approval.",
+      "product_surface": [
+        "reviewer playbook",
+        "workflow gates",
+        "PR evidence"
+      ],
+      "title": "Human Review and Separation of Duties"
+    },
+    {
+      "ai_easy_default": "Agents consume pinned, reviewed instructions and policy artifacts instead of ad hoc prompt fragments.",
+      "buyer_value": "Protects the highest-leverage control surface in agentic systems: the instructions and tools that shape every run.",
+      "evidence_sources": [
+        {
+          "availability": "source-controlled",
+          "id": "prompt_supply_chain_records",
+          "path": "content/prompt-library",
+          "title": "Prompt, skill, and rules-file source tree"
+        },
+        {
+          "availability": "source-controlled",
+          "id": "workflow_manifest",
+          "path": "data/control-plane/workflow-manifests.json",
+          "title": "Workflow control-plane manifest"
+        },
+        {
+          "availability": "source-controlled",
+          "id": "mcp_tool_surface",
+          "path": "mcp_server.py",
+          "title": "MCP server tool surface"
+        }
+      ],
+      "framework_mappings": [
+        {
+          "control": "ASI04 Agentic Supply Chain Vulnerabilities and ASI06 Memory and Context Poisoning",
+          "rationale": "Reviewed, versioned prompt and MCP artifacts reduce poisoning and instruction drift.",
+          "standard_id": "owasp-agentic-top-10-2026"
+        },
+        {
+          "control": "Supply chain vulnerabilities and prompt injection",
+          "rationale": "Instruction files and context sources are governed as code rather than unmanaged content.",
+          "standard_id": "owasp-llm-top-10"
+        },
+        {
+          "control": "AI system component transparency",
+          "rationale": "Prompt, tool, model, and MCP dependencies are inventory candidates for an AI Bill of Materials.",
+          "standard_id": "owasp-aibom"
+        }
+      ],
+      "id": "SR-AI-04",
+      "objective": "Prompts, skills, rules files, workflow manifests, and MCP client/server configuration are treated as reviewed software supply-chain artifacts.",
+      "product_surface": [
+        "prompt library",
+        "workflow manifests",
+        "MCP server configuration"
+      ],
+      "title": "Prompt, Skill, and MCP Supply Chain Governance"
+    },
+    {
+      "ai_easy_default": "The evidence contract is generated from the manifest, so every workflow tells agents which records to attach before the PR is reviewable.",
+      "buyer_value": "Shortens security reviews, procurement reviews, and audits by turning operational evidence into a portable export.",
+      "evidence_sources": [
+        {
+          "availability": "generated",
+          "id": "control_plane_report",
+          "path": "data/evidence/workflow-control-plane-report.json",
+          "title": "Workflow control-plane validation report"
+        },
+        {
+          "availability": "source-controlled",
+          "id": "workflow_manifest",
+          "path": "data/control-plane/workflow-manifests.json",
+          "title": "Workflow control-plane manifest"
+        },
+        {
+          "availability": "external",
+          "id": "runtime_gateway_audit",
+          "title": "Runtime MCP gateway audit log"
+        },
+        {
+          "availability": "external",
+          "id": "reviewer_decision_records",
+          "title": "Human reviewer decision records"
+        }
+      ],
+      "framework_mappings": [
+        {
+          "control": "Measure and Manage",
+          "rationale": "Evidence streams support ongoing risk measurement and control adjustment.",
+          "standard_id": "nist-ai-rmf-1.0"
+        },
+        {
+          "control": "Auditability, logging, monitoring, and assurance",
+          "rationale": "Evidence records assign sources, retention, and owners to every workflow.",
+          "standard_id": "csa-aicm"
+        },
+        {
+          "control": "Measurable security outcomes",
+          "rationale": "The pack reports workflow coverage, gates, KPIs, and failure counts.",
+          "standard_id": "cisa-secure-by-design"
+        }
+      ],
+      "id": "SR-AI-05",
+      "objective": "Each agentic run produces finding linkage, tool audit, scanner before/after evidence, reviewer decisions, KPI records, and retention ownership.",
+      "product_surface": [
+        "control-plane report",
+        "assurance pack",
+        "runtime gateway audit"
+      ],
+      "title": "Evidence Chain of Custody"
+    },
+    {
+      "ai_easy_default": "Agents get clear stop conditions and enforcers get a kill_session decision instead of relying on model self-restraint.",
+      "buyer_value": "Creates a credible blast-radius limit for autonomous work across repositories, MCP servers, registries, and payment or protocol contexts.",
+      "evidence_sources": [
+        {
+          "availability": "generated",
+          "id": "gateway_policy_pack",
+          "path": "data/policy/mcp-gateway-policy.json",
+          "title": "Generated MCP gateway policy pack"
+        },
+        {
+          "availability": "external",
+          "id": "runtime_gateway_audit",
+          "title": "Runtime MCP gateway audit log"
+        },
+        {
+          "availability": "source-controlled",
+          "id": "workflow_manifest",
+          "path": "data/control-plane/workflow-manifests.json",
+          "title": "Workflow control-plane manifest"
+        }
+      ],
+      "framework_mappings": [
+        {
+          "control": "ASI08 Cascading Failures and ASI10 Rogue Agents",
+          "rationale": "Runtime stop conditions prevent small failures from propagating and cut off rogue behavior.",
+          "standard_id": "owasp-agentic-top-10-2026"
+        },
+        {
+          "control": "Session safety and local MCP server compromise mitigations",
+          "rationale": "Session disablement and scoped egress reduce harm when tool context becomes unsafe.",
+          "standard_id": "mcp-security-best-practices"
+        },
+        {
+          "control": "Manage generative AI risks across deployment and operation",
+          "rationale": "Kill signals are operational risk controls for deployed agentic workflows.",
+          "standard_id": "nist-ai-600-1"
+        }
+      ],
+      "id": "SR-AI-06",
+      "objective": "Agent sessions stop immediately on declared runtime risk signals such as scope creep, credential access attempts, release attempts, repeated failed loops, or missing verifier coverage.",
+      "product_surface": [
+        "gateway policy pack",
+        "runtime controls",
+        "workflow manifests"
+      ],
+      "title": "Runtime Kill Signals and Session Disablement"
+    },
+    {
+      "ai_easy_default": "The workflow's MCP context and evidence contract make data exposure explicit rather than hidden in agent prompts.",
+      "buyer_value": "Gives AI Platform and Legal a durable review surface for model-provider, data-residency, and retention risk.",
+      "evidence_sources": [
+        {
+          "availability": "source-controlled",
+          "id": "workflow_manifest",
+          "path": "data/control-plane/workflow-manifests.json",
+          "title": "Workflow control-plane manifest"
+        },
+        {
+          "availability": "external",
+          "id": "model_provider_contract",
+          "title": "Model-provider data handling contract"
+        },
+        {
+          "availability": "external",
+          "id": "runtime_gateway_audit",
+          "title": "Runtime MCP gateway audit log"
+        }
+      ],
+      "framework_mappings": [
+        {
+          "control": "Data governance, third-party dependency, and lifecycle risk management",
+          "rationale": "Workflow manifests and provider contracts record what data can reach models and connected services.",
+          "standard_id": "nist-ai-600-1"
+        },
+        {
+          "control": "Sensitive information disclosure",
+          "rationale": "Data classes and scoped context reduce unintended exposure through prompts and tool calls.",
+          "standard_id": "owasp-llm-top-10"
+        },
+        {
+          "control": "Data security, privacy, and third-party AI service governance",
+          "rationale": "Provider boundaries and runtime logs support cloud AI control assurance.",
+          "standard_id": "csa-aicm"
+        }
+      ],
+      "id": "SR-AI-07",
+      "objective": "Each workflow records what data classes, model-provider constraints, regions, retention settings, and external systems are allowed before the agent runs.",
+      "product_surface": [
+        "compliance guidance",
+        "workflow manifests",
+        "model-provider contract"
+      ],
+      "title": "Model and Data Handling Boundaries"
+    },
+    {
+      "ai_easy_default": "Downstream platforms can ingest a single assurance pack to inventory agentic remediation capabilities and their control dependencies.",
+      "buyer_value": "Positions the site for AI transparency, procurement, and vendor-risk workflows that are becoming standard enterprise asks.",
+      "evidence_sources": [
+        {
+          "availability": "source-controlled",
+          "id": "workflow_manifest",
+          "path": "data/control-plane/workflow-manifests.json",
+          "title": "Workflow control-plane manifest"
+        },
+        {
+          "availability": "generated",
+          "id": "gateway_policy_pack",
+          "path": "data/policy/mcp-gateway-policy.json",
+          "title": "Generated MCP gateway policy pack"
+        },
+        {
+          "availability": "source-controlled",
+          "id": "prompt_supply_chain_records",
+          "path": "content/prompt-library",
+          "title": "Prompt, skill, and rules-file source tree"
+        },
+        {
+          "availability": "source-controlled",
+          "id": "mcp_tool_surface",
+          "path": "mcp_server.py",
+          "title": "MCP server tool surface"
+        }
+      ],
+      "framework_mappings": [
+        {
+          "control": "AI Bill of Materials transparency",
+          "rationale": "The pack inventories agentic components, policy dependencies, and evidence owners.",
+          "standard_id": "owasp-aibom"
+        },
+        {
+          "control": "Transparency and secure defaults",
+          "rationale": "A BOM-ready export helps customers evaluate AI system security before deployment.",
+          "standard_id": "cisa-secure-by-design"
+        },
+        {
+          "control": "Agentic supply chain and identity-aware operations",
+          "rationale": "Inventorying agent, prompt, tool, and MCP dependencies is the first step toward agentic supply-chain control.",
+          "standard_id": "owasp-agentic-top-10-2026"
+        }
+      ],
+      "id": "SR-AI-08",
+      "objective": "SecurityRecipes exports the components needed to build an AI/Agent BOM: workflows, models or agent classes, MCP namespaces, prompt assets, policy packs, evidence owners, and runtime dependencies.",
+      "product_surface": [
+        "assurance pack",
+        "MCP server",
+        "prompt library",
+        "gateway policy pack"
+      ],
+      "title": "AI and Agent Bill of Materials Readiness"
+    },
+    {
+      "ai_easy_default": "Agents, gateways, and reviewers can load one generated drill pack to know which hostile inputs to replay and which evidence must prove the workflow stopped or stayed in scope.",
+      "buyer_value": "Moves SecurityRecipes from governance claims to testable assurance, which is the bar enterprise AI platform teams and acquisition diligence teams will expect.",
+      "evidence_sources": [
+        {
+          "availability": "generated",
+          "id": "red_team_drill_pack",
+          "path": "data/evidence/agentic-red-team-drill-pack.json",
+          "title": "Generated agentic red-team drill pack"
+        },
+        {
+          "availability": "external",
+          "id": "runtime_gateway_audit",
+          "title": "Runtime MCP gateway audit log"
+        },
+        {
+          "availability": "external",
+          "id": "reviewer_decision_records",
+          "title": "Human reviewer decision records"
+        },
+        {
+          "availability": "source-controlled",
+          "id": "workflow_manifest",
+          "path": "data/control-plane/workflow-manifests.json",
+          "title": "Workflow control-plane manifest"
+        }
+      ],
+      "framework_mappings": [
+        {
+          "control": "Measure and Manage",
+          "rationale": "Repeatable red-team drills convert agentic failure modes into measured operational controls.",
+          "standard_id": "nist-ai-rmf-1.0"
+        },
+        {
+          "control": "Agent goal hijack, tool misuse, identity abuse, context poisoning, cascading failures, and rogue agents",
+          "rationale": "The drill pack directly exercises the highest-risk agentic application failure modes.",
+          "standard_id": "owasp-agentic-top-10-2026"
+        },
+        {
+          "control": "Confused deputy prevention, token passthrough avoidance, and session safety",
+          "rationale": "MCP-specific drills test whether gateway policy and connector trust controls survive hostile tool context.",
+          "standard_id": "mcp-security-best-practices"
+        },
+        {
+          "control": "AI assurance, monitoring, and control validation",
+          "rationale": "The generated pack gives cloud AI programs a portable eval evidence index.",
+          "standard_id": "csa-aicm"
+        }
+      ],
+      "id": "SR-AI-09",
+      "objective": "Approved agentic remediation workflows have repeatable adversarial drills for tool-result injection, goal hijack, credential access, approval bypass, token passthrough, connector drift, runaway loops, and evidence integrity failures.",
+      "product_surface": [
+        "red-team drill pack",
+        "MCP gateway policy pack",
+        "connector trust pack",
+        "runtime controls"
+      ],
+      "title": "Adversarial Evaluation and Red-Team Replay"
+    }
+  ],
+  "enterprise_adoption_packet": {
+    "board_level_claim": "Agentic remediation is governed as a scoped, reviewable, evidence-producing AI system rather than an unmanaged developer assistant.",
+    "default_questions_answered": [
+      "Which workflows are approved to run?",
+      "What tools and MCP namespaces can each workflow access?",
+      "Who owns the workflow and who reviews the output?",
+      "Which evidence records prove the agent stayed inside scope?",
+      "Which runtime signal pauses or kills the session?",
+      "What needs to be inventoried in an AI or Agent Bill of Materials?"
+    ],
+    "recommended_first_use": "Attach this pack to AI platform design review, vendor-risk intake, security architecture review, and auditor evidence requests.",
+    "sales_motion": "Lead with open recipes, then sell hosted MCP policy, evidence exports, enterprise integrations, and assurance reporting."
+  },
+  "failures": [],
+  "generated_at": "2026-05-02",
+  "intent": "Package SecurityRecipes as an enterprise assurance layer for agentic remediation: every workflow, MCP gateway decision, prompt supply-chain surface, reviewer gate, and evidence stream can be exported for buyers, auditors, AI platform teams, and security leadership.",
+  "positioning": {
+    "buyer": "Security Engineering, AI Platform, Product Security, GRC, and engineering executives",
+    "category": "Agentic security remediation assurance",
+    "enterprise_promise": "A machine-readable trust pack that makes agentic remediation reviewable, enforceable, and measurable before it is scaled across an enterprise.",
+    "why_now": "Agentic AI security guidance has moved from general LLM risk to tool-using, autonomous, MCP-connected systems. Enterprise buyers need evidence that agents are governed at runtime, not just prompted carefully."
+  },
+  "residual_risks": [
+    {
+      "risk": "External evidence is still enterprise-specific.",
+      "treatment": "Runtime gateway logs, source-host review events, and model-provider contracts must be supplied by the deploying organization."
+    },
+    {
+      "risk": "A policy pack does not replace exploit-specific verification.",
+      "treatment": "Every workflow still needs scanner, test, or simulator evidence proving the original finding was remediated."
+    },
+    {
+      "risk": "Model behavior changes can invalidate prompt assumptions.",
+      "treatment": "Model upgrades should re-run pilot fixtures and update the workflow manifest before broad rollout."
+    }
+  ],
+  "schema_version": "1.0",
+  "source_artifacts": {
+    "control_map": {
+      "path": "data/assurance/agentic-assurance-control-map.json",
+      "sha256": "0440646dd3ee4cd315ada11b866ad453184ed615cc6c9f60f285339ee6705318"
+    },
+    "gateway_policy_pack": {
+      "path": "data/policy/mcp-gateway-policy.json",
+      "sha256": "bb1dbf00ec5bee173a19dff65266f13d84501b94aca3239019a03d6e09546de2"
+    },
+    "workflow_control_plane_report": {
+      "path": "data/evidence/workflow-control-plane-report.json",
+      "sha256": "63d7bde4927f99436eb92ec10ded994b37a83517c189dfb61a036ecee9f9564c"
+    },
+    "workflow_manifest": {
+      "path": "data/control-plane/workflow-manifests.json",
+      "sha256": "22f45f06fee190b602ac27f300c94d72ab38646f76a1ad2e4f80923a3a444ceb"
+    }
+  },
+  "standards_alignment": [
+    {
+      "coverage": "Govern, Map, Measure, and Manage functions for AI risk programs.",
+      "id": "nist-ai-rmf-1.0",
+      "name": "NIST AI Risk Management Framework 1.0",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+    },
+    {
+      "coverage": "Generative AI-specific governance, data, measurement, and lifecycle risks.",
+      "id": "nist-ai-600-1",
+      "name": "NIST AI RMF Generative AI Profile",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence"
+    },
+    {
+      "coverage": "Secure development and vulnerability-response evidence for agent-authored changes.",
+      "id": "nist-ssdf-800-218",
+      "name": "NIST SP 800-218 Secure Software Development Framework",
+      "url": "https://csrc.nist.gov/pubs/sp/800/218/final"
+    },
+    {
+      "coverage": "Prompt injection, sensitive information disclosure, supply chain vulnerabilities, insecure plugin design, excessive agency, and overreliance.",
+      "id": "owasp-llm-top-10",
+      "name": "OWASP Top 10 for Large Language Model Applications",
+      "url": "https://genai.owasp.org/llm-top-10/"
+    },
+    {
+      "coverage": "Agent goal hijack, tool misuse, identity and privilege abuse, agentic supply chain, unexpected code execution, memory and context poisoning, cascading failures, and rogue agents.",
+      "id": "owasp-agentic-top-10-2026",
+      "name": "OWASP Top 10 for Agentic Applications 2026",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/"
+    },
+    {
+      "coverage": "Vendor-neutral control objectives for secure and responsible cloud-based AI systems.",
+      "id": "csa-aicm",
+      "name": "Cloud Security Alliance AI Controls Matrix",
+      "url": "https://cloudsecurityalliance.org/artifacts/ai-controls-matrix"
+    },
+    {
+      "coverage": "Confused deputy prevention, token-passthrough avoidance, scope minimization, session safety, and MCP-specific auditability.",
+      "id": "mcp-security-best-practices",
+      "name": "Model Context Protocol Security Best Practices",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices"
+    },
+    {
+      "coverage": "Executive ownership, measurable security outcomes, transparency, and safe defaults for software and AI systems.",
+      "id": "cisa-secure-by-design",
+      "name": "CISA Secure by Design",
+      "url": "https://www.cisa.gov/securebydesign"
+    },
+    {
+      "coverage": "AI system transparency through inventories of models, data, dependencies, provenance, and risk-relevant components.",
+      "id": "owasp-aibom",
+      "name": "OWASP AI Bill of Materials Project and Generator",
+      "url": "https://owaspaibom.org/"
+    }
+  ],
+  "workflow_assurance": [
+    {
+      "applicable_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot",
+        "devin"
+      ],
+      "evidence_records": [
+        {
+          "id": "sde-scanner-before-after",
+          "owner": "Security Engineering",
+          "retention": "400d",
+          "source": "scanner SARIF or JSON"
+        },
+        {
+          "id": "sde-pr-review-record",
+          "owner": "Engineering Platform",
+          "retention": "400d",
+          "source": "source host review events"
+        },
+        {
+          "id": "sde-agent-tool-audit",
+          "owner": "AI Platform",
+          "retention": "400d",
+          "source": "MCP gateway audit log"
+        }
+      ],
+      "gate_phases": [
+        {
+          "phase": "admission",
+          "rule_count": 3
+        },
+        {
+          "phase": "tool_call",
+          "rule_count": 3
+        },
+        {
+          "phase": "output",
+          "rule_count": 3
+        },
+        {
+          "phase": "pre_merge",
+          "rule_count": 3
+        },
+        {
+          "phase": "post_merge",
+          "rule_count": 2
+        },
+        {
+          "phase": "runtime",
+          "rule_count": 2
+        }
+      ],
+      "gateway_decisions": [
+        "allow",
+        "allow_scoped_branch",
+        "allow_scoped_ticket",
+        "deny",
+        "kill_session"
+      ],
+      "kill_signal_count": 3,
+      "kpis": [
+        {
+          "id": "mttr_p50",
+          "target": "<= 30% of manual baseline"
+        },
+        {
+          "id": "merge_as_is_rate",
+          "target": ">= 70% once mature"
+        },
+        {
+          "id": "regression_rate",
+          "target": "<= 1% rolling 30d"
+        }
+      ],
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "findings.sde",
+        "repo.contents",
+        "tickets.security"
+      ],
+      "owner": {
+        "accountable_team": "Security Engineering",
+        "escalation": "privacy-security",
+        "reviewer_pools": [
+          "security-remediation",
+          "service-owner"
+        ]
+      },
+      "public_path": "/security-remediation/sensitive-data/",
+      "status": "active",
+      "title": "Sensitive Data Element Remediation",
+      "workflow_id": "sensitive-data-remediation"
+    },
+    {
+      "applicable_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot",
+        "devin"
+      ],
+      "evidence_records": [
+        {
+          "id": "dependency-advisory-record",
+          "owner": "Product Security",
+          "retention": "400d",
+          "source": "advisory feed or SCA platform"
+        },
+        {
+          "id": "dependency-resolver-log",
+          "owner": "Engineering Platform",
+          "retention": "400d",
+          "source": "CI artifact"
+        },
+        {
+          "id": "dependency-pr-review-record",
+          "owner": "Engineering Platform",
+          "retention": "400d",
+          "source": "source host review events"
+        }
+      ],
+      "gate_phases": [
+        {
+          "phase": "admission",
+          "rule_count": 3
+        },
+        {
+          "phase": "tool_call",
+          "rule_count": 3
+        },
+        {
+          "phase": "output",
+          "rule_count": 3
+        },
+        {
+          "phase": "pre_merge",
+          "rule_count": 3
+        },
+        {
+          "phase": "post_merge",
+          "rule_count": 2
+        },
+        {
+          "phase": "runtime",
+          "rule_count": 2
+        }
+      ],
+      "gateway_decisions": [
+        "allow",
+        "allow_scoped_branch",
+        "deny",
+        "kill_session"
+      ],
+      "kill_signal_count": 3,
+      "kpis": [
+        {
+          "id": "critical_mttr_p90",
+          "target": "<= 7d"
+        },
+        {
+          "id": "merge_as_is_rate",
+          "target": ">= 80% once mature"
+        },
+        {
+          "id": "regression_rate",
+          "target": "<= 1% rolling 30d"
+        }
+      ],
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "advisories.vulnerability",
+        "sbom.inventory",
+        "repo.contents"
+      ],
+      "owner": {
+        "accountable_team": "Product Security",
+        "escalation": "supply-chain-security",
+        "reviewer_pools": [
+          "dependency-remediation",
+          "service-owner"
+        ]
+      },
+      "public_path": "/security-remediation/vulnerable-dependencies/",
+      "status": "active",
+      "title": "Vulnerable Dependency Remediation",
+      "workflow_id": "vulnerable-dependency-remediation"
+    },
+    {
+      "applicable_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot"
+      ],
+      "evidence_records": [
+        {
+          "id": "sast-rule-trace",
+          "owner": "Application Security",
+          "retention": "400d",
+          "source": "SAST SARIF"
+        },
+        {
+          "id": "sast-verifier-run",
+          "owner": "Engineering Platform",
+          "retention": "400d",
+          "source": "CI scanner artifact"
+        },
+        {
+          "id": "sast-pr-review-record",
+          "owner": "Engineering Platform",
+          "retention": "400d",
+          "source": "source host review events"
+        }
+      ],
+      "gate_phases": [
+        {
+          "phase": "admission",
+          "rule_count": 3
+        },
+        {
+          "phase": "tool_call",
+          "rule_count": 3
+        },
+        {
+          "phase": "output",
+          "rule_count": 3
+        },
+        {
+          "phase": "pre_merge",
+          "rule_count": 3
+        },
+        {
+          "phase": "post_merge",
+          "rule_count": 2
+        },
+        {
+          "phase": "runtime",
+          "rule_count": 2
+        }
+      ],
+      "gateway_decisions": [
+        "allow",
+        "allow_scoped_branch",
+        "deny",
+        "kill_session"
+      ],
+      "kill_signal_count": 3,
+      "kpis": [
+        {
+          "id": "eligible_finding_rate",
+          "target": ">= 40% for pilot exit"
+        },
+        {
+          "id": "false_positive_rate",
+          "target": "<= 15% rolling 30d"
+        },
+        {
+          "id": "regression_rate",
+          "target": "<= 1% rolling 30d"
+        }
+      ],
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "findings.sast",
+        "repo.contents",
+        "ci.runs"
+      ],
+      "owner": {
+        "accountable_team": "Application Security",
+        "escalation": "secure-code-review",
+        "reviewer_pools": [
+          "appsec",
+          "service-owner"
+        ]
+      },
+      "public_path": "/security-remediation/sast-findings/",
+      "status": "active",
+      "title": "SAST Finding Remediation",
+      "workflow_id": "sast-finding-remediation"
+    },
+    {
+      "applicable_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot",
+        "devin"
+      ],
+      "evidence_records": [
+        {
+          "id": "base-image-sbom-signature",
+          "owner": "Platform Security",
+          "retention": "400d",
+          "source": "registry attestation and cosign verification"
+        },
+        {
+          "id": "base-image-scan-before-after",
+          "owner": "Platform Security",
+          "retention": "400d",
+          "source": "Trivy, Grype, or commercial scanner"
+        },
+        {
+          "id": "base-image-rollout-record",
+          "owner": "Engineering Platform",
+          "retention": "400d",
+          "source": "deployment platform events"
+        }
+      ],
+      "gate_phases": [
+        {
+          "phase": "admission",
+          "rule_count": 3
+        },
+        {
+          "phase": "tool_call",
+          "rule_count": 3
+        },
+        {
+          "phase": "output",
+          "rule_count": 3
+        },
+        {
+          "phase": "pre_merge",
+          "rule_count": 3
+        },
+        {
+          "phase": "post_merge",
+          "rule_count": 2
+        },
+        {
+          "phase": "runtime",
+          "rule_count": 2
+        }
+      ],
+      "gateway_decisions": [
+        "allow",
+        "allow_scoped_branch",
+        "deny",
+        "kill_session"
+      ],
+      "kill_signal_count": 3,
+      "kpis": [
+        {
+          "id": "stale_base_consumers",
+          "target": "<= 5% after deprecation window"
+        },
+        {
+          "id": "critical_os_cve_mttr_p90",
+          "target": "<= 7d"
+        },
+        {
+          "id": "rollback_rate",
+          "target": "<= 1% rolling 30d"
+        }
+      ],
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "images.golden",
+        "repo.contents",
+        "ci.runs"
+      ],
+      "owner": {
+        "accountable_team": "Platform Security",
+        "escalation": "container-platform",
+        "reviewer_pools": [
+          "platform-security",
+          "service-owner"
+        ]
+      },
+      "public_path": "/security-remediation/base-images/",
+      "status": "active",
+      "title": "Base Image and Container Layer Remediation",
+      "workflow_id": "base-image-remediation"
+    },
+    {
+      "applicable_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "devin"
+      ],
+      "evidence_records": [
+        {
+          "id": "artifact-identifier-record",
+          "owner": "Supply Chain Security",
+          "retention": "400d",
+          "source": "incident ticket and advisory"
+        },
+        {
+          "id": "artifact-quarantine-approval",
+          "owner": "Security Incident Response",
+          "retention": "400d",
+          "source": "MCP elicitation or change-management record"
+        },
+        {
+          "id": "artifact-post-purge-verification",
+          "owner": "Engineering Platform",
+          "retention": "400d",
+          "source": "registry and proxy audit logs"
+        }
+      ],
+      "gate_phases": [
+        {
+          "phase": "admission",
+          "rule_count": 3
+        },
+        {
+          "phase": "tool_call",
+          "rule_count": 3
+        },
+        {
+          "phase": "output",
+          "rule_count": 3
+        },
+        {
+          "phase": "pre_merge",
+          "rule_count": 3
+        },
+        {
+          "phase": "post_merge",
+          "rule_count": 2
+        },
+        {
+          "phase": "runtime",
+          "rule_count": 2
+        }
+      ],
+      "gateway_decisions": [
+        "allow",
+        "allow_scoped_ticket",
+        "deny",
+        "hold_for_approval",
+        "kill_session"
+      ],
+      "kill_signal_count": 3,
+      "kpis": [
+        {
+          "id": "quarantine_time_p90",
+          "target": "<= 4h for critical compromised artifacts"
+        },
+        {
+          "id": "consumer_notification_coverage",
+          "target": "100% of known consumers"
+        },
+        {
+          "id": "unauthorized_write_attempts",
+          "target": "0"
+        }
+      ],
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "inventory.artifacts",
+        "registries.quarantine",
+        "incidents.security"
+      ],
+      "owner": {
+        "accountable_team": "Supply Chain Security",
+        "escalation": "security-incident-commander",
+        "reviewer_pools": [
+          "supply-chain-security",
+          "platform-owner"
+        ]
+      },
+      "public_path": "/security-remediation/artifact-cache-purge/",
+      "status": "active",
+      "title": "Artifact Cache and Mirror Quarantine",
+      "workflow_id": "artifact-cache-quarantine"
+    },
+    {
+      "applicable_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot"
+      ],
+      "evidence_records": [
+        {
+          "id": "classic-default-rule-record",
+          "owner": "Application Security",
+          "retention": "400d",
+          "source": "SAST or custom scanner output"
+        },
+        {
+          "id": "classic-default-test-record",
+          "owner": "Engineering Platform",
+          "retention": "400d",
+          "source": "CI test artifact"
+        },
+        {
+          "id": "classic-default-review-record",
+          "owner": "Engineering Platform",
+          "retention": "400d",
+          "source": "source host review events"
+        }
+      ],
+      "gate_phases": [
+        {
+          "phase": "admission",
+          "rule_count": 3
+        },
+        {
+          "phase": "tool_call",
+          "rule_count": 3
+        },
+        {
+          "phase": "output",
+          "rule_count": 3
+        },
+        {
+          "phase": "pre_merge",
+          "rule_count": 3
+        },
+        {
+          "phase": "post_merge",
+          "rule_count": 2
+        },
+        {
+          "phase": "runtime",
+          "rule_count": 2
+        }
+      ],
+      "gateway_decisions": [
+        "allow",
+        "allow_scoped_branch",
+        "deny",
+        "kill_session"
+      ],
+      "kill_signal_count": 3,
+      "kpis": [
+        {
+          "id": "rule_family_reduction",
+          "target": ">= 50% reduction in eligible family per quarter"
+        },
+        {
+          "id": "merge_as_is_rate",
+          "target": ">= 70% once mature"
+        },
+        {
+          "id": "regression_rate",
+          "target": "<= 1% rolling 30d"
+        }
+      ],
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "recipes.defaults",
+        "repo.contents",
+        "ci.runs"
+      ],
+      "owner": {
+        "accountable_team": "Application Security",
+        "escalation": "secure-code-review",
+        "reviewer_pools": [
+          "appsec",
+          "service-owner"
+        ]
+      },
+      "public_path": "/security-remediation/classic-vulnerable-defaults/",
+      "status": "active",
+      "title": "Classic Vulnerable Defaults",
+      "workflow_id": "classic-vulnerable-defaults"
+    },
+    {
+      "applicable_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor"
+      ],
+      "evidence_records": [
+        {
+          "id": "crypto-payment-simulation",
+          "owner": "Fintech Security",
+          "retention": "400d",
+          "source": "sandbox transaction simulation artifact"
+        },
+        {
+          "id": "crypto-payment-two-key-review",
+          "owner": "Engineering Platform",
+          "retention": "400d",
+          "source": "source host review events"
+        },
+        {
+          "id": "crypto-payment-agent-audit",
+          "owner": "AI Platform",
+          "retention": "400d",
+          "source": "MCP gateway audit log"
+        }
+      ],
+      "gate_phases": [
+        {
+          "phase": "admission",
+          "rule_count": 3
+        },
+        {
+          "phase": "tool_call",
+          "rule_count": 3
+        },
+        {
+          "phase": "output",
+          "rule_count": 3
+        },
+        {
+          "phase": "pre_merge",
+          "rule_count": 3
+        },
+        {
+          "phase": "post_merge",
+          "rule_count": 2
+        },
+        {
+          "phase": "runtime",
+          "rule_count": 2
+        }
+      ],
+      "gateway_decisions": [
+        "allow",
+        "allow_scoped_branch",
+        "deny",
+        "kill_session"
+      ],
+      "kill_signal_count": 3,
+      "kpis": [
+        {
+          "id": "unauthorized_signing_attempts",
+          "target": "0"
+        },
+        {
+          "id": "payment_regression_rate",
+          "target": "0 for irreversible transaction paths"
+        },
+        {
+          "id": "reviewer_escalation_rate",
+          "target": "<= 10% rolling 30d"
+        }
+      ],
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "payments.findings",
+        "repo.contents",
+        "payments.simulation"
+      ],
+      "owner": {
+        "accountable_team": "Fintech Security",
+        "escalation": "financial-risk",
+        "reviewer_pools": [
+          "fintech-security",
+          "payments-owner"
+        ]
+      },
+      "public_path": "/security-remediation/crypto-payments/",
+      "status": "active",
+      "title": "Cryptocurrency and Crypto Payments Security",
+      "workflow_id": "crypto-payment-security"
+    },
+    {
+      "applicable_control_ids": [
+        "SR-AI-01",
+        "SR-AI-02",
+        "SR-AI-03",
+        "SR-AI-04",
+        "SR-AI-05",
+        "SR-AI-06",
+        "SR-AI-07",
+        "SR-AI-08",
+        "SR-AI-09"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor"
+      ],
+      "evidence_records": [
+        {
+          "id": "defi-fork-or-invariant-test",
+          "owner": "Protocol Security",
+          "retention": "400d",
+          "source": "Foundry, Hardhat, Echidna, or simulator artifact"
+        },
+        {
+          "id": "defi-two-key-review",
+          "owner": "Engineering Platform",
+          "retention": "400d",
+          "source": "source host review events"
+        },
+        {
+          "id": "defi-agent-tool-audit",
+          "owner": "AI Platform",
+          "retention": "400d",
+          "source": "MCP gateway audit log"
+        }
+      ],
+      "gate_phases": [
+        {
+          "phase": "admission",
+          "rule_count": 3
+        },
+        {
+          "phase": "tool_call",
+          "rule_count": 3
+        },
+        {
+          "phase": "output",
+          "rule_count": 3
+        },
+        {
+          "phase": "pre_merge",
+          "rule_count": 3
+        },
+        {
+          "phase": "post_merge",
+          "rule_count": 2
+        },
+        {
+          "phase": "runtime",
+          "rule_count": 2
+        }
+      ],
+      "gateway_decisions": [
+        "allow",
+        "allow_scoped_branch",
+        "deny",
+        "kill_session"
+      ],
+      "kill_signal_count": 3,
+      "kpis": [
+        {
+          "id": "asset_loss_regression_rate",
+          "target": "0"
+        },
+        {
+          "id": "simulator_coverage",
+          "target": "100% of agent-authored protocol changes"
+        },
+        {
+          "id": "unauthorized_chain_write_attempts",
+          "target": "0"
+        }
+      ],
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "protocol.findings",
+        "repo.contents",
+        "chain.simulation"
+      ],
+      "owner": {
+        "accountable_team": "Protocol Security",
+        "escalation": "protocol-risk-council",
+        "reviewer_pools": [
+          "protocol-security",
+          "smart-contract-owner"
+        ]
+      },
+      "public_path": "/security-remediation/defi-blockchain/",
+      "status": "active",
+      "title": "DeFi and Blockchain Protocol Security",
+      "workflow_id": "defi-blockchain-security"
+    }
+  ]
+}

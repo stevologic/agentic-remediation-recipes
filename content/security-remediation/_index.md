@@ -60,10 +60,17 @@ Before a workflow lands here, it has to satisfy four tests:
 
 The workflows above are how the program *acts*. The pages below
 are how it's *run* — the measurement, review, rollout, gating,
-runtime, and compliance layers every program needs whether it
+identity, runtime, and compliance layers every program needs whether it
 has one workflow or ten.
 
 {{< cards >}}
+  {{< card link="/security-remediation/control-plane/" title="Workflow Control Plane" subtitle="Machine-readable workflow manifests for scope, MCP context, gates, evidence, KPIs, and kill signals that agents and auditors can consume directly." >}}
+  {{< card link="/security-remediation/mcp-gateway-policy/" title="MCP Gateway Policy Pack" subtitle="Generated enforcement policy for scoped tool access, branch writes, runtime kill signals, and evidence records." >}}
+  {{< card link="/security-remediation/mcp-connector-trust-registry/" title="MCP Connector Trust Registry" subtitle="Generated connector trust pack for MCP namespaces, tiers, access modes, evidence, promotion criteria, and runtime kill signals." >}}
+  {{< card link="/security-remediation/agentic-assurance-pack/" title="Agentic Assurance Pack" subtitle="Generated trust pack for AI platform review, procurement, audit evidence, and AI/Agent BOM readiness." >}}
+  {{< card link="/security-remediation/agentic-readiness-scorecard/" title="Agentic Readiness Scorecard" subtitle="Generated scale, pilot, gate, and block decisions from workflow, MCP policy, connector trust, identity, assurance, and red-team evidence." >}}
+  {{< card link="/security-remediation/agentic-red-team-drills/" title="Agentic Red-Team Drill Pack" subtitle="Generated adversarial eval drills for prompt injection, goal hijack, approval bypass, token passthrough, connector drift, loops, and evidence integrity." >}}
+  {{< card link="/security-remediation/agent-identity-ledger/" title="Agent Identity & Delegation Ledger" subtitle="Generated non-human identity contracts for approved agents, delegated MCP scopes, explicit denies, review ownership, and runtime revocation." >}}
   {{< card link="/security-remediation/metrics/" title="Program Metrics & KPIs" subtitle="MTTR, merge-as-is rate, reviewer burden, false positives, cost per finding — what to measure and what a good month looks like." >}}
   {{< card link="/security-remediation/reviewer-playbook/" title="Reviewer Playbook" subtitle="The seven-question checklist for gating agent PRs, plus onboarding, redirect patterns, and prompt-drift signals to escalate." >}}
   {{< card link="/security-remediation/gatekeeping/" title="Gatekeeping Patterns" subtitle="The catalog of admission, mid-run, pre-merge, post-merge, runtime, and cross-cutting gates — pick a stack, not a single gate." >}}

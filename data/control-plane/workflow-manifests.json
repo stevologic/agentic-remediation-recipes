@@ -1,0 +1,1174 @@
+{
+  "schema_version": "1.0",
+  "last_reviewed": "2026-05-02",
+  "intent": "Turn SecurityRecipes from a prose recipe catalog into an enterprise control plane for agentic remediation: every workflow has declared scope, MCP context, deterministic gates, audit evidence, KPIs, and kill signals that agents and reviewers can consume directly.",
+  "required_gate_phases": [
+    "admission",
+    "tool_call",
+    "output",
+    "pre_merge",
+    "post_merge",
+    "runtime"
+  ],
+  "standards_alignment": [
+    {
+      "id": "nist-ai-rmf",
+      "name": "NIST AI Risk Management Framework",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "why_it_matters": "Frames agentic remediation as governed, mapped, measured, and managed AI risk instead of ad hoc automation."
+    },
+    {
+      "id": "nist-ssdf-800-218",
+      "name": "NIST SP 800-218 Secure Software Development Framework",
+      "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+      "why_it_matters": "Connects remediation automation to secure software development practices and vulnerability-response evidence."
+    },
+    {
+      "id": "cisa-secure-by-design",
+      "name": "CISA Secure by Design",
+      "url": "https://www.cisa.gov/securebydesign",
+      "why_it_matters": "Anchors the product in measurable customer security outcomes, transparency, and executive ownership."
+    },
+    {
+      "id": "owasp-genai",
+      "name": "OWASP GenAI Security Project and LLM Top 10",
+      "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications",
+      "why_it_matters": "Covers prompt injection, excessive agency, insecure plugin/tool design, overreliance, and sensitive information disclosure."
+    },
+    {
+      "id": "mcp-security",
+      "name": "Model Context Protocol Security Best Practices",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices",
+      "why_it_matters": "Grounds MCP tool access in authorization, confused-deputy prevention, scoped tool calls, and auditability."
+    }
+  ],
+  "workflow_defaults": {
+    "branch_prefix": "sec-auto-remediation/",
+    "required_pr_label": "sec-auto-remediation",
+    "human_review_required": true,
+    "default_change_window": "business-hours-local",
+    "max_open_prs_per_repo": 3,
+    "evidence_retention_days": 400,
+    "manual_review_required_for": [
+      "secrets or key material",
+      "CI and deployment configuration",
+      "MCP client or server configuration",
+      "prompt, skill, or rules-file changes",
+      "database migrations",
+      "production infrastructure"
+    ]
+  },
+  "workflows": [
+    {
+      "id": "sensitive-data-remediation",
+      "title": "Sensitive Data Element Remediation",
+      "status": "active",
+      "maturity_stage": "walk",
+      "content_path": "content/security-remediation/sensitive-data/_index.md",
+      "public_path": "/security-remediation/sensitive-data/",
+      "owner": {
+        "accountable_team": "Security Engineering",
+        "reviewer_pools": [
+          "security-remediation",
+          "service-owner"
+        ],
+        "escalation": "privacy-security"
+      },
+      "eligible_findings": [
+        "scanner-confirmed PII, PHI, PCI, token, or secret exposure in source, tests, fixtures, schemas, logs, or shared configuration",
+        "single-service redaction or relocation where the data class and destination are known"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot",
+        "devin"
+      ],
+      "automation_first": [
+        "gitleaks",
+        "trufflehog",
+        "detect-secrets",
+        "earlybird",
+        "presidio"
+      ],
+      "mcp_context": [
+        {
+          "namespace": "findings.sde",
+          "access": "read",
+          "purpose": "Read scanner finding metadata and data classification."
+        },
+        {
+          "namespace": "repo.contents",
+          "access": "write_branch",
+          "purpose": "Patch scoped files on a remediation branch only."
+        },
+        {
+          "namespace": "tickets.security",
+          "access": "write_ticket",
+          "purpose": "Open triage tickets when data ownership or redaction rules are unclear."
+        }
+      ],
+      "scope": {
+        "allowed_paths": [
+          "src/**",
+          "app/**",
+          "config/**",
+          "schemas/**",
+          "test/**",
+          "tests/**",
+          "fixtures/**"
+        ],
+        "forbidden_paths": [
+          ".github/**",
+          "infra/**",
+          "deploy/**",
+          "migrations/**",
+          "**/*.pem",
+          "**/*.key"
+        ],
+        "max_changed_files": 8,
+        "max_diff_lines": 250
+      },
+      "gates": {
+        "admission": [
+          "finding has deterministic scanner ID and data class",
+          "CODEOWNERS resolves to an owning team",
+          "repo has sec-auto-remediation opt-in marker"
+        ],
+        "tool_call": [
+          "repo writes restricted to remediation branch prefix",
+          "ticket writes limited to security triage project",
+          "no access to secret stores or production credentials"
+        ],
+        "output": [
+          "original scanner finding is gone",
+          "no new high-severity scanner finding appears",
+          "PR body includes data class, redaction shape, and rollback notes"
+        ],
+        "pre_merge": [
+          "security reviewer and owning-team reviewer approve",
+          "manual-review-required classes have zero auto-approval",
+          "CI and scanner re-run are green on current base"
+        ],
+        "post_merge": [
+          "finding closes or is marked mitigated",
+          "deployment canary observes error-rate and log-volume monitors"
+        ],
+        "runtime": [
+          "agent session disablement triggers on scope creep or secret-access attempt",
+          "egress restricted to scanner, source, and ticket hosts"
+        ]
+      },
+      "evidence": [
+        {
+          "id": "sde-scanner-before-after",
+          "source": "scanner SARIF or JSON",
+          "retention": "400d",
+          "evidence_owner": "Security Engineering"
+        },
+        {
+          "id": "sde-pr-review-record",
+          "source": "source host review events",
+          "retention": "400d",
+          "evidence_owner": "Engineering Platform"
+        },
+        {
+          "id": "sde-agent-tool-audit",
+          "source": "MCP gateway audit log",
+          "retention": "400d",
+          "evidence_owner": "AI Platform"
+        }
+      ],
+      "kpis": [
+        {
+          "id": "mttr_p50",
+          "target": "<= 30% of manual baseline"
+        },
+        {
+          "id": "merge_as_is_rate",
+          "target": ">= 70% once mature"
+        },
+        {
+          "id": "regression_rate",
+          "target": "<= 1% rolling 30d"
+        }
+      ],
+      "kill_signals": [
+        "any unapproved secret or credential access attempt",
+        "regression rate exceeds 3% over 14 days",
+        "auto-approval on manual-review-required change class"
+      ]
+    },
+    {
+      "id": "vulnerable-dependency-remediation",
+      "title": "Vulnerable Dependency Remediation",
+      "status": "active",
+      "maturity_stage": "walk",
+      "content_path": "content/security-remediation/vulnerable-dependencies/_index.md",
+      "public_path": "/security-remediation/vulnerable-dependencies/",
+      "owner": {
+        "accountable_team": "Product Security",
+        "reviewer_pools": [
+          "dependency-remediation",
+          "service-owner"
+        ],
+        "escalation": "supply-chain-security"
+      },
+      "eligible_findings": [
+        "reachable vulnerable dependency with a compatible fixed version",
+        "lockfile-only or bounded manifest plus compatibility edit",
+        "known CVE or advisory with package, ecosystem, and affected range"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot",
+        "devin"
+      ],
+      "automation_first": [
+        "dependabot",
+        "renovate",
+        "npm audit fix",
+        "pip-audit --fix",
+        "go get",
+        "cargo update",
+        "osv-scanner"
+      ],
+      "mcp_context": [
+        {
+          "namespace": "advisories.vulnerability",
+          "access": "read",
+          "purpose": "Read advisory ranges, severity, EPSS, and known-exploited status."
+        },
+        {
+          "namespace": "sbom.inventory",
+          "access": "read",
+          "purpose": "Locate affected manifests, images, packages, and owners."
+        },
+        {
+          "namespace": "repo.contents",
+          "access": "write_branch",
+          "purpose": "Patch manifests and lockfiles on remediation branch only."
+        }
+      ],
+      "scope": {
+        "allowed_paths": [
+          "package.json",
+          "package-lock.json",
+          "pnpm-lock.yaml",
+          "yarn.lock",
+          "requirements*.txt",
+          "pyproject.toml",
+          "poetry.lock",
+          "uv.lock",
+          "go.mod",
+          "go.sum",
+          "Cargo.toml",
+          "Cargo.lock",
+          "Gemfile",
+          "Gemfile.lock"
+        ],
+        "forbidden_paths": [
+          ".github/**",
+          "infra/**",
+          "deploy/**",
+          "migrations/**"
+        ],
+        "max_changed_files": 6,
+        "max_diff_lines": 600
+      },
+      "gates": {
+        "admission": [
+          "fixed version exists or mitigation recipe is present",
+          "package ecosystem is supported by deterministic resolver",
+          "open remediation PR cap has not been reached"
+        ],
+        "tool_call": [
+          "resolver commands restricted to declared ecosystem",
+          "repo writes restricted to package manifest and lockfile scope",
+          "no registry publish or release action permitted"
+        ],
+        "output": [
+          "scanner confirms vulnerable package range is removed",
+          "dependency graph contains no worse-severity replacement finding",
+          "test target and resolver integrity checks pass"
+        ],
+        "pre_merge": [
+          "owning team approves major-version or API-impacting bumps",
+          "security reviewer approves any exploit-known critical advisory",
+          "merge queue verifies current base"
+        ],
+        "post_merge": [
+          "finding lifecycle event closes affected advisory",
+          "consumer service deploys through normal progressive rollout"
+        ],
+        "runtime": [
+          "agent cannot read package registry credentials",
+          "MCP gateway denies publish, tag, and release operations"
+        ]
+      },
+      "evidence": [
+        {
+          "id": "dependency-advisory-record",
+          "source": "advisory feed or SCA platform",
+          "retention": "400d",
+          "evidence_owner": "Product Security"
+        },
+        {
+          "id": "dependency-resolver-log",
+          "source": "CI artifact",
+          "retention": "400d",
+          "evidence_owner": "Engineering Platform"
+        },
+        {
+          "id": "dependency-pr-review-record",
+          "source": "source host review events",
+          "retention": "400d",
+          "evidence_owner": "Engineering Platform"
+        }
+      ],
+      "kpis": [
+        {
+          "id": "critical_mttr_p90",
+          "target": "<= 7d"
+        },
+        {
+          "id": "merge_as_is_rate",
+          "target": ">= 80% once mature"
+        },
+        {
+          "id": "regression_rate",
+          "target": "<= 1% rolling 30d"
+        }
+      ],
+      "kill_signals": [
+        "resolver edits files outside declared package scope",
+        "revert rate exceeds 3% over 14 days",
+        "agent attempts registry publish or release operation"
+      ]
+    },
+    {
+      "id": "sast-finding-remediation",
+      "title": "SAST Finding Remediation",
+      "status": "active",
+      "maturity_stage": "crawl",
+      "content_path": "content/security-remediation/sast-findings/_index.md",
+      "public_path": "/security-remediation/sast-findings/",
+      "owner": {
+        "accountable_team": "Application Security",
+        "reviewer_pools": [
+          "appsec",
+          "service-owner"
+        ],
+        "escalation": "secure-code-review"
+      },
+      "eligible_findings": [
+        "SAST finding with deterministic rule ID and autofix-shaped remediation",
+        "single-function or localized change below blast-radius threshold"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot"
+      ],
+      "automation_first": [
+        "codeql",
+        "semgrep --autofix",
+        "eslint --fix",
+        "ruff check --fix",
+        "gofmt",
+        "clippy --fix"
+      ],
+      "mcp_context": [
+        {
+          "namespace": "findings.sast",
+          "access": "read",
+          "purpose": "Read rule metadata, evidence path, sink/source trace, and severity."
+        },
+        {
+          "namespace": "repo.contents",
+          "access": "write_branch",
+          "purpose": "Patch localized source and tests on remediation branch only."
+        },
+        {
+          "namespace": "ci.runs",
+          "access": "read",
+          "purpose": "Read test and scanner re-run outcomes."
+        }
+      ],
+      "scope": {
+        "allowed_paths": [
+          "src/**",
+          "app/**",
+          "lib/**",
+          "test/**",
+          "tests/**"
+        ],
+        "forbidden_paths": [
+          ".github/**",
+          "infra/**",
+          "deploy/**",
+          "migrations/**",
+          "auth/**/policy.*"
+        ],
+        "max_changed_files": 5,
+        "max_diff_lines": 220
+      },
+      "gates": {
+        "admission": [
+          "rule ID is on supported-fix-shape allowlist",
+          "dataflow trace is present when rule requires it",
+          "finding is not in manual-only class"
+        ],
+        "tool_call": [
+          "repo writes restricted to finding file and adjacent tests",
+          "CI reads allowed but CI writes denied",
+          "no production or cloud tool namespaces available"
+        ],
+        "output": [
+          "same SAST rule re-run no longer flags target location",
+          "new or changed test covers the fix when rule requires it",
+          "diff-shape validator confirms localized change"
+        ],
+        "pre_merge": [
+          "security reviewer checks exploitability and false-positive reasoning",
+          "service owner approves code behavior change",
+          "merge queue verifies current base"
+        ],
+        "post_merge": [
+          "finding closed in scanner or linked as false positive with justification",
+          "regression monitor watches same rule class for recurrence"
+        ],
+        "runtime": [
+          "agent session disabled on repeated failed test loops",
+          "egress restricted to source host, scanner, and CI"
+        ]
+      },
+      "evidence": [
+        {
+          "id": "sast-rule-trace",
+          "source": "SAST SARIF",
+          "retention": "400d",
+          "evidence_owner": "Application Security"
+        },
+        {
+          "id": "sast-verifier-run",
+          "source": "CI scanner artifact",
+          "retention": "400d",
+          "evidence_owner": "Engineering Platform"
+        },
+        {
+          "id": "sast-pr-review-record",
+          "source": "source host review events",
+          "retention": "400d",
+          "evidence_owner": "Engineering Platform"
+        }
+      ],
+      "kpis": [
+        {
+          "id": "eligible_finding_rate",
+          "target": ">= 40% for pilot exit"
+        },
+        {
+          "id": "false_positive_rate",
+          "target": "<= 15% rolling 30d"
+        },
+        {
+          "id": "regression_rate",
+          "target": "<= 1% rolling 30d"
+        }
+      ],
+      "kill_signals": [
+        "same rule reappears after merge in same code path",
+        "agent modifies auth, crypto, or policy code without manual classification",
+        "reviewer escalations exceed 10% for two consecutive weeks"
+      ]
+    },
+    {
+      "id": "base-image-remediation",
+      "title": "Base Image and Container Layer Remediation",
+      "status": "active",
+      "maturity_stage": "walk",
+      "content_path": "content/security-remediation/base-images/_index.md",
+      "public_path": "/security-remediation/base-images/",
+      "owner": {
+        "accountable_team": "Platform Security",
+        "reviewer_pools": [
+          "platform-security",
+          "service-owner"
+        ],
+        "escalation": "container-platform"
+      },
+      "eligible_findings": [
+        "container base image is behind approved golden-image version",
+        "OS package CVE is remediated by approved base-image bump",
+        "Dockerfile change is single-image or bounded multi-stage update"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot",
+        "devin"
+      ],
+      "automation_first": [
+        "renovate docker manager",
+        "docker scout",
+        "trivy",
+        "grype",
+        "syft",
+        "cosign verify"
+      ],
+      "mcp_context": [
+        {
+          "namespace": "images.golden",
+          "access": "read",
+          "purpose": "Read approved base-image catalog, signatures, SBOMs, and deprecation windows."
+        },
+        {
+          "namespace": "repo.contents",
+          "access": "write_branch",
+          "purpose": "Patch Dockerfiles or image pin files on remediation branch only."
+        },
+        {
+          "namespace": "ci.runs",
+          "access": "read",
+          "purpose": "Read build, scan, and signing verification results."
+        }
+      ],
+      "scope": {
+        "allowed_paths": [
+          "Dockerfile",
+          "**/Dockerfile",
+          "docker/**",
+          "containers/**",
+          ".tool-versions",
+          "mise.toml"
+        ],
+        "forbidden_paths": [
+          ".github/**",
+          "infra/**",
+          "deploy/**",
+          "k8s/**",
+          "helm/**"
+        ],
+        "max_changed_files": 4,
+        "max_diff_lines": 120
+      },
+      "gates": {
+        "admission": [
+          "target image is in approved base-image catalog",
+          "fixed image has valid signature and SBOM",
+          "service is in rollout cohort"
+        ],
+        "tool_call": [
+          "registry access is read-only",
+          "repo writes restricted to container definition files",
+          "no image push, tag, or deploy operation permitted"
+        ],
+        "output": [
+          "image builds reproducibly",
+          "scanner shows target CVE removed or risk accepted by platform",
+          "cosign verification passes for new base"
+        ],
+        "pre_merge": [
+          "platform security approves curated base changes",
+          "service owner approves runtime behavior changes",
+          "merge queue verifies current base"
+        ],
+        "post_merge": [
+          "progressive deployment canary completes",
+          "image inventory updates consumer version"
+        ],
+        "runtime": [
+          "agent cannot access registry write credentials",
+          "session disabled on deploy or release attempt"
+        ]
+      },
+      "evidence": [
+        {
+          "id": "base-image-sbom-signature",
+          "source": "registry attestation and cosign verification",
+          "retention": "400d",
+          "evidence_owner": "Platform Security"
+        },
+        {
+          "id": "base-image-scan-before-after",
+          "source": "Trivy, Grype, or commercial scanner",
+          "retention": "400d",
+          "evidence_owner": "Platform Security"
+        },
+        {
+          "id": "base-image-rollout-record",
+          "source": "deployment platform events",
+          "retention": "400d",
+          "evidence_owner": "Engineering Platform"
+        }
+      ],
+      "kpis": [
+        {
+          "id": "stale_base_consumers",
+          "target": "<= 5% after deprecation window"
+        },
+        {
+          "id": "critical_os_cve_mttr_p90",
+          "target": "<= 7d"
+        },
+        {
+          "id": "rollback_rate",
+          "target": "<= 1% rolling 30d"
+        }
+      ],
+      "kill_signals": [
+        "agent attempts registry write or deployment",
+        "canary failure attributable to image bump",
+        "signature or SBOM verification fails"
+      ]
+    },
+    {
+      "id": "artifact-cache-quarantine",
+      "title": "Artifact Cache and Mirror Quarantine",
+      "status": "active",
+      "maturity_stage": "crawl",
+      "content_path": "content/security-remediation/artifact-cache-purge/_index.md",
+      "public_path": "/security-remediation/artifact-cache-purge/",
+      "owner": {
+        "accountable_team": "Supply Chain Security",
+        "reviewer_pools": [
+          "supply-chain-security",
+          "platform-owner"
+        ],
+        "escalation": "security-incident-commander"
+      },
+      "eligible_findings": [
+        "known compromised package, image, or artifact hash",
+        "revocation or quarantine action has deterministic artifact identifiers",
+        "human incident owner has approved quarantine scope"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "devin"
+      ],
+      "automation_first": [
+        "registry denylist",
+        "artifact proxy quarantine rule",
+        "cache purge CLI",
+        "SBOM inventory query"
+      ],
+      "mcp_context": [
+        {
+          "namespace": "inventory.artifacts",
+          "access": "read",
+          "purpose": "Locate affected packages, images, hashes, mirrors, and consumers."
+        },
+        {
+          "namespace": "registries.quarantine",
+          "access": "approval_required",
+          "purpose": "Stage quarantine or purge operations for human approval."
+        },
+        {
+          "namespace": "incidents.security",
+          "access": "write_ticket",
+          "purpose": "Attach evidence and remediation links to incident record."
+        }
+      ],
+      "scope": {
+        "allowed_paths": [
+          "security/advisories/**",
+          "supply-chain/**",
+          "docs/incidents/**"
+        ],
+        "forbidden_paths": [
+          ".github/**",
+          "src/**",
+          "app/**",
+          "infra/**"
+        ],
+        "max_changed_files": 3,
+        "max_diff_lines": 200
+      },
+      "gates": {
+        "admission": [
+          "incident owner has approved affected artifact identifiers",
+          "artifact hash, package version, or image digest is present",
+          "quarantine blast radius estimate is attached"
+        ],
+        "tool_call": [
+          "registry write operations require human elicitation",
+          "agent may stage but not execute purge commands",
+          "ticket writes restricted to incident workspace"
+        ],
+        "output": [
+          "quarantine plan lists every target registry and cache",
+          "rollback plan and expected developer impact are present",
+          "consumer inventory query has run"
+        ],
+        "pre_merge": [
+          "two-key approval from incident owner and supply-chain security",
+          "change window is active unless incident severity waives it",
+          "communications plan is attached"
+        ],
+        "post_merge": [
+          "artifact is unavailable from internal mirrors",
+          "affected consumers receive replacement guidance"
+        ],
+        "runtime": [
+          "agent session has no direct purge credential",
+          "approval-required registry operations are logged before execution"
+        ]
+      },
+      "evidence": [
+        {
+          "id": "artifact-identifier-record",
+          "source": "incident ticket and advisory",
+          "retention": "400d",
+          "evidence_owner": "Supply Chain Security"
+        },
+        {
+          "id": "artifact-quarantine-approval",
+          "source": "MCP elicitation or change-management record",
+          "retention": "400d",
+          "evidence_owner": "Security Incident Response"
+        },
+        {
+          "id": "artifact-post-purge-verification",
+          "source": "registry and proxy audit logs",
+          "retention": "400d",
+          "evidence_owner": "Engineering Platform"
+        }
+      ],
+      "kpis": [
+        {
+          "id": "quarantine_time_p90",
+          "target": "<= 4h for critical compromised artifacts"
+        },
+        {
+          "id": "consumer_notification_coverage",
+          "target": "100% of known consumers"
+        },
+        {
+          "id": "unauthorized_write_attempts",
+          "target": "0"
+        }
+      ],
+      "kill_signals": [
+        "artifact identifier ambiguity remains unresolved",
+        "agent attempts direct purge without approval",
+        "consumer blast-radius estimate is missing"
+      ]
+    },
+    {
+      "id": "classic-vulnerable-defaults",
+      "title": "Classic Vulnerable Defaults",
+      "status": "active",
+      "maturity_stage": "walk",
+      "content_path": "content/security-remediation/classic-vulnerable-defaults/_index.md",
+      "public_path": "/security-remediation/classic-vulnerable-defaults/",
+      "owner": {
+        "accountable_team": "Application Security",
+        "reviewer_pools": [
+          "appsec",
+          "service-owner"
+        ],
+        "escalation": "secure-code-review"
+      },
+      "eligible_findings": [
+        "known unsafe default with deterministic signature such as unsafe YAML load, pickle, eval, JWT none, XXE, or Java deserialization",
+        "localized migration to a safer API or explicit parser configuration"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor",
+        "github_copilot"
+      ],
+      "automation_first": [
+        "semgrep",
+        "codeql",
+        "language-specific linters",
+        "unit test generators"
+      ],
+      "mcp_context": [
+        {
+          "namespace": "recipes.defaults",
+          "access": "read",
+          "purpose": "Retrieve approved migration pattern for the vulnerable default."
+        },
+        {
+          "namespace": "repo.contents",
+          "access": "write_branch",
+          "purpose": "Patch localized source and tests on remediation branch only."
+        },
+        {
+          "namespace": "ci.runs",
+          "access": "read",
+          "purpose": "Read test and scanner outcomes."
+        }
+      ],
+      "scope": {
+        "allowed_paths": [
+          "src/**",
+          "app/**",
+          "lib/**",
+          "test/**",
+          "tests/**"
+        ],
+        "forbidden_paths": [
+          ".github/**",
+          "infra/**",
+          "deploy/**",
+          "migrations/**"
+        ],
+        "max_changed_files": 6,
+        "max_diff_lines": 300
+      },
+      "gates": {
+        "admission": [
+          "finding maps to an approved vulnerable-default recipe",
+          "language and framework are supported by verifier",
+          "change can be expressed as localized API or configuration migration"
+        ],
+        "tool_call": [
+          "repo writes restricted to affected source and adjacent tests",
+          "no production config or deployment writes allowed",
+          "no broad codemod unless repo owner approves"
+        ],
+        "output": [
+          "scanner no longer flags target rule",
+          "negative test demonstrates unsafe input is rejected",
+          "diff-shape validator confirms bounded change"
+        ],
+        "pre_merge": [
+          "security reviewer approves vulnerability semantics",
+          "service owner approves behavior compatibility",
+          "merge queue verifies current base"
+        ],
+        "post_merge": [
+          "same vulnerable-default rule remains clean for affected repo",
+          "follow-up ticket opened when broader codemod is needed"
+        ],
+        "runtime": [
+          "agent session disabled on repeated broad rewrite attempts",
+          "egress restricted to source host, scanner, and CI"
+        ]
+      },
+      "evidence": [
+        {
+          "id": "classic-default-rule-record",
+          "source": "SAST or custom scanner output",
+          "retention": "400d",
+          "evidence_owner": "Application Security"
+        },
+        {
+          "id": "classic-default-test-record",
+          "source": "CI test artifact",
+          "retention": "400d",
+          "evidence_owner": "Engineering Platform"
+        },
+        {
+          "id": "classic-default-review-record",
+          "source": "source host review events",
+          "retention": "400d",
+          "evidence_owner": "Engineering Platform"
+        }
+      ],
+      "kpis": [
+        {
+          "id": "rule_family_reduction",
+          "target": ">= 50% reduction in eligible family per quarter"
+        },
+        {
+          "id": "merge_as_is_rate",
+          "target": ">= 70% once mature"
+        },
+        {
+          "id": "regression_rate",
+          "target": "<= 1% rolling 30d"
+        }
+      ],
+      "kill_signals": [
+        "agent rewrites unrelated call sites",
+        "negative test cannot be produced for exploitable rule",
+        "reviewer escalations exceed 10% for two consecutive weeks"
+      ]
+    },
+    {
+      "id": "crypto-payment-security",
+      "title": "Cryptocurrency and Crypto Payments Security",
+      "status": "active",
+      "maturity_stage": "crawl",
+      "content_path": "content/security-remediation/crypto-payments/_index.md",
+      "public_path": "/security-remediation/crypto-payments/",
+      "owner": {
+        "accountable_team": "Fintech Security",
+        "reviewer_pools": [
+          "fintech-security",
+          "payments-owner"
+        ],
+        "escalation": "financial-risk"
+      },
+      "eligible_findings": [
+        "wallet, address, webhook, or settlement-control defect with testable code change",
+        "policy or validation hardening where no private key, seed phrase, or live transaction is exposed"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor"
+      ],
+      "automation_first": [
+        "unit tests",
+        "property tests",
+        "address validation library checks",
+        "transaction simulation"
+      ],
+      "mcp_context": [
+        {
+          "namespace": "payments.findings",
+          "access": "read",
+          "purpose": "Read payment-security finding details and affected service metadata."
+        },
+        {
+          "namespace": "repo.contents",
+          "access": "write_branch",
+          "purpose": "Patch validation, policy, and test files on remediation branch only."
+        },
+        {
+          "namespace": "payments.simulation",
+          "access": "read",
+          "purpose": "Run or read dry-run transaction simulation output."
+        }
+      ],
+      "scope": {
+        "allowed_paths": [
+          "src/**",
+          "app/**",
+          "lib/**",
+          "test/**",
+          "tests/**",
+          "policy/**"
+        ],
+        "forbidden_paths": [
+          "**/*.key",
+          "**/*.pem",
+          "**/*seed*",
+          "wallets/**",
+          "infra/**",
+          "deploy/**"
+        ],
+        "max_changed_files": 5,
+        "max_diff_lines": 220
+      },
+      "gates": {
+        "admission": [
+          "finding does not require live funds movement",
+          "no private keys, seed phrases, or signing credentials are needed",
+          "dry-run or simulator verifier is available"
+        ],
+        "tool_call": [
+          "agent has no signer, wallet, or exchange write credential",
+          "simulation access is read-only or sandbox-only",
+          "repo writes restricted to validation, policy, and tests"
+        ],
+        "output": [
+          "property or regression test covers irreversible-transaction edge case",
+          "simulator or dry-run verifier passes",
+          "PR body documents asset, chain, address, and rollback impact"
+        ],
+        "pre_merge": [
+          "two-key approval from fintech security and payments owner",
+          "manual review required for any settlement-policy change",
+          "merge queue verifies current base"
+        ],
+        "post_merge": [
+          "settlement monitor observes no anomalous failure or rejection spike",
+          "payment-risk ticket links the merged PR"
+        ],
+        "runtime": [
+          "agent session disabled on attempt to access signing material",
+          "egress restricted to source host, scanner, CI, and sandbox simulator"
+        ]
+      },
+      "evidence": [
+        {
+          "id": "crypto-payment-simulation",
+          "source": "sandbox transaction simulation artifact",
+          "retention": "400d",
+          "evidence_owner": "Fintech Security"
+        },
+        {
+          "id": "crypto-payment-two-key-review",
+          "source": "source host review events",
+          "retention": "400d",
+          "evidence_owner": "Engineering Platform"
+        },
+        {
+          "id": "crypto-payment-agent-audit",
+          "source": "MCP gateway audit log",
+          "retention": "400d",
+          "evidence_owner": "AI Platform"
+        }
+      ],
+      "kpis": [
+        {
+          "id": "unauthorized_signing_attempts",
+          "target": "0"
+        },
+        {
+          "id": "payment_regression_rate",
+          "target": "0 for irreversible transaction paths"
+        },
+        {
+          "id": "reviewer_escalation_rate",
+          "target": "<= 10% rolling 30d"
+        }
+      ],
+      "kill_signals": [
+        "agent attempts signer, wallet, exchange, or production payment write access",
+        "simulation cannot cover the changed asset path",
+        "post-merge settlement monitor detects anomalous rejection spike"
+      ]
+    },
+    {
+      "id": "defi-blockchain-security",
+      "title": "DeFi and Blockchain Protocol Security",
+      "status": "active",
+      "maturity_stage": "crawl",
+      "content_path": "content/security-remediation/defi-blockchain/_index.md",
+      "public_path": "/security-remediation/defi-blockchain/",
+      "owner": {
+        "accountable_team": "Protocol Security",
+        "reviewer_pools": [
+          "protocol-security",
+          "smart-contract-owner"
+        ],
+        "escalation": "protocol-risk-council"
+      },
+      "eligible_findings": [
+        "smart-contract, oracle, bridge, governance, or multisig workflow finding with a simulator or fork-test verifier",
+        "bounded code or policy change that does not directly execute on-chain action"
+      ],
+      "default_agents": [
+        "codex",
+        "claude",
+        "cursor"
+      ],
+      "automation_first": [
+        "slither",
+        "foundry test",
+        "hardhat test",
+        "echidna",
+        "fork simulation"
+      ],
+      "mcp_context": [
+        {
+          "namespace": "protocol.findings",
+          "access": "read",
+          "purpose": "Read protocol-security finding details, affected contract, and severity."
+        },
+        {
+          "namespace": "repo.contents",
+          "access": "write_branch",
+          "purpose": "Patch contracts, policy docs, or tests on remediation branch only."
+        },
+        {
+          "namespace": "chain.simulation",
+          "access": "read",
+          "purpose": "Run or read fork-test and invariant-test outputs."
+        }
+      ],
+      "scope": {
+        "allowed_paths": [
+          "contracts/**",
+          "src/**",
+          "test/**",
+          "tests/**",
+          "script/**",
+          "policy/**"
+        ],
+        "forbidden_paths": [
+          "**/*.key",
+          "**/*.pem",
+          "**/*seed*",
+          "deployments/**/production/**",
+          "governance/proposals/live/**"
+        ],
+        "max_changed_files": 6,
+        "max_diff_lines": 300
+      },
+      "gates": {
+        "admission": [
+          "finding has simulator, invariant, or fork-test verifier",
+          "change is not a live governance execution",
+          "affected assets and protocol contracts are identified"
+        ],
+        "tool_call": [
+          "agent has no deployer, multisig, bridge, or governance write credential",
+          "chain access is simulator or read-only RPC only",
+          "repo writes restricted to declared contract, policy, and test scope"
+        ],
+        "output": [
+          "invariant, fork, or exploit reproduction test passes",
+          "slippage, oracle, bridge, or governance risk is documented in PR body",
+          "diff-shape validator confirms no live deployment mutation"
+        ],
+        "pre_merge": [
+          "two-key approval from protocol security and contract owner",
+          "manual audit required for asset-loss paths",
+          "merge queue verifies current base"
+        ],
+        "post_merge": [
+          "monitoring confirms no anomalous protocol event after rollout",
+          "governance or upgrade runbook links merged PR before execution"
+        ],
+        "runtime": [
+          "agent session disabled on attempt to access deployer or multisig material",
+          "egress restricted to source host, scanner, CI, and read-only RPC"
+        ]
+      },
+      "evidence": [
+        {
+          "id": "defi-fork-or-invariant-test",
+          "source": "Foundry, Hardhat, Echidna, or simulator artifact",
+          "retention": "400d",
+          "evidence_owner": "Protocol Security"
+        },
+        {
+          "id": "defi-two-key-review",
+          "source": "source host review events",
+          "retention": "400d",
+          "evidence_owner": "Engineering Platform"
+        },
+        {
+          "id": "defi-agent-tool-audit",
+          "source": "MCP gateway audit log",
+          "retention": "400d",
+          "evidence_owner": "AI Platform"
+        }
+      ],
+      "kpis": [
+        {
+          "id": "asset_loss_regression_rate",
+          "target": "0"
+        },
+        {
+          "id": "simulator_coverage",
+          "target": "100% of agent-authored protocol changes"
+        },
+        {
+          "id": "unauthorized_chain_write_attempts",
+          "target": "0"
+        }
+      ],
+      "kill_signals": [
+        "agent attempts deployer, multisig, governance, or bridge write access",
+        "fork or invariant test cannot reproduce the targeted risk",
+        "post-merge protocol monitor detects anomalous asset or governance event"
+      ]
+    }
+  ]
+}

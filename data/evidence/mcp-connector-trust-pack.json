@@ -1,0 +1,1729 @@
+{
+  "connector_trust_summary": {
+    "access_mode_counts": {
+      "approval_required": 1,
+      "read": 12,
+      "write_branch": 1,
+      "write_ticket": 2
+    },
+    "approval_required_connector_count": 1,
+    "connector_count": 16,
+    "failure_count": 0,
+    "missing_workflow_namespaces": [],
+    "production_connector_count": 11,
+    "registry_namespace_count": 16,
+    "scoped_write_connector_count": 3,
+    "status_counts": {
+      "pilot": 5,
+      "production": 11
+    },
+    "tier_counts": {
+      "tier_0_public_context": 1,
+      "tier_1_internal_read": 11,
+      "tier_2_scoped_write": 3,
+      "tier_3_approval_required": 1
+    },
+    "workflow_namespace_count": 16,
+    "workflow_namespace_coverage_percent": 100
+  },
+  "connectors": [
+    {
+      "access_modes": [
+        "read"
+      ],
+      "allowed_operations": [
+        "read CVE, GHSA, OSV, and vendor advisory metadata",
+        "read fixed version and affected range",
+        "read exploit-known and priority signals"
+      ],
+      "category": "risk_and_finding_sources",
+      "connector_id": "vulnerability-advisory-feed",
+      "data_classes": [
+        "cve_metadata",
+        "advisory_ranges",
+        "severity",
+        "known_exploited_status"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Product Security",
+          "id": "advisory-feed-source-config",
+          "retention": "400d",
+          "source": "advisory feed configuration"
+        },
+        {
+          "evidence_owner": "AI Platform",
+          "id": "advisory-tool-access-log",
+          "retention": "400d",
+          "source": "MCP gateway audit log"
+        },
+        {
+          "evidence_owner": "Product Security",
+          "id": "advisory-provenance-record",
+          "retention": "400d",
+          "source": "feed provenance and timestamp"
+        }
+      ],
+      "forbidden_operations": [
+        "change advisory severity",
+        "suppress affected package evidence",
+        "read private customer impact notes unless explicitly allowed"
+      ],
+      "kill_signals": [
+        "tool result lacks source provenance",
+        "agent requests unsupported bulk export",
+        "tool result includes hidden instruction-like content"
+      ],
+      "namespace": "advisories.vulnerability",
+      "owner": {
+        "accountable_team": "Product Security",
+        "escalation": "supply-chain-security"
+      },
+      "promotion_criteria": [
+        "feed records preserve source provenance",
+        "affected ranges and fixed versions are normalized",
+        "staleness is visible in tool result metadata"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding"
+      ],
+      "status": "production",
+      "title": "Vulnerability Advisory Feed",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "allowed_operations": [
+        "read fork-test output",
+        "read invariant-test output",
+        "read read-only RPC trace summary"
+      ],
+      "category": "observability_and_telemetry_sources",
+      "connector_id": "chain-simulation-reader",
+      "data_classes": [
+        "fork_test_result",
+        "invariant_test_result",
+        "read_only_rpc_trace"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Protocol Security",
+          "id": "chain-simulation-result",
+          "retention": "400d",
+          "source": "Foundry, Hardhat, Echidna, or fork simulator artifact"
+        },
+        {
+          "evidence_owner": "AI Platform",
+          "id": "chain-readonly-rpc-policy",
+          "retention": "400d",
+          "source": "RPC gateway policy"
+        },
+        {
+          "evidence_owner": "Protocol Security",
+          "id": "chain-simulation-audit",
+          "retention": "400d",
+          "source": "simulation platform audit log"
+        }
+      ],
+      "forbidden_operations": [
+        "submit transaction",
+        "access deployer wallet",
+        "broadcast governance action",
+        "change chain state"
+      ],
+      "kill_signals": [
+        "agent attempts transaction broadcast",
+        "tool exposes signer endpoint",
+        "simulation result is not tied to run ID"
+      ],
+      "namespace": "chain.simulation",
+      "owner": {
+        "accountable_team": "Protocol Security",
+        "escalation": "protocol-risk-council"
+      },
+      "promotion_criteria": [
+        "RPC access is read-only and rate-limited",
+        "results are bound to workflow run ID",
+        "simulation cannot submit live transactions"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding"
+      ],
+      "status": "pilot",
+      "title": "Chain Simulation Reader",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "allowed_operations": [
+        "read run status for current branch",
+        "read test and scanner artifact summaries",
+        "read logs with secret redaction enabled"
+      ],
+      "category": "code_and_build_sources",
+      "connector_id": "ci-run-reader",
+      "data_classes": [
+        "build_status",
+        "test_artifacts",
+        "scanner_artifacts"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "ci-read-audit",
+          "retention": "400d",
+          "source": "CI platform audit log"
+        },
+        {
+          "evidence_owner": "Build Platform",
+          "id": "ci-artifact-redaction-config",
+          "retention": "400d",
+          "source": "CI secret redaction configuration"
+        },
+        {
+          "evidence_owner": "Service Owner",
+          "id": "ci-run-link",
+          "retention": "400d",
+          "source": "source host check run record"
+        }
+      ],
+      "forbidden_operations": [
+        "rerun workflow with elevated permissions",
+        "edit workflow files",
+        "read unredacted secrets",
+        "deploy or release"
+      ],
+      "kill_signals": [
+        "agent attempts workflow dispatch or deploy",
+        "tool returns unredacted secret-looking value",
+        "agent requests unrelated job logs in bulk"
+      ],
+      "namespace": "ci.runs",
+      "owner": {
+        "accountable_team": "Engineering Platform",
+        "escalation": "build-platform"
+      },
+      "promotion_criteria": [
+        "agent token cannot write workflow state",
+        "logs are redacted before tool return",
+        "results are filterable by branch, PR, and workflow ID"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding"
+      ],
+      "status": "production",
+      "title": "CI Run Reader",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "allowed_operations": [
+        "read SAST rule metadata",
+        "read source-to-sink trace for current finding",
+        "read verifier guidance"
+      ],
+      "category": "risk_and_finding_sources",
+      "connector_id": "sast-finding-intake",
+      "data_classes": [
+        "sarif_metadata",
+        "rule_trace",
+        "source_sink_path",
+        "severity"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Application Security",
+          "id": "sast-tool-query-log",
+          "retention": "400d",
+          "source": "SAST platform query audit"
+        },
+        {
+          "evidence_owner": "Application Security",
+          "id": "sast-rule-metadata-snapshot",
+          "retention": "400d",
+          "source": "SAST SARIF snapshot"
+        },
+        {
+          "evidence_owner": "Application Security",
+          "id": "sast-suppression-policy",
+          "retention": "400d",
+          "source": "scanner suppression policy"
+        }
+      ],
+      "forbidden_operations": [
+        "suppress findings without review",
+        "change scanner configuration",
+        "read unrelated repository findings"
+      ],
+      "kill_signals": [
+        "agent attempts suppression",
+        "tool returns findings outside scoped repository",
+        "tool result contains untrusted instructions"
+      ],
+      "namespace": "findings.sast",
+      "owner": {
+        "accountable_team": "Application Security",
+        "escalation": "secure-code-review"
+      },
+      "promotion_criteria": [
+        "rule metadata includes deterministic rule IDs",
+        "trace data is scoped to the finding",
+        "suppression operations are unavailable to agent identities"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding"
+      ],
+      "status": "production",
+      "title": "SAST Finding Intake",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "allowed_operations": [
+        "read scanner-confirmed sensitive-data findings",
+        "read data class and affected path metadata",
+        "read finding lifecycle state"
+      ],
+      "category": "risk_and_finding_sources",
+      "connector_id": "sde-finding-intake",
+      "data_classes": [
+        "scanner_metadata",
+        "data_classification",
+        "sample_redacted_finding_context"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "AI Platform",
+          "id": "sde-connector-access-log",
+          "retention": "400d",
+          "source": "MCP gateway audit log"
+        },
+        {
+          "evidence_owner": "Security Engineering",
+          "id": "sde-finding-source-config",
+          "retention": "400d",
+          "source": "scanner integration configuration"
+        },
+        {
+          "evidence_owner": "Privacy Security",
+          "id": "sde-redaction-policy",
+          "retention": "400d",
+          "source": "data handling policy"
+        }
+      ],
+      "forbidden_operations": [
+        "read raw secret values",
+        "change scanner rules",
+        "suppress findings without reviewer approval"
+      ],
+      "kill_signals": [
+        "tool returns raw secret material",
+        "agent requests suppressed finding bulk export",
+        "tool result includes prompt-like instructions"
+      ],
+      "namespace": "findings.sde",
+      "owner": {
+        "accountable_team": "Security Engineering",
+        "escalation": "privacy-security"
+      },
+      "promotion_criteria": [
+        "sample values are redacted before reaching the model",
+        "finding IDs and data classes are stable across refreshes",
+        "tool results include owner and scanner provenance"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding"
+      ],
+      "status": "production",
+      "title": "Sensitive Data Finding Intake",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "allowed_operations": [
+        "read approved base image versions",
+        "read signature and SBOM metadata",
+        "read deprecation windows"
+      ],
+      "category": "asset_inventory_sources",
+      "connector_id": "golden-image-catalog",
+      "data_classes": [
+        "image_digest",
+        "image_signature",
+        "image_sbom",
+        "deprecation_window"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Platform Security",
+          "id": "golden-image-catalog-snapshot",
+          "retention": "400d",
+          "source": "image catalog export"
+        },
+        {
+          "evidence_owner": "Platform Security",
+          "id": "golden-image-signature-record",
+          "retention": "400d",
+          "source": "registry attestation"
+        },
+        {
+          "evidence_owner": "AI Platform",
+          "id": "golden-image-query-audit",
+          "retention": "400d",
+          "source": "MCP gateway audit log"
+        }
+      ],
+      "forbidden_operations": [
+        "push image",
+        "sign image",
+        "change approved catalog",
+        "read registry write credentials"
+      ],
+      "kill_signals": [
+        "agent attempts registry write",
+        "catalog entry lacks digest or signature status",
+        "tool returns mutable tag without digest"
+      ],
+      "namespace": "images.golden",
+      "owner": {
+        "accountable_team": "Platform Security",
+        "escalation": "container-platform"
+      },
+      "promotion_criteria": [
+        "catalog records include immutable digest",
+        "signature verification is represented in tool result",
+        "write credentials are not reachable through the connector"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding"
+      ],
+      "status": "production",
+      "title": "Golden Image Catalog",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "write_ticket"
+      ],
+      "allowed_operations": [
+        "attach evidence to active incident",
+        "write remediation status note",
+        "link PR, registry, and approval records"
+      ],
+      "category": "ticket_and_workflow_sources",
+      "connector_id": "security-incident-workspace",
+      "data_classes": [
+        "incident_metadata",
+        "quarantine_evidence",
+        "remediation_links"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Security Incident Response",
+          "id": "incident-write-audit",
+          "retention": "400d",
+          "source": "incident platform audit log"
+        },
+        {
+          "evidence_owner": "Security Incident Response",
+          "id": "incident-scope-record",
+          "retention": "400d",
+          "source": "incident commander approval record"
+        },
+        {
+          "evidence_owner": "Supply Chain Security",
+          "id": "incident-evidence-linkage",
+          "retention": "400d",
+          "source": "incident ticket evidence links"
+        }
+      ],
+      "forbidden_operations": [
+        "change incident severity",
+        "close incident",
+        "page responders",
+        "change incident ownership"
+      ],
+      "kill_signals": [
+        "agent attempts incident close",
+        "agent writes outside active incident",
+        "agent changes severity or ownership"
+      ],
+      "namespace": "incidents.security",
+      "owner": {
+        "accountable_team": "Security Incident Response",
+        "escalation": "security-incident-commander"
+      },
+      "promotion_criteria": [
+        "writes require active incident identifier",
+        "severity and closure operations are unavailable",
+        "evidence links are typed and timestamped"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding",
+        "write_scope_enforcement",
+        "human_review_before_merge"
+      ],
+      "status": "production",
+      "title": "Security Incident Workspace",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_2_scoped_write",
+        "title": "Scoped Write"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "allowed_operations": [
+        "read affected artifact locations",
+        "read known consumers for compromised artifact",
+        "read mirror and cache presence"
+      ],
+      "category": "asset_inventory_sources",
+      "connector_id": "artifact-inventory",
+      "data_classes": [
+        "artifact_hash",
+        "package_version",
+        "image_digest",
+        "consumer_inventory"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Supply Chain Security",
+          "id": "artifact-inventory-query-log",
+          "retention": "400d",
+          "source": "inventory platform audit log"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "artifact-consumer-export",
+          "retention": "400d",
+          "source": "consumer inventory export"
+        },
+        {
+          "evidence_owner": "Supply Chain Security",
+          "id": "artifact-provenance-record",
+          "retention": "400d",
+          "source": "registry and mirror provenance"
+        }
+      ],
+      "forbidden_operations": [
+        "purge cache",
+        "quarantine artifact",
+        "publish replacement artifact",
+        "read registry write credentials"
+      ],
+      "kill_signals": [
+        "agent requests purge through read connector",
+        "tool returns write credential metadata",
+        "artifact identifier is ambiguous"
+      ],
+      "namespace": "inventory.artifacts",
+      "owner": {
+        "accountable_team": "Supply Chain Security",
+        "escalation": "security-incident-commander"
+      },
+      "promotion_criteria": [
+        "artifact identifiers include immutable hash or digest",
+        "consumer results are scoped to the incident",
+        "write operations are separated into approval-required connector"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding"
+      ],
+      "status": "production",
+      "title": "Artifact Inventory",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "allowed_operations": [
+        "read payment-security finding details",
+        "read affected asset and chain metadata",
+        "read sandbox verifier references"
+      ],
+      "category": "risk_and_finding_sources",
+      "connector_id": "payment-security-findings",
+      "data_classes": [
+        "payment_finding_metadata",
+        "asset_class",
+        "chain_or_network",
+        "test_vector"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Fintech Security",
+          "id": "payment-finding-query-log",
+          "retention": "400d",
+          "source": "finding platform audit log"
+        },
+        {
+          "evidence_owner": "Financial Risk",
+          "id": "payment-data-redaction-policy",
+          "retention": "400d",
+          "source": "payment data handling policy"
+        },
+        {
+          "evidence_owner": "Fintech Security",
+          "id": "payment-finding-provenance",
+          "retention": "400d",
+          "source": "scanner or manual finding record"
+        }
+      ],
+      "forbidden_operations": [
+        "read private keys",
+        "read seed phrases",
+        "initiate payment",
+        "change settlement policy"
+      ],
+      "kill_signals": [
+        "agent requests key or seed material",
+        "tool returns live transaction instruction",
+        "finding cannot be tied to sandbox verifier"
+      ],
+      "namespace": "payments.findings",
+      "owner": {
+        "accountable_team": "Fintech Security",
+        "escalation": "financial-risk"
+      },
+      "promotion_criteria": [
+        "no key material can be returned",
+        "findings include sandbox verifier path",
+        "asset and chain metadata are normalized"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding"
+      ],
+      "status": "pilot",
+      "title": "Payment Security Findings",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "allowed_operations": [
+        "read sandbox simulation result",
+        "read dry-run policy evaluation",
+        "read verifier status for current PR"
+      ],
+      "category": "observability_and_telemetry_sources",
+      "connector_id": "payment-simulation-reader",
+      "data_classes": [
+        "sandbox_transaction_result",
+        "policy_simulation",
+        "failure_trace"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Fintech Security",
+          "id": "payment-simulation-result",
+          "retention": "400d",
+          "source": "sandbox simulation artifact"
+        },
+        {
+          "evidence_owner": "Financial Risk",
+          "id": "payment-simulation-audit",
+          "retention": "400d",
+          "source": "simulation platform audit log"
+        },
+        {
+          "evidence_owner": "AI Platform",
+          "id": "payment-sandbox-boundary",
+          "retention": "400d",
+          "source": "sandbox network and credential policy"
+        }
+      ],
+      "forbidden_operations": [
+        "execute live payment",
+        "access signer",
+        "change sandbox balances",
+        "read production wallet metadata"
+      ],
+      "kill_signals": [
+        "agent attempts live network write",
+        "tool exposes signer endpoint",
+        "simulation result is not bound to run ID"
+      ],
+      "namespace": "payments.simulation",
+      "owner": {
+        "accountable_team": "Fintech Security",
+        "escalation": "financial-risk"
+      },
+      "promotion_criteria": [
+        "simulation environment has no production signer",
+        "results are bound to workflow run ID",
+        "tool cannot mutate state without approval"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding"
+      ],
+      "status": "pilot",
+      "title": "Payment Simulation Reader",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "allowed_operations": [
+        "read protocol-security finding details",
+        "read affected contract and asset metadata",
+        "read reproduction and verifier references"
+      ],
+      "category": "risk_and_finding_sources",
+      "connector_id": "protocol-security-findings",
+      "data_classes": [
+        "smart_contract_finding",
+        "oracle_or_bridge_context",
+        "asset_exposure",
+        "reproduction_steps"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Protocol Security",
+          "id": "protocol-finding-query-log",
+          "retention": "400d",
+          "source": "protocol finding system audit"
+        },
+        {
+          "evidence_owner": "Protocol Security",
+          "id": "protocol-finding-provenance",
+          "retention": "400d",
+          "source": "audit or scanner finding record"
+        },
+        {
+          "evidence_owner": "Protocol Risk Council",
+          "id": "protocol-data-boundary",
+          "retention": "400d",
+          "source": "protocol data handling policy"
+        }
+      ],
+      "forbidden_operations": [
+        "read deployer keys",
+        "submit governance proposal",
+        "execute bridge or multisig action",
+        "change audit status"
+      ],
+      "kill_signals": [
+        "agent requests deployer or multisig material",
+        "tool returns governance execution payload",
+        "finding lacks verifier coverage"
+      ],
+      "namespace": "protocol.findings",
+      "owner": {
+        "accountable_team": "Protocol Security",
+        "escalation": "protocol-risk-council"
+      },
+      "promotion_criteria": [
+        "finding includes verifier or fork-test path",
+        "tool cannot expose deployer or multisig materials",
+        "asset exposure is represented without live signing access"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding"
+      ],
+      "status": "pilot",
+      "title": "Protocol Security Findings",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "allowed_operations": [
+        "read approved vulnerable-default remediation recipes",
+        "read test and verifier guidance",
+        "read reviewed prompt instructions"
+      ],
+      "category": "knowledge_and_runbook_sources",
+      "connector_id": "approved-defaults-recipes",
+      "data_classes": [
+        "public_recipe_context",
+        "approved_migration_pattern",
+        "prompt_instruction"
+      ],
+      "deployment_model": "hosted_security_recipes",
+      "evidence_records": [
+        {
+          "evidence_owner": "SecurityRecipes Maintainers",
+          "id": "recipe-content-git-history",
+          "retention": "per repository history",
+          "source": "repository history"
+        },
+        {
+          "evidence_owner": "AI Platform",
+          "id": "recipe-mcp-access-log",
+          "retention": "400d",
+          "source": "SecurityRecipes MCP audit log"
+        },
+        {
+          "evidence_owner": "SecurityRecipes Maintainers",
+          "id": "recipe-review-record",
+          "retention": "per repository history",
+          "source": "pull request review record"
+        }
+      ],
+      "forbidden_operations": [
+        "write recipes",
+        "load unreviewed prompt snippets",
+        "bypass pinned content hash"
+      ],
+      "kill_signals": [
+        "tool result includes instructions not present in source content",
+        "content hash does not match pinned version",
+        "agent requests write access"
+      ],
+      "namespace": "recipes.defaults",
+      "owner": {
+        "accountable_team": "SecurityRecipes Maintainers",
+        "escalation": "content-maintainers"
+      },
+      "promotion_criteria": [
+        "recipe has reviewer-approved guardrails",
+        "prompt content is versioned",
+        "tool result includes source file and last updated metadata"
+      ],
+      "required_controls": [
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "audit_every_tool_call"
+      ],
+      "status": "production",
+      "title": "Approved Vulnerable-Defaults Recipes",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_0_public_context",
+        "title": "Public Context"
+      }
+    },
+    {
+      "access_modes": [
+        "approval_required"
+      ],
+      "allowed_operations": [
+        "stage quarantine plan",
+        "request typed approval",
+        "record approved purge or deny decision"
+      ],
+      "category": "ticket_and_workflow_sources",
+      "connector_id": "registry-quarantine",
+      "data_classes": [
+        "artifact_hash",
+        "quarantine_plan",
+        "approval_record",
+        "registry_target"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Security Incident Response",
+          "id": "registry-quarantine-approval",
+          "retention": "400d",
+          "source": "MCP elicitation or change-management record"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "registry-quarantine-audit",
+          "retention": "400d",
+          "source": "registry audit log"
+        },
+        {
+          "evidence_owner": "Supply Chain Security",
+          "id": "registry-quarantine-plan",
+          "retention": "400d",
+          "source": "incident ticket attachment"
+        }
+      ],
+      "forbidden_operations": [
+        "execute purge without two-key approval",
+        "delete artifact without incident owner approval",
+        "publish replacement artifact",
+        "change registry policy outside incident scope"
+      ],
+      "kill_signals": [
+        "agent attempts direct purge without approval",
+        "approval record is missing one approver",
+        "quarantine target expands after approval"
+      ],
+      "namespace": "registries.quarantine",
+      "owner": {
+        "accountable_team": "Supply Chain Security",
+        "escalation": "security-incident-commander"
+      },
+      "promotion_criteria": [
+        "typed approval schema is pinned",
+        "staged command and target artifact are visible before approval",
+        "approval record names incident owner and supply-chain reviewer"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding",
+        "write_scope_enforcement",
+        "typed_human_approval",
+        "two_key_review",
+        "kill_session_on_approval_bypass"
+      ],
+      "status": "pilot",
+      "title": "Registry Quarantine Controller",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_3_approval_required",
+        "title": "Approval Required"
+      }
+    },
+    {
+      "access_modes": [
+        "write_branch"
+      ],
+      "allowed_operations": [
+        "read files inside workflow scope",
+        "write remediation branch using approved branch prefix",
+        "open pull request with required label"
+      ],
+      "category": "code_and_build_sources",
+      "connector_id": "repository-contents",
+      "data_classes": [
+        "source_code",
+        "test_data",
+        "repository_metadata"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "repo-branch-write-log",
+          "retention": "400d",
+          "source": "source host audit log"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "repo-branch-protection-config",
+          "retention": "400d",
+          "source": "source host branch protection export"
+        },
+        {
+          "evidence_owner": "Service Owner",
+          "id": "repo-review-record",
+          "retention": "400d",
+          "source": "source host review events"
+        }
+      ],
+      "forbidden_operations": [
+        "push to default branch",
+        "merge pull request",
+        "read repository secrets",
+        "change branch protection",
+        "change CI or deployment configuration unless explicitly allowed by workflow"
+      ],
+      "kill_signals": [
+        "agent attempts default-branch push",
+        "agent reads or writes forbidden path",
+        "diff exceeds workflow change budget"
+      ],
+      "namespace": "repo.contents",
+      "owner": {
+        "accountable_team": "Engineering Platform",
+        "escalation": "source-control-platform"
+      },
+      "promotion_criteria": [
+        "branch writes are rejected outside the workflow prefix",
+        "default branch writes are impossible with the issued token",
+        "file scope policy is evaluated before write and before PR open"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding",
+        "write_scope_enforcement",
+        "human_review_before_merge"
+      ],
+      "status": "production",
+      "title": "Repository Contents",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_2_scoped_write",
+        "title": "Scoped Write"
+      }
+    },
+    {
+      "access_modes": [
+        "read"
+      ],
+      "allowed_operations": [
+        "read affected package and image inventory",
+        "read dependency graph for current finding",
+        "read owner routing metadata"
+      ],
+      "category": "asset_inventory_sources",
+      "connector_id": "sbom-inventory",
+      "data_classes": [
+        "package_inventory",
+        "image_inventory",
+        "service_ownership",
+        "dependency_graph"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Supply Chain Security",
+          "id": "sbom-query-audit",
+          "retention": "400d",
+          "source": "inventory query audit log"
+        },
+        {
+          "evidence_owner": "Engineering Platform",
+          "id": "sbom-source-attestation",
+          "retention": "400d",
+          "source": "SBOM generation pipeline attestation"
+        },
+        {
+          "evidence_owner": "Service Catalog Owners",
+          "id": "sbom-owner-routing",
+          "retention": "400d",
+          "source": "service catalog ownership record"
+        }
+      ],
+      "forbidden_operations": [
+        "publish or mutate SBOM records",
+        "read unrelated organization-wide inventory without workflow filter",
+        "read signing keys or registry credentials"
+      ],
+      "kill_signals": [
+        "agent requests organization-wide unrestricted inventory export",
+        "tool returns signing or registry credential material",
+        "inventory freshness exceeds policy threshold"
+      ],
+      "namespace": "sbom.inventory",
+      "owner": {
+        "accountable_team": "Supply Chain Security",
+        "escalation": "software-supply-chain"
+      },
+      "promotion_criteria": [
+        "inventory records are freshness-stamped",
+        "queries require workflow-scoped package, repo, or image filters",
+        "owner mapping is included with affected assets"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding"
+      ],
+      "status": "production",
+      "title": "SBOM Inventory",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_1_internal_read",
+        "title": "Internal Read"
+      }
+    },
+    {
+      "access_modes": [
+        "write_ticket"
+      ],
+      "allowed_operations": [
+        "create workflow-scoped triage note",
+        "attach PR and evidence links",
+        "update status only for the current finding"
+      ],
+      "category": "ticket_and_workflow_sources",
+      "connector_id": "security-ticket-workspace",
+      "data_classes": [
+        "finding_metadata",
+        "triage_notes",
+        "owner_routing"
+      ],
+      "deployment_model": "enterprise_gateway",
+      "evidence_records": [
+        {
+          "evidence_owner": "Security Operations",
+          "id": "ticket-write-audit",
+          "retention": "400d",
+          "source": "ticket system audit log"
+        },
+        {
+          "evidence_owner": "Security Operations",
+          "id": "ticket-project-scope",
+          "retention": "400d",
+          "source": "ticket system project configuration"
+        },
+        {
+          "evidence_owner": "Product Security",
+          "id": "ticket-evidence-link",
+          "retention": "400d",
+          "source": "finding-to-ticket evidence link"
+        }
+      ],
+      "forbidden_operations": [
+        "bulk close tickets",
+        "change severity without reviewer approval",
+        "write outside security remediation projects"
+      ],
+      "kill_signals": [
+        "agent attempts bulk transition",
+        "agent changes severity without approval",
+        "ticket write target is outside allowed project"
+      ],
+      "namespace": "tickets.security",
+      "owner": {
+        "accountable_team": "Security Operations",
+        "escalation": "security-triage"
+      },
+      "promotion_criteria": [
+        "writes are limited to declared project keys",
+        "status transitions are typed and reversible",
+        "ticket body template preserves scanner provenance"
+      ],
+      "required_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding",
+        "write_scope_enforcement",
+        "human_review_before_merge"
+      ],
+      "status": "production",
+      "title": "Security Ticket Workspace",
+      "transport": "streamable-http",
+      "trust_tier": {
+        "id": "tier_2_scoped_write",
+        "title": "Scoped Write"
+      }
+    }
+  ],
+  "enterprise_adoption_packet": {
+    "board_level_claim": "Every MCP connector used by agentic remediation is inventoried, risk-tiered, and tied to enforceable controls before the agent can use it.",
+    "default_questions_answered": [
+      "Which MCP namespaces can approved workflows call?",
+      "Which connectors are read-only, scoped-write, or approval-required?",
+      "Which auth and token rules prevent confused-deputy and token-passthrough failures?",
+      "Which connector evidence records prove calls stayed inside scope?",
+      "Which kill signals stop a connector session when runtime behavior is unsafe?"
+    ],
+    "recommended_first_use": "Attach this trust pack to AI platform intake, MCP gateway design review, and enterprise connector promotion reviews.",
+    "sales_motion": "Lead with open registry controls, then sell hosted gateway policy, connector trust telemetry, premium connector attestations, and customer-specific evidence exports."
+  },
+  "failures": [],
+  "generated_at": "2026-05-02",
+  "global_control_objectives": [
+    "No user token passthrough to downstream systems.",
+    "Exact namespace matching; no wildcard connector grants.",
+    "Private, loopback, link-local, and cloud metadata network targets are denied unless the connector is explicitly local-development only.",
+    "Tool descriptions, tool schemas, and elicitation schemas are pinned and diff-reviewed before promotion.",
+    "Tool results are inspected as prompt-layer input before they are returned to the agent.",
+    "Every tool call carries workflow_id, agent_id, run_id, identity_id, namespace, access mode, and policy pack hash.",
+    "Write operations are staged, scoped, reversible where possible, and blocked from merge, release, publish, deploy, signing, or live funds movement."
+  ],
+  "intent": "Inventory the MCP connector trust surface behind SecurityRecipes workflows so agent hosts, gateways, AI platform teams, and buyers can decide which tool namespaces are production-ready, which require approval, and which controls must be enforced before an agent may call them.",
+  "policy_alignment": {
+    "gateway_default_decision": "deny",
+    "gateway_policy_id": "security-recipes-mcp-gateway-policy-pack",
+    "missing_workflow_namespaces": [],
+    "policy_decisions": [
+      "allow",
+      "allow_scoped_branch",
+      "allow_scoped_ticket",
+      "hold_for_approval",
+      "deny",
+      "kill_session"
+    ],
+    "source_manifest_hash_matches": true
+  },
+  "positioning": {
+    "buyer": "AI Platform, Product Security, IAM, GRC, and enterprise architecture teams",
+    "category": "MCP connector trust registry",
+    "enterprise_promise": "Every connector namespace used by an approved agentic remediation workflow is inventoried, risk-tiered, mapped to controls, and exposed as a generated trust pack.",
+    "why_now": "MCP has made tool access easy. Enterprises now need the missing governance layer: connector inventory, scoped authorization, result inspection, evidence, and promotion criteria."
+  },
+  "residual_risks": [
+    {
+      "risk": "The registry proves declared controls, not live enforcement.",
+      "treatment": "Bind the generated trust pack to the MCP gateway and export live deny, hold, and kill-session events as runtime evidence."
+    },
+    {
+      "risk": "Vendor-hosted MCP servers can change tool descriptions or response behavior after approval.",
+      "treatment": "Pin tool schemas, diff server cards or tool lists on update, and quarantine changed tool surfaces until reviewed."
+    },
+    {
+      "risk": "Connector trust can drift as workflows add namespaces.",
+      "treatment": "CI fails when workflow namespaces are not represented in the registry or access modes diverge from policy."
+    }
+  ],
+  "schema_version": "1.0",
+  "source_artifacts": {
+    "connector_trust_registry": {
+      "path": "data/mcp/connector-trust-registry.json",
+      "sha256": "cd05c4d985ed46c7446099134dda29c591a62a9be2678c90c60a0b74de93e47d"
+    },
+    "gateway_policy_pack": {
+      "path": "data/policy/mcp-gateway-policy.json",
+      "sha256": "bb1dbf00ec5bee173a19dff65266f13d84501b94aca3239019a03d6e09546de2"
+    },
+    "workflow_manifest": {
+      "path": "data/control-plane/workflow-manifests.json",
+      "sha256": "22f45f06fee190b602ac27f300c94d72ab38646f76a1ad2e4f80923a3a444ceb"
+    }
+  },
+  "standards_alignment": [
+    {
+      "coverage": "Confused deputy prevention, token passthrough avoidance, SSRF controls, session safety, local server compromise, and scope minimization.",
+      "id": "mcp-security-best-practices",
+      "name": "Model Context Protocol Security Best Practices",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices"
+    },
+    {
+      "coverage": "HTTP transport authorization, consent, redirect validation, and restricted MCP server access.",
+      "id": "mcp-authorization",
+      "name": "Model Context Protocol Authorization",
+      "url": "https://modelcontextprotocol.io/specification/2025-03-26/basic/authorization"
+    },
+    {
+      "coverage": "Tool misuse, identity abuse, agentic supply chain, unexpected code execution, memory or context poisoning, cascading failures, and rogue agents.",
+      "id": "owasp-agentic-top-10-2026",
+      "name": "OWASP Top 10 for Agentic Applications 2026",
+      "url": "https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/"
+    },
+    {
+      "coverage": "Runtime tool-output poisoning and hidden instruction injection through MCP tool responses.",
+      "id": "owasp-mcp-tool-poisoning",
+      "name": "OWASP MCP Tool Poisoning",
+      "url": "https://owasp.org/www-community/attacks/MCP_Tool_Poisoning"
+    },
+    {
+      "coverage": "Governed, mapped, measured, and managed AI system risk.",
+      "id": "nist-ai-rmf-1.0",
+      "name": "NIST AI Risk Management Framework 1.0",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+    },
+    {
+      "coverage": "Generative AI deployment, data, lifecycle, third-party, and operational risk management.",
+      "id": "nist-ai-600-1",
+      "name": "NIST AI RMF Generative AI Profile",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence"
+    }
+  ],
+  "trust_tiers": [
+    {
+      "description": "Read-only, public or open-source context with no enterprise data exposure.",
+      "id": "tier_0_public_context",
+      "minimum_controls": [
+        "pin_tool_descriptions",
+        "audit_every_tool_call",
+        "inspect_tool_results"
+      ],
+      "title": "Public Context"
+    },
+    {
+      "description": "Read-only enterprise context such as findings, SBOM inventory, CI status, ownership, or simulation output.",
+      "id": "tier_1_internal_read",
+      "minimum_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding"
+      ],
+      "title": "Internal Read"
+    },
+    {
+      "description": "Bounded write access such as remediation branches, triage tickets, or evidence updates.",
+      "id": "tier_2_scoped_write",
+      "minimum_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding",
+        "write_scope_enforcement",
+        "human_review_before_merge"
+      ],
+      "title": "Scoped Write"
+    },
+    {
+      "description": "High-impact staged operations that cannot execute until a typed human approval record is present.",
+      "id": "tier_3_approval_required",
+      "minimum_controls": [
+        "per_client_consent",
+        "short_lived_workload_identity",
+        "deny_token_passthrough",
+        "pin_tool_descriptions",
+        "inspect_tool_results",
+        "deny_private_network_egress",
+        "audit_every_tool_call",
+        "session_binding",
+        "write_scope_enforcement",
+        "typed_human_approval",
+        "two_key_review",
+        "kill_session_on_approval_bypass"
+      ],
+      "title": "Approval Required"
+    },
+    {
+      "description": "Direct access to secrets, production signers, deployment credentials, registry publish keys, or live funds movement.",
+      "id": "tier_4_prohibited",
+      "minimum_controls": [
+        "hard_deny",
+        "audit_denied_attempts",
+        "kill_session_on_attempt"
+      ],
+      "title": "Prohibited"
+    }
+  ],
+  "workflow_connector_map": [
+    {
+      "connector_context": [
+        {
+          "access": "read",
+          "connector_id": "sde-finding-intake",
+          "connector_status": "production",
+          "decision": "allow",
+          "namespace": "findings.sde",
+          "purpose": "Read scanner finding metadata and data classification.",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "access": "write_branch",
+          "connector_id": "repository-contents",
+          "connector_status": "production",
+          "decision": "allow_scoped_branch",
+          "namespace": "repo.contents",
+          "purpose": "Patch scoped files on a remediation branch only.",
+          "trust_tier": "tier_2_scoped_write"
+        },
+        {
+          "access": "write_ticket",
+          "connector_id": "security-ticket-workspace",
+          "connector_status": "production",
+          "decision": "allow_scoped_ticket",
+          "namespace": "tickets.security",
+          "purpose": "Open triage tickets when data ownership or redaction rules are unclear.",
+          "trust_tier": "tier_2_scoped_write"
+        }
+      ],
+      "maturity_stage": "walk",
+      "public_path": "/security-remediation/sensitive-data/",
+      "status": "active",
+      "title": "Sensitive Data Element Remediation",
+      "workflow_id": "sensitive-data-remediation"
+    },
+    {
+      "connector_context": [
+        {
+          "access": "read",
+          "connector_id": "vulnerability-advisory-feed",
+          "connector_status": "production",
+          "decision": "allow",
+          "namespace": "advisories.vulnerability",
+          "purpose": "Read advisory ranges, severity, EPSS, and known-exploited status.",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "access": "read",
+          "connector_id": "sbom-inventory",
+          "connector_status": "production",
+          "decision": "allow",
+          "namespace": "sbom.inventory",
+          "purpose": "Locate affected manifests, images, packages, and owners.",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "access": "write_branch",
+          "connector_id": "repository-contents",
+          "connector_status": "production",
+          "decision": "allow_scoped_branch",
+          "namespace": "repo.contents",
+          "purpose": "Patch manifests and lockfiles on remediation branch only.",
+          "trust_tier": "tier_2_scoped_write"
+        }
+      ],
+      "maturity_stage": "walk",
+      "public_path": "/security-remediation/vulnerable-dependencies/",
+      "status": "active",
+      "title": "Vulnerable Dependency Remediation",
+      "workflow_id": "vulnerable-dependency-remediation"
+    },
+    {
+      "connector_context": [
+        {
+          "access": "read",
+          "connector_id": "sast-finding-intake",
+          "connector_status": "production",
+          "decision": "allow",
+          "namespace": "findings.sast",
+          "purpose": "Read rule metadata, evidence path, sink/source trace, and severity.",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "access": "write_branch",
+          "connector_id": "repository-contents",
+          "connector_status": "production",
+          "decision": "allow_scoped_branch",
+          "namespace": "repo.contents",
+          "purpose": "Patch localized source and tests on remediation branch only.",
+          "trust_tier": "tier_2_scoped_write"
+        },
+        {
+          "access": "read",
+          "connector_id": "ci-run-reader",
+          "connector_status": "production",
+          "decision": "allow",
+          "namespace": "ci.runs",
+          "purpose": "Read test and scanner re-run outcomes.",
+          "trust_tier": "tier_1_internal_read"
+        }
+      ],
+      "maturity_stage": "crawl",
+      "public_path": "/security-remediation/sast-findings/",
+      "status": "active",
+      "title": "SAST Finding Remediation",
+      "workflow_id": "sast-finding-remediation"
+    },
+    {
+      "connector_context": [
+        {
+          "access": "read",
+          "connector_id": "golden-image-catalog",
+          "connector_status": "production",
+          "decision": "allow",
+          "namespace": "images.golden",
+          "purpose": "Read approved base-image catalog, signatures, SBOMs, and deprecation windows.",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "access": "write_branch",
+          "connector_id": "repository-contents",
+          "connector_status": "production",
+          "decision": "allow_scoped_branch",
+          "namespace": "repo.contents",
+          "purpose": "Patch Dockerfiles or image pin files on remediation branch only.",
+          "trust_tier": "tier_2_scoped_write"
+        },
+        {
+          "access": "read",
+          "connector_id": "ci-run-reader",
+          "connector_status": "production",
+          "decision": "allow",
+          "namespace": "ci.runs",
+          "purpose": "Read build, scan, and signing verification results.",
+          "trust_tier": "tier_1_internal_read"
+        }
+      ],
+      "maturity_stage": "walk",
+      "public_path": "/security-remediation/base-images/",
+      "status": "active",
+      "title": "Base Image and Container Layer Remediation",
+      "workflow_id": "base-image-remediation"
+    },
+    {
+      "connector_context": [
+        {
+          "access": "read",
+          "connector_id": "artifact-inventory",
+          "connector_status": "production",
+          "decision": "allow",
+          "namespace": "inventory.artifacts",
+          "purpose": "Locate affected packages, images, hashes, mirrors, and consumers.",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "access": "approval_required",
+          "connector_id": "registry-quarantine",
+          "connector_status": "pilot",
+          "decision": "hold_for_approval",
+          "namespace": "registries.quarantine",
+          "purpose": "Stage quarantine or purge operations for human approval.",
+          "trust_tier": "tier_3_approval_required"
+        },
+        {
+          "access": "write_ticket",
+          "connector_id": "security-incident-workspace",
+          "connector_status": "production",
+          "decision": "allow_scoped_ticket",
+          "namespace": "incidents.security",
+          "purpose": "Attach evidence and remediation links to incident record.",
+          "trust_tier": "tier_2_scoped_write"
+        }
+      ],
+      "maturity_stage": "crawl",
+      "public_path": "/security-remediation/artifact-cache-purge/",
+      "status": "active",
+      "title": "Artifact Cache and Mirror Quarantine",
+      "workflow_id": "artifact-cache-quarantine"
+    },
+    {
+      "connector_context": [
+        {
+          "access": "read",
+          "connector_id": "approved-defaults-recipes",
+          "connector_status": "production",
+          "decision": "allow",
+          "namespace": "recipes.defaults",
+          "purpose": "Retrieve approved migration pattern for the vulnerable default.",
+          "trust_tier": "tier_0_public_context"
+        },
+        {
+          "access": "write_branch",
+          "connector_id": "repository-contents",
+          "connector_status": "production",
+          "decision": "allow_scoped_branch",
+          "namespace": "repo.contents",
+          "purpose": "Patch localized source and tests on remediation branch only.",
+          "trust_tier": "tier_2_scoped_write"
+        },
+        {
+          "access": "read",
+          "connector_id": "ci-run-reader",
+          "connector_status": "production",
+          "decision": "allow",
+          "namespace": "ci.runs",
+          "purpose": "Read test and scanner outcomes.",
+          "trust_tier": "tier_1_internal_read"
+        }
+      ],
+      "maturity_stage": "walk",
+      "public_path": "/security-remediation/classic-vulnerable-defaults/",
+      "status": "active",
+      "title": "Classic Vulnerable Defaults",
+      "workflow_id": "classic-vulnerable-defaults"
+    },
+    {
+      "connector_context": [
+        {
+          "access": "read",
+          "connector_id": "payment-security-findings",
+          "connector_status": "pilot",
+          "decision": "allow",
+          "namespace": "payments.findings",
+          "purpose": "Read payment-security finding details and affected service metadata.",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "access": "write_branch",
+          "connector_id": "repository-contents",
+          "connector_status": "production",
+          "decision": "allow_scoped_branch",
+          "namespace": "repo.contents",
+          "purpose": "Patch validation, policy, and test files on remediation branch only.",
+          "trust_tier": "tier_2_scoped_write"
+        },
+        {
+          "access": "read",
+          "connector_id": "payment-simulation-reader",
+          "connector_status": "pilot",
+          "decision": "allow",
+          "namespace": "payments.simulation",
+          "purpose": "Run or read dry-run transaction simulation output.",
+          "trust_tier": "tier_1_internal_read"
+        }
+      ],
+      "maturity_stage": "crawl",
+      "public_path": "/security-remediation/crypto-payments/",
+      "status": "active",
+      "title": "Cryptocurrency and Crypto Payments Security",
+      "workflow_id": "crypto-payment-security"
+    },
+    {
+      "connector_context": [
+        {
+          "access": "read",
+          "connector_id": "protocol-security-findings",
+          "connector_status": "pilot",
+          "decision": "allow",
+          "namespace": "protocol.findings",
+          "purpose": "Read protocol-security finding details, affected contract, and severity.",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "access": "write_branch",
+          "connector_id": "repository-contents",
+          "connector_status": "production",
+          "decision": "allow_scoped_branch",
+          "namespace": "repo.contents",
+          "purpose": "Patch contracts, policy docs, or tests on remediation branch only.",
+          "trust_tier": "tier_2_scoped_write"
+        },
+        {
+          "access": "read",
+          "connector_id": "chain-simulation-reader",
+          "connector_status": "pilot",
+          "decision": "allow",
+          "namespace": "chain.simulation",
+          "purpose": "Run or read fork-test and invariant-test outputs.",
+          "trust_tier": "tier_1_internal_read"
+        }
+      ],
+      "maturity_stage": "crawl",
+      "public_path": "/security-remediation/defi-blockchain/",
+      "status": "active",
+      "title": "DeFi and Blockchain Protocol Security",
+      "workflow_id": "defi-blockchain-security"
+    }
+  ]
+}

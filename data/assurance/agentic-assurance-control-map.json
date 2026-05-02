@@ -1,0 +1,471 @@
+{
+  "schema_version": "1.0",
+  "last_reviewed": "2026-05-02",
+  "intent": "Package SecurityRecipes as an enterprise assurance layer for agentic remediation: every workflow, MCP gateway decision, prompt supply-chain surface, reviewer gate, and evidence stream can be exported for buyers, auditors, AI platform teams, and security leadership.",
+  "positioning": {
+    "category": "Agentic security remediation assurance",
+    "buyer": "Security Engineering, AI Platform, Product Security, GRC, and engineering executives",
+    "enterprise_promise": "A machine-readable trust pack that makes agentic remediation reviewable, enforceable, and measurable before it is scaled across an enterprise.",
+    "why_now": "Agentic AI security guidance has moved from general LLM risk to tool-using, autonomous, MCP-connected systems. Enterprise buyers need evidence that agents are governed at runtime, not just prompted carefully."
+  },
+  "standards_alignment": [
+    {
+      "id": "nist-ai-rmf-1.0",
+      "name": "NIST AI Risk Management Framework 1.0",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "coverage": "Govern, Map, Measure, and Manage functions for AI risk programs."
+    },
+    {
+      "id": "nist-ai-600-1",
+      "name": "NIST AI RMF Generative AI Profile",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+      "coverage": "Generative AI-specific governance, data, measurement, and lifecycle risks."
+    },
+    {
+      "id": "nist-ssdf-800-218",
+      "name": "NIST SP 800-218 Secure Software Development Framework",
+      "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+      "coverage": "Secure development and vulnerability-response evidence for agent-authored changes."
+    },
+    {
+      "id": "owasp-llm-top-10",
+      "name": "OWASP Top 10 for Large Language Model Applications",
+      "url": "https://genai.owasp.org/llm-top-10/",
+      "coverage": "Prompt injection, sensitive information disclosure, supply chain vulnerabilities, insecure plugin design, excessive agency, and overreliance."
+    },
+    {
+      "id": "owasp-agentic-top-10-2026",
+      "name": "OWASP Top 10 for Agentic Applications 2026",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "coverage": "Agent goal hijack, tool misuse, identity and privilege abuse, agentic supply chain, unexpected code execution, memory and context poisoning, cascading failures, and rogue agents."
+    },
+    {
+      "id": "csa-aicm",
+      "name": "Cloud Security Alliance AI Controls Matrix",
+      "url": "https://cloudsecurityalliance.org/artifacts/ai-controls-matrix",
+      "coverage": "Vendor-neutral control objectives for secure and responsible cloud-based AI systems."
+    },
+    {
+      "id": "mcp-security-best-practices",
+      "name": "Model Context Protocol Security Best Practices",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices",
+      "coverage": "Confused deputy prevention, token-passthrough avoidance, scope minimization, session safety, and MCP-specific auditability."
+    },
+    {
+      "id": "cisa-secure-by-design",
+      "name": "CISA Secure by Design",
+      "url": "https://www.cisa.gov/securebydesign",
+      "coverage": "Executive ownership, measurable security outcomes, transparency, and safe defaults for software and AI systems."
+    },
+    {
+      "id": "owasp-aibom",
+      "name": "OWASP AI Bill of Materials Project and Generator",
+      "url": "https://owaspaibom.org/",
+      "coverage": "AI system transparency through inventories of models, data, dependencies, provenance, and risk-relevant components."
+    }
+  ],
+  "evidence_artifacts": [
+    {
+      "id": "workflow_manifest",
+      "title": "Workflow control-plane manifest",
+      "path": "data/control-plane/workflow-manifests.json",
+      "availability": "source-controlled",
+      "produced_by": "SecurityRecipes maintainers",
+      "retention": "per repository history"
+    },
+    {
+      "id": "gateway_policy_pack",
+      "title": "Generated MCP gateway policy pack",
+      "path": "data/policy/mcp-gateway-policy.json",
+      "availability": "generated",
+      "produced_by": "scripts/generate_mcp_gateway_policy.py",
+      "retention": "per repository history and release artifact retention"
+    },
+    {
+      "id": "control_plane_report",
+      "title": "Workflow control-plane validation report",
+      "path": "data/evidence/workflow-control-plane-report.json",
+      "availability": "generated",
+      "produced_by": "scripts/validate_workflow_control_plane.py",
+      "retention": "per repository history and release artifact retention"
+    },
+    {
+      "id": "red_team_drill_pack",
+      "title": "Generated agentic red-team drill pack",
+      "path": "data/evidence/agentic-red-team-drill-pack.json",
+      "availability": "generated",
+      "produced_by": "scripts/generate_agentic_red_team_drill_pack.py",
+      "retention": "per repository history and release artifact retention"
+    },
+    {
+      "id": "mcp_tool_surface",
+      "title": "MCP server tool surface",
+      "path": "mcp_server.py",
+      "availability": "source-controlled",
+      "produced_by": "SecurityRecipes maintainers",
+      "retention": "per repository history"
+    },
+    {
+      "id": "prompt_supply_chain_records",
+      "title": "Prompt, skill, and rules-file source tree",
+      "path": "content/prompt-library",
+      "availability": "source-controlled",
+      "produced_by": "SecurityRecipes contributors",
+      "retention": "per repository history"
+    },
+    {
+      "id": "reviewer_decision_records",
+      "title": "Human reviewer decision records",
+      "availability": "external",
+      "produced_by": "source host review events",
+      "retention": "enterprise change-management retention window"
+    },
+    {
+      "id": "runtime_gateway_audit",
+      "title": "Runtime MCP gateway audit log",
+      "availability": "external",
+      "produced_by": "enterprise MCP gateway or agent host",
+      "retention": "enterprise security-log retention window"
+    },
+    {
+      "id": "model_provider_contract",
+      "title": "Model-provider data handling contract",
+      "availability": "external",
+      "produced_by": "AI Platform, Legal, and Procurement",
+      "retention": "enterprise vendor-risk retention window"
+    }
+  ],
+  "required_workflow_controls": {
+    "gate_phases": [
+      "admission",
+      "tool_call",
+      "output",
+      "pre_merge",
+      "post_merge",
+      "runtime"
+    ],
+    "minimum_evidence_records": 3,
+    "minimum_kpis": 3,
+    "must_have_kill_signals": true,
+    "must_default_gateway_to_deny": true,
+    "must_require_human_review": true
+  },
+  "controls": [
+    {
+      "id": "SR-AI-01",
+      "title": "Workflow Inventory and Ownership",
+      "objective": "Every agentic remediation workflow has a declared owner, status, maturity stage, eligible finding classes, public documentation path, and escalation path.",
+      "product_surface": [
+        "workflow-control-plane",
+        "MCP server context",
+        "security-remediation documentation"
+      ],
+      "ai_easy_default": "Agents and reviewers can ask for one workflow ID and receive the approved scope, owner, gates, and evidence contract without reading multiple docs pages.",
+      "buyer_value": "Turns a collection of recipes into a governed deployment inventory that GRC and AI platform teams can approve.",
+      "evidence_sources": [
+        "workflow_manifest",
+        "control_plane_report",
+        "mcp_tool_surface"
+      ],
+      "framework_mappings": [
+        {
+          "standard_id": "nist-ai-rmf-1.0",
+          "control": "Govern and Map",
+          "rationale": "The workflow manifest establishes ownership, context, and intended use before an AI system acts."
+        },
+        {
+          "standard_id": "csa-aicm",
+          "control": "Governance, Risk Management, and AI Asset Management",
+          "rationale": "The manifest is the AI remediation asset inventory and control owner register."
+        },
+        {
+          "standard_id": "cisa-secure-by-design",
+          "control": "Executive ownership and transparency",
+          "rationale": "Workflows name accountable teams and measurable operating expectations."
+        }
+      ]
+    },
+    {
+      "id": "SR-AI-02",
+      "title": "Default-Deny Tool Access",
+      "objective": "Agent tool calls are denied by default and allowed only inside declared MCP namespaces, access modes, branch prefixes, and changed-file limits.",
+      "product_surface": [
+        "MCP gateway policy pack",
+        "runtime controls",
+        "workflow manifests"
+      ],
+      "ai_easy_default": "The policy pack gives an enforcer a simple allow, hold, deny, or kill decision instead of expecting the model to remember policy text.",
+      "buyer_value": "Makes agent access enforceable at the platform layer and limits tool misuse before it becomes an incident.",
+      "evidence_sources": [
+        "gateway_policy_pack",
+        "workflow_manifest",
+        "runtime_gateway_audit"
+      ],
+      "framework_mappings": [
+        {
+          "standard_id": "mcp-security-best-practices",
+          "control": "Scope minimization, confused deputy prevention, and token-passthrough avoidance",
+          "rationale": "The gateway policy narrows each run to explicit namespaces and access modes."
+        },
+        {
+          "standard_id": "owasp-agentic-top-10-2026",
+          "control": "ASI02 Tool Misuse and ASI03 Identity and Privilege Abuse",
+          "rationale": "Default-deny tool scopes reduce misuse of legitimate tools and limit privilege inheritance."
+        },
+        {
+          "standard_id": "owasp-llm-top-10",
+          "control": "Insecure plugin design and excessive agency",
+          "rationale": "Scoped, auditable tool access prevents broad plugin authority from being delegated to the model."
+        }
+      ]
+    },
+    {
+      "id": "SR-AI-03",
+      "title": "Human Review and Separation of Duties",
+      "objective": "Agents can propose remediations but cannot merge them; source-host controls and reviewer pools preserve human accountability for change approval.",
+      "product_surface": [
+        "reviewer playbook",
+        "workflow gates",
+        "PR evidence"
+      ],
+      "ai_easy_default": "The workflow contract tells the agent exactly when to stop and what review evidence to attach instead of negotiating approvals in chat.",
+      "buyer_value": "Lets enterprises scale AI-authored fixes while preserving the change-management controls their auditors already expect.",
+      "evidence_sources": [
+        "workflow_manifest",
+        "reviewer_decision_records",
+        "control_plane_report"
+      ],
+      "framework_mappings": [
+        {
+          "standard_id": "nist-ssdf-800-218",
+          "control": "PW.7 review and analyze code; RV.1 identify and confirm vulnerabilities",
+          "rationale": "Agent-authored changes remain subject to review, scanner confirmation, and finding-to-PR traceability."
+        },
+        {
+          "standard_id": "nist-ai-rmf-1.0",
+          "control": "Measure and Manage",
+          "rationale": "Reviewer gates measure output quality and manage residual risk before deployment."
+        },
+        {
+          "standard_id": "cisa-secure-by-design",
+          "control": "Secure outcomes over user burden",
+          "rationale": "The platform owns safe defaults while humans approve risk-bearing changes."
+        }
+      ]
+    },
+    {
+      "id": "SR-AI-04",
+      "title": "Prompt, Skill, and MCP Supply Chain Governance",
+      "objective": "Prompts, skills, rules files, workflow manifests, and MCP client/server configuration are treated as reviewed software supply-chain artifacts.",
+      "product_surface": [
+        "prompt library",
+        "workflow manifests",
+        "MCP server configuration"
+      ],
+      "ai_easy_default": "Agents consume pinned, reviewed instructions and policy artifacts instead of ad hoc prompt fragments.",
+      "buyer_value": "Protects the highest-leverage control surface in agentic systems: the instructions and tools that shape every run.",
+      "evidence_sources": [
+        "prompt_supply_chain_records",
+        "workflow_manifest",
+        "mcp_tool_surface"
+      ],
+      "framework_mappings": [
+        {
+          "standard_id": "owasp-agentic-top-10-2026",
+          "control": "ASI04 Agentic Supply Chain Vulnerabilities and ASI06 Memory and Context Poisoning",
+          "rationale": "Reviewed, versioned prompt and MCP artifacts reduce poisoning and instruction drift."
+        },
+        {
+          "standard_id": "owasp-llm-top-10",
+          "control": "Supply chain vulnerabilities and prompt injection",
+          "rationale": "Instruction files and context sources are governed as code rather than unmanaged content."
+        },
+        {
+          "standard_id": "owasp-aibom",
+          "control": "AI system component transparency",
+          "rationale": "Prompt, tool, model, and MCP dependencies are inventory candidates for an AI Bill of Materials."
+        }
+      ]
+    },
+    {
+      "id": "SR-AI-05",
+      "title": "Evidence Chain of Custody",
+      "objective": "Each agentic run produces finding linkage, tool audit, scanner before/after evidence, reviewer decisions, KPI records, and retention ownership.",
+      "product_surface": [
+        "control-plane report",
+        "assurance pack",
+        "runtime gateway audit"
+      ],
+      "ai_easy_default": "The evidence contract is generated from the manifest, so every workflow tells agents which records to attach before the PR is reviewable.",
+      "buyer_value": "Shortens security reviews, procurement reviews, and audits by turning operational evidence into a portable export.",
+      "evidence_sources": [
+        "control_plane_report",
+        "workflow_manifest",
+        "runtime_gateway_audit",
+        "reviewer_decision_records"
+      ],
+      "framework_mappings": [
+        {
+          "standard_id": "nist-ai-rmf-1.0",
+          "control": "Measure and Manage",
+          "rationale": "Evidence streams support ongoing risk measurement and control adjustment."
+        },
+        {
+          "standard_id": "csa-aicm",
+          "control": "Auditability, logging, monitoring, and assurance",
+          "rationale": "Evidence records assign sources, retention, and owners to every workflow."
+        },
+        {
+          "standard_id": "cisa-secure-by-design",
+          "control": "Measurable security outcomes",
+          "rationale": "The pack reports workflow coverage, gates, KPIs, and failure counts."
+        }
+      ]
+    },
+    {
+      "id": "SR-AI-06",
+      "title": "Runtime Kill Signals and Session Disablement",
+      "objective": "Agent sessions stop immediately on declared runtime risk signals such as scope creep, credential access attempts, release attempts, repeated failed loops, or missing verifier coverage.",
+      "product_surface": [
+        "gateway policy pack",
+        "runtime controls",
+        "workflow manifests"
+      ],
+      "ai_easy_default": "Agents get clear stop conditions and enforcers get a kill_session decision instead of relying on model self-restraint.",
+      "buyer_value": "Creates a credible blast-radius limit for autonomous work across repositories, MCP servers, registries, and payment or protocol contexts.",
+      "evidence_sources": [
+        "gateway_policy_pack",
+        "runtime_gateway_audit",
+        "workflow_manifest"
+      ],
+      "framework_mappings": [
+        {
+          "standard_id": "owasp-agentic-top-10-2026",
+          "control": "ASI08 Cascading Failures and ASI10 Rogue Agents",
+          "rationale": "Runtime stop conditions prevent small failures from propagating and cut off rogue behavior."
+        },
+        {
+          "standard_id": "mcp-security-best-practices",
+          "control": "Session safety and local MCP server compromise mitigations",
+          "rationale": "Session disablement and scoped egress reduce harm when tool context becomes unsafe."
+        },
+        {
+          "standard_id": "nist-ai-600-1",
+          "control": "Manage generative AI risks across deployment and operation",
+          "rationale": "Kill signals are operational risk controls for deployed agentic workflows."
+        }
+      ]
+    },
+    {
+      "id": "SR-AI-07",
+      "title": "Model and Data Handling Boundaries",
+      "objective": "Each workflow records what data classes, model-provider constraints, regions, retention settings, and external systems are allowed before the agent runs.",
+      "product_surface": [
+        "compliance guidance",
+        "workflow manifests",
+        "model-provider contract"
+      ],
+      "ai_easy_default": "The workflow's MCP context and evidence contract make data exposure explicit rather than hidden in agent prompts.",
+      "buyer_value": "Gives AI Platform and Legal a durable review surface for model-provider, data-residency, and retention risk.",
+      "evidence_sources": [
+        "workflow_manifest",
+        "model_provider_contract",
+        "runtime_gateway_audit"
+      ],
+      "framework_mappings": [
+        {
+          "standard_id": "nist-ai-600-1",
+          "control": "Data governance, third-party dependency, and lifecycle risk management",
+          "rationale": "Workflow manifests and provider contracts record what data can reach models and connected services."
+        },
+        {
+          "standard_id": "owasp-llm-top-10",
+          "control": "Sensitive information disclosure",
+          "rationale": "Data classes and scoped context reduce unintended exposure through prompts and tool calls."
+        },
+        {
+          "standard_id": "csa-aicm",
+          "control": "Data security, privacy, and third-party AI service governance",
+          "rationale": "Provider boundaries and runtime logs support cloud AI control assurance."
+        }
+      ]
+    },
+    {
+      "id": "SR-AI-08",
+      "title": "AI and Agent Bill of Materials Readiness",
+      "objective": "SecurityRecipes exports the components needed to build an AI/Agent BOM: workflows, models or agent classes, MCP namespaces, prompt assets, policy packs, evidence owners, and runtime dependencies.",
+      "product_surface": [
+        "assurance pack",
+        "MCP server",
+        "prompt library",
+        "gateway policy pack"
+      ],
+      "ai_easy_default": "Downstream platforms can ingest a single assurance pack to inventory agentic remediation capabilities and their control dependencies.",
+      "buyer_value": "Positions the site for AI transparency, procurement, and vendor-risk workflows that are becoming standard enterprise asks.",
+      "evidence_sources": [
+        "workflow_manifest",
+        "gateway_policy_pack",
+        "prompt_supply_chain_records",
+        "mcp_tool_surface"
+      ],
+      "framework_mappings": [
+        {
+          "standard_id": "owasp-aibom",
+          "control": "AI Bill of Materials transparency",
+          "rationale": "The pack inventories agentic components, policy dependencies, and evidence owners."
+        },
+        {
+          "standard_id": "cisa-secure-by-design",
+          "control": "Transparency and secure defaults",
+          "rationale": "A BOM-ready export helps customers evaluate AI system security before deployment."
+        },
+        {
+          "standard_id": "owasp-agentic-top-10-2026",
+          "control": "Agentic supply chain and identity-aware operations",
+          "rationale": "Inventorying agent, prompt, tool, and MCP dependencies is the first step toward agentic supply-chain control."
+        }
+      ]
+    },
+    {
+      "id": "SR-AI-09",
+      "title": "Adversarial Evaluation and Red-Team Replay",
+      "objective": "Approved agentic remediation workflows have repeatable adversarial drills for tool-result injection, goal hijack, credential access, approval bypass, token passthrough, connector drift, runaway loops, and evidence integrity failures.",
+      "product_surface": [
+        "red-team drill pack",
+        "MCP gateway policy pack",
+        "connector trust pack",
+        "runtime controls"
+      ],
+      "ai_easy_default": "Agents, gateways, and reviewers can load one generated drill pack to know which hostile inputs to replay and which evidence must prove the workflow stopped or stayed in scope.",
+      "buyer_value": "Moves SecurityRecipes from governance claims to testable assurance, which is the bar enterprise AI platform teams and acquisition diligence teams will expect.",
+      "evidence_sources": [
+        "red_team_drill_pack",
+        "runtime_gateway_audit",
+        "reviewer_decision_records",
+        "workflow_manifest"
+      ],
+      "framework_mappings": [
+        {
+          "standard_id": "nist-ai-rmf-1.0",
+          "control": "Measure and Manage",
+          "rationale": "Repeatable red-team drills convert agentic failure modes into measured operational controls."
+        },
+        {
+          "standard_id": "owasp-agentic-top-10-2026",
+          "control": "Agent goal hijack, tool misuse, identity abuse, context poisoning, cascading failures, and rogue agents",
+          "rationale": "The drill pack directly exercises the highest-risk agentic application failure modes."
+        },
+        {
+          "standard_id": "mcp-security-best-practices",
+          "control": "Confused deputy prevention, token passthrough avoidance, and session safety",
+          "rationale": "MCP-specific drills test whether gateway policy and connector trust controls survive hostile tool context."
+        },
+        {
+          "standard_id": "csa-aicm",
+          "control": "AI assurance, monitoring, and control validation",
+          "rationale": "The generated pack gives cloud AI programs a portable eval evidence index."
+        }
+      ]
+    }
+  ]
+}

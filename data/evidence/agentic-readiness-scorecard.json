@@ -1,0 +1,3176 @@
+{
+  "decision_contract": {
+    "blocked": {
+      "meaning": "Do not run until blockers are remediated."
+    },
+    "manual_gate": {
+      "meaning": "Human program owner must approve before use; evidence is incomplete or maturity is too low for autonomous expansion.",
+      "minimum_score": 0
+    },
+    "pilot_guarded": {
+      "allowed_maturity_stages": [
+        "crawl",
+        "walk",
+        "run"
+      ],
+      "meaning": "Approved for a bounded pilot or existing active use, but not for broad scale without the listed next actions.",
+      "minimum_score": 78,
+      "requires_no_blockers": true
+    },
+    "scale_ready": {
+      "allowed_maturity_stages": [
+        "walk",
+        "run"
+      ],
+      "meaning": "Ready for controlled enterprise expansion with standard change controls.",
+      "minimum_score": 90,
+      "requires_all_connectors_production": true,
+      "requires_no_blockers": true
+    }
+  },
+  "enterprise_adoption_packet": {
+    "board_level_claim": "Agentic remediation expansion decisions are generated from enforceable controls, identity contracts, connector trust, red-team coverage, and evidence readiness.",
+    "default_questions_answered": [
+      "Which workflows can scale now?",
+      "Which workflows remain pilot-only and why?",
+      "Which controls prevent tool misuse or rogue agent behavior?",
+      "Which MCP namespaces are still pilot dependencies?",
+      "Which source artifacts prove the readiness decision?"
+    ],
+    "recommended_first_use": "Use the scorecard as the AI platform promotion gate before expanding a workflow to more repositories, teams, or agent hosts.",
+    "sales_motion": "Lead with open readiness scoring, then sell hosted score monitoring, enterprise evidence ingestion, custom control weighting, workflow promotion gates, and trust-center exports."
+  },
+  "failures": [],
+  "generated_at": "2026-05-02",
+  "intent": "Turn SecurityRecipes assurance artifacts into an enterprise adoption decision system: every approved agentic remediation workflow receives a repeatable scale, pilot, gate, or block decision from control evidence rather than product intuition.",
+  "positioning": {
+    "buyer": "AI Platform, Security Engineering, Product Security, GRC, procurement security, and acquisition diligence teams",
+    "category": "Agentic AI remediation readiness scoring",
+    "enterprise_promise": "Security teams can decide which agentic remediation workflows are safe to scale using generated evidence across workflow scope, MCP policy, connector trust, agent identity, adversarial evals, and audit readiness.",
+    "why_now": "Agentic AI programs are moving from pilots to enterprise rollout. Buyers need a machine-readable way to separate workflows that are safe to scale from workflows that should remain gated, especially as MCP connectors, agent identities, and tool-calling systems become production control surfaces."
+  },
+  "readiness_summary": {
+    "active_workflow_count": 8,
+    "average_score": 95.75,
+    "blocked_workflow_count": 0,
+    "decision_counts": {
+      "pilot_guarded": 4,
+      "scale_ready": 4
+    },
+    "failure_count": 0,
+    "manual_gate_workflow_count": 0,
+    "pilot_connector_workflows": [
+      "artifact-cache-quarantine",
+      "crypto-payment-security",
+      "defi-blockchain-security"
+    ],
+    "pilot_guarded_workflow_count": 4,
+    "scale_ready_workflow_count": 4,
+    "source_failure_count": 0,
+    "workflow_count": 8
+  },
+  "residual_risks": [
+    {
+      "risk": "The scorecard proves readiness of the reference operating model, not live customer enforcement.",
+      "treatment": "Bind the scorecard to runtime MCP gateway logs, source-host review events, and customer IAM controls before production expansion."
+    },
+    {
+      "risk": "Scores can be high while pilot connectors still depend on customer-specific hardening.",
+      "treatment": "Treat pilot connector workflows as pilot_guarded until connector owners provide production evidence and promotion approval."
+    },
+    {
+      "risk": "A scale decision can become stale after model, agent host, MCP connector, or workflow changes.",
+      "treatment": "Run the generator in CI and require scorecard review during workflow maturity changes and connector promotions."
+    }
+  ],
+  "scale_plan": {
+    "next_30_days": [
+      "Use scale_ready workflows as the first enterprise expansion cohort.",
+      "Keep pilot_guarded workflows behind explicit rollout cohorts and reviewer capacity limits.",
+      "Attach the scorecard to AI platform intake and procurement-security review."
+    ],
+    "next_90_days": [
+      "Promote pilot MCP connectors that repeatedly pass red-team drills and runtime audit review.",
+      "Add customer runtime telemetry ingestion so score decisions include live enforcement evidence.",
+      "Expose readiness deltas in hosted MCP and trust-center surfaces."
+    ]
+  },
+  "schema_version": "1.0",
+  "score_dimensions": [
+    {
+      "id": "control_plane",
+      "question": "Is the workflow owned, scoped, gated, measurable, and stoppable?",
+      "title": "Workflow Control Plane",
+      "weight": 18
+    },
+    {
+      "id": "gateway_policy",
+      "question": "Are tool calls denied by default and constrained to declared decisions, paths, and runtime attributes?",
+      "title": "MCP Gateway Policy",
+      "weight": 15
+    },
+    {
+      "id": "identity_delegation",
+      "question": "Does every allowed agent class have a non-human identity contract with explicit denies and runtime revocation?",
+      "title": "Agent Identity and Delegation",
+      "weight": 15
+    },
+    {
+      "id": "connector_trust",
+      "question": "Are all MCP namespaces registered, trusted, and appropriate for production or pilot use?",
+      "title": "MCP Connector Trust",
+      "weight": 14
+    },
+    {
+      "id": "adversarial_eval",
+      "question": "Does the workflow have repeatable red-team drills for hostile tool and agentic inputs?",
+      "title": "Adversarial Evaluation",
+      "weight": 14
+    },
+    {
+      "id": "evidence_chain",
+      "question": "Can buyers and auditors trace claims to source-controlled and runtime evidence?",
+      "title": "Evidence Chain",
+      "weight": 12
+    },
+    {
+      "id": "maturity_signal",
+      "question": "Is the workflow mature enough to expand beyond a controlled pilot?",
+      "title": "Operational Maturity",
+      "weight": 12
+    }
+  ],
+  "source_artifacts": {
+    "agent_identity_delegation_ledger": {
+      "path": "data/evidence/agent-identity-delegation-ledger.json",
+      "sha256": "be4ea217448ffe5ddc732b5d27b6e8a66e4532335f1c2899bc04c0fdf6150b42"
+    },
+    "agentic_assurance_pack": {
+      "path": "data/evidence/agentic-assurance-pack.json",
+      "sha256": "b8a3b1fbbf68ab8e767f2768957f3809a2eee4b0cc8c54c9a1cdb2d301413421"
+    },
+    "agentic_readiness_model": {
+      "path": "data/assurance/agentic-readiness-model.json",
+      "sha256": "dba8c43d2bdf9a2b5e6c2a0ee3d9b57bae08c24db81147a0d833bd0a50e61881"
+    },
+    "agentic_red_team_drill_pack": {
+      "path": "data/evidence/agentic-red-team-drill-pack.json",
+      "sha256": "c28356c01555a2badaf678238aa525abeb343ff2ed60e58f27c4af8736d1188b"
+    },
+    "connector_trust_pack": {
+      "path": "data/evidence/mcp-connector-trust-pack.json",
+      "sha256": "2982b7ab2dea084cd78295ad257cc4c8606c52938197cf61bb2692156dcf92be"
+    },
+    "gateway_policy_pack": {
+      "path": "data/policy/mcp-gateway-policy.json",
+      "sha256": "bb1dbf00ec5bee173a19dff65266f13d84501b94aca3239019a03d6e09546de2"
+    },
+    "workflow_control_plane_report": {
+      "path": "data/evidence/workflow-control-plane-report.json",
+      "sha256": "63d7bde4927f99436eb92ec10ded994b37a83517c189dfb61a036ecee9f9564c"
+    },
+    "workflow_manifest": {
+      "path": "data/control-plane/workflow-manifests.json",
+      "sha256": "22f45f06fee190b602ac27f300c94d72ab38646f76a1ad2e4f80923a3a444ceb"
+    }
+  },
+  "standards_alignment": [
+    {
+      "coverage": "Govern, Map, Measure, and Manage functions for AI systems, including the April 2026 concept note direction for trustworthy AI in critical infrastructure.",
+      "id": "nist-ai-rmf-1.0",
+      "name": "NIST AI Risk Management Framework 1.0",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+    },
+    {
+      "coverage": "Generative AI risk actions for lifecycle governance, measurement, third-party dependencies, and data boundaries.",
+      "id": "nist-ai-600-1",
+      "name": "NIST AI RMF Generative AI Profile",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence"
+    },
+    {
+      "coverage": "Autonomous and agentic systems that plan, act, and make decisions across complex workflows.",
+      "id": "owasp-agentic-top-10-2026",
+      "name": "OWASP Top 10 for Agentic Applications 2026",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/"
+    },
+    {
+      "coverage": "Confused deputy prevention, token passthrough avoidance, SSRF, session hijacking, local server compromise, and scope minimization.",
+      "id": "mcp-security-best-practices",
+      "name": "Model Context Protocol Security Best Practices",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices"
+    },
+    {
+      "coverage": "Secure defaults, transparency, executive ownership, and measurable security outcomes.",
+      "id": "cisa-secure-by-design",
+      "name": "CISA Secure by Design",
+      "url": "https://www.cisa.gov/securebydesign"
+    },
+    {
+      "coverage": "AI system component inventory, transparency, provenance, and risk-relevant dependencies.",
+      "id": "owasp-aibom",
+      "name": "OWASP AI Bill of Materials Project",
+      "url": "https://owaspaibom.org/"
+    }
+  ],
+  "workflow_readiness": [
+    {
+      "blockers": [],
+      "connector_statuses": [
+        {
+          "namespace": "findings.sde",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "namespace": "repo.contents",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_2_scoped_write"
+        },
+        {
+          "namespace": "tickets.security",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_2_scoped_write"
+        }
+      ],
+      "decision": "scale_ready",
+      "dimension_scores": [
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "workflow.owner",
+              "id": "owner_and_reviewers",
+              "passed": true,
+              "points": 4,
+              "title": "Owner and reviewer pools declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.status",
+              "id": "active_status",
+              "passed": true,
+              "points": 2,
+              "title": "Workflow is active"
+            },
+            {
+              "earned": 5,
+              "evidence": "workflow.gates",
+              "id": "required_gate_phases",
+              "passed": true,
+              "points": 5,
+              "title": "All required gate phases exist"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "evidence_contract",
+              "passed": true,
+              "points": 3,
+              "title": "Minimum evidence records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kpis",
+              "id": "kpi_contract",
+              "passed": true,
+              "points": 2,
+              "title": "Minimum KPI records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kill_signals",
+              "id": "kill_signals",
+              "passed": true,
+              "points": 2,
+              "title": "Kill signals declared"
+            }
+          ],
+          "dimension_id": "control_plane",
+          "earned": 18,
+          "max": 18,
+          "percent": 100,
+          "title": "Workflow Control Plane"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.workflow_policies",
+              "id": "policy_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow policy exists"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.default_decision",
+              "id": "default_deny",
+              "passed": true,
+              "points": 3,
+              "title": "Default decision is deny"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.tool_access.denied_by_default",
+              "id": "denied_by_default",
+              "passed": true,
+              "points": 2,
+              "title": "Tool access denied by default"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.allowed_mcp_scopes",
+              "id": "namespace_alignment",
+              "passed": true,
+              "points": 3,
+              "title": "Policy namespaces match workflow namespaces"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.dispatch",
+              "id": "branch_scope",
+              "passed": true,
+              "points": 2,
+              "title": "Branch and ticket writes are scoped"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.runtime_controls",
+              "id": "session_disablement",
+              "passed": true,
+              "points": 2,
+              "title": "Session disablement required"
+            }
+          ],
+          "dimension_id": "gateway_policy",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "MCP Gateway Policy"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "identity_ledger.agent_identities",
+              "id": "identity_coverage",
+              "passed": true,
+              "points": 5,
+              "title": "Identity exists for every default agent"
+            },
+            {
+              "earned": 3,
+              "evidence": "identity_ledger.explicit_denies",
+              "id": "critical_denies",
+              "passed": true,
+              "points": 3,
+              "title": "Critical denied actions present"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.runtime_contract",
+              "id": "runtime_revocation",
+              "passed": true,
+              "points": 2,
+              "title": "Runtime revocation required"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.identity_controls",
+              "id": "no_static_credentials",
+              "passed": true,
+              "points": 2,
+              "title": "No shared static credential model"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.delegated_authority",
+              "id": "approval_reflected",
+              "passed": true,
+              "points": 2,
+              "title": "Approval-required namespaces reflected"
+            },
+            {
+              "earned": 1,
+              "evidence": "identity_ledger.risk_tier",
+              "id": "high_control_alignment",
+              "passed": true,
+              "points": 1,
+              "title": "High-control workflows use high-control identities"
+            }
+          ],
+          "dimension_id": "identity_delegation",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "Agent Identity and Delegation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "connector_trust_pack.connectors",
+              "id": "connector_registration",
+              "passed": true,
+              "points": 5,
+              "title": "All namespaces are registered"
+            },
+            {
+              "earned": 4,
+              "evidence": "connector_trust_pack.status",
+              "id": "production_status",
+              "passed": true,
+              "points": 4,
+              "title": "Connectors are production ready"
+            },
+            {
+              "earned": 3,
+              "evidence": "connector_trust_pack.trust_tier",
+              "id": "trust_tiers",
+              "passed": true,
+              "points": 3,
+              "title": "Trust tiers are assigned"
+            },
+            {
+              "earned": 2,
+              "evidence": "connector_trust_pack.access_modes",
+              "id": "write_tier_alignment",
+              "passed": true,
+              "points": 2,
+              "title": "Write and approval access match trust tier"
+            }
+          ],
+          "dimension_id": "connector_trust",
+          "earned": 14,
+          "max": 14,
+          "percent": 100,
+          "title": "MCP Connector Trust"
+        },
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.workflow_drills",
+              "id": "drill_row_exists",
+              "passed": true,
+              "points": 4,
+              "title": "Workflow has red-team row"
+            },
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.drills",
+              "id": "minimum_drills",
+              "passed": true,
+              "points": 4,
+              "title": "Minimum drill count met"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.severity",
+              "id": "high_severity_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "High or critical scenarios present"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.attack_family",
+              "id": "attack_family_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "Multiple attack families covered"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.matched_namespaces",
+              "id": "namespace_exercise",
+              "passed": true,
+              "points": 2,
+              "title": "Drills exercise MCP namespaces"
+            }
+          ],
+          "dimension_id": "adversarial_eval",
+          "earned": 14,
+          "max": 14,
+          "percent": 100,
+          "title": "Adversarial Evaluation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "assurance_pack.workflow_assurance",
+              "id": "assurance_row_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow appears in assurance pack"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "workflow_evidence",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow evidence records are named"
+            },
+            {
+              "earned": 4,
+              "evidence": "source_artifacts",
+              "id": "source_hash_alignment",
+              "passed": true,
+              "points": 4,
+              "title": "Source artifact hashes align"
+            },
+            {
+              "earned": 2,
+              "evidence": "assurance_pack.external_evidence_artifact_count",
+              "id": "external_evidence_named",
+              "passed": true,
+              "points": 2,
+              "title": "External runtime evidence is named"
+            }
+          ],
+          "dimension_id": "evidence_chain",
+          "earned": 12,
+          "max": 12,
+          "percent": 100,
+          "title": "Evidence Chain"
+        },
+        {
+          "checks": [
+            {
+              "earned": 10,
+              "evidence": "workflow.maturity_stage",
+              "id": "maturity_stage",
+              "passed": false,
+              "points": 12,
+              "title": "Maturity stage supports expansion"
+            }
+          ],
+          "dimension_id": "maturity_signal",
+          "earned": 10,
+          "max": 12,
+          "percent": 83.33,
+          "title": "Operational Maturity"
+        }
+      ],
+      "identity_count": 5,
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "findings.sde",
+        "repo.contents",
+        "tickets.security"
+      ],
+      "next_actions": [
+        "Expand through the normal change-management cohort with MCP gateway audit enabled.",
+        "Track reviewer burden, regression rate, and red-team replay results during expansion."
+      ],
+      "owner": {
+        "accountable_team": "Security Engineering",
+        "escalation": "privacy-security",
+        "reviewer_pools": [
+          "security-remediation",
+          "service-owner"
+        ]
+      },
+      "public_path": "/security-remediation/sensitive-data/",
+      "red_team_drill_count": 7,
+      "score": 98,
+      "status": "active",
+      "title": "Sensitive Data Element Remediation",
+      "workflow_id": "sensitive-data-remediation"
+    },
+    {
+      "blockers": [],
+      "connector_statuses": [
+        {
+          "namespace": "advisories.vulnerability",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "namespace": "sbom.inventory",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "namespace": "repo.contents",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_2_scoped_write"
+        }
+      ],
+      "decision": "scale_ready",
+      "dimension_scores": [
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "workflow.owner",
+              "id": "owner_and_reviewers",
+              "passed": true,
+              "points": 4,
+              "title": "Owner and reviewer pools declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.status",
+              "id": "active_status",
+              "passed": true,
+              "points": 2,
+              "title": "Workflow is active"
+            },
+            {
+              "earned": 5,
+              "evidence": "workflow.gates",
+              "id": "required_gate_phases",
+              "passed": true,
+              "points": 5,
+              "title": "All required gate phases exist"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "evidence_contract",
+              "passed": true,
+              "points": 3,
+              "title": "Minimum evidence records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kpis",
+              "id": "kpi_contract",
+              "passed": true,
+              "points": 2,
+              "title": "Minimum KPI records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kill_signals",
+              "id": "kill_signals",
+              "passed": true,
+              "points": 2,
+              "title": "Kill signals declared"
+            }
+          ],
+          "dimension_id": "control_plane",
+          "earned": 18,
+          "max": 18,
+          "percent": 100,
+          "title": "Workflow Control Plane"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.workflow_policies",
+              "id": "policy_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow policy exists"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.default_decision",
+              "id": "default_deny",
+              "passed": true,
+              "points": 3,
+              "title": "Default decision is deny"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.tool_access.denied_by_default",
+              "id": "denied_by_default",
+              "passed": true,
+              "points": 2,
+              "title": "Tool access denied by default"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.allowed_mcp_scopes",
+              "id": "namespace_alignment",
+              "passed": true,
+              "points": 3,
+              "title": "Policy namespaces match workflow namespaces"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.dispatch",
+              "id": "branch_scope",
+              "passed": true,
+              "points": 2,
+              "title": "Branch and ticket writes are scoped"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.runtime_controls",
+              "id": "session_disablement",
+              "passed": true,
+              "points": 2,
+              "title": "Session disablement required"
+            }
+          ],
+          "dimension_id": "gateway_policy",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "MCP Gateway Policy"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "identity_ledger.agent_identities",
+              "id": "identity_coverage",
+              "passed": true,
+              "points": 5,
+              "title": "Identity exists for every default agent"
+            },
+            {
+              "earned": 3,
+              "evidence": "identity_ledger.explicit_denies",
+              "id": "critical_denies",
+              "passed": true,
+              "points": 3,
+              "title": "Critical denied actions present"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.runtime_contract",
+              "id": "runtime_revocation",
+              "passed": true,
+              "points": 2,
+              "title": "Runtime revocation required"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.identity_controls",
+              "id": "no_static_credentials",
+              "passed": true,
+              "points": 2,
+              "title": "No shared static credential model"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.delegated_authority",
+              "id": "approval_reflected",
+              "passed": true,
+              "points": 2,
+              "title": "Approval-required namespaces reflected"
+            },
+            {
+              "earned": 1,
+              "evidence": "identity_ledger.risk_tier",
+              "id": "high_control_alignment",
+              "passed": true,
+              "points": 1,
+              "title": "High-control workflows use high-control identities"
+            }
+          ],
+          "dimension_id": "identity_delegation",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "Agent Identity and Delegation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "connector_trust_pack.connectors",
+              "id": "connector_registration",
+              "passed": true,
+              "points": 5,
+              "title": "All namespaces are registered"
+            },
+            {
+              "earned": 4,
+              "evidence": "connector_trust_pack.status",
+              "id": "production_status",
+              "passed": true,
+              "points": 4,
+              "title": "Connectors are production ready"
+            },
+            {
+              "earned": 3,
+              "evidence": "connector_trust_pack.trust_tier",
+              "id": "trust_tiers",
+              "passed": true,
+              "points": 3,
+              "title": "Trust tiers are assigned"
+            },
+            {
+              "earned": 2,
+              "evidence": "connector_trust_pack.access_modes",
+              "id": "write_tier_alignment",
+              "passed": true,
+              "points": 2,
+              "title": "Write and approval access match trust tier"
+            }
+          ],
+          "dimension_id": "connector_trust",
+          "earned": 14,
+          "max": 14,
+          "percent": 100,
+          "title": "MCP Connector Trust"
+        },
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.workflow_drills",
+              "id": "drill_row_exists",
+              "passed": true,
+              "points": 4,
+              "title": "Workflow has red-team row"
+            },
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.drills",
+              "id": "minimum_drills",
+              "passed": true,
+              "points": 4,
+              "title": "Minimum drill count met"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.severity",
+              "id": "high_severity_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "High or critical scenarios present"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.attack_family",
+              "id": "attack_family_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "Multiple attack families covered"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.matched_namespaces",
+              "id": "namespace_exercise",
+              "passed": true,
+              "points": 2,
+              "title": "Drills exercise MCP namespaces"
+            }
+          ],
+          "dimension_id": "adversarial_eval",
+          "earned": 14,
+          "max": 14,
+          "percent": 100,
+          "title": "Adversarial Evaluation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "assurance_pack.workflow_assurance",
+              "id": "assurance_row_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow appears in assurance pack"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "workflow_evidence",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow evidence records are named"
+            },
+            {
+              "earned": 4,
+              "evidence": "source_artifacts",
+              "id": "source_hash_alignment",
+              "passed": true,
+              "points": 4,
+              "title": "Source artifact hashes align"
+            },
+            {
+              "earned": 2,
+              "evidence": "assurance_pack.external_evidence_artifact_count",
+              "id": "external_evidence_named",
+              "passed": true,
+              "points": 2,
+              "title": "External runtime evidence is named"
+            }
+          ],
+          "dimension_id": "evidence_chain",
+          "earned": 12,
+          "max": 12,
+          "percent": 100,
+          "title": "Evidence Chain"
+        },
+        {
+          "checks": [
+            {
+              "earned": 10,
+              "evidence": "workflow.maturity_stage",
+              "id": "maturity_stage",
+              "passed": false,
+              "points": 12,
+              "title": "Maturity stage supports expansion"
+            }
+          ],
+          "dimension_id": "maturity_signal",
+          "earned": 10,
+          "max": 12,
+          "percent": 83.33,
+          "title": "Operational Maturity"
+        }
+      ],
+      "identity_count": 5,
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "advisories.vulnerability",
+        "sbom.inventory",
+        "repo.contents"
+      ],
+      "next_actions": [
+        "Expand through the normal change-management cohort with MCP gateway audit enabled.",
+        "Track reviewer burden, regression rate, and red-team replay results during expansion."
+      ],
+      "owner": {
+        "accountable_team": "Product Security",
+        "escalation": "supply-chain-security",
+        "reviewer_pools": [
+          "dependency-remediation",
+          "service-owner"
+        ]
+      },
+      "public_path": "/security-remediation/vulnerable-dependencies/",
+      "red_team_drill_count": 7,
+      "score": 98,
+      "status": "active",
+      "title": "Vulnerable Dependency Remediation",
+      "workflow_id": "vulnerable-dependency-remediation"
+    },
+    {
+      "blockers": [],
+      "connector_statuses": [
+        {
+          "namespace": "findings.sast",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "namespace": "repo.contents",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_2_scoped_write"
+        },
+        {
+          "namespace": "ci.runs",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_1_internal_read"
+        }
+      ],
+      "decision": "pilot_guarded",
+      "dimension_scores": [
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "workflow.owner",
+              "id": "owner_and_reviewers",
+              "passed": true,
+              "points": 4,
+              "title": "Owner and reviewer pools declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.status",
+              "id": "active_status",
+              "passed": true,
+              "points": 2,
+              "title": "Workflow is active"
+            },
+            {
+              "earned": 5,
+              "evidence": "workflow.gates",
+              "id": "required_gate_phases",
+              "passed": true,
+              "points": 5,
+              "title": "All required gate phases exist"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "evidence_contract",
+              "passed": true,
+              "points": 3,
+              "title": "Minimum evidence records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kpis",
+              "id": "kpi_contract",
+              "passed": true,
+              "points": 2,
+              "title": "Minimum KPI records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kill_signals",
+              "id": "kill_signals",
+              "passed": true,
+              "points": 2,
+              "title": "Kill signals declared"
+            }
+          ],
+          "dimension_id": "control_plane",
+          "earned": 18,
+          "max": 18,
+          "percent": 100,
+          "title": "Workflow Control Plane"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.workflow_policies",
+              "id": "policy_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow policy exists"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.default_decision",
+              "id": "default_deny",
+              "passed": true,
+              "points": 3,
+              "title": "Default decision is deny"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.tool_access.denied_by_default",
+              "id": "denied_by_default",
+              "passed": true,
+              "points": 2,
+              "title": "Tool access denied by default"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.allowed_mcp_scopes",
+              "id": "namespace_alignment",
+              "passed": true,
+              "points": 3,
+              "title": "Policy namespaces match workflow namespaces"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.dispatch",
+              "id": "branch_scope",
+              "passed": true,
+              "points": 2,
+              "title": "Branch and ticket writes are scoped"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.runtime_controls",
+              "id": "session_disablement",
+              "passed": true,
+              "points": 2,
+              "title": "Session disablement required"
+            }
+          ],
+          "dimension_id": "gateway_policy",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "MCP Gateway Policy"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "identity_ledger.agent_identities",
+              "id": "identity_coverage",
+              "passed": true,
+              "points": 5,
+              "title": "Identity exists for every default agent"
+            },
+            {
+              "earned": 3,
+              "evidence": "identity_ledger.explicit_denies",
+              "id": "critical_denies",
+              "passed": true,
+              "points": 3,
+              "title": "Critical denied actions present"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.runtime_contract",
+              "id": "runtime_revocation",
+              "passed": true,
+              "points": 2,
+              "title": "Runtime revocation required"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.identity_controls",
+              "id": "no_static_credentials",
+              "passed": true,
+              "points": 2,
+              "title": "No shared static credential model"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.delegated_authority",
+              "id": "approval_reflected",
+              "passed": true,
+              "points": 2,
+              "title": "Approval-required namespaces reflected"
+            },
+            {
+              "earned": 1,
+              "evidence": "identity_ledger.risk_tier",
+              "id": "high_control_alignment",
+              "passed": true,
+              "points": 1,
+              "title": "High-control workflows use high-control identities"
+            }
+          ],
+          "dimension_id": "identity_delegation",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "Agent Identity and Delegation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "connector_trust_pack.connectors",
+              "id": "connector_registration",
+              "passed": true,
+              "points": 5,
+              "title": "All namespaces are registered"
+            },
+            {
+              "earned": 4,
+              "evidence": "connector_trust_pack.status",
+              "id": "production_status",
+              "passed": true,
+              "points": 4,
+              "title": "Connectors are production ready"
+            },
+            {
+              "earned": 3,
+              "evidence": "connector_trust_pack.trust_tier",
+              "id": "trust_tiers",
+              "passed": true,
+              "points": 3,
+              "title": "Trust tiers are assigned"
+            },
+            {
+              "earned": 2,
+              "evidence": "connector_trust_pack.access_modes",
+              "id": "write_tier_alignment",
+              "passed": true,
+              "points": 2,
+              "title": "Write and approval access match trust tier"
+            }
+          ],
+          "dimension_id": "connector_trust",
+          "earned": 14,
+          "max": 14,
+          "percent": 100,
+          "title": "MCP Connector Trust"
+        },
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.workflow_drills",
+              "id": "drill_row_exists",
+              "passed": true,
+              "points": 4,
+              "title": "Workflow has red-team row"
+            },
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.drills",
+              "id": "minimum_drills",
+              "passed": true,
+              "points": 4,
+              "title": "Minimum drill count met"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.severity",
+              "id": "high_severity_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "High or critical scenarios present"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.attack_family",
+              "id": "attack_family_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "Multiple attack families covered"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.matched_namespaces",
+              "id": "namespace_exercise",
+              "passed": true,
+              "points": 2,
+              "title": "Drills exercise MCP namespaces"
+            }
+          ],
+          "dimension_id": "adversarial_eval",
+          "earned": 14,
+          "max": 14,
+          "percent": 100,
+          "title": "Adversarial Evaluation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "assurance_pack.workflow_assurance",
+              "id": "assurance_row_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow appears in assurance pack"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "workflow_evidence",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow evidence records are named"
+            },
+            {
+              "earned": 4,
+              "evidence": "source_artifacts",
+              "id": "source_hash_alignment",
+              "passed": true,
+              "points": 4,
+              "title": "Source artifact hashes align"
+            },
+            {
+              "earned": 2,
+              "evidence": "assurance_pack.external_evidence_artifact_count",
+              "id": "external_evidence_named",
+              "passed": true,
+              "points": 2,
+              "title": "External runtime evidence is named"
+            }
+          ],
+          "dimension_id": "evidence_chain",
+          "earned": 12,
+          "max": 12,
+          "percent": 100,
+          "title": "Evidence Chain"
+        },
+        {
+          "checks": [
+            {
+              "earned": 7,
+              "evidence": "workflow.maturity_stage",
+              "id": "maturity_stage",
+              "passed": false,
+              "points": 12,
+              "title": "Maturity stage supports expansion"
+            }
+          ],
+          "dimension_id": "maturity_signal",
+          "earned": 7,
+          "max": 12,
+          "percent": 58.33,
+          "title": "Operational Maturity"
+        }
+      ],
+      "identity_count": 4,
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "findings.sast",
+        "repo.contents",
+        "ci.runs"
+      ],
+      "next_actions": [
+        "Keep the workflow in a bounded pilot until pilot exit metrics justify walk-stage promotion."
+      ],
+      "owner": {
+        "accountable_team": "Application Security",
+        "escalation": "secure-code-review",
+        "reviewer_pools": [
+          "appsec",
+          "service-owner"
+        ]
+      },
+      "public_path": "/security-remediation/sast-findings/",
+      "red_team_drill_count": 7,
+      "score": 95,
+      "status": "active",
+      "title": "SAST Finding Remediation",
+      "workflow_id": "sast-finding-remediation"
+    },
+    {
+      "blockers": [],
+      "connector_statuses": [
+        {
+          "namespace": "images.golden",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "namespace": "repo.contents",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_2_scoped_write"
+        },
+        {
+          "namespace": "ci.runs",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_1_internal_read"
+        }
+      ],
+      "decision": "scale_ready",
+      "dimension_scores": [
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "workflow.owner",
+              "id": "owner_and_reviewers",
+              "passed": true,
+              "points": 4,
+              "title": "Owner and reviewer pools declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.status",
+              "id": "active_status",
+              "passed": true,
+              "points": 2,
+              "title": "Workflow is active"
+            },
+            {
+              "earned": 5,
+              "evidence": "workflow.gates",
+              "id": "required_gate_phases",
+              "passed": true,
+              "points": 5,
+              "title": "All required gate phases exist"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "evidence_contract",
+              "passed": true,
+              "points": 3,
+              "title": "Minimum evidence records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kpis",
+              "id": "kpi_contract",
+              "passed": true,
+              "points": 2,
+              "title": "Minimum KPI records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kill_signals",
+              "id": "kill_signals",
+              "passed": true,
+              "points": 2,
+              "title": "Kill signals declared"
+            }
+          ],
+          "dimension_id": "control_plane",
+          "earned": 18,
+          "max": 18,
+          "percent": 100,
+          "title": "Workflow Control Plane"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.workflow_policies",
+              "id": "policy_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow policy exists"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.default_decision",
+              "id": "default_deny",
+              "passed": true,
+              "points": 3,
+              "title": "Default decision is deny"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.tool_access.denied_by_default",
+              "id": "denied_by_default",
+              "passed": true,
+              "points": 2,
+              "title": "Tool access denied by default"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.allowed_mcp_scopes",
+              "id": "namespace_alignment",
+              "passed": true,
+              "points": 3,
+              "title": "Policy namespaces match workflow namespaces"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.dispatch",
+              "id": "branch_scope",
+              "passed": true,
+              "points": 2,
+              "title": "Branch and ticket writes are scoped"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.runtime_controls",
+              "id": "session_disablement",
+              "passed": true,
+              "points": 2,
+              "title": "Session disablement required"
+            }
+          ],
+          "dimension_id": "gateway_policy",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "MCP Gateway Policy"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "identity_ledger.agent_identities",
+              "id": "identity_coverage",
+              "passed": true,
+              "points": 5,
+              "title": "Identity exists for every default agent"
+            },
+            {
+              "earned": 3,
+              "evidence": "identity_ledger.explicit_denies",
+              "id": "critical_denies",
+              "passed": true,
+              "points": 3,
+              "title": "Critical denied actions present"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.runtime_contract",
+              "id": "runtime_revocation",
+              "passed": true,
+              "points": 2,
+              "title": "Runtime revocation required"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.identity_controls",
+              "id": "no_static_credentials",
+              "passed": true,
+              "points": 2,
+              "title": "No shared static credential model"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.delegated_authority",
+              "id": "approval_reflected",
+              "passed": true,
+              "points": 2,
+              "title": "Approval-required namespaces reflected"
+            },
+            {
+              "earned": 1,
+              "evidence": "identity_ledger.risk_tier",
+              "id": "high_control_alignment",
+              "passed": true,
+              "points": 1,
+              "title": "High-control workflows use high-control identities"
+            }
+          ],
+          "dimension_id": "identity_delegation",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "Agent Identity and Delegation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "connector_trust_pack.connectors",
+              "id": "connector_registration",
+              "passed": true,
+              "points": 5,
+              "title": "All namespaces are registered"
+            },
+            {
+              "earned": 4,
+              "evidence": "connector_trust_pack.status",
+              "id": "production_status",
+              "passed": true,
+              "points": 4,
+              "title": "Connectors are production ready"
+            },
+            {
+              "earned": 3,
+              "evidence": "connector_trust_pack.trust_tier",
+              "id": "trust_tiers",
+              "passed": true,
+              "points": 3,
+              "title": "Trust tiers are assigned"
+            },
+            {
+              "earned": 2,
+              "evidence": "connector_trust_pack.access_modes",
+              "id": "write_tier_alignment",
+              "passed": true,
+              "points": 2,
+              "title": "Write and approval access match trust tier"
+            }
+          ],
+          "dimension_id": "connector_trust",
+          "earned": 14,
+          "max": 14,
+          "percent": 100,
+          "title": "MCP Connector Trust"
+        },
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.workflow_drills",
+              "id": "drill_row_exists",
+              "passed": true,
+              "points": 4,
+              "title": "Workflow has red-team row"
+            },
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.drills",
+              "id": "minimum_drills",
+              "passed": true,
+              "points": 4,
+              "title": "Minimum drill count met"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.severity",
+              "id": "high_severity_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "High or critical scenarios present"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.attack_family",
+              "id": "attack_family_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "Multiple attack families covered"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.matched_namespaces",
+              "id": "namespace_exercise",
+              "passed": true,
+              "points": 2,
+              "title": "Drills exercise MCP namespaces"
+            }
+          ],
+          "dimension_id": "adversarial_eval",
+          "earned": 14,
+          "max": 14,
+          "percent": 100,
+          "title": "Adversarial Evaluation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "assurance_pack.workflow_assurance",
+              "id": "assurance_row_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow appears in assurance pack"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "workflow_evidence",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow evidence records are named"
+            },
+            {
+              "earned": 4,
+              "evidence": "source_artifacts",
+              "id": "source_hash_alignment",
+              "passed": true,
+              "points": 4,
+              "title": "Source artifact hashes align"
+            },
+            {
+              "earned": 2,
+              "evidence": "assurance_pack.external_evidence_artifact_count",
+              "id": "external_evidence_named",
+              "passed": true,
+              "points": 2,
+              "title": "External runtime evidence is named"
+            }
+          ],
+          "dimension_id": "evidence_chain",
+          "earned": 12,
+          "max": 12,
+          "percent": 100,
+          "title": "Evidence Chain"
+        },
+        {
+          "checks": [
+            {
+              "earned": 10,
+              "evidence": "workflow.maturity_stage",
+              "id": "maturity_stage",
+              "passed": false,
+              "points": 12,
+              "title": "Maturity stage supports expansion"
+            }
+          ],
+          "dimension_id": "maturity_signal",
+          "earned": 10,
+          "max": 12,
+          "percent": 83.33,
+          "title": "Operational Maturity"
+        }
+      ],
+      "identity_count": 5,
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "images.golden",
+        "repo.contents",
+        "ci.runs"
+      ],
+      "next_actions": [
+        "Expand through the normal change-management cohort with MCP gateway audit enabled.",
+        "Track reviewer burden, regression rate, and red-team replay results during expansion."
+      ],
+      "owner": {
+        "accountable_team": "Platform Security",
+        "escalation": "container-platform",
+        "reviewer_pools": [
+          "platform-security",
+          "service-owner"
+        ]
+      },
+      "public_path": "/security-remediation/base-images/",
+      "red_team_drill_count": 7,
+      "score": 98,
+      "status": "active",
+      "title": "Base Image and Container Layer Remediation",
+      "workflow_id": "base-image-remediation"
+    },
+    {
+      "blockers": [],
+      "connector_statuses": [
+        {
+          "namespace": "inventory.artifacts",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "namespace": "registries.quarantine",
+          "production_ready": false,
+          "status": "pilot",
+          "trust_tier": "tier_3_approval_required"
+        },
+        {
+          "namespace": "incidents.security",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_2_scoped_write"
+        }
+      ],
+      "decision": "pilot_guarded",
+      "dimension_scores": [
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "workflow.owner",
+              "id": "owner_and_reviewers",
+              "passed": true,
+              "points": 4,
+              "title": "Owner and reviewer pools declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.status",
+              "id": "active_status",
+              "passed": true,
+              "points": 2,
+              "title": "Workflow is active"
+            },
+            {
+              "earned": 5,
+              "evidence": "workflow.gates",
+              "id": "required_gate_phases",
+              "passed": true,
+              "points": 5,
+              "title": "All required gate phases exist"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "evidence_contract",
+              "passed": true,
+              "points": 3,
+              "title": "Minimum evidence records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kpis",
+              "id": "kpi_contract",
+              "passed": true,
+              "points": 2,
+              "title": "Minimum KPI records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kill_signals",
+              "id": "kill_signals",
+              "passed": true,
+              "points": 2,
+              "title": "Kill signals declared"
+            }
+          ],
+          "dimension_id": "control_plane",
+          "earned": 18,
+          "max": 18,
+          "percent": 100,
+          "title": "Workflow Control Plane"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.workflow_policies",
+              "id": "policy_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow policy exists"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.default_decision",
+              "id": "default_deny",
+              "passed": true,
+              "points": 3,
+              "title": "Default decision is deny"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.tool_access.denied_by_default",
+              "id": "denied_by_default",
+              "passed": true,
+              "points": 2,
+              "title": "Tool access denied by default"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.allowed_mcp_scopes",
+              "id": "namespace_alignment",
+              "passed": true,
+              "points": 3,
+              "title": "Policy namespaces match workflow namespaces"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.dispatch",
+              "id": "branch_scope",
+              "passed": true,
+              "points": 2,
+              "title": "Branch and ticket writes are scoped"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.runtime_controls",
+              "id": "session_disablement",
+              "passed": true,
+              "points": 2,
+              "title": "Session disablement required"
+            }
+          ],
+          "dimension_id": "gateway_policy",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "MCP Gateway Policy"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "identity_ledger.agent_identities",
+              "id": "identity_coverage",
+              "passed": true,
+              "points": 5,
+              "title": "Identity exists for every default agent"
+            },
+            {
+              "earned": 3,
+              "evidence": "identity_ledger.explicit_denies",
+              "id": "critical_denies",
+              "passed": true,
+              "points": 3,
+              "title": "Critical denied actions present"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.runtime_contract",
+              "id": "runtime_revocation",
+              "passed": true,
+              "points": 2,
+              "title": "Runtime revocation required"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.identity_controls",
+              "id": "no_static_credentials",
+              "passed": true,
+              "points": 2,
+              "title": "No shared static credential model"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.delegated_authority",
+              "id": "approval_reflected",
+              "passed": true,
+              "points": 2,
+              "title": "Approval-required namespaces reflected"
+            },
+            {
+              "earned": 1,
+              "evidence": "identity_ledger.risk_tier",
+              "id": "high_control_alignment",
+              "passed": true,
+              "points": 1,
+              "title": "High-control workflows use high-control identities"
+            }
+          ],
+          "dimension_id": "identity_delegation",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "Agent Identity and Delegation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "connector_trust_pack.connectors",
+              "id": "connector_registration",
+              "passed": true,
+              "points": 5,
+              "title": "All namespaces are registered"
+            },
+            {
+              "earned": 2,
+              "evidence": "connector_trust_pack.status",
+              "id": "production_status",
+              "passed": false,
+              "points": 4,
+              "title": "Connectors are production ready"
+            },
+            {
+              "earned": 3,
+              "evidence": "connector_trust_pack.trust_tier",
+              "id": "trust_tiers",
+              "passed": true,
+              "points": 3,
+              "title": "Trust tiers are assigned"
+            },
+            {
+              "earned": 2,
+              "evidence": "connector_trust_pack.access_modes",
+              "id": "write_tier_alignment",
+              "passed": true,
+              "points": 2,
+              "title": "Write and approval access match trust tier"
+            }
+          ],
+          "dimension_id": "connector_trust",
+          "earned": 12,
+          "max": 14,
+          "percent": 85.71,
+          "title": "MCP Connector Trust"
+        },
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.workflow_drills",
+              "id": "drill_row_exists",
+              "passed": true,
+              "points": 4,
+              "title": "Workflow has red-team row"
+            },
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.drills",
+              "id": "minimum_drills",
+              "passed": true,
+              "points": 4,
+              "title": "Minimum drill count met"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.severity",
+              "id": "high_severity_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "High or critical scenarios present"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.attack_family",
+              "id": "attack_family_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "Multiple attack families covered"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.matched_namespaces",
+              "id": "namespace_exercise",
+              "passed": true,
+              "points": 2,
+              "title": "Drills exercise MCP namespaces"
+            }
+          ],
+          "dimension_id": "adversarial_eval",
+          "earned": 14,
+          "max": 14,
+          "percent": 100,
+          "title": "Adversarial Evaluation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "assurance_pack.workflow_assurance",
+              "id": "assurance_row_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow appears in assurance pack"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "workflow_evidence",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow evidence records are named"
+            },
+            {
+              "earned": 4,
+              "evidence": "source_artifacts",
+              "id": "source_hash_alignment",
+              "passed": true,
+              "points": 4,
+              "title": "Source artifact hashes align"
+            },
+            {
+              "earned": 2,
+              "evidence": "assurance_pack.external_evidence_artifact_count",
+              "id": "external_evidence_named",
+              "passed": true,
+              "points": 2,
+              "title": "External runtime evidence is named"
+            }
+          ],
+          "dimension_id": "evidence_chain",
+          "earned": 12,
+          "max": 12,
+          "percent": 100,
+          "title": "Evidence Chain"
+        },
+        {
+          "checks": [
+            {
+              "earned": 7,
+              "evidence": "workflow.maturity_stage",
+              "id": "maturity_stage",
+              "passed": false,
+              "points": 12,
+              "title": "Maturity stage supports expansion"
+            }
+          ],
+          "dimension_id": "maturity_signal",
+          "earned": 7,
+          "max": 12,
+          "percent": 58.33,
+          "title": "Operational Maturity"
+        }
+      ],
+      "identity_count": 3,
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "inventory.artifacts",
+        "registries.quarantine",
+        "incidents.security"
+      ],
+      "next_actions": [
+        "Keep the workflow in a bounded pilot until pilot exit metrics justify walk-stage promotion.",
+        "Graduate pilot MCP connectors before broad rollout: registries.quarantine."
+      ],
+      "owner": {
+        "accountable_team": "Supply Chain Security",
+        "escalation": "security-incident-commander",
+        "reviewer_pools": [
+          "supply-chain-security",
+          "platform-owner"
+        ]
+      },
+      "public_path": "/security-remediation/artifact-cache-purge/",
+      "red_team_drill_count": 7,
+      "score": 93,
+      "status": "active",
+      "title": "Artifact Cache and Mirror Quarantine",
+      "workflow_id": "artifact-cache-quarantine"
+    },
+    {
+      "blockers": [],
+      "connector_statuses": [
+        {
+          "namespace": "recipes.defaults",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_0_public_context"
+        },
+        {
+          "namespace": "repo.contents",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_2_scoped_write"
+        },
+        {
+          "namespace": "ci.runs",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_1_internal_read"
+        }
+      ],
+      "decision": "scale_ready",
+      "dimension_scores": [
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "workflow.owner",
+              "id": "owner_and_reviewers",
+              "passed": true,
+              "points": 4,
+              "title": "Owner and reviewer pools declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.status",
+              "id": "active_status",
+              "passed": true,
+              "points": 2,
+              "title": "Workflow is active"
+            },
+            {
+              "earned": 5,
+              "evidence": "workflow.gates",
+              "id": "required_gate_phases",
+              "passed": true,
+              "points": 5,
+              "title": "All required gate phases exist"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "evidence_contract",
+              "passed": true,
+              "points": 3,
+              "title": "Minimum evidence records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kpis",
+              "id": "kpi_contract",
+              "passed": true,
+              "points": 2,
+              "title": "Minimum KPI records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kill_signals",
+              "id": "kill_signals",
+              "passed": true,
+              "points": 2,
+              "title": "Kill signals declared"
+            }
+          ],
+          "dimension_id": "control_plane",
+          "earned": 18,
+          "max": 18,
+          "percent": 100,
+          "title": "Workflow Control Plane"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.workflow_policies",
+              "id": "policy_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow policy exists"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.default_decision",
+              "id": "default_deny",
+              "passed": true,
+              "points": 3,
+              "title": "Default decision is deny"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.tool_access.denied_by_default",
+              "id": "denied_by_default",
+              "passed": true,
+              "points": 2,
+              "title": "Tool access denied by default"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.allowed_mcp_scopes",
+              "id": "namespace_alignment",
+              "passed": true,
+              "points": 3,
+              "title": "Policy namespaces match workflow namespaces"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.dispatch",
+              "id": "branch_scope",
+              "passed": true,
+              "points": 2,
+              "title": "Branch and ticket writes are scoped"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.runtime_controls",
+              "id": "session_disablement",
+              "passed": true,
+              "points": 2,
+              "title": "Session disablement required"
+            }
+          ],
+          "dimension_id": "gateway_policy",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "MCP Gateway Policy"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "identity_ledger.agent_identities",
+              "id": "identity_coverage",
+              "passed": true,
+              "points": 5,
+              "title": "Identity exists for every default agent"
+            },
+            {
+              "earned": 3,
+              "evidence": "identity_ledger.explicit_denies",
+              "id": "critical_denies",
+              "passed": true,
+              "points": 3,
+              "title": "Critical denied actions present"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.runtime_contract",
+              "id": "runtime_revocation",
+              "passed": true,
+              "points": 2,
+              "title": "Runtime revocation required"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.identity_controls",
+              "id": "no_static_credentials",
+              "passed": true,
+              "points": 2,
+              "title": "No shared static credential model"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.delegated_authority",
+              "id": "approval_reflected",
+              "passed": true,
+              "points": 2,
+              "title": "Approval-required namespaces reflected"
+            },
+            {
+              "earned": 1,
+              "evidence": "identity_ledger.risk_tier",
+              "id": "high_control_alignment",
+              "passed": true,
+              "points": 1,
+              "title": "High-control workflows use high-control identities"
+            }
+          ],
+          "dimension_id": "identity_delegation",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "Agent Identity and Delegation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "connector_trust_pack.connectors",
+              "id": "connector_registration",
+              "passed": true,
+              "points": 5,
+              "title": "All namespaces are registered"
+            },
+            {
+              "earned": 4,
+              "evidence": "connector_trust_pack.status",
+              "id": "production_status",
+              "passed": true,
+              "points": 4,
+              "title": "Connectors are production ready"
+            },
+            {
+              "earned": 3,
+              "evidence": "connector_trust_pack.trust_tier",
+              "id": "trust_tiers",
+              "passed": true,
+              "points": 3,
+              "title": "Trust tiers are assigned"
+            },
+            {
+              "earned": 2,
+              "evidence": "connector_trust_pack.access_modes",
+              "id": "write_tier_alignment",
+              "passed": true,
+              "points": 2,
+              "title": "Write and approval access match trust tier"
+            }
+          ],
+          "dimension_id": "connector_trust",
+          "earned": 14,
+          "max": 14,
+          "percent": 100,
+          "title": "MCP Connector Trust"
+        },
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.workflow_drills",
+              "id": "drill_row_exists",
+              "passed": true,
+              "points": 4,
+              "title": "Workflow has red-team row"
+            },
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.drills",
+              "id": "minimum_drills",
+              "passed": true,
+              "points": 4,
+              "title": "Minimum drill count met"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.severity",
+              "id": "high_severity_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "High or critical scenarios present"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.attack_family",
+              "id": "attack_family_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "Multiple attack families covered"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.matched_namespaces",
+              "id": "namespace_exercise",
+              "passed": true,
+              "points": 2,
+              "title": "Drills exercise MCP namespaces"
+            }
+          ],
+          "dimension_id": "adversarial_eval",
+          "earned": 14,
+          "max": 14,
+          "percent": 100,
+          "title": "Adversarial Evaluation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "assurance_pack.workflow_assurance",
+              "id": "assurance_row_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow appears in assurance pack"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "workflow_evidence",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow evidence records are named"
+            },
+            {
+              "earned": 4,
+              "evidence": "source_artifacts",
+              "id": "source_hash_alignment",
+              "passed": true,
+              "points": 4,
+              "title": "Source artifact hashes align"
+            },
+            {
+              "earned": 2,
+              "evidence": "assurance_pack.external_evidence_artifact_count",
+              "id": "external_evidence_named",
+              "passed": true,
+              "points": 2,
+              "title": "External runtime evidence is named"
+            }
+          ],
+          "dimension_id": "evidence_chain",
+          "earned": 12,
+          "max": 12,
+          "percent": 100,
+          "title": "Evidence Chain"
+        },
+        {
+          "checks": [
+            {
+              "earned": 10,
+              "evidence": "workflow.maturity_stage",
+              "id": "maturity_stage",
+              "passed": false,
+              "points": 12,
+              "title": "Maturity stage supports expansion"
+            }
+          ],
+          "dimension_id": "maturity_signal",
+          "earned": 10,
+          "max": 12,
+          "percent": 83.33,
+          "title": "Operational Maturity"
+        }
+      ],
+      "identity_count": 4,
+      "maturity_stage": "walk",
+      "mcp_namespaces": [
+        "recipes.defaults",
+        "repo.contents",
+        "ci.runs"
+      ],
+      "next_actions": [
+        "Expand through the normal change-management cohort with MCP gateway audit enabled.",
+        "Track reviewer burden, regression rate, and red-team replay results during expansion."
+      ],
+      "owner": {
+        "accountable_team": "Application Security",
+        "escalation": "secure-code-review",
+        "reviewer_pools": [
+          "appsec",
+          "service-owner"
+        ]
+      },
+      "public_path": "/security-remediation/classic-vulnerable-defaults/",
+      "red_team_drill_count": 7,
+      "score": 98,
+      "status": "active",
+      "title": "Classic Vulnerable Defaults",
+      "workflow_id": "classic-vulnerable-defaults"
+    },
+    {
+      "blockers": [],
+      "connector_statuses": [
+        {
+          "namespace": "payments.findings",
+          "production_ready": false,
+          "status": "pilot",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "namespace": "repo.contents",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_2_scoped_write"
+        },
+        {
+          "namespace": "payments.simulation",
+          "production_ready": false,
+          "status": "pilot",
+          "trust_tier": "tier_1_internal_read"
+        }
+      ],
+      "decision": "pilot_guarded",
+      "dimension_scores": [
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "workflow.owner",
+              "id": "owner_and_reviewers",
+              "passed": true,
+              "points": 4,
+              "title": "Owner and reviewer pools declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.status",
+              "id": "active_status",
+              "passed": true,
+              "points": 2,
+              "title": "Workflow is active"
+            },
+            {
+              "earned": 5,
+              "evidence": "workflow.gates",
+              "id": "required_gate_phases",
+              "passed": true,
+              "points": 5,
+              "title": "All required gate phases exist"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "evidence_contract",
+              "passed": true,
+              "points": 3,
+              "title": "Minimum evidence records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kpis",
+              "id": "kpi_contract",
+              "passed": true,
+              "points": 2,
+              "title": "Minimum KPI records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kill_signals",
+              "id": "kill_signals",
+              "passed": true,
+              "points": 2,
+              "title": "Kill signals declared"
+            }
+          ],
+          "dimension_id": "control_plane",
+          "earned": 18,
+          "max": 18,
+          "percent": 100,
+          "title": "Workflow Control Plane"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.workflow_policies",
+              "id": "policy_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow policy exists"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.default_decision",
+              "id": "default_deny",
+              "passed": true,
+              "points": 3,
+              "title": "Default decision is deny"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.tool_access.denied_by_default",
+              "id": "denied_by_default",
+              "passed": true,
+              "points": 2,
+              "title": "Tool access denied by default"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.allowed_mcp_scopes",
+              "id": "namespace_alignment",
+              "passed": true,
+              "points": 3,
+              "title": "Policy namespaces match workflow namespaces"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.dispatch",
+              "id": "branch_scope",
+              "passed": true,
+              "points": 2,
+              "title": "Branch and ticket writes are scoped"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.runtime_controls",
+              "id": "session_disablement",
+              "passed": true,
+              "points": 2,
+              "title": "Session disablement required"
+            }
+          ],
+          "dimension_id": "gateway_policy",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "MCP Gateway Policy"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "identity_ledger.agent_identities",
+              "id": "identity_coverage",
+              "passed": true,
+              "points": 5,
+              "title": "Identity exists for every default agent"
+            },
+            {
+              "earned": 3,
+              "evidence": "identity_ledger.explicit_denies",
+              "id": "critical_denies",
+              "passed": true,
+              "points": 3,
+              "title": "Critical denied actions present"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.runtime_contract",
+              "id": "runtime_revocation",
+              "passed": true,
+              "points": 2,
+              "title": "Runtime revocation required"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.identity_controls",
+              "id": "no_static_credentials",
+              "passed": true,
+              "points": 2,
+              "title": "No shared static credential model"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.delegated_authority",
+              "id": "approval_reflected",
+              "passed": true,
+              "points": 2,
+              "title": "Approval-required namespaces reflected"
+            },
+            {
+              "earned": 1,
+              "evidence": "identity_ledger.risk_tier",
+              "id": "high_control_alignment",
+              "passed": true,
+              "points": 1,
+              "title": "High-control workflows use high-control identities"
+            }
+          ],
+          "dimension_id": "identity_delegation",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "Agent Identity and Delegation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "connector_trust_pack.connectors",
+              "id": "connector_registration",
+              "passed": true,
+              "points": 5,
+              "title": "All namespaces are registered"
+            },
+            {
+              "earned": 2,
+              "evidence": "connector_trust_pack.status",
+              "id": "production_status",
+              "passed": false,
+              "points": 4,
+              "title": "Connectors are production ready"
+            },
+            {
+              "earned": 3,
+              "evidence": "connector_trust_pack.trust_tier",
+              "id": "trust_tiers",
+              "passed": true,
+              "points": 3,
+              "title": "Trust tiers are assigned"
+            },
+            {
+              "earned": 2,
+              "evidence": "connector_trust_pack.access_modes",
+              "id": "write_tier_alignment",
+              "passed": true,
+              "points": 2,
+              "title": "Write and approval access match trust tier"
+            }
+          ],
+          "dimension_id": "connector_trust",
+          "earned": 12,
+          "max": 14,
+          "percent": 85.71,
+          "title": "MCP Connector Trust"
+        },
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.workflow_drills",
+              "id": "drill_row_exists",
+              "passed": true,
+              "points": 4,
+              "title": "Workflow has red-team row"
+            },
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.drills",
+              "id": "minimum_drills",
+              "passed": true,
+              "points": 4,
+              "title": "Minimum drill count met"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.severity",
+              "id": "high_severity_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "High or critical scenarios present"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.attack_family",
+              "id": "attack_family_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "Multiple attack families covered"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.matched_namespaces",
+              "id": "namespace_exercise",
+              "passed": true,
+              "points": 2,
+              "title": "Drills exercise MCP namespaces"
+            }
+          ],
+          "dimension_id": "adversarial_eval",
+          "earned": 14,
+          "max": 14,
+          "percent": 100,
+          "title": "Adversarial Evaluation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "assurance_pack.workflow_assurance",
+              "id": "assurance_row_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow appears in assurance pack"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "workflow_evidence",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow evidence records are named"
+            },
+            {
+              "earned": 4,
+              "evidence": "source_artifacts",
+              "id": "source_hash_alignment",
+              "passed": true,
+              "points": 4,
+              "title": "Source artifact hashes align"
+            },
+            {
+              "earned": 2,
+              "evidence": "assurance_pack.external_evidence_artifact_count",
+              "id": "external_evidence_named",
+              "passed": true,
+              "points": 2,
+              "title": "External runtime evidence is named"
+            }
+          ],
+          "dimension_id": "evidence_chain",
+          "earned": 12,
+          "max": 12,
+          "percent": 100,
+          "title": "Evidence Chain"
+        },
+        {
+          "checks": [
+            {
+              "earned": 7,
+              "evidence": "workflow.maturity_stage",
+              "id": "maturity_stage",
+              "passed": false,
+              "points": 12,
+              "title": "Maturity stage supports expansion"
+            }
+          ],
+          "dimension_id": "maturity_signal",
+          "earned": 7,
+          "max": 12,
+          "percent": 58.33,
+          "title": "Operational Maturity"
+        }
+      ],
+      "identity_count": 3,
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "payments.findings",
+        "repo.contents",
+        "payments.simulation"
+      ],
+      "next_actions": [
+        "Keep the workflow in a bounded pilot until pilot exit metrics justify walk-stage promotion.",
+        "Graduate pilot MCP connectors before broad rollout: payments.findings, payments.simulation."
+      ],
+      "owner": {
+        "accountable_team": "Fintech Security",
+        "escalation": "financial-risk",
+        "reviewer_pools": [
+          "fintech-security",
+          "payments-owner"
+        ]
+      },
+      "public_path": "/security-remediation/crypto-payments/",
+      "red_team_drill_count": 7,
+      "score": 93,
+      "status": "active",
+      "title": "Cryptocurrency and Crypto Payments Security",
+      "workflow_id": "crypto-payment-security"
+    },
+    {
+      "blockers": [],
+      "connector_statuses": [
+        {
+          "namespace": "protocol.findings",
+          "production_ready": false,
+          "status": "pilot",
+          "trust_tier": "tier_1_internal_read"
+        },
+        {
+          "namespace": "repo.contents",
+          "production_ready": true,
+          "status": "production",
+          "trust_tier": "tier_2_scoped_write"
+        },
+        {
+          "namespace": "chain.simulation",
+          "production_ready": false,
+          "status": "pilot",
+          "trust_tier": "tier_1_internal_read"
+        }
+      ],
+      "decision": "pilot_guarded",
+      "dimension_scores": [
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "workflow.owner",
+              "id": "owner_and_reviewers",
+              "passed": true,
+              "points": 4,
+              "title": "Owner and reviewer pools declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.status",
+              "id": "active_status",
+              "passed": true,
+              "points": 2,
+              "title": "Workflow is active"
+            },
+            {
+              "earned": 5,
+              "evidence": "workflow.gates",
+              "id": "required_gate_phases",
+              "passed": true,
+              "points": 5,
+              "title": "All required gate phases exist"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "evidence_contract",
+              "passed": true,
+              "points": 3,
+              "title": "Minimum evidence records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kpis",
+              "id": "kpi_contract",
+              "passed": true,
+              "points": 2,
+              "title": "Minimum KPI records declared"
+            },
+            {
+              "earned": 2,
+              "evidence": "workflow.kill_signals",
+              "id": "kill_signals",
+              "passed": true,
+              "points": 2,
+              "title": "Kill signals declared"
+            }
+          ],
+          "dimension_id": "control_plane",
+          "earned": 18,
+          "max": 18,
+          "percent": 100,
+          "title": "Workflow Control Plane"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.workflow_policies",
+              "id": "policy_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow policy exists"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.default_decision",
+              "id": "default_deny",
+              "passed": true,
+              "points": 3,
+              "title": "Default decision is deny"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.tool_access.denied_by_default",
+              "id": "denied_by_default",
+              "passed": true,
+              "points": 2,
+              "title": "Tool access denied by default"
+            },
+            {
+              "earned": 3,
+              "evidence": "gateway_policy.allowed_mcp_scopes",
+              "id": "namespace_alignment",
+              "passed": true,
+              "points": 3,
+              "title": "Policy namespaces match workflow namespaces"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.dispatch",
+              "id": "branch_scope",
+              "passed": true,
+              "points": 2,
+              "title": "Branch and ticket writes are scoped"
+            },
+            {
+              "earned": 2,
+              "evidence": "gateway_policy.runtime_controls",
+              "id": "session_disablement",
+              "passed": true,
+              "points": 2,
+              "title": "Session disablement required"
+            }
+          ],
+          "dimension_id": "gateway_policy",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "MCP Gateway Policy"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "identity_ledger.agent_identities",
+              "id": "identity_coverage",
+              "passed": true,
+              "points": 5,
+              "title": "Identity exists for every default agent"
+            },
+            {
+              "earned": 3,
+              "evidence": "identity_ledger.explicit_denies",
+              "id": "critical_denies",
+              "passed": true,
+              "points": 3,
+              "title": "Critical denied actions present"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.runtime_contract",
+              "id": "runtime_revocation",
+              "passed": true,
+              "points": 2,
+              "title": "Runtime revocation required"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.identity_controls",
+              "id": "no_static_credentials",
+              "passed": true,
+              "points": 2,
+              "title": "No shared static credential model"
+            },
+            {
+              "earned": 2,
+              "evidence": "identity_ledger.delegated_authority",
+              "id": "approval_reflected",
+              "passed": true,
+              "points": 2,
+              "title": "Approval-required namespaces reflected"
+            },
+            {
+              "earned": 1,
+              "evidence": "identity_ledger.risk_tier",
+              "id": "high_control_alignment",
+              "passed": true,
+              "points": 1,
+              "title": "High-control workflows use high-control identities"
+            }
+          ],
+          "dimension_id": "identity_delegation",
+          "earned": 15,
+          "max": 15,
+          "percent": 100,
+          "title": "Agent Identity and Delegation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 5,
+              "evidence": "connector_trust_pack.connectors",
+              "id": "connector_registration",
+              "passed": true,
+              "points": 5,
+              "title": "All namespaces are registered"
+            },
+            {
+              "earned": 2,
+              "evidence": "connector_trust_pack.status",
+              "id": "production_status",
+              "passed": false,
+              "points": 4,
+              "title": "Connectors are production ready"
+            },
+            {
+              "earned": 3,
+              "evidence": "connector_trust_pack.trust_tier",
+              "id": "trust_tiers",
+              "passed": true,
+              "points": 3,
+              "title": "Trust tiers are assigned"
+            },
+            {
+              "earned": 2,
+              "evidence": "connector_trust_pack.access_modes",
+              "id": "write_tier_alignment",
+              "passed": true,
+              "points": 2,
+              "title": "Write and approval access match trust tier"
+            }
+          ],
+          "dimension_id": "connector_trust",
+          "earned": 12,
+          "max": 14,
+          "percent": 85.71,
+          "title": "MCP Connector Trust"
+        },
+        {
+          "checks": [
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.workflow_drills",
+              "id": "drill_row_exists",
+              "passed": true,
+              "points": 4,
+              "title": "Workflow has red-team row"
+            },
+            {
+              "earned": 4,
+              "evidence": "red_team_drill_pack.drills",
+              "id": "minimum_drills",
+              "passed": true,
+              "points": 4,
+              "title": "Minimum drill count met"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.severity",
+              "id": "high_severity_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "High or critical scenarios present"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.attack_family",
+              "id": "attack_family_coverage",
+              "passed": true,
+              "points": 2,
+              "title": "Multiple attack families covered"
+            },
+            {
+              "earned": 2,
+              "evidence": "red_team_drill_pack.matched_namespaces",
+              "id": "namespace_exercise",
+              "passed": true,
+              "points": 2,
+              "title": "Drills exercise MCP namespaces"
+            }
+          ],
+          "dimension_id": "adversarial_eval",
+          "earned": 14,
+          "max": 14,
+          "percent": 100,
+          "title": "Adversarial Evaluation"
+        },
+        {
+          "checks": [
+            {
+              "earned": 3,
+              "evidence": "assurance_pack.workflow_assurance",
+              "id": "assurance_row_exists",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow appears in assurance pack"
+            },
+            {
+              "earned": 3,
+              "evidence": "workflow.evidence",
+              "id": "workflow_evidence",
+              "passed": true,
+              "points": 3,
+              "title": "Workflow evidence records are named"
+            },
+            {
+              "earned": 4,
+              "evidence": "source_artifacts",
+              "id": "source_hash_alignment",
+              "passed": true,
+              "points": 4,
+              "title": "Source artifact hashes align"
+            },
+            {
+              "earned": 2,
+              "evidence": "assurance_pack.external_evidence_artifact_count",
+              "id": "external_evidence_named",
+              "passed": true,
+              "points": 2,
+              "title": "External runtime evidence is named"
+            }
+          ],
+          "dimension_id": "evidence_chain",
+          "earned": 12,
+          "max": 12,
+          "percent": 100,
+          "title": "Evidence Chain"
+        },
+        {
+          "checks": [
+            {
+              "earned": 7,
+              "evidence": "workflow.maturity_stage",
+              "id": "maturity_stage",
+              "passed": false,
+              "points": 12,
+              "title": "Maturity stage supports expansion"
+            }
+          ],
+          "dimension_id": "maturity_signal",
+          "earned": 7,
+          "max": 12,
+          "percent": 58.33,
+          "title": "Operational Maturity"
+        }
+      ],
+      "identity_count": 3,
+      "maturity_stage": "crawl",
+      "mcp_namespaces": [
+        "protocol.findings",
+        "repo.contents",
+        "chain.simulation"
+      ],
+      "next_actions": [
+        "Keep the workflow in a bounded pilot until pilot exit metrics justify walk-stage promotion.",
+        "Graduate pilot MCP connectors before broad rollout: protocol.findings, chain.simulation."
+      ],
+      "owner": {
+        "accountable_team": "Protocol Security",
+        "escalation": "protocol-risk-council",
+        "reviewer_pools": [
+          "protocol-security",
+          "smart-contract-owner"
+        ]
+      },
+      "public_path": "/security-remediation/defi-blockchain/",
+      "red_team_drill_count": 7,
+      "score": 93,
+      "status": "active",
+      "title": "DeFi and Blockchain Protocol Security",
+      "workflow_id": "defi-blockchain-security"
+    }
+  ]
+}

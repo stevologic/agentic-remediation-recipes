@@ -140,6 +140,42 @@ jobs:
         working-directory: ${{ steps.hugo-dir.outputs.path }}
         run: hugo mod get -u
 
+      - name: Validate workflow control plane manifests
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/validate_workflow_control_plane.py \
+            --report data/evidence/workflow-control-plane-report.json
+
+      - name: Validate MCP gateway policy pack
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_mcp_gateway_policy.py --check
+
+      - name: Validate MCP connector trust pack
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_mcp_connector_trust_pack.py --check
+
+      - name: Validate agentic assurance pack
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_agentic_assurance_pack.py --check
+
+      - name: Validate agent identity delegation ledger
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_agent_identity_ledger.py --check
+
+      - name: Validate agentic red-team drill pack
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_agentic_red_team_drill_pack.py --check
+
+      - name: Validate agentic readiness scorecard
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_agentic_readiness_scorecard.py --check
+
       - name: Build site
         working-directory: ${{ steps.hugo-dir.outputs.path }}
         env:

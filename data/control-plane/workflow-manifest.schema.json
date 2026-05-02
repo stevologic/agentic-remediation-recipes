@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://security-recipes.ai/schemas/workflow-control-plane.v1.json",
+  "title": "SecurityRecipes Workflow Control Plane Manifest",
+  "description": "Declarative controls, MCP context, evidence, KPIs, and kill signals for an agentic remediation workflow.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "last_reviewed",
+    "intent",
+    "required_gate_phases",
+    "standards_alignment",
+    "workflows"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^1\\.0$"
+    },
+    "last_reviewed": {
+      "type": "string",
+      "format": "date"
+    },
+    "intent": {
+      "type": "string",
+      "minLength": 40
+    },
+    "required_gate_phases": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "admission",
+          "tool_call",
+          "output",
+          "pre_merge",
+          "post_merge",
+          "runtime"
+        ]
+      },
+      "minItems": 6,
+      "uniqueItems": true
+    },
+    "standards_alignment": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "url",
+          "why_it_matters"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "why_it_matters": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "workflow_defaults": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "workflows": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "status",
+          "maturity_stage",
+          "content_path",
+          "public_path",
+          "owner",
+          "eligible_findings",
+          "default_agents",
+          "automation_first",
+          "mcp_context",
+          "scope",
+          "gates",
+          "evidence",
+          "kpis",
+          "kill_signals"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]+$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pilot",
+              "active",
+              "paused",
+              "retired"
+            ]
+          },
+          "maturity_stage": {
+            "enum": [
+              "crawl",
+              "walk",
+              "run"
+            ]
+          },
+          "content_path": {
+            "type": "string"
+          },
+          "public_path": {
+            "type": "string",
+            "pattern": "^/.+/$"
+          },
+          "owner": {
+            "type": "object"
+          },
+          "eligible_findings": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "default_agents": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "enum": [
+                "claude",
+                "codex",
+                "cursor",
+                "devin",
+                "github_copilot"
+              ]
+            }
+          },
+          "automation_first": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mcp_context": {
+            "type": "array",
+            "minItems": 1
+          },
+          "scope": {
+            "type": "object"
+          },
+          "gates": {
+            "type": "object"
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 3
+          },
+          "kpis": {
+            "type": "array",
+            "minItems": 3
+          },
+          "kill_signals": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
