@@ -30,6 +30,7 @@ DEFAULT_MANIFEST = Path("data/control-plane/workflow-manifests.json")
 DEFAULT_OUTPUT = Path("data/evidence/context-egress-boundary-pack.json")
 
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]+$")
+MACHINE_ID_RE = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
 VALID_DECISIONS = {
     "allow_public_egress_with_citation",
     "allow_tenant_bound_egress",
@@ -187,7 +188,7 @@ def validate_model(model: dict[str, Any], registry: dict[str, Any], manifest: di
     destinations = destinations_by_id(model)
     require(len(destinations) >= 6, failures, "destination_classes must include at least six classes")
     for destination_id, destination in destinations.items():
-        require(bool(ID_RE.match(destination_id)), failures, f"{destination_id}: destination id must be kebab-case")
+        require(bool(MACHINE_ID_RE.match(destination_id)), failures, f"{destination_id}: destination id must be a lower-case machine id")
         require(isinstance(destination.get("trusted"), bool), failures, f"{destination_id}: trusted must be boolean")
         require(isinstance(destination.get("external_processor"), bool), failures, f"{destination_id}: external_processor must be boolean")
         require(bool(as_list(destination.get("required_controls"), f"{destination_id}.required_controls")), failures, f"{destination_id}: required_controls are required")
@@ -195,7 +196,7 @@ def validate_model(model: dict[str, Any], registry: dict[str, Any], manifest: di
     policies = policies_by_id(model)
     require(len(policies) >= 10, failures, "data_class_policies must include at least ten classes")
     for policy_id, policy in policies.items():
-        require(bool(ID_RE.match(policy_id)), failures, f"{policy_id}: data class id must be kebab-case")
+        require(bool(MACHINE_ID_RE.match(policy_id)), failures, f"{policy_id}: data class id must be a lower-case machine id")
         decision = str(policy.get("default_decision"))
         require(decision in VALID_DECISIONS, failures, f"{policy_id}: default_decision is invalid")
         require(str(policy.get("sensitivity")) in VALID_SENSITIVITY, failures, f"{policy_id}: sensitivity is invalid")

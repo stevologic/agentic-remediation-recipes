@@ -163,9 +163,7 @@
     },
     "state": "untrusted_until_complete"
   },
-  "failures": [
-    "source packs must have zero failures"
-  ],
+  "failures": [],
   "generated_at": "2026-05-02",
   "intent": "Define the portable proof object SecurityRecipes expects for every governed agentic remediation run: a signed or attestable receipt that joins identity, context retrieval, context poisoning inspection, MCP tool decisions, context egress, human approval, verifier output, evidence retention, and revocation into one enterprise review artifact.",
   "positioning": {
@@ -253,7 +251,7 @@
       "scale_ready": 4
     },
     "required_event_class_count": 10,
-    "source_failure_count": 20,
+    "source_failure_count": 0,
     "workflow_count": 8
   },
   "schema_version": "1.0",
@@ -268,7 +266,7 @@
     },
     "agentic_readiness_scorecard": {
       "path": "data/evidence/agentic-readiness-scorecard.json",
-      "sha256": "442cecb2d6d32283436deb472e3f9397126cf2d6e9d222030cca3235d24286cb"
+      "sha256": "c175181e8a7afeba2c1c7d6483f69c7a635fcf8242d65a20fb76462499cc45ae"
     },
     "agentic_red_team_drill_pack": {
       "path": "data/evidence/agentic-red-team-drill-pack.json",
@@ -280,11 +278,11 @@
     },
     "agentic_system_bom": {
       "path": "data/evidence/agentic-system-bom.json",
-      "sha256": "e8ce7c0ef1c932965606e1da56d27c863622377dfb4d8a9342c4f137b81f82c7"
+      "sha256": "63e54ee764128a717c0366087778b26109387bc6de3b04fc352e59fff8acd649"
     },
     "context_egress_boundary_pack": {
       "path": "data/evidence/context-egress-boundary-pack.json",
-      "sha256": "dc39c775185aa838a9a5928c2685e6168849d23cb845952c3bdf6f537fa26e67"
+      "sha256": "474e66fa07118c53f112b39d5917402f51ec723e896c29d59317542c7284f363"
     },
     "context_poisoning_guard_pack": {
       "path": "data/evidence/context-poisoning-guard-pack.json",

@@ -2722,7 +2722,7 @@
         "component_id": "evidence::agentic-readiness-scorecard",
         "component_type": "evidence_artifacts",
         "path": "data/evidence/agentic-readiness-scorecard.json",
-        "sha256": "442cecb2d6d32283436deb472e3f9397126cf2d6e9d222030cca3235d24286cb",
+        "sha256": "c175181e8a7afeba2c1c7d6483f69c7a635fcf8242d65a20fb76462499cc45ae",
         "title": "Agentic readiness scorecard"
       },
       {
@@ -2730,7 +2730,7 @@
         "component_id": "evidence::agentic-assurance-pack",
         "component_type": "evidence_artifacts",
         "path": "data/evidence/agentic-assurance-pack.json",
-        "sha256": "f97a022e915e0357b265f2546c5abaa4d7228ca4f636e0f5f063accfc5dba8f1",
+        "sha256": "541051b71524c51b91da88fb18bfc5884b1dded21886ecb895dd9d07e1e07a8f",
         "title": "Agentic assurance pack"
       },
       {
@@ -4365,11 +4365,11 @@
     },
     "agentic_assurance_pack": {
       "path": "data/evidence/agentic-assurance-pack.json",
-      "sha256": "f97a022e915e0357b265f2546c5abaa4d7228ca4f636e0f5f063accfc5dba8f1"
+      "sha256": "541051b71524c51b91da88fb18bfc5884b1dded21886ecb895dd9d07e1e07a8f"
     },
     "agentic_readiness_scorecard": {
       "path": "data/evidence/agentic-readiness-scorecard.json",
-      "sha256": "442cecb2d6d32283436deb472e3f9397126cf2d6e9d222030cca3235d24286cb"
+      "sha256": "c175181e8a7afeba2c1c7d6483f69c7a635fcf8242d65a20fb76462499cc45ae"
     },
     "agentic_red_team_drill_pack": {
       "path": "data/evidence/agentic-red-team-drill-pack.json",
