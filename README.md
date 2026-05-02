@@ -89,6 +89,10 @@ and ships with:
 - **Agent Identity & Delegation Ledger** - generated non-human identity
   contracts for approved agents, delegated MCP scopes, explicit denies,
   review ownership, runtime revocation, and audit evidence.
+- **Agentic System BOM** - generated Agent/AI Bill of Materials for
+  workflows, agent classes, identities, MCP connectors, policy
+  components, evidence artifacts, knowledge sources, eval drills, and
+  drift triggers.
 - **Automation, not agentic** — what deterministic tooling still does
   best, and where agents should *not* replace it.
 - **Contribute** — fork-and-PR guide for adding recipes, prompts, or
@@ -290,6 +294,23 @@ the MCP server as `recipes_agentic_readiness_scorecard`.
 
 ---
 
+### Generate the Agentic System BOM
+
+The Agentic System Bill of Materials joins the workflow manifest, MCP
+gateway policy, connector trust pack, identity ledger, red-team drill
+pack, readiness scorecard, assurance pack, and BOM profile into an
+inspectable inventory:
+
+```bash
+python3 scripts/generate_agentic_system_bom.py
+python3 scripts/generate_agentic_system_bom.py --check
+```
+
+The generated artifact lives at `data/evidence/agentic-system-bom.json`
+and is exposed through the MCP server as `recipes_agentic_system_bom`.
+
+---
+
 ### Generate the MCP connector trust pack
 
 The connector trust pack joins the MCP connector registry, workflow
@@ -405,7 +426,7 @@ the top nav's **Contribute** link points at) and `LICENSE`.
 | **Agents** | Per-tool recipes for GitHub Copilot, Claude, Cursor, Codex, Devin — each with Install → Configure → Dispatch → Guardrails, plus General and Enterprise onboarding. |
 | **Prompt Library** | Tool-agnostic prompts under `general/` (OWASP Top 10 2026 audit, OWASP Top 10 2026 remediate) plus per-tool prompts for CVE triage, vulnerable deps, and SDE remediation. |
 | **MCP Servers** | Why MCP exists; connector catalog (risk, ownership, ticket, knowledge, code, observability); MCP gateway patterns; integration on-ramp. |
-| **Security Remediation** | Reference workflows a security team can operate: SDE, vulnerable dependencies, SAST, base images, artifact quarantine, classic vulnerable defaults, crypto payments, and DeFi / blockchain security. Includes the workflow control plane, MCP gateway policy pack, runtime decision evaluator, MCP connector trust registry, agentic assurance pack, readiness scorecard, red-team drill pack, agent identity ledger, program metrics, reviewer playbook, rollout maturity model, and compliance mapping. |
+| **Security Remediation** | Reference workflows a security team can operate: SDE, vulnerable dependencies, SAST, base images, artifact quarantine, classic vulnerable defaults, crypto payments, and DeFi / blockchain security. Includes the workflow control plane, MCP gateway policy pack, runtime decision evaluator, MCP connector trust registry, agentic assurance pack, readiness scorecard, red-team drill pack, agent identity ledger, Agentic System BOM, program metrics, reviewer playbook, rollout maturity model, and compliance mapping. |
 | **Automation** | The "just use a linter" checklist — deterministic automation that earns its keep before an agent ever runs. |
 | **Contribute** | How to add a recipe, a prompt, or a new workflow. |
 
@@ -590,6 +611,22 @@ scores, blockers, pilot connector dependencies, and next actions. CI
 runs the generator in `--check` mode so adoption decisions cannot drift
 from the underlying control artifacts.
 
+### Agentic System BOM
+
+The generated Agentic System Bill of Materials turns the same control
+artifacts into an inspectable inventory:
+
+- BOM profile: `data/assurance/agentic-system-bom-profile.json`
+- generator: `scripts/generate_agentic_system_bom.py`
+- BOM: `data/evidence/agentic-system-bom.json`
+- MCP tool: `recipes_agentic_system_bom`
+
+The BOM inventories workflows, agent classes, non-human identities, MCP
+connectors, policy components, evidence artifacts, knowledge sources,
+evaluation drills, source hashes, readiness decisions, and update
+triggers. CI runs the generator in `--check` mode so the agentic system
+inventory cannot drift from the governed source artifacts.
+
 ### Standalone MCP server (Python + Docker)
 
 This repo also includes a standalone MCP server implementation that reads
@@ -646,6 +683,8 @@ Edit `mcp-server.toml`:
   exposed through the `recipes_agentic_red_team_drill_pack` MCP tool
 - `readiness_scorecard_path` -> generated agentic readiness scorecard
   exposed through the `recipes_agentic_readiness_scorecard` MCP tool
+- `agentic_system_bom_path` -> generated Agentic System BOM exposed
+  through the `recipes_agentic_system_bom` MCP tool
 
 This lets teams host the Hugo site and MCP server under different domains
 without changing code.

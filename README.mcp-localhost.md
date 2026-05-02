@@ -72,6 +72,7 @@ After connecting, the server exposes these tools:
 - `recipes_mcp_connector_trust_pack`
 - `recipes_agentic_red_team_drill_pack`
 - `recipes_agentic_readiness_scorecard`
+- `recipes_agentic_system_bom`
 - `recipes_match_finding`
 
 ## Use a custom config
@@ -93,7 +94,7 @@ docker run --rm -it -p 8123:80 `
 Edit `mcp-server.toml` when you need to point the MCP server at a forked
 or self-hosted `recipes-index.json`, workflow manifest, gateway policy,
 assurance pack, identity ledger, connector trust pack, red-team drill
-pack, or readiness scorecard.
+pack, readiness scorecard, or Agentic System BOM.
 
 ## Change the local port
 

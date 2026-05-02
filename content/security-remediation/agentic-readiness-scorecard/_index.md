@@ -142,6 +142,8 @@ evidence that justifies them.
   - the adversarial eval layer.
 - [Agent Identity & Delegation Ledger]({{< relref "/security-remediation/agent-identity-ledger" >}})
   - the non-human identity contract.
+- [Agentic System BOM]({{< relref "/security-remediation/agentic-system-bom" >}})
+  - the inspectable inventory behind promotion and recertification decisions.
 - [MCP Connector Trust Registry]({{< relref "/security-remediation/mcp-connector-trust-registry" >}})
   - the connector trust and promotion contract.
 - [Rollout & Maturity Model]({{< relref "/security-remediation/maturity" >}})

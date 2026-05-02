@@ -3,7 +3,7 @@ title: Crypto & DeFi Security Recipes
 linkTitle: Crypto & DeFi Recipes
 weight: 20
 sidebar:
-  open: true
+  open: false
 description: >
   Tool-agnostic prompts for securing cryptocurrency payment flows,
   wallet operations, and DeFi protocol controls.

@@ -3,7 +3,7 @@ title: CVE Recipes
 linkTitle: CVE Recipes
 weight: 9
 sidebar:
-  open: true
+  open: false
 description: >
   Per-CVE agent recipes — pick one up, run it, get a
   reviewer-ready PR or a structured triage note. Each recipe

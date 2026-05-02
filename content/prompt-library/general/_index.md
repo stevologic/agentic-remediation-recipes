@@ -3,7 +3,7 @@ title: General
 linkTitle: General
 weight: 6
 sidebar:
-  open: true
+  open: false
 description: >
   Tool-agnostic prompts, triage frameworks, guardrail patterns,
   and review checklists that apply regardless of which agent

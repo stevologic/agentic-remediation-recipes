@@ -1,10 +1,11 @@
 /*
  * Sidebar collapse defaults - security-recipes.ai.
  *
- * Keep desktop left-nav tree menus collapsed by default, but preserve the
- * open ancestry for the current page so readers still see context. Prompt
- * Library pages are the exception: the sidebar should stay flat and show
- * only top-level section links.
+ * Keep left-nav tree menus collapsed by default, but preserve the open
+ * ancestry for the current page so readers still see context. Prompt Library
+ * pages are the exception: the sidebar should stay flat and show only hub
+ * links. Its leaf recipe pages are excluded from the sidebar by frontmatter
+ * cascade, so adding hundreds of .md files does not flood the menu.
  */
 (function () {
   'use strict';
@@ -23,16 +24,12 @@
     }
   }
 
-  function getDesktopSidebarRoots() {
+  function getSidebarRoots() {
     var sidebar = document.querySelector('.sidebar-container');
     if (sidebar) {
       var lists = Array.prototype.slice.call(sidebar.querySelectorAll('.hextra-scrollbar > ul'));
-      var desktopLists = lists.filter(function (list) {
-        return (list.className || '').indexOf('max-md:hx-hidden') !== -1;
-      });
-
-      if (desktopLists.length) {
-        return desktopLists;
+      if (lists.length) {
+        return lists;
       }
     }
 
@@ -94,7 +91,7 @@
   }
 
   function collapseSidebar() {
-    var roots = getDesktopSidebarRoots();
+    var roots = getSidebarRoots();
     if (!roots.length) return;
 
     var keepPromptLibraryFlat = isPromptLibraryPath();

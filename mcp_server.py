@@ -72,6 +72,10 @@ class ServerConfig:
         "RECIPES_MCP_READINESS_SCORECARD_PATH",
         "./data/evidence/agentic-readiness-scorecard.json",
     )
+    agentic_system_bom_path: str = os.environ.get(
+        "RECIPES_MCP_AGENTIC_SYSTEM_BOM_PATH",
+        "./data/evidence/agentic-system-bom.json",
+    )
 
 
 class RecipeIndex:
@@ -1060,6 +1064,180 @@ class AgenticReadinessScorecard:
         }
 
 
+class AgenticSystemBOM:
+    def __init__(self, bom_path: str):
+        self.path = Path(bom_path)
+        self._mtime: float | None = None
+        self._bom: dict[str, Any] | None = None
+        self._components: dict[str, list[dict[str, Any]]] = {}
+        self._workflow_by_id: dict[str, dict[str, Any]] = {}
+        self._agent_class_by_name: dict[str, dict[str, Any]] = {}
+        self._connector_by_namespace: dict[str, dict[str, Any]] = {}
+        self._identity_by_id: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._bom is not None and self._mtime == stat.st_mtime:
+            return self._bom
+
+        bom = json.loads(self.path.read_text(encoding="utf-8"))
+        components = bom.get("components") if isinstance(bom, dict) and isinstance(bom.get("components"), dict) else {}
+        self._components = {
+            str(component_type): [
+                item for item in items if isinstance(item, dict)
+            ]
+            for component_type, items in components.items()
+            if isinstance(items, list)
+        }
+        self._workflow_by_id = {
+            str(workflow.get("workflow_id")): workflow
+            for workflow in self._components.get("workflows", [])
+            if workflow.get("workflow_id")
+        }
+        self._agent_class_by_name = {
+            str(agent_class.get("agent_class")): agent_class
+            for agent_class in self._components.get("agent_classes", [])
+            if agent_class.get("agent_class")
+        }
+        self._connector_by_namespace = {
+            str(connector.get("namespace")): connector
+            for connector in self._components.get("mcp_connectors", [])
+            if connector.get("namespace")
+        }
+        self._identity_by_id = {
+            str(identity.get("component_id")): identity
+            for identity in self._components.get("agent_identities", [])
+            if identity.get("component_id")
+        }
+        self._bom = bom
+        self._mtime = stat.st_mtime
+        return bom
+
+    @staticmethod
+    def _workflow_preview(workflow: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "agent_classes": workflow.get("agent_classes", []),
+            "maturity_stage": workflow.get("maturity_stage"),
+            "mcp_namespaces": [
+                namespace.get("namespace")
+                for namespace in workflow.get("mcp_namespaces", [])
+                if isinstance(namespace, dict)
+            ],
+            "readiness_decision": workflow.get("readiness_decision"),
+            "readiness_score": workflow.get("readiness_score"),
+            "red_team_drill_count": workflow.get("red_team_drill_count"),
+            "status": workflow.get("status"),
+            "title": workflow.get("title"),
+            "workflow_id": workflow.get("workflow_id"),
+        }
+
+    def get(
+        self,
+        component_type: str | None = None,
+        workflow_id: str | None = None,
+        agent_class: str | None = None,
+        namespace: str | None = None,
+    ) -> dict[str, Any]:
+        try:
+            bom = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "bom_path": str(self.path),
+                "error": f"failed to load agentic system BOM: {exc}",
+            }
+
+        if bom is None:
+            return {
+                "available": False,
+                "bom_path": str(self.path),
+                "error": "agentic system BOM is not present",
+            }
+
+        if not isinstance(bom, dict):
+            return {
+                "available": False,
+                "bom_path": str(self.path),
+                "error": "agentic system BOM root must be an object",
+            }
+
+        if workflow_id:
+            workflow = self._workflow_by_id.get(workflow_id.strip())
+            return {
+                "available": True,
+                "found": workflow is not None,
+                "workflow_bom": workflow,
+                "workflow_id": workflow_id,
+            }
+
+        if agent_class:
+            key = agent_class.strip()
+            identities = [
+                identity
+                for identity in self._identity_by_id.values()
+                if str(identity.get("agent_class")) == key
+            ]
+            return {
+                "agent_class": key,
+                "agent_class_component": self._agent_class_by_name.get(key),
+                "available": True,
+                "found": key in self._agent_class_by_name,
+                "identity_count": len(identities),
+                "identities": identities,
+            }
+
+        if namespace:
+            key = namespace.strip()
+            workflows = [
+                self._workflow_preview(workflow)
+                for workflow in self._workflow_by_id.values()
+                if any(
+                    isinstance(item, dict) and item.get("namespace") == key
+                    for item in workflow.get("mcp_namespaces", [])
+                )
+            ]
+            return {
+                "available": True,
+                "connector": self._connector_by_namespace.get(key),
+                "found": key in self._connector_by_namespace,
+                "namespace": key,
+                "workflow_count": len(workflows),
+                "workflows": workflows,
+            }
+
+        if component_type:
+            key = component_type.strip()
+            components = self._components.get(key)
+            return {
+                "available": True,
+                "component_type": key,
+                "components": components or [],
+                "count": len(components or []),
+                "found": components is not None,
+            }
+
+        return {
+            "available": True,
+            "bom_format": bom.get("bom_format"),
+            "bom_id": bom.get("bom_id"),
+            "bom_summary": bom.get("bom_summary"),
+            "change_control_contract": bom.get("change_control_contract"),
+            "enterprise_adoption_packet": bom.get("enterprise_adoption_packet"),
+            "generated_at": bom.get("generated_at"),
+            "schema_version": bom.get("schema_version"),
+            "source_artifacts": bom.get("source_artifacts"),
+            "standards_alignment": bom.get("standards_alignment", []),
+            "update_triggers": bom.get("update_triggers", []),
+            "workflows": [
+                self._workflow_preview(workflow)
+                for workflow in self._workflow_by_id.values()
+            ],
+        }
+
+
 def load_config(config_path: str) -> ServerConfig:
     path = Path(config_path)
     cfg = ServerConfig()
@@ -1093,6 +1271,10 @@ def load_config(config_path: str) -> ServerConfig:
     cfg.readiness_scorecard_path = data.get(
         "readiness_scorecard_path",
         cfg.readiness_scorecard_path,
+    )
+    cfg.agentic_system_bom_path = data.get(
+        "agentic_system_bom_path",
+        cfg.agentic_system_bom_path,
     )
     return cfg
 
@@ -1146,6 +1328,7 @@ identity_ledger = AgentIdentityDelegationLedger(config.identity_ledger_path)
 connector_trust_pack = MCPConnectorTrustPack(config.connector_trust_pack_path)
 red_team_drill_pack = AgenticRedTeamDrillPack(config.red_team_drill_pack_path)
 readiness_scorecard = AgenticReadinessScorecard(config.readiness_scorecard_path)
+agentic_system_bom = AgenticSystemBOM(config.agentic_system_bom_path)
 mcp = FastMCP(name="security-recipes-mcp")
 
 
@@ -1165,6 +1348,7 @@ async def recipes_server_info() -> dict[str, Any]:
         "connector_trust_pack_path": config.connector_trust_pack_path,
         "red_team_drill_pack_path": config.red_team_drill_pack_path,
         "readiness_scorecard_path": config.readiness_scorecard_path,
+        "agentic_system_bom_path": config.agentic_system_bom_path,
     }
 
 
@@ -1321,6 +1505,22 @@ async def recipes_agentic_readiness_scorecard(
         workflow_id=workflow_id,
         decision=decision,
         minimum_score=minimum_score,
+    )
+
+
+@mcp.tool()
+async def recipes_agentic_system_bom(
+    component_type: str | None = None,
+    workflow_id: str | None = None,
+    agent_class: str | None = None,
+    namespace: str | None = None,
+) -> dict[str, Any]:
+    """Return the Agentic System BOM for workflows, agents, identities, MCP tools, and evidence."""
+    return agentic_system_bom.get(
+        component_type=component_type,
+        workflow_id=workflow_id,
+        agent_class=agent_class,
+        namespace=namespace,
     )
 
 

@@ -1,0 +1,176 @@
+{
+  "schema_version": "1.0",
+  "last_reviewed": "2026-05-02",
+  "intent": "Turn SecurityRecipes assurance artifacts into a machine-readable Agentic System Bill of Materials: workflows, agent classes, non-human identities, MCP namespaces, connectors, policies, evidence, evals, and drift triggers that AI platform and GRC teams can inspect before approving production agentic remediation.",
+  "positioning": {
+    "buyer": "AI Platform, Security Engineering, Product Security, GRC, procurement security, vendor-risk, and acquisition diligence teams",
+    "category": "Agentic AI system BOM and inspectability evidence",
+    "enterprise_promise": "SecurityRecipes can produce a current inventory of the agentic remediation system, including which agents may act, which MCP tools they can reach, what policies constrain them, what evidence proves control, and which changes require BOM regeneration.",
+    "why_now": "Agentic systems are becoming distributed software supply chains: models, prompts, skills, tools, MCP servers, memory, policies, identities, and evidence all change independently. Buyers need inspectability before they can approve scale."
+  },
+  "standards_alignment": [
+    {
+      "id": "nist-ai-rmf-1.0",
+      "name": "NIST AI Risk Management Framework 1.0",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "coverage": "AI governance, mapping, measurement, and management of system context and lifecycle risk."
+    },
+    {
+      "id": "nist-ai-600-1",
+      "name": "NIST AI RMF Generative AI Profile",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+      "coverage": "Generative AI lifecycle, third-party, data, measurement, and monitoring risk actions."
+    },
+    {
+      "id": "owasp-agentic-top-10-2026",
+      "name": "OWASP Top 10 for Agentic Applications 2026",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/",
+      "coverage": "Agent goal hijack, tool misuse, identity abuse, agentic supply chain, memory or context poisoning, cascading failures, and rogue agents."
+    },
+    {
+      "id": "owasp-aibom",
+      "name": "OWASP AI Bill of Materials Project",
+      "url": "https://owaspaibom.org/",
+      "coverage": "AI system transparency, auditability, model lineage, data lineage, dependencies, and risk factors."
+    },
+    {
+      "id": "aos-agbom",
+      "name": "Agent Observability Standard - Agent Bill of Materials",
+      "url": "https://aos.owasp.org/spec/inspect/",
+      "coverage": "Agent inventory for tools, models, capabilities, MCP servers, knowledge, memory, and dynamic update triggers."
+    },
+    {
+      "id": "cyclonedx",
+      "name": "OWASP CycloneDX Bill of Materials",
+      "url": "https://owasp.org/www-project-cyclonedx/",
+      "coverage": "Machine-readable BOM conventions for software, services, machine learning, cryptography, operations, vulnerabilities, and attestations."
+    },
+    {
+      "id": "mcp-security-best-practices",
+      "name": "Model Context Protocol Security Best Practices",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices",
+      "coverage": "MCP confused deputy prevention, token passthrough avoidance, SSRF, session safety, scope minimization, and auditability."
+    },
+    {
+      "id": "csa-aicm",
+      "name": "Cloud Security Alliance AI Controls Matrix",
+      "url": "https://cloudsecurityalliance.org/artifacts/ai-controls-matrix",
+      "coverage": "Vendor-neutral cloud AI control objectives, ownership, evidence, implementation guidance, and auditing guidance."
+    }
+  ],
+  "component_contract": {
+    "required_component_types": [
+      "workflows",
+      "agent_classes",
+      "agent_identities",
+      "mcp_connectors",
+      "policy_components",
+      "evidence_artifacts",
+      "knowledge_sources",
+      "evaluation_drills"
+    ],
+    "required_drift_triggers": [
+      "agent_changed",
+      "mcp_server_changed",
+      "tool_changed",
+      "model_changed",
+      "knowledge_changed",
+      "memory_changed",
+      "policy_changed",
+      "workflow_changed",
+      "connector_trust_changed",
+      "identity_contract_changed",
+      "red_team_scenario_changed",
+      "readiness_model_changed"
+    ],
+    "minimum_identity_coverage_percent": 100,
+    "minimum_namespace_coverage_percent": 100,
+    "minimum_red_team_drills_per_active_workflow": 5
+  },
+  "drift_triggers": [
+    {
+      "id": "agent_changed",
+      "component_type": "agent_classes",
+      "trigger": "Agent host, model provider, tool authority, or runtime sandbox changes.",
+      "required_action": "Regenerate the BOM, rerun readiness scoring, and review impacted identity contracts."
+    },
+    {
+      "id": "mcp_server_changed",
+      "component_type": "mcp_connectors",
+      "trigger": "MCP server transport, endpoint, namespace, auth model, or capabilities change.",
+      "required_action": "Regenerate connector trust, red-team drills, readiness, and the BOM before production use."
+    },
+    {
+      "id": "tool_changed",
+      "component_type": "mcp_connectors",
+      "trigger": "Tool description, schema, allowed operation, forbidden operation, or access mode changes.",
+      "required_action": "Quarantine the connector until tool-description pinning and result-inspection evidence are refreshed."
+    },
+    {
+      "id": "model_changed",
+      "component_type": "agent_classes",
+      "trigger": "Model family, model version, context window, reasoning mode, budget control, or provider contract changes.",
+      "required_action": "Run prompt regression tests, agentic red-team drills, readiness scoring, and BOM regeneration."
+    },
+    {
+      "id": "knowledge_changed",
+      "component_type": "knowledge_sources",
+      "trigger": "Recipe root, prompt library, workflow manifest, policy pack, or evidence pack changes.",
+      "required_action": "Regenerate the BOM and prove source artifact hashes align."
+    },
+    {
+      "id": "memory_changed",
+      "component_type": "agent_classes",
+      "trigger": "Persistent memory, vector store, cache, transcript retention, or cross-run context policy changes.",
+      "required_action": "Hold for manual review because SecurityRecipes currently treats remediation agents as no-persistent-memory by default."
+    },
+    {
+      "id": "policy_changed",
+      "component_type": "policy_components",
+      "trigger": "Gateway default decision, runtime attributes, gate phases, branch scope, approval holds, or kill signals change.",
+      "required_action": "Regenerate policy, identity, assurance, red-team, readiness, and BOM artifacts in CI."
+    },
+    {
+      "id": "workflow_changed",
+      "component_type": "workflows",
+      "trigger": "Workflow status, maturity, scope, eligible finding class, MCP context, owner, KPI, or evidence contract changes.",
+      "required_action": "Regenerate all downstream evidence packs and refresh the workflow BOM row."
+    },
+    {
+      "id": "connector_trust_changed",
+      "component_type": "mcp_connectors",
+      "trigger": "Connector tier, owner, status, required controls, evidence records, promotion criteria, or kill signals change.",
+      "required_action": "Regenerate connector trust, red-team, readiness, and BOM artifacts."
+    },
+    {
+      "id": "identity_contract_changed",
+      "component_type": "agent_identities",
+      "trigger": "Delegated authority, explicit denies, token rules, reviewer pool, runtime contract, or credential model changes.",
+      "required_action": "Regenerate identity, red-team, readiness, and BOM artifacts."
+    },
+    {
+      "id": "red_team_scenario_changed",
+      "component_type": "evaluation_drills",
+      "trigger": "Scenario, attack family, pass criteria, fail signal, expected policy decision, or standards mapping changes.",
+      "required_action": "Regenerate drill pack, readiness scorecard, and BOM artifact."
+    },
+    {
+      "id": "readiness_model_changed",
+      "component_type": "evidence_artifacts",
+      "trigger": "Readiness dimension, weight, blocker rule, or decision threshold changes.",
+      "required_action": "Regenerate readiness scorecard and BOM artifact before reporting scale decisions."
+    }
+  ],
+  "enterprise_adoption_packet": {
+    "board_level_claim": "Agentic remediation can be inspected as a governed system, not a set of opaque prompts.",
+    "default_questions_answered": [
+      "Which agents, identities, MCP namespaces, and workflows make up the system?",
+      "Which policies and controls restrict agent action?",
+      "Which evidence artifacts prove current state?",
+      "Which changes force a BOM refresh before scale?",
+      "Which workflows are scale-ready, pilot-guarded, or blocked?"
+    ],
+    "recommended_first_use": "Attach the BOM to AI platform intake, procurement security review, and quarterly agent-access recertification.",
+    "sales_motion": "Lead with open BOM generation, then sell hosted inventory diffing, connector drift alerts, customer evidence ingestion, and trust-center exports."
+  }
+}

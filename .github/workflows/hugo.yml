@@ -215,6 +215,11 @@ jobs:
         run: |
           python3 scripts/generate_agentic_readiness_scorecard.py --check
 
+      - name: Validate Agentic System BOM
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_agentic_system_bom.py --check
+
       - name: Build site
         working-directory: ${{ steps.hugo-dir.outputs.path }}
         env:

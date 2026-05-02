@@ -37,6 +37,10 @@ red_team_drill_pack_path = "./data/evidence/agentic-red-team-drill-pack.json"
 # recipes_agentic_readiness_scorecard MCP tool.
 readiness_scorecard_path = "./data/evidence/agentic-readiness-scorecard.json"
 
+# Generated Agentic System Bill of Materials exposed through the
+# recipes_agentic_system_bom MCP tool.
+agentic_system_bom_path = "./data/evidence/agentic-system-bom.json"
+
 # Cache and behavior tuning
 cache_ttl_seconds = 3600
 request_timeout_seconds = 15

@@ -176,6 +176,9 @@ and evidence exports drift together or the build fails.
   - the adversarial eval layer for approved workflows.
 - [Agentic Readiness Scorecard]({{< relref "/security-remediation/agentic-readiness-scorecard" >}})
   - the generated scale, pilot, gate, and block decision layer.
+- [Agentic System BOM]({{< relref "/security-remediation/agentic-system-bom" >}})
+  - the generated inspectability inventory for agents, identities, MCP
+    connectors, evidence, evals, and drift triggers.
 - [Compliance & Audit]({{< relref "/security-remediation/compliance" >}})
   - the human-facing compliance narrative.
 - [Runtime Controls]({{< relref "/security-remediation/runtime-controls" >}})

@@ -3,7 +3,7 @@ title: Classic Vulnerable Defaults
 linkTitle: Classic Vulnerable Defaults
 weight: 20
 sidebar:
-  open: true
+  open: false
 description: >
   Prompts that mitigate or replace the durable, unsafe-by-default
   patterns that show up in new code year after year — pickle,

@@ -3,7 +3,7 @@ title: Codex
 linkTitle: Codex
 weight: 4
 sidebar:
-  open: true
+  open: false
 description: >
   AGENTS.md files and Codex task prompts contributed by teams using
   Codex for agentic remediation.

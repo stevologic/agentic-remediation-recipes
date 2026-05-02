@@ -287,8 +287,9 @@ The dropdown menus in `hugo.yaml` show **section hubs only**:
   Individual prompts and CVE recipes **do not** appear here.
 
 Why: a dropdown listing 50 CVE recipes (or 20 workflows) is
-worse than no dropdown at all. The hub pages and the
-auto-generated sidebar handle leaf navigation.
+worse than no dropdown at all. The hub pages handle leaf
+navigation, and the left sidebar stays collapsed and hub-oriented
+so it does not become a second long recipe index.
 
 **If your contribution is a new hub category** (a brand-new
 top-level grouping), edit `hugo.yaml`. **If your contribution
@@ -358,7 +359,10 @@ disclosed: "YYYY-MM-DD"                   # the catalogue sorts on this
 ```
 
 When you push your branch, the next site build picks the new
-file up automatically. No menu edits, no hub-page edits.
+file up automatically. No menu edits, no hub-page edits, and no
+sidebar edits. Prompt Library leaf pages are excluded from the
+left sidebar by the section cascade; browse them through the hub
+catalogues instead.
 
 ### Rule 3 — Long pages get an in-page TOC, not sub-pages
 
@@ -393,7 +397,9 @@ If you find yourself wanting to split, ask:
 - **Adding a brand-new hub category?** *Only then* edit
   `hugo.yaml` to add the dropdown entry, and add a
   `cascade` block in the new hub's `_index.md` to
-  propagate sidebar settings to descendants.
+  propagate sidebar settings to descendants. For Prompt Library
+  style hubs, the cascade should exclude regular pages from the
+  left sidebar and keep section hubs collapsed.
 
 The navigation contract is enforced by review — PRs that
 add per-recipe entries to `hugo.yaml` or hand-list recipes

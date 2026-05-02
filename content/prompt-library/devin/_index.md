@@ -3,7 +3,7 @@ title: Devin
 linkTitle: Devin
 weight: 5
 sidebar:
-  open: true
+  open: false
 description: >
   Knowledge entries, playbooks, and task prompts contributed by
   teams using Devin for agentic remediation.

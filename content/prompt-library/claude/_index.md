@@ -3,7 +3,7 @@ title: Claude
 linkTitle: Claude
 weight: 1
 sidebar:
-  open: true
+  open: false
 description: >
   CLAUDE.md files, `.claude/skills/*/SKILL.md` entries, hooks, and
   slash-commands contributed by teams using Claude for agentic

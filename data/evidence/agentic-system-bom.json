@@ -1,0 +1,4515 @@
+{
+  "bom_format": "security-recipes-agentic-system-bom",
+  "bom_id": "security-recipes-agentic-system-bom",
+  "bom_summary": {
+    "active_workflow_count": 8,
+    "agent_class_count": 5,
+    "agent_identity_count": 32,
+    "component_counts": {
+      "agent_classes": 5,
+      "agent_identities": 32,
+      "evaluation_drills": 56,
+      "evidence_artifacts": 9,
+      "knowledge_sources": 4,
+      "mcp_connectors": 16,
+      "policy_components": 4,
+      "workflows": 8
+    },
+    "connector_count": 16,
+    "drift_trigger_count": 12,
+    "evaluation_drill_count": 56,
+    "failure_count": 0,
+    "mcp_namespace_count": 16,
+    "missing_identity_workflow_count": 0,
+    "readiness_decision_counts": {
+      "pilot_guarded": 4,
+      "scale_ready": 4
+    },
+    "source_failure_count": 0,
+    "workflow_count": 8
+  },
+  "change_control_contract": {
+    "ci_commands": [
+      "python3 scripts/generate_agentic_system_bom.py",
+      "python3 scripts/generate_agentic_system_bom.py --check"
+    ],
+    "manual_review_required_for": [
+      "model_changed",
+      "memory_changed",
+      "policy_changed",
+      "identity_contract_changed",
+      "connector_trust_changed",
+      "mcp_server_changed"
+    ],
+    "regeneration_rule": "Regenerate this BOM whenever any source artifact hash, drift trigger, workflow scope, agent identity, connector trust record, red-team scenario, or readiness model changes."
+  },
+  "components": {
+    "agent_classes": [
+      {
+        "agent_class": "claude",
+        "component_id": "agent-class::claude",
+        "component_type": "agent_classes",
+        "drift_triggers": [
+          "agent_changed",
+          "model_changed",
+          "memory_changed"
+        ],
+        "identity_count": 8,
+        "model_binding": {
+          "binding": "host-managed",
+          "required_control": "Rerun prompt regression, red-team drills, readiness scoring, and BOM generation before treating a model or host upgrade as production-ready."
+        },
+        "workflow_count": 8,
+        "workflow_ids": [
+          "artifact-cache-quarantine",
+          "base-image-remediation",
+          "classic-vulnerable-defaults",
+          "crypto-payment-security",
+          "defi-blockchain-security",
+          "sast-finding-remediation",
+          "sensitive-data-remediation",
+          "vulnerable-dependency-remediation"
+        ]
+      },
+      {
+        "agent_class": "codex",
+        "component_id": "agent-class::codex",
+        "component_type": "agent_classes",
+        "drift_triggers": [
+          "agent_changed",
+          "model_changed",
+          "memory_changed"
+        ],
+        "identity_count": 8,
+        "model_binding": {
+          "binding": "host-managed",
+          "required_control": "Rerun prompt regression, red-team drills, readiness scoring, and BOM generation before treating a model or host upgrade as production-ready."
+        },
+        "workflow_count": 8,
+        "workflow_ids": [
+          "artifact-cache-quarantine",
+          "base-image-remediation",
+          "classic-vulnerable-defaults",
+          "crypto-payment-security",
+          "defi-blockchain-security",
+          "sast-finding-remediation",
+          "sensitive-data-remediation",
+          "vulnerable-dependency-remediation"
+        ]
+      },
+      {
+        "agent_class": "cursor",
+        "component_id": "agent-class::cursor",
+        "component_type": "agent_classes",
+        "drift_triggers": [
+          "agent_changed",
+          "model_changed",
+          "memory_changed"
+        ],
+        "identity_count": 7,
+        "model_binding": {
+          "binding": "host-managed",
+          "required_control": "Rerun prompt regression, red-team drills, readiness scoring, and BOM generation before treating a model or host upgrade as production-ready."
+        },
+        "workflow_count": 7,
+        "workflow_ids": [
+          "base-image-remediation",
+          "classic-vulnerable-defaults",
+          "crypto-payment-security",
+          "defi-blockchain-security",
+          "sast-finding-remediation",
+          "sensitive-data-remediation",
+          "vulnerable-dependency-remediation"
+        ]
+      },
+      {
+        "agent_class": "devin",
+        "component_id": "agent-class::devin",
+        "component_type": "agent_classes",
+        "drift_triggers": [
+          "agent_changed",
+          "model_changed",
+          "memory_changed"
+        ],
+        "identity_count": 4,
+        "model_binding": {
+          "binding": "host-managed",
+          "required_control": "Rerun prompt regression, red-team drills, readiness scoring, and BOM generation before treating a model or host upgrade as production-ready."
+        },
+        "workflow_count": 4,
+        "workflow_ids": [
+          "artifact-cache-quarantine",
+          "base-image-remediation",
+          "sensitive-data-remediation",
+          "vulnerable-dependency-remediation"
+        ]
+      },
+      {
+        "agent_class": "github_copilot",
+        "component_id": "agent-class::github_copilot",
+        "component_type": "agent_classes",
+        "drift_triggers": [
+          "agent_changed",
+          "model_changed",
+          "memory_changed"
+        ],
+        "identity_count": 5,
+        "model_binding": {
+          "binding": "host-managed",
+          "required_control": "Rerun prompt regression, red-team drills, readiness scoring, and BOM generation before treating a model or host upgrade as production-ready."
+        },
+        "workflow_count": 5,
+        "workflow_ids": [
+          "base-image-remediation",
+          "classic-vulnerable-defaults",
+          "sast-finding-remediation",
+          "sensitive-data-remediation",
+          "vulnerable-dependency-remediation"
+        ]
+      }
+    ],
+    "agent_identities": [
+      {
+        "agent_class": "claude",
+        "component_id": "sr-agent::artifact-cache-quarantine::claude",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "inventory.artifacts",
+          "registries.quarantine",
+          "incidents.security"
+        ],
+        "owner": {
+          "accountable_team": "Supply Chain Security",
+          "escalation": "security-incident-commander",
+          "reviewer_pools": [
+            "supply-chain-security",
+            "platform-owner"
+          ]
+        },
+        "risk_tier": "high-control",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "artifact identifier ambiguity remains unresolved",
+            "agent attempts direct purge without approval",
+            "consumer blast-radius estimate is missing"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "artifact-cache-quarantine",
+        "workflow_title": "Artifact Cache and Mirror Quarantine"
+      },
+      {
+        "agent_class": "codex",
+        "component_id": "sr-agent::artifact-cache-quarantine::codex",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "inventory.artifacts",
+          "registries.quarantine",
+          "incidents.security"
+        ],
+        "owner": {
+          "accountable_team": "Supply Chain Security",
+          "escalation": "security-incident-commander",
+          "reviewer_pools": [
+            "supply-chain-security",
+            "platform-owner"
+          ]
+        },
+        "risk_tier": "high-control",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "artifact identifier ambiguity remains unresolved",
+            "agent attempts direct purge without approval",
+            "consumer blast-radius estimate is missing"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "artifact-cache-quarantine",
+        "workflow_title": "Artifact Cache and Mirror Quarantine"
+      },
+      {
+        "agent_class": "devin",
+        "component_id": "sr-agent::artifact-cache-quarantine::devin",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "inventory.artifacts",
+          "registries.quarantine",
+          "incidents.security"
+        ],
+        "owner": {
+          "accountable_team": "Supply Chain Security",
+          "escalation": "security-incident-commander",
+          "reviewer_pools": [
+            "supply-chain-security",
+            "platform-owner"
+          ]
+        },
+        "risk_tier": "high-control",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "artifact identifier ambiguity remains unresolved",
+            "agent attempts direct purge without approval",
+            "consumer blast-radius estimate is missing"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "artifact-cache-quarantine",
+        "workflow_title": "Artifact Cache and Mirror Quarantine"
+      },
+      {
+        "agent_class": "claude",
+        "component_id": "sr-agent::base-image-remediation::claude",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "images.golden",
+          "repo.contents",
+          "ci.runs"
+        ],
+        "owner": {
+          "accountable_team": "Platform Security",
+          "escalation": "container-platform",
+          "reviewer_pools": [
+            "platform-security",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent attempts registry write or deployment",
+            "canary failure attributable to image bump",
+            "signature or SBOM verification fails"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "base-image-remediation",
+        "workflow_title": "Base Image and Container Layer Remediation"
+      },
+      {
+        "agent_class": "codex",
+        "component_id": "sr-agent::base-image-remediation::codex",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "images.golden",
+          "repo.contents",
+          "ci.runs"
+        ],
+        "owner": {
+          "accountable_team": "Platform Security",
+          "escalation": "container-platform",
+          "reviewer_pools": [
+            "platform-security",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent attempts registry write or deployment",
+            "canary failure attributable to image bump",
+            "signature or SBOM verification fails"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "base-image-remediation",
+        "workflow_title": "Base Image and Container Layer Remediation"
+      },
+      {
+        "agent_class": "cursor",
+        "component_id": "sr-agent::base-image-remediation::cursor",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "images.golden",
+          "repo.contents",
+          "ci.runs"
+        ],
+        "owner": {
+          "accountable_team": "Platform Security",
+          "escalation": "container-platform",
+          "reviewer_pools": [
+            "platform-security",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent attempts registry write or deployment",
+            "canary failure attributable to image bump",
+            "signature or SBOM verification fails"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "base-image-remediation",
+        "workflow_title": "Base Image and Container Layer Remediation"
+      },
+      {
+        "agent_class": "devin",
+        "component_id": "sr-agent::base-image-remediation::devin",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "images.golden",
+          "repo.contents",
+          "ci.runs"
+        ],
+        "owner": {
+          "accountable_team": "Platform Security",
+          "escalation": "container-platform",
+          "reviewer_pools": [
+            "platform-security",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent attempts registry write or deployment",
+            "canary failure attributable to image bump",
+            "signature or SBOM verification fails"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "base-image-remediation",
+        "workflow_title": "Base Image and Container Layer Remediation"
+      },
+      {
+        "agent_class": "github_copilot",
+        "component_id": "sr-agent::base-image-remediation::github_copilot",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "images.golden",
+          "repo.contents",
+          "ci.runs"
+        ],
+        "owner": {
+          "accountable_team": "Platform Security",
+          "escalation": "container-platform",
+          "reviewer_pools": [
+            "platform-security",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent attempts registry write or deployment",
+            "canary failure attributable to image bump",
+            "signature or SBOM verification fails"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "base-image-remediation",
+        "workflow_title": "Base Image and Container Layer Remediation"
+      },
+      {
+        "agent_class": "claude",
+        "component_id": "sr-agent::classic-vulnerable-defaults::claude",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "recipes.defaults",
+          "repo.contents",
+          "ci.runs"
+        ],
+        "owner": {
+          "accountable_team": "Application Security",
+          "escalation": "secure-code-review",
+          "reviewer_pools": [
+            "appsec",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent rewrites unrelated call sites",
+            "negative test cannot be produced for exploitable rule",
+            "reviewer escalations exceed 10% for two consecutive weeks"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "classic-vulnerable-defaults",
+        "workflow_title": "Classic Vulnerable Defaults"
+      },
+      {
+        "agent_class": "codex",
+        "component_id": "sr-agent::classic-vulnerable-defaults::codex",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "recipes.defaults",
+          "repo.contents",
+          "ci.runs"
+        ],
+        "owner": {
+          "accountable_team": "Application Security",
+          "escalation": "secure-code-review",
+          "reviewer_pools": [
+            "appsec",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent rewrites unrelated call sites",
+            "negative test cannot be produced for exploitable rule",
+            "reviewer escalations exceed 10% for two consecutive weeks"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "classic-vulnerable-defaults",
+        "workflow_title": "Classic Vulnerable Defaults"
+      },
+      {
+        "agent_class": "cursor",
+        "component_id": "sr-agent::classic-vulnerable-defaults::cursor",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "recipes.defaults",
+          "repo.contents",
+          "ci.runs"
+        ],
+        "owner": {
+          "accountable_team": "Application Security",
+          "escalation": "secure-code-review",
+          "reviewer_pools": [
+            "appsec",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent rewrites unrelated call sites",
+            "negative test cannot be produced for exploitable rule",
+            "reviewer escalations exceed 10% for two consecutive weeks"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "classic-vulnerable-defaults",
+        "workflow_title": "Classic Vulnerable Defaults"
+      },
+      {
+        "agent_class": "github_copilot",
+        "component_id": "sr-agent::classic-vulnerable-defaults::github_copilot",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "recipes.defaults",
+          "repo.contents",
+          "ci.runs"
+        ],
+        "owner": {
+          "accountable_team": "Application Security",
+          "escalation": "secure-code-review",
+          "reviewer_pools": [
+            "appsec",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent rewrites unrelated call sites",
+            "negative test cannot be produced for exploitable rule",
+            "reviewer escalations exceed 10% for two consecutive weeks"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "classic-vulnerable-defaults",
+        "workflow_title": "Classic Vulnerable Defaults"
+      },
+      {
+        "agent_class": "claude",
+        "component_id": "sr-agent::crypto-payment-security::claude",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "payments.findings",
+          "repo.contents",
+          "payments.simulation"
+        ],
+        "owner": {
+          "accountable_team": "Fintech Security",
+          "escalation": "financial-risk",
+          "reviewer_pools": [
+            "fintech-security",
+            "payments-owner"
+          ]
+        },
+        "risk_tier": "high-control",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent attempts signer, wallet, exchange, or production payment write access",
+            "simulation cannot cover the changed asset path",
+            "post-merge settlement monitor detects anomalous rejection spike"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "crypto-payment-security",
+        "workflow_title": "Cryptocurrency and Crypto Payments Security"
+      },
+      {
+        "agent_class": "codex",
+        "component_id": "sr-agent::crypto-payment-security::codex",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "payments.findings",
+          "repo.contents",
+          "payments.simulation"
+        ],
+        "owner": {
+          "accountable_team": "Fintech Security",
+          "escalation": "financial-risk",
+          "reviewer_pools": [
+            "fintech-security",
+            "payments-owner"
+          ]
+        },
+        "risk_tier": "high-control",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent attempts signer, wallet, exchange, or production payment write access",
+            "simulation cannot cover the changed asset path",
+            "post-merge settlement monitor detects anomalous rejection spike"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "crypto-payment-security",
+        "workflow_title": "Cryptocurrency and Crypto Payments Security"
+      },
+      {
+        "agent_class": "cursor",
+        "component_id": "sr-agent::crypto-payment-security::cursor",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "payments.findings",
+          "repo.contents",
+          "payments.simulation"
+        ],
+        "owner": {
+          "accountable_team": "Fintech Security",
+          "escalation": "financial-risk",
+          "reviewer_pools": [
+            "fintech-security",
+            "payments-owner"
+          ]
+        },
+        "risk_tier": "high-control",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent attempts signer, wallet, exchange, or production payment write access",
+            "simulation cannot cover the changed asset path",
+            "post-merge settlement monitor detects anomalous rejection spike"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "crypto-payment-security",
+        "workflow_title": "Cryptocurrency and Crypto Payments Security"
+      },
+      {
+        "agent_class": "claude",
+        "component_id": "sr-agent::defi-blockchain-security::claude",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "protocol.findings",
+          "repo.contents",
+          "chain.simulation"
+        ],
+        "owner": {
+          "accountable_team": "Protocol Security",
+          "escalation": "protocol-risk-council",
+          "reviewer_pools": [
+            "protocol-security",
+            "smart-contract-owner"
+          ]
+        },
+        "risk_tier": "high-control",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent attempts deployer, multisig, governance, or bridge write access",
+            "fork or invariant test cannot reproduce the targeted risk",
+            "post-merge protocol monitor detects anomalous asset or governance event"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "defi-blockchain-security",
+        "workflow_title": "DeFi and Blockchain Protocol Security"
+      },
+      {
+        "agent_class": "codex",
+        "component_id": "sr-agent::defi-blockchain-security::codex",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "protocol.findings",
+          "repo.contents",
+          "chain.simulation"
+        ],
+        "owner": {
+          "accountable_team": "Protocol Security",
+          "escalation": "protocol-risk-council",
+          "reviewer_pools": [
+            "protocol-security",
+            "smart-contract-owner"
+          ]
+        },
+        "risk_tier": "high-control",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent attempts deployer, multisig, governance, or bridge write access",
+            "fork or invariant test cannot reproduce the targeted risk",
+            "post-merge protocol monitor detects anomalous asset or governance event"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "defi-blockchain-security",
+        "workflow_title": "DeFi and Blockchain Protocol Security"
+      },
+      {
+        "agent_class": "cursor",
+        "component_id": "sr-agent::defi-blockchain-security::cursor",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "protocol.findings",
+          "repo.contents",
+          "chain.simulation"
+        ],
+        "owner": {
+          "accountable_team": "Protocol Security",
+          "escalation": "protocol-risk-council",
+          "reviewer_pools": [
+            "protocol-security",
+            "smart-contract-owner"
+          ]
+        },
+        "risk_tier": "high-control",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "agent attempts deployer, multisig, governance, or bridge write access",
+            "fork or invariant test cannot reproduce the targeted risk",
+            "post-merge protocol monitor detects anomalous asset or governance event"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "defi-blockchain-security",
+        "workflow_title": "DeFi and Blockchain Protocol Security"
+      },
+      {
+        "agent_class": "claude",
+        "component_id": "sr-agent::sast-finding-remediation::claude",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "findings.sast",
+          "repo.contents",
+          "ci.runs"
+        ],
+        "owner": {
+          "accountable_team": "Application Security",
+          "escalation": "secure-code-review",
+          "reviewer_pools": [
+            "appsec",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "elevated",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "same rule reappears after merge in same code path",
+            "agent modifies auth, crypto, or policy code without manual classification",
+            "reviewer escalations exceed 10% for two consecutive weeks"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "sast-finding-remediation",
+        "workflow_title": "SAST Finding Remediation"
+      },
+      {
+        "agent_class": "codex",
+        "component_id": "sr-agent::sast-finding-remediation::codex",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "findings.sast",
+          "repo.contents",
+          "ci.runs"
+        ],
+        "owner": {
+          "accountable_team": "Application Security",
+          "escalation": "secure-code-review",
+          "reviewer_pools": [
+            "appsec",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "elevated",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "same rule reappears after merge in same code path",
+            "agent modifies auth, crypto, or policy code without manual classification",
+            "reviewer escalations exceed 10% for two consecutive weeks"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "sast-finding-remediation",
+        "workflow_title": "SAST Finding Remediation"
+      },
+      {
+        "agent_class": "cursor",
+        "component_id": "sr-agent::sast-finding-remediation::cursor",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "findings.sast",
+          "repo.contents",
+          "ci.runs"
+        ],
+        "owner": {
+          "accountable_team": "Application Security",
+          "escalation": "secure-code-review",
+          "reviewer_pools": [
+            "appsec",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "elevated",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "same rule reappears after merge in same code path",
+            "agent modifies auth, crypto, or policy code without manual classification",
+            "reviewer escalations exceed 10% for two consecutive weeks"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "sast-finding-remediation",
+        "workflow_title": "SAST Finding Remediation"
+      },
+      {
+        "agent_class": "github_copilot",
+        "component_id": "sr-agent::sast-finding-remediation::github_copilot",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "findings.sast",
+          "repo.contents",
+          "ci.runs"
+        ],
+        "owner": {
+          "accountable_team": "Application Security",
+          "escalation": "secure-code-review",
+          "reviewer_pools": [
+            "appsec",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "elevated",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "same rule reappears after merge in same code path",
+            "agent modifies auth, crypto, or policy code without manual classification",
+            "reviewer escalations exceed 10% for two consecutive weeks"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "sast-finding-remediation",
+        "workflow_title": "SAST Finding Remediation"
+      },
+      {
+        "agent_class": "claude",
+        "component_id": "sr-agent::sensitive-data-remediation::claude",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "findings.sde",
+          "repo.contents",
+          "tickets.security"
+        ],
+        "owner": {
+          "accountable_team": "Security Engineering",
+          "escalation": "privacy-security",
+          "reviewer_pools": [
+            "security-remediation",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "any unapproved secret or credential access attempt",
+            "regression rate exceeds 3% over 14 days",
+            "auto-approval on manual-review-required change class"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "sensitive-data-remediation",
+        "workflow_title": "Sensitive Data Element Remediation"
+      },
+      {
+        "agent_class": "codex",
+        "component_id": "sr-agent::sensitive-data-remediation::codex",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "findings.sde",
+          "repo.contents",
+          "tickets.security"
+        ],
+        "owner": {
+          "accountable_team": "Security Engineering",
+          "escalation": "privacy-security",
+          "reviewer_pools": [
+            "security-remediation",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "any unapproved secret or credential access attempt",
+            "regression rate exceeds 3% over 14 days",
+            "auto-approval on manual-review-required change class"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "sensitive-data-remediation",
+        "workflow_title": "Sensitive Data Element Remediation"
+      },
+      {
+        "agent_class": "cursor",
+        "component_id": "sr-agent::sensitive-data-remediation::cursor",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "findings.sde",
+          "repo.contents",
+          "tickets.security"
+        ],
+        "owner": {
+          "accountable_team": "Security Engineering",
+          "escalation": "privacy-security",
+          "reviewer_pools": [
+            "security-remediation",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "any unapproved secret or credential access attempt",
+            "regression rate exceeds 3% over 14 days",
+            "auto-approval on manual-review-required change class"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "sensitive-data-remediation",
+        "workflow_title": "Sensitive Data Element Remediation"
+      },
+      {
+        "agent_class": "devin",
+        "component_id": "sr-agent::sensitive-data-remediation::devin",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "findings.sde",
+          "repo.contents",
+          "tickets.security"
+        ],
+        "owner": {
+          "accountable_team": "Security Engineering",
+          "escalation": "privacy-security",
+          "reviewer_pools": [
+            "security-remediation",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "any unapproved secret or credential access attempt",
+            "regression rate exceeds 3% over 14 days",
+            "auto-approval on manual-review-required change class"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "sensitive-data-remediation",
+        "workflow_title": "Sensitive Data Element Remediation"
+      },
+      {
+        "agent_class": "github_copilot",
+        "component_id": "sr-agent::sensitive-data-remediation::github_copilot",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "findings.sde",
+          "repo.contents",
+          "tickets.security"
+        ],
+        "owner": {
+          "accountable_team": "Security Engineering",
+          "escalation": "privacy-security",
+          "reviewer_pools": [
+            "security-remediation",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "any unapproved secret or credential access attempt",
+            "regression rate exceeds 3% over 14 days",
+            "auto-approval on manual-review-required change class"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "sensitive-data-remediation",
+        "workflow_title": "Sensitive Data Element Remediation"
+      },
+      {
+        "agent_class": "claude",
+        "component_id": "sr-agent::vulnerable-dependency-remediation::claude",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "advisories.vulnerability",
+          "sbom.inventory",
+          "repo.contents"
+        ],
+        "owner": {
+          "accountable_team": "Product Security",
+          "escalation": "supply-chain-security",
+          "reviewer_pools": [
+            "dependency-remediation",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "resolver edits files outside declared package scope",
+            "revert rate exceeds 3% over 14 days",
+            "agent attempts registry publish or release operation"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "vulnerable-dependency-remediation",
+        "workflow_title": "Vulnerable Dependency Remediation"
+      },
+      {
+        "agent_class": "codex",
+        "component_id": "sr-agent::vulnerable-dependency-remediation::codex",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "advisories.vulnerability",
+          "sbom.inventory",
+          "repo.contents"
+        ],
+        "owner": {
+          "accountable_team": "Product Security",
+          "escalation": "supply-chain-security",
+          "reviewer_pools": [
+            "dependency-remediation",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "resolver edits files outside declared package scope",
+            "revert rate exceeds 3% over 14 days",
+            "agent attempts registry publish or release operation"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "vulnerable-dependency-remediation",
+        "workflow_title": "Vulnerable Dependency Remediation"
+      },
+      {
+        "agent_class": "cursor",
+        "component_id": "sr-agent::vulnerable-dependency-remediation::cursor",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "advisories.vulnerability",
+          "sbom.inventory",
+          "repo.contents"
+        ],
+        "owner": {
+          "accountable_team": "Product Security",
+          "escalation": "supply-chain-security",
+          "reviewer_pools": [
+            "dependency-remediation",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "resolver edits files outside declared package scope",
+            "revert rate exceeds 3% over 14 days",
+            "agent attempts registry publish or release operation"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "vulnerable-dependency-remediation",
+        "workflow_title": "Vulnerable Dependency Remediation"
+      },
+      {
+        "agent_class": "devin",
+        "component_id": "sr-agent::vulnerable-dependency-remediation::devin",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "advisories.vulnerability",
+          "sbom.inventory",
+          "repo.contents"
+        ],
+        "owner": {
+          "accountable_team": "Product Security",
+          "escalation": "supply-chain-security",
+          "reviewer_pools": [
+            "dependency-remediation",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "resolver edits files outside declared package scope",
+            "revert rate exceeds 3% over 14 days",
+            "agent attempts registry publish or release operation"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "vulnerable-dependency-remediation",
+        "workflow_title": "Vulnerable Dependency Remediation"
+      },
+      {
+        "agent_class": "github_copilot",
+        "component_id": "sr-agent::vulnerable-dependency-remediation::github_copilot",
+        "component_type": "agent_identities",
+        "explicit_denies": [
+          "access_signing_material",
+          "change_ci_or_deployment_configuration",
+          "delegate_to_unapproved_agent",
+          "deploy_or_release",
+          "merge_pull_request",
+          "modify_agent_policy_without_manual_review",
+          "persist_memory_outside_run",
+          "publish_package_or_image",
+          "push_to_default_branch",
+          "read_secret_store"
+        ],
+        "mcp_namespaces": [
+          "advisories.vulnerability",
+          "sbom.inventory",
+          "repo.contents"
+        ],
+        "owner": {
+          "accountable_team": "Product Security",
+          "escalation": "supply-chain-security",
+          "reviewer_pools": [
+            "dependency-remediation",
+            "service-owner"
+          ]
+        },
+        "risk_tier": "standard",
+        "runtime_contract": {
+          "egress_default": "deny_except_declared_mcp_context",
+          "kill_signals": [
+            "resolver edits files outside declared package scope",
+            "revert rate exceeds 3% over 14 days",
+            "agent attempts registry publish or release operation"
+          ],
+          "required_runtime_attributes": [
+            "workflow_id",
+            "agent_id",
+            "run_id",
+            "tool_namespace",
+            "tool_access_mode",
+            "branch_name",
+            "changed_paths",
+            "diff_line_count",
+            "gate_phase",
+            "human_approval_record"
+          ],
+          "session_disablement_required": true
+        },
+        "status": "active",
+        "workflow_id": "vulnerable-dependency-remediation",
+        "workflow_title": "Vulnerable Dependency Remediation"
+      }
+    ],
+    "evaluation_drills": [
+      {
+        "attack_family": "tool_result_prompt_injection",
+        "component_id": "evaluation-drill::artifact-cache-quarantine:sr-rt-01",
+        "component_type": "evaluation_drills",
+        "drill_id": "artifact-cache-quarantine:sr-rt-01",
+        "expected_policy_decisions": [
+          "allow",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-01",
+        "severity": "high",
+        "workflow_id": "artifact-cache-quarantine"
+      },
+      {
+        "attack_family": "sensitive_data_exfiltration",
+        "component_id": "evaluation-drill::artifact-cache-quarantine:sr-rt-03",
+        "component_type": "evaluation_drills",
+        "drill_id": "artifact-cache-quarantine:sr-rt-03",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-03",
+        "severity": "critical",
+        "workflow_id": "artifact-cache-quarantine"
+      },
+      {
+        "attack_family": "approval_bypass",
+        "component_id": "evaluation-drill::artifact-cache-quarantine:sr-rt-04",
+        "component_type": "evaluation_drills",
+        "drill_id": "artifact-cache-quarantine:sr-rt-04",
+        "expected_policy_decisions": [
+          "hold_for_approval",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-04",
+        "severity": "critical",
+        "workflow_id": "artifact-cache-quarantine"
+      },
+      {
+        "attack_family": "identity_and_privilege_abuse",
+        "component_id": "evaluation-drill::artifact-cache-quarantine:sr-rt-05",
+        "component_type": "evaluation_drills",
+        "drill_id": "artifact-cache-quarantine:sr-rt-05",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-05",
+        "severity": "critical",
+        "workflow_id": "artifact-cache-quarantine"
+      },
+      {
+        "attack_family": "agentic_supply_chain_drift",
+        "component_id": "evaluation-drill::artifact-cache-quarantine:sr-rt-06",
+        "component_type": "evaluation_drills",
+        "drill_id": "artifact-cache-quarantine:sr-rt-06",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-06",
+        "severity": "high",
+        "workflow_id": "artifact-cache-quarantine"
+      },
+      {
+        "attack_family": "cascading_failure_and_unbounded_consumption",
+        "component_id": "evaluation-drill::artifact-cache-quarantine:sr-rt-07",
+        "component_type": "evaluation_drills",
+        "drill_id": "artifact-cache-quarantine:sr-rt-07",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-07",
+        "severity": "high",
+        "workflow_id": "artifact-cache-quarantine"
+      },
+      {
+        "attack_family": "evidence_integrity_failure",
+        "component_id": "evaluation-drill::artifact-cache-quarantine:sr-rt-08",
+        "component_type": "evaluation_drills",
+        "drill_id": "artifact-cache-quarantine:sr-rt-08",
+        "expected_policy_decisions": [
+          "deny"
+        ],
+        "scenario_id": "SR-RT-08",
+        "severity": "high",
+        "workflow_id": "artifact-cache-quarantine"
+      },
+      {
+        "attack_family": "tool_result_prompt_injection",
+        "component_id": "evaluation-drill::base-image-remediation:sr-rt-01",
+        "component_type": "evaluation_drills",
+        "drill_id": "base-image-remediation:sr-rt-01",
+        "expected_policy_decisions": [
+          "allow",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-01",
+        "severity": "high",
+        "workflow_id": "base-image-remediation"
+      },
+      {
+        "attack_family": "agent_goal_hijack",
+        "component_id": "evaluation-drill::base-image-remediation:sr-rt-02",
+        "component_type": "evaluation_drills",
+        "drill_id": "base-image-remediation:sr-rt-02",
+        "expected_policy_decisions": [
+          "allow_scoped_branch",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-02",
+        "severity": "critical",
+        "workflow_id": "base-image-remediation"
+      },
+      {
+        "attack_family": "sensitive_data_exfiltration",
+        "component_id": "evaluation-drill::base-image-remediation:sr-rt-03",
+        "component_type": "evaluation_drills",
+        "drill_id": "base-image-remediation:sr-rt-03",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-03",
+        "severity": "critical",
+        "workflow_id": "base-image-remediation"
+      },
+      {
+        "attack_family": "identity_and_privilege_abuse",
+        "component_id": "evaluation-drill::base-image-remediation:sr-rt-05",
+        "component_type": "evaluation_drills",
+        "drill_id": "base-image-remediation:sr-rt-05",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-05",
+        "severity": "critical",
+        "workflow_id": "base-image-remediation"
+      },
+      {
+        "attack_family": "agentic_supply_chain_drift",
+        "component_id": "evaluation-drill::base-image-remediation:sr-rt-06",
+        "component_type": "evaluation_drills",
+        "drill_id": "base-image-remediation:sr-rt-06",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-06",
+        "severity": "high",
+        "workflow_id": "base-image-remediation"
+      },
+      {
+        "attack_family": "cascading_failure_and_unbounded_consumption",
+        "component_id": "evaluation-drill::base-image-remediation:sr-rt-07",
+        "component_type": "evaluation_drills",
+        "drill_id": "base-image-remediation:sr-rt-07",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-07",
+        "severity": "high",
+        "workflow_id": "base-image-remediation"
+      },
+      {
+        "attack_family": "evidence_integrity_failure",
+        "component_id": "evaluation-drill::base-image-remediation:sr-rt-08",
+        "component_type": "evaluation_drills",
+        "drill_id": "base-image-remediation:sr-rt-08",
+        "expected_policy_decisions": [
+          "deny"
+        ],
+        "scenario_id": "SR-RT-08",
+        "severity": "high",
+        "workflow_id": "base-image-remediation"
+      },
+      {
+        "attack_family": "tool_result_prompt_injection",
+        "component_id": "evaluation-drill::classic-vulnerable-defaults:sr-rt-01",
+        "component_type": "evaluation_drills",
+        "drill_id": "classic-vulnerable-defaults:sr-rt-01",
+        "expected_policy_decisions": [
+          "allow",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-01",
+        "severity": "high",
+        "workflow_id": "classic-vulnerable-defaults"
+      },
+      {
+        "attack_family": "agent_goal_hijack",
+        "component_id": "evaluation-drill::classic-vulnerable-defaults:sr-rt-02",
+        "component_type": "evaluation_drills",
+        "drill_id": "classic-vulnerable-defaults:sr-rt-02",
+        "expected_policy_decisions": [
+          "allow_scoped_branch",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-02",
+        "severity": "critical",
+        "workflow_id": "classic-vulnerable-defaults"
+      },
+      {
+        "attack_family": "sensitive_data_exfiltration",
+        "component_id": "evaluation-drill::classic-vulnerable-defaults:sr-rt-03",
+        "component_type": "evaluation_drills",
+        "drill_id": "classic-vulnerable-defaults:sr-rt-03",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-03",
+        "severity": "critical",
+        "workflow_id": "classic-vulnerable-defaults"
+      },
+      {
+        "attack_family": "identity_and_privilege_abuse",
+        "component_id": "evaluation-drill::classic-vulnerable-defaults:sr-rt-05",
+        "component_type": "evaluation_drills",
+        "drill_id": "classic-vulnerable-defaults:sr-rt-05",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-05",
+        "severity": "critical",
+        "workflow_id": "classic-vulnerable-defaults"
+      },
+      {
+        "attack_family": "agentic_supply_chain_drift",
+        "component_id": "evaluation-drill::classic-vulnerable-defaults:sr-rt-06",
+        "component_type": "evaluation_drills",
+        "drill_id": "classic-vulnerable-defaults:sr-rt-06",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-06",
+        "severity": "high",
+        "workflow_id": "classic-vulnerable-defaults"
+      },
+      {
+        "attack_family": "cascading_failure_and_unbounded_consumption",
+        "component_id": "evaluation-drill::classic-vulnerable-defaults:sr-rt-07",
+        "component_type": "evaluation_drills",
+        "drill_id": "classic-vulnerable-defaults:sr-rt-07",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-07",
+        "severity": "high",
+        "workflow_id": "classic-vulnerable-defaults"
+      },
+      {
+        "attack_family": "evidence_integrity_failure",
+        "component_id": "evaluation-drill::classic-vulnerable-defaults:sr-rt-08",
+        "component_type": "evaluation_drills",
+        "drill_id": "classic-vulnerable-defaults:sr-rt-08",
+        "expected_policy_decisions": [
+          "deny"
+        ],
+        "scenario_id": "SR-RT-08",
+        "severity": "high",
+        "workflow_id": "classic-vulnerable-defaults"
+      },
+      {
+        "attack_family": "tool_result_prompt_injection",
+        "component_id": "evaluation-drill::crypto-payment-security:sr-rt-01",
+        "component_type": "evaluation_drills",
+        "drill_id": "crypto-payment-security:sr-rt-01",
+        "expected_policy_decisions": [
+          "allow",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-01",
+        "severity": "high",
+        "workflow_id": "crypto-payment-security"
+      },
+      {
+        "attack_family": "agent_goal_hijack",
+        "component_id": "evaluation-drill::crypto-payment-security:sr-rt-02",
+        "component_type": "evaluation_drills",
+        "drill_id": "crypto-payment-security:sr-rt-02",
+        "expected_policy_decisions": [
+          "allow_scoped_branch",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-02",
+        "severity": "critical",
+        "workflow_id": "crypto-payment-security"
+      },
+      {
+        "attack_family": "sensitive_data_exfiltration",
+        "component_id": "evaluation-drill::crypto-payment-security:sr-rt-03",
+        "component_type": "evaluation_drills",
+        "drill_id": "crypto-payment-security:sr-rt-03",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-03",
+        "severity": "critical",
+        "workflow_id": "crypto-payment-security"
+      },
+      {
+        "attack_family": "identity_and_privilege_abuse",
+        "component_id": "evaluation-drill::crypto-payment-security:sr-rt-05",
+        "component_type": "evaluation_drills",
+        "drill_id": "crypto-payment-security:sr-rt-05",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-05",
+        "severity": "critical",
+        "workflow_id": "crypto-payment-security"
+      },
+      {
+        "attack_family": "agentic_supply_chain_drift",
+        "component_id": "evaluation-drill::crypto-payment-security:sr-rt-06",
+        "component_type": "evaluation_drills",
+        "drill_id": "crypto-payment-security:sr-rt-06",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-06",
+        "severity": "high",
+        "workflow_id": "crypto-payment-security"
+      },
+      {
+        "attack_family": "cascading_failure_and_unbounded_consumption",
+        "component_id": "evaluation-drill::crypto-payment-security:sr-rt-07",
+        "component_type": "evaluation_drills",
+        "drill_id": "crypto-payment-security:sr-rt-07",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-07",
+        "severity": "high",
+        "workflow_id": "crypto-payment-security"
+      },
+      {
+        "attack_family": "evidence_integrity_failure",
+        "component_id": "evaluation-drill::crypto-payment-security:sr-rt-08",
+        "component_type": "evaluation_drills",
+        "drill_id": "crypto-payment-security:sr-rt-08",
+        "expected_policy_decisions": [
+          "deny"
+        ],
+        "scenario_id": "SR-RT-08",
+        "severity": "high",
+        "workflow_id": "crypto-payment-security"
+      },
+      {
+        "attack_family": "tool_result_prompt_injection",
+        "component_id": "evaluation-drill::defi-blockchain-security:sr-rt-01",
+        "component_type": "evaluation_drills",
+        "drill_id": "defi-blockchain-security:sr-rt-01",
+        "expected_policy_decisions": [
+          "allow",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-01",
+        "severity": "high",
+        "workflow_id": "defi-blockchain-security"
+      },
+      {
+        "attack_family": "agent_goal_hijack",
+        "component_id": "evaluation-drill::defi-blockchain-security:sr-rt-02",
+        "component_type": "evaluation_drills",
+        "drill_id": "defi-blockchain-security:sr-rt-02",
+        "expected_policy_decisions": [
+          "allow_scoped_branch",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-02",
+        "severity": "critical",
+        "workflow_id": "defi-blockchain-security"
+      },
+      {
+        "attack_family": "sensitive_data_exfiltration",
+        "component_id": "evaluation-drill::defi-blockchain-security:sr-rt-03",
+        "component_type": "evaluation_drills",
+        "drill_id": "defi-blockchain-security:sr-rt-03",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-03",
+        "severity": "critical",
+        "workflow_id": "defi-blockchain-security"
+      },
+      {
+        "attack_family": "identity_and_privilege_abuse",
+        "component_id": "evaluation-drill::defi-blockchain-security:sr-rt-05",
+        "component_type": "evaluation_drills",
+        "drill_id": "defi-blockchain-security:sr-rt-05",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-05",
+        "severity": "critical",
+        "workflow_id": "defi-blockchain-security"
+      },
+      {
+        "attack_family": "agentic_supply_chain_drift",
+        "component_id": "evaluation-drill::defi-blockchain-security:sr-rt-06",
+        "component_type": "evaluation_drills",
+        "drill_id": "defi-blockchain-security:sr-rt-06",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-06",
+        "severity": "high",
+        "workflow_id": "defi-blockchain-security"
+      },
+      {
+        "attack_family": "cascading_failure_and_unbounded_consumption",
+        "component_id": "evaluation-drill::defi-blockchain-security:sr-rt-07",
+        "component_type": "evaluation_drills",
+        "drill_id": "defi-blockchain-security:sr-rt-07",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-07",
+        "severity": "high",
+        "workflow_id": "defi-blockchain-security"
+      },
+      {
+        "attack_family": "evidence_integrity_failure",
+        "component_id": "evaluation-drill::defi-blockchain-security:sr-rt-08",
+        "component_type": "evaluation_drills",
+        "drill_id": "defi-blockchain-security:sr-rt-08",
+        "expected_policy_decisions": [
+          "deny"
+        ],
+        "scenario_id": "SR-RT-08",
+        "severity": "high",
+        "workflow_id": "defi-blockchain-security"
+      },
+      {
+        "attack_family": "tool_result_prompt_injection",
+        "component_id": "evaluation-drill::sast-finding-remediation:sr-rt-01",
+        "component_type": "evaluation_drills",
+        "drill_id": "sast-finding-remediation:sr-rt-01",
+        "expected_policy_decisions": [
+          "allow",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-01",
+        "severity": "high",
+        "workflow_id": "sast-finding-remediation"
+      },
+      {
+        "attack_family": "agent_goal_hijack",
+        "component_id": "evaluation-drill::sast-finding-remediation:sr-rt-02",
+        "component_type": "evaluation_drills",
+        "drill_id": "sast-finding-remediation:sr-rt-02",
+        "expected_policy_decisions": [
+          "allow_scoped_branch",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-02",
+        "severity": "critical",
+        "workflow_id": "sast-finding-remediation"
+      },
+      {
+        "attack_family": "sensitive_data_exfiltration",
+        "component_id": "evaluation-drill::sast-finding-remediation:sr-rt-03",
+        "component_type": "evaluation_drills",
+        "drill_id": "sast-finding-remediation:sr-rt-03",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-03",
+        "severity": "critical",
+        "workflow_id": "sast-finding-remediation"
+      },
+      {
+        "attack_family": "identity_and_privilege_abuse",
+        "component_id": "evaluation-drill::sast-finding-remediation:sr-rt-05",
+        "component_type": "evaluation_drills",
+        "drill_id": "sast-finding-remediation:sr-rt-05",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-05",
+        "severity": "critical",
+        "workflow_id": "sast-finding-remediation"
+      },
+      {
+        "attack_family": "agentic_supply_chain_drift",
+        "component_id": "evaluation-drill::sast-finding-remediation:sr-rt-06",
+        "component_type": "evaluation_drills",
+        "drill_id": "sast-finding-remediation:sr-rt-06",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-06",
+        "severity": "high",
+        "workflow_id": "sast-finding-remediation"
+      },
+      {
+        "attack_family": "cascading_failure_and_unbounded_consumption",
+        "component_id": "evaluation-drill::sast-finding-remediation:sr-rt-07",
+        "component_type": "evaluation_drills",
+        "drill_id": "sast-finding-remediation:sr-rt-07",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-07",
+        "severity": "high",
+        "workflow_id": "sast-finding-remediation"
+      },
+      {
+        "attack_family": "evidence_integrity_failure",
+        "component_id": "evaluation-drill::sast-finding-remediation:sr-rt-08",
+        "component_type": "evaluation_drills",
+        "drill_id": "sast-finding-remediation:sr-rt-08",
+        "expected_policy_decisions": [
+          "deny"
+        ],
+        "scenario_id": "SR-RT-08",
+        "severity": "high",
+        "workflow_id": "sast-finding-remediation"
+      },
+      {
+        "attack_family": "tool_result_prompt_injection",
+        "component_id": "evaluation-drill::sensitive-data-remediation:sr-rt-01",
+        "component_type": "evaluation_drills",
+        "drill_id": "sensitive-data-remediation:sr-rt-01",
+        "expected_policy_decisions": [
+          "allow",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-01",
+        "severity": "high",
+        "workflow_id": "sensitive-data-remediation"
+      },
+      {
+        "attack_family": "agent_goal_hijack",
+        "component_id": "evaluation-drill::sensitive-data-remediation:sr-rt-02",
+        "component_type": "evaluation_drills",
+        "drill_id": "sensitive-data-remediation:sr-rt-02",
+        "expected_policy_decisions": [
+          "allow_scoped_branch",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-02",
+        "severity": "critical",
+        "workflow_id": "sensitive-data-remediation"
+      },
+      {
+        "attack_family": "sensitive_data_exfiltration",
+        "component_id": "evaluation-drill::sensitive-data-remediation:sr-rt-03",
+        "component_type": "evaluation_drills",
+        "drill_id": "sensitive-data-remediation:sr-rt-03",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-03",
+        "severity": "critical",
+        "workflow_id": "sensitive-data-remediation"
+      },
+      {
+        "attack_family": "identity_and_privilege_abuse",
+        "component_id": "evaluation-drill::sensitive-data-remediation:sr-rt-05",
+        "component_type": "evaluation_drills",
+        "drill_id": "sensitive-data-remediation:sr-rt-05",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-05",
+        "severity": "critical",
+        "workflow_id": "sensitive-data-remediation"
+      },
+      {
+        "attack_family": "agentic_supply_chain_drift",
+        "component_id": "evaluation-drill::sensitive-data-remediation:sr-rt-06",
+        "component_type": "evaluation_drills",
+        "drill_id": "sensitive-data-remediation:sr-rt-06",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-06",
+        "severity": "high",
+        "workflow_id": "sensitive-data-remediation"
+      },
+      {
+        "attack_family": "cascading_failure_and_unbounded_consumption",
+        "component_id": "evaluation-drill::sensitive-data-remediation:sr-rt-07",
+        "component_type": "evaluation_drills",
+        "drill_id": "sensitive-data-remediation:sr-rt-07",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-07",
+        "severity": "high",
+        "workflow_id": "sensitive-data-remediation"
+      },
+      {
+        "attack_family": "evidence_integrity_failure",
+        "component_id": "evaluation-drill::sensitive-data-remediation:sr-rt-08",
+        "component_type": "evaluation_drills",
+        "drill_id": "sensitive-data-remediation:sr-rt-08",
+        "expected_policy_decisions": [
+          "deny"
+        ],
+        "scenario_id": "SR-RT-08",
+        "severity": "high",
+        "workflow_id": "sensitive-data-remediation"
+      },
+      {
+        "attack_family": "tool_result_prompt_injection",
+        "component_id": "evaluation-drill::vulnerable-dependency-remediation:sr-rt-01",
+        "component_type": "evaluation_drills",
+        "drill_id": "vulnerable-dependency-remediation:sr-rt-01",
+        "expected_policy_decisions": [
+          "allow",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-01",
+        "severity": "high",
+        "workflow_id": "vulnerable-dependency-remediation"
+      },
+      {
+        "attack_family": "agent_goal_hijack",
+        "component_id": "evaluation-drill::vulnerable-dependency-remediation:sr-rt-02",
+        "component_type": "evaluation_drills",
+        "drill_id": "vulnerable-dependency-remediation:sr-rt-02",
+        "expected_policy_decisions": [
+          "allow_scoped_branch",
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-02",
+        "severity": "critical",
+        "workflow_id": "vulnerable-dependency-remediation"
+      },
+      {
+        "attack_family": "sensitive_data_exfiltration",
+        "component_id": "evaluation-drill::vulnerable-dependency-remediation:sr-rt-03",
+        "component_type": "evaluation_drills",
+        "drill_id": "vulnerable-dependency-remediation:sr-rt-03",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-03",
+        "severity": "critical",
+        "workflow_id": "vulnerable-dependency-remediation"
+      },
+      {
+        "attack_family": "identity_and_privilege_abuse",
+        "component_id": "evaluation-drill::vulnerable-dependency-remediation:sr-rt-05",
+        "component_type": "evaluation_drills",
+        "drill_id": "vulnerable-dependency-remediation:sr-rt-05",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-05",
+        "severity": "critical",
+        "workflow_id": "vulnerable-dependency-remediation"
+      },
+      {
+        "attack_family": "agentic_supply_chain_drift",
+        "component_id": "evaluation-drill::vulnerable-dependency-remediation:sr-rt-06",
+        "component_type": "evaluation_drills",
+        "drill_id": "vulnerable-dependency-remediation:sr-rt-06",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-06",
+        "severity": "high",
+        "workflow_id": "vulnerable-dependency-remediation"
+      },
+      {
+        "attack_family": "cascading_failure_and_unbounded_consumption",
+        "component_id": "evaluation-drill::vulnerable-dependency-remediation:sr-rt-07",
+        "component_type": "evaluation_drills",
+        "drill_id": "vulnerable-dependency-remediation:sr-rt-07",
+        "expected_policy_decisions": [
+          "deny",
+          "kill_session"
+        ],
+        "scenario_id": "SR-RT-07",
+        "severity": "high",
+        "workflow_id": "vulnerable-dependency-remediation"
+      },
+      {
+        "attack_family": "evidence_integrity_failure",
+        "component_id": "evaluation-drill::vulnerable-dependency-remediation:sr-rt-08",
+        "component_type": "evaluation_drills",
+        "drill_id": "vulnerable-dependency-remediation:sr-rt-08",
+        "expected_policy_decisions": [
+          "deny"
+        ],
+        "scenario_id": "SR-RT-08",
+        "severity": "high",
+        "workflow_id": "vulnerable-dependency-remediation"
+      }
+    ],
+    "evidence_artifacts": [
+      {
+        "artifact_class": "source_profile",
+        "component_id": "evidence::agentic-system-bom-profile",
+        "component_type": "evidence_artifacts",
+        "path": "data/assurance/agentic-system-bom-profile.json",
+        "sha256": "5d136e95149b04fbc6c7b856293b200ade4245bdb2c2697a583014878bea7725",
+        "title": "Agentic System BOM profile"
+      },
+      {
+        "artifact_class": "source_control",
+        "component_id": "evidence::workflow-manifest",
+        "component_type": "evidence_artifacts",
+        "path": "data/control-plane/workflow-manifests.json",
+        "sha256": "22f45f06fee190b602ac27f300c94d72ab38646f76a1ad2e4f80923a3a444ceb",
+        "title": "Workflow control-plane manifest"
+      },
+      {
+        "artifact_class": "generated_policy",
+        "component_id": "evidence::mcp-gateway-policy-pack",
+        "component_type": "evidence_artifacts",
+        "path": "data/policy/mcp-gateway-policy.json",
+        "sha256": "bb1dbf00ec5bee173a19dff65266f13d84501b94aca3239019a03d6e09546de2",
+        "title": "MCP gateway policy pack"
+      },
+      {
+        "artifact_class": "generated_evidence",
+        "component_id": "evidence::mcp-connector-trust-pack",
+        "component_type": "evidence_artifacts",
+        "path": "data/evidence/mcp-connector-trust-pack.json",
+        "sha256": "2982b7ab2dea084cd78295ad257cc4c8606c52938197cf61bb2692156dcf92be",
+        "title": "MCP connector trust pack"
+      },
+      {
+        "artifact_class": "generated_evidence",
+        "component_id": "evidence::agent-identity-delegation-ledger",
+        "component_type": "evidence_artifacts",
+        "path": "data/evidence/agent-identity-delegation-ledger.json",
+        "sha256": "be4ea217448ffe5ddc732b5d27b6e8a66e4532335f1c2899bc04c0fdf6150b42",
+        "title": "Agent identity delegation ledger"
+      },
+      {
+        "artifact_class": "generated_evidence",
+        "component_id": "evidence::agentic-red-team-drill-pack",
+        "component_type": "evidence_artifacts",
+        "path": "data/evidence/agentic-red-team-drill-pack.json",
+        "sha256": "c28356c01555a2badaf678238aa525abeb343ff2ed60e58f27c4af8736d1188b",
+        "title": "Agentic red-team drill pack"
+      },
+      {
+        "artifact_class": "generated_evidence",
+        "component_id": "evidence::agentic-readiness-scorecard",
+        "component_type": "evidence_artifacts",
+        "path": "data/evidence/agentic-readiness-scorecard.json",
+        "sha256": "d250827aca3322caaa5b10d7d3ca2ce6a517daafc3ed34a2cc266f2b1740ea5e",
+        "title": "Agentic readiness scorecard"
+      },
+      {
+        "artifact_class": "generated_evidence",
+        "component_id": "evidence::agentic-assurance-pack",
+        "component_type": "evidence_artifacts",
+        "path": "data/evidence/agentic-assurance-pack.json",
+        "sha256": "4491438c29bab11e389aa3dd2479b62ab5171ae635dac5694016eaf21f9b59a9",
+        "title": "Agentic assurance pack"
+      },
+      {
+        "artifact_class": "generated_evidence",
+        "component_id": "evidence::workflow-control-plane-report",
+        "component_type": "evidence_artifacts",
+        "path": "data/evidence/workflow-control-plane-report.json",
+        "sha256": "63d7bde4927f99436eb92ec10ded994b37a83517c189dfb61a036ecee9f9564c",
+        "title": "Workflow control-plane validation report"
+      }
+    ],
+    "knowledge_sources": [
+      {
+        "component_id": "knowledge::prompt-library",
+        "component_type": "knowledge_sources",
+        "drift_triggers": [
+          "knowledge_changed"
+        ],
+        "path": "content/prompt-library",
+        "purpose": "Reusable prompts and instructions consumed by agent hosts and workflow operators."
+      },
+      {
+        "component_id": "knowledge::security-remediation-docs",
+        "component_type": "knowledge_sources",
+        "drift_triggers": [
+          "knowledge_changed",
+          "workflow_changed"
+        ],
+        "path": "content/security-remediation",
+        "purpose": "Human-readable operating model for agentic remediation workflows and program controls."
+      },
+      {
+        "component_id": "knowledge::control-plane-data",
+        "component_type": "knowledge_sources",
+        "drift_triggers": [
+          "workflow_changed",
+          "policy_changed"
+        ],
+        "path": "data/control-plane",
+        "purpose": "Machine-readable workflow manifests consumed by generators, MCP tools, and CI validation."
+      },
+      {
+        "component_id": "knowledge::assurance-data",
+        "component_type": "knowledge_sources",
+        "drift_triggers": [
+          "knowledge_changed",
+          "red_team_scenario_changed",
+          "readiness_model_changed"
+        ],
+        "path": "data/assurance",
+        "purpose": "Source maps for assurance, red-team, readiness, and Agentic System BOM generation."
+      }
+    ],
+    "mcp_connectors": [
+      {
+        "access_modes": [
+          "read"
+        ],
+        "component_id": "mcp-connector::advisories.vulnerability",
+        "component_type": "mcp_connectors",
+        "connector_id": "vulnerability-advisory-feed",
+        "data_classes": [
+          "cve_metadata",
+          "advisory_ranges",
+          "severity",
+          "known_exploited_status"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "advisories.vulnerability",
+        "owner": {
+          "accountable_team": "Product Security",
+          "escalation": "supply-chain-security"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding"
+        ],
+        "status": "production",
+        "title": "Vulnerability Advisory Feed",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_1_internal_read",
+          "title": "Internal Read"
+        }
+      },
+      {
+        "access_modes": [
+          "read"
+        ],
+        "component_id": "mcp-connector::chain.simulation",
+        "component_type": "mcp_connectors",
+        "connector_id": "chain-simulation-reader",
+        "data_classes": [
+          "fork_test_result",
+          "invariant_test_result",
+          "read_only_rpc_trace"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "chain.simulation",
+        "owner": {
+          "accountable_team": "Protocol Security",
+          "escalation": "protocol-risk-council"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding"
+        ],
+        "status": "pilot",
+        "title": "Chain Simulation Reader",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_1_internal_read",
+          "title": "Internal Read"
+        }
+      },
+      {
+        "access_modes": [
+          "read"
+        ],
+        "component_id": "mcp-connector::ci.runs",
+        "component_type": "mcp_connectors",
+        "connector_id": "ci-run-reader",
+        "data_classes": [
+          "build_status",
+          "test_artifacts",
+          "scanner_artifacts"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "ci.runs",
+        "owner": {
+          "accountable_team": "Engineering Platform",
+          "escalation": "build-platform"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding"
+        ],
+        "status": "production",
+        "title": "CI Run Reader",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_1_internal_read",
+          "title": "Internal Read"
+        }
+      },
+      {
+        "access_modes": [
+          "read"
+        ],
+        "component_id": "mcp-connector::findings.sast",
+        "component_type": "mcp_connectors",
+        "connector_id": "sast-finding-intake",
+        "data_classes": [
+          "sarif_metadata",
+          "rule_trace",
+          "source_sink_path",
+          "severity"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "findings.sast",
+        "owner": {
+          "accountable_team": "Application Security",
+          "escalation": "secure-code-review"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding"
+        ],
+        "status": "production",
+        "title": "SAST Finding Intake",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_1_internal_read",
+          "title": "Internal Read"
+        }
+      },
+      {
+        "access_modes": [
+          "read"
+        ],
+        "component_id": "mcp-connector::findings.sde",
+        "component_type": "mcp_connectors",
+        "connector_id": "sde-finding-intake",
+        "data_classes": [
+          "scanner_metadata",
+          "data_classification",
+          "sample_redacted_finding_context"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "findings.sde",
+        "owner": {
+          "accountable_team": "Security Engineering",
+          "escalation": "privacy-security"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding"
+        ],
+        "status": "production",
+        "title": "Sensitive Data Finding Intake",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_1_internal_read",
+          "title": "Internal Read"
+        }
+      },
+      {
+        "access_modes": [
+          "read"
+        ],
+        "component_id": "mcp-connector::images.golden",
+        "component_type": "mcp_connectors",
+        "connector_id": "golden-image-catalog",
+        "data_classes": [
+          "image_digest",
+          "image_signature",
+          "image_sbom",
+          "deprecation_window"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "images.golden",
+        "owner": {
+          "accountable_team": "Platform Security",
+          "escalation": "container-platform"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding"
+        ],
+        "status": "production",
+        "title": "Golden Image Catalog",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_1_internal_read",
+          "title": "Internal Read"
+        }
+      },
+      {
+        "access_modes": [
+          "write_ticket"
+        ],
+        "component_id": "mcp-connector::incidents.security",
+        "component_type": "mcp_connectors",
+        "connector_id": "security-incident-workspace",
+        "data_classes": [
+          "incident_metadata",
+          "quarantine_evidence",
+          "remediation_links"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "incidents.security",
+        "owner": {
+          "accountable_team": "Security Incident Response",
+          "escalation": "security-incident-commander"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding",
+          "write_scope_enforcement",
+          "human_review_before_merge"
+        ],
+        "status": "production",
+        "title": "Security Incident Workspace",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_2_scoped_write",
+          "title": "Scoped Write"
+        }
+      },
+      {
+        "access_modes": [
+          "read"
+        ],
+        "component_id": "mcp-connector::inventory.artifacts",
+        "component_type": "mcp_connectors",
+        "connector_id": "artifact-inventory",
+        "data_classes": [
+          "artifact_hash",
+          "package_version",
+          "image_digest",
+          "consumer_inventory"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "inventory.artifacts",
+        "owner": {
+          "accountable_team": "Supply Chain Security",
+          "escalation": "security-incident-commander"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding"
+        ],
+        "status": "production",
+        "title": "Artifact Inventory",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_1_internal_read",
+          "title": "Internal Read"
+        }
+      },
+      {
+        "access_modes": [
+          "read"
+        ],
+        "component_id": "mcp-connector::payments.findings",
+        "component_type": "mcp_connectors",
+        "connector_id": "payment-security-findings",
+        "data_classes": [
+          "payment_finding_metadata",
+          "asset_class",
+          "chain_or_network",
+          "test_vector"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "payments.findings",
+        "owner": {
+          "accountable_team": "Fintech Security",
+          "escalation": "financial-risk"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding"
+        ],
+        "status": "pilot",
+        "title": "Payment Security Findings",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_1_internal_read",
+          "title": "Internal Read"
+        }
+      },
+      {
+        "access_modes": [
+          "read"
+        ],
+        "component_id": "mcp-connector::payments.simulation",
+        "component_type": "mcp_connectors",
+        "connector_id": "payment-simulation-reader",
+        "data_classes": [
+          "sandbox_transaction_result",
+          "policy_simulation",
+          "failure_trace"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "payments.simulation",
+        "owner": {
+          "accountable_team": "Fintech Security",
+          "escalation": "financial-risk"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding"
+        ],
+        "status": "pilot",
+        "title": "Payment Simulation Reader",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_1_internal_read",
+          "title": "Internal Read"
+        }
+      },
+      {
+        "access_modes": [
+          "read"
+        ],
+        "component_id": "mcp-connector::protocol.findings",
+        "component_type": "mcp_connectors",
+        "connector_id": "protocol-security-findings",
+        "data_classes": [
+          "smart_contract_finding",
+          "oracle_or_bridge_context",
+          "asset_exposure",
+          "reproduction_steps"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "protocol.findings",
+        "owner": {
+          "accountable_team": "Protocol Security",
+          "escalation": "protocol-risk-council"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding"
+        ],
+        "status": "pilot",
+        "title": "Protocol Security Findings",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_1_internal_read",
+          "title": "Internal Read"
+        }
+      },
+      {
+        "access_modes": [
+          "read"
+        ],
+        "component_id": "mcp-connector::recipes.defaults",
+        "component_type": "mcp_connectors",
+        "connector_id": "approved-defaults-recipes",
+        "data_classes": [
+          "public_recipe_context",
+          "approved_migration_pattern",
+          "prompt_instruction"
+        ],
+        "deployment_model": "hosted_security_recipes",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "recipes.defaults",
+        "owner": {
+          "accountable_team": "SecurityRecipes Maintainers",
+          "escalation": "content-maintainers"
+        },
+        "required_controls": [
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "audit_every_tool_call"
+        ],
+        "status": "production",
+        "title": "Approved Vulnerable-Defaults Recipes",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_0_public_context",
+          "title": "Public Context"
+        }
+      },
+      {
+        "access_modes": [
+          "approval_required"
+        ],
+        "component_id": "mcp-connector::registries.quarantine",
+        "component_type": "mcp_connectors",
+        "connector_id": "registry-quarantine",
+        "data_classes": [
+          "artifact_hash",
+          "quarantine_plan",
+          "approval_record",
+          "registry_target"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "registries.quarantine",
+        "owner": {
+          "accountable_team": "Supply Chain Security",
+          "escalation": "security-incident-commander"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding",
+          "write_scope_enforcement",
+          "typed_human_approval",
+          "two_key_review",
+          "kill_session_on_approval_bypass"
+        ],
+        "status": "pilot",
+        "title": "Registry Quarantine Controller",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_3_approval_required",
+          "title": "Approval Required"
+        }
+      },
+      {
+        "access_modes": [
+          "write_branch"
+        ],
+        "component_id": "mcp-connector::repo.contents",
+        "component_type": "mcp_connectors",
+        "connector_id": "repository-contents",
+        "data_classes": [
+          "source_code",
+          "test_data",
+          "repository_metadata"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "repo.contents",
+        "owner": {
+          "accountable_team": "Engineering Platform",
+          "escalation": "source-control-platform"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding",
+          "write_scope_enforcement",
+          "human_review_before_merge"
+        ],
+        "status": "production",
+        "title": "Repository Contents",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_2_scoped_write",
+          "title": "Scoped Write"
+        }
+      },
+      {
+        "access_modes": [
+          "read"
+        ],
+        "component_id": "mcp-connector::sbom.inventory",
+        "component_type": "mcp_connectors",
+        "connector_id": "sbom-inventory",
+        "data_classes": [
+          "package_inventory",
+          "image_inventory",
+          "service_ownership",
+          "dependency_graph"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "sbom.inventory",
+        "owner": {
+          "accountable_team": "Supply Chain Security",
+          "escalation": "software-supply-chain"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding"
+        ],
+        "status": "production",
+        "title": "SBOM Inventory",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_1_internal_read",
+          "title": "Internal Read"
+        }
+      },
+      {
+        "access_modes": [
+          "write_ticket"
+        ],
+        "component_id": "mcp-connector::tickets.security",
+        "component_type": "mcp_connectors",
+        "connector_id": "security-ticket-workspace",
+        "data_classes": [
+          "finding_metadata",
+          "triage_notes",
+          "owner_routing"
+        ],
+        "deployment_model": "enterprise_gateway",
+        "drift_triggers": [
+          "mcp_server_changed",
+          "tool_changed",
+          "connector_trust_changed"
+        ],
+        "evidence_record_count": 3,
+        "namespace": "tickets.security",
+        "owner": {
+          "accountable_team": "Security Operations",
+          "escalation": "security-triage"
+        },
+        "required_controls": [
+          "per_client_consent",
+          "short_lived_workload_identity",
+          "deny_token_passthrough",
+          "pin_tool_descriptions",
+          "inspect_tool_results",
+          "deny_private_network_egress",
+          "audit_every_tool_call",
+          "session_binding",
+          "write_scope_enforcement",
+          "human_review_before_merge"
+        ],
+        "status": "production",
+        "title": "Security Ticket Workspace",
+        "transport": "streamable-http",
+        "trust_tier": {
+          "id": "tier_2_scoped_write",
+          "title": "Scoped Write"
+        }
+      }
+    ],
+    "policy_components": [
+      {
+        "component_id": "policy::workflow-control-plane",
+        "component_type": "policy_components",
+        "drift_triggers": [
+          "workflow_changed",
+          "knowledge_changed"
+        ],
+        "last_reviewed": "2026-05-02",
+        "path": "data/control-plane/workflow-manifests.json",
+        "purpose": "Declares workflow scope, owners, gates, evidence, KPIs, MCP context, and kill signals.",
+        "workflow_count": 8
+      },
+      {
+        "component_id": "policy::mcp-gateway",
+        "component_type": "policy_components",
+        "decisions": [
+          "allow",
+          "allow_scoped_branch",
+          "allow_scoped_ticket",
+          "hold_for_approval",
+          "deny",
+          "kill_session"
+        ],
+        "default_decision": "deny",
+        "drift_triggers": [
+          "policy_changed",
+          "tool_changed",
+          "workflow_changed"
+        ],
+        "path": "data/policy/mcp-gateway-policy.json",
+        "purpose": "Turns workflow declarations into default-deny MCP runtime decisions.",
+        "required_runtime_attributes": [
+          "workflow_id",
+          "agent_id",
+          "run_id",
+          "tool_namespace",
+          "tool_access_mode",
+          "branch_name",
+          "changed_paths",
+          "diff_line_count",
+          "gate_phase",
+          "human_approval_record"
+        ]
+      },
+      {
+        "component_id": "policy::agent-identity-delegation",
+        "component_type": "policy_components",
+        "drift_triggers": [
+          "identity_contract_changed",
+          "agent_changed"
+        ],
+        "path": "data/evidence/agent-identity-delegation-ledger.json",
+        "purpose": "Binds agent classes to non-human identity, delegated authority, explicit denies, and runtime revocation."
+      },
+      {
+        "component_id": "policy::readiness-promotion-gate",
+        "component_type": "policy_components",
+        "drift_triggers": [
+          "readiness_model_changed",
+          "connector_trust_changed",
+          "red_team_scenario_changed"
+        ],
+        "path": "data/evidence/agentic-readiness-scorecard.json",
+        "purpose": "Produces scale, pilot, manual gate, or blocked workflow decisions from generated evidence."
+      }
+    ],
+    "workflows": [
+      {
+        "agent_classes": [
+          "codex",
+          "claude",
+          "devin"
+        ],
+        "agent_identity_ids": [
+          "sr-agent::artifact-cache-quarantine::codex",
+          "sr-agent::artifact-cache-quarantine::claude",
+          "sr-agent::artifact-cache-quarantine::devin"
+        ],
+        "applicable_control_ids": [
+          "SR-AI-01",
+          "SR-AI-02",
+          "SR-AI-03",
+          "SR-AI-04",
+          "SR-AI-05",
+          "SR-AI-06",
+          "SR-AI-07",
+          "SR-AI-08",
+          "SR-AI-09"
+        ],
+        "component_id": "workflow::artifact-cache-quarantine",
+        "component_type": "workflows",
+        "content_path": "content/security-remediation/artifact-cache-purge/_index.md",
+        "drift_triggers": [
+          "workflow_changed",
+          "policy_changed",
+          "agent_changed",
+          "mcp_server_changed",
+          "tool_changed"
+        ],
+        "evidence_record_count": 3,
+        "gate_phases": [
+          "admission",
+          "output",
+          "post_merge",
+          "pre_merge",
+          "runtime",
+          "tool_call"
+        ],
+        "kpi_count": 3,
+        "maturity_stage": "crawl",
+        "mcp_namespaces": [
+          {
+            "access": "read",
+            "connector_id": "artifact-inventory",
+            "decision": "allow",
+            "namespace": "inventory.artifacts",
+            "production_ready": true,
+            "purpose": "Locate affected packages, images, hashes, mirrors, and consumers.",
+            "status": "production",
+            "trust_tier": "tier_1_internal_read"
+          },
+          {
+            "access": "approval_required",
+            "connector_id": "registry-quarantine",
+            "decision": "hold_for_approval",
+            "namespace": "registries.quarantine",
+            "production_ready": false,
+            "purpose": "Stage quarantine or purge operations for human approval.",
+            "status": "pilot",
+            "trust_tier": "tier_3_approval_required"
+          },
+          {
+            "access": "write_ticket",
+            "connector_id": "security-incident-workspace",
+            "decision": "allow_scoped_ticket",
+            "namespace": "incidents.security",
+            "production_ready": true,
+            "purpose": "Attach evidence and remediation links to incident record.",
+            "status": "production",
+            "trust_tier": "tier_2_scoped_write"
+          }
+        ],
+        "missing_identity_agents": [],
+        "owner": {
+          "accountable_team": "Supply Chain Security",
+          "escalation": "security-incident-commander",
+          "reviewer_pools": [
+            "supply-chain-security",
+            "platform-owner"
+          ]
+        },
+        "policy_decisions": [
+          "allow",
+          "allow_scoped_ticket",
+          "hold_for_approval"
+        ],
+        "public_path": "/security-remediation/artifact-cache-purge/",
+        "readiness_decision": "pilot_guarded",
+        "readiness_score": 93,
+        "red_team_drill_count": 7,
+        "status": "active",
+        "title": "Artifact Cache and Mirror Quarantine",
+        "workflow_id": "artifact-cache-quarantine"
+      },
+      {
+        "agent_classes": [
+          "codex",
+          "claude",
+          "cursor",
+          "github_copilot",
+          "devin"
+        ],
+        "agent_identity_ids": [
+          "sr-agent::base-image-remediation::codex",
+          "sr-agent::base-image-remediation::claude",
+          "sr-agent::base-image-remediation::cursor",
+          "sr-agent::base-image-remediation::github_copilot",
+          "sr-agent::base-image-remediation::devin"
+        ],
+        "applicable_control_ids": [
+          "SR-AI-01",
+          "SR-AI-02",
+          "SR-AI-03",
+          "SR-AI-04",
+          "SR-AI-05",
+          "SR-AI-06",
+          "SR-AI-07",
+          "SR-AI-08",
+          "SR-AI-09"
+        ],
+        "component_id": "workflow::base-image-remediation",
+        "component_type": "workflows",
+        "content_path": "content/security-remediation/base-images/_index.md",
+        "drift_triggers": [
+          "workflow_changed",
+          "policy_changed",
+          "agent_changed",
+          "mcp_server_changed",
+          "tool_changed"
+        ],
+        "evidence_record_count": 3,
+        "gate_phases": [
+          "admission",
+          "output",
+          "post_merge",
+          "pre_merge",
+          "runtime",
+          "tool_call"
+        ],
+        "kpi_count": 3,
+        "maturity_stage": "walk",
+        "mcp_namespaces": [
+          {
+            "access": "read",
+            "connector_id": "golden-image-catalog",
+            "decision": "allow",
+            "namespace": "images.golden",
+            "production_ready": true,
+            "purpose": "Read approved base-image catalog, signatures, SBOMs, and deprecation windows.",
+            "status": "production",
+            "trust_tier": "tier_1_internal_read"
+          },
+          {
+            "access": "write_branch",
+            "connector_id": "repository-contents",
+            "decision": "allow_scoped_branch",
+            "namespace": "repo.contents",
+            "production_ready": true,
+            "purpose": "Patch Dockerfiles or image pin files on remediation branch only.",
+            "status": "production",
+            "trust_tier": "tier_2_scoped_write"
+          },
+          {
+            "access": "read",
+            "connector_id": "ci-run-reader",
+            "decision": "allow",
+            "namespace": "ci.runs",
+            "production_ready": true,
+            "purpose": "Read build, scan, and signing verification results.",
+            "status": "production",
+            "trust_tier": "tier_1_internal_read"
+          }
+        ],
+        "missing_identity_agents": [],
+        "owner": {
+          "accountable_team": "Platform Security",
+          "escalation": "container-platform",
+          "reviewer_pools": [
+            "platform-security",
+            "service-owner"
+          ]
+        },
+        "policy_decisions": [
+          "allow",
+          "allow_scoped_branch"
+        ],
+        "public_path": "/security-remediation/base-images/",
+        "readiness_decision": "scale_ready",
+        "readiness_score": 98,
+        "red_team_drill_count": 7,
+        "status": "active",
+        "title": "Base Image and Container Layer Remediation",
+        "workflow_id": "base-image-remediation"
+      },
+      {
+        "agent_classes": [
+          "codex",
+          "claude",
+          "cursor",
+          "github_copilot"
+        ],
+        "agent_identity_ids": [
+          "sr-agent::classic-vulnerable-defaults::codex",
+          "sr-agent::classic-vulnerable-defaults::claude",
+          "sr-agent::classic-vulnerable-defaults::cursor",
+          "sr-agent::classic-vulnerable-defaults::github_copilot"
+        ],
+        "applicable_control_ids": [
+          "SR-AI-01",
+          "SR-AI-02",
+          "SR-AI-03",
+          "SR-AI-04",
+          "SR-AI-05",
+          "SR-AI-06",
+          "SR-AI-07",
+          "SR-AI-08",
+          "SR-AI-09"
+        ],
+        "component_id": "workflow::classic-vulnerable-defaults",
+        "component_type": "workflows",
+        "content_path": "content/security-remediation/classic-vulnerable-defaults/_index.md",
+        "drift_triggers": [
+          "workflow_changed",
+          "policy_changed",
+          "agent_changed",
+          "mcp_server_changed",
+          "tool_changed"
+        ],
+        "evidence_record_count": 3,
+        "gate_phases": [
+          "admission",
+          "output",
+          "post_merge",
+          "pre_merge",
+          "runtime",
+          "tool_call"
+        ],
+        "kpi_count": 3,
+        "maturity_stage": "walk",
+        "mcp_namespaces": [
+          {
+            "access": "read",
+            "connector_id": "approved-defaults-recipes",
+            "decision": "allow",
+            "namespace": "recipes.defaults",
+            "production_ready": true,
+            "purpose": "Retrieve approved migration pattern for the vulnerable default.",
+            "status": "production",
+            "trust_tier": "tier_0_public_context"
+          },
+          {
+            "access": "write_branch",
+            "connector_id": "repository-contents",
+            "decision": "allow_scoped_branch",
+            "namespace": "repo.contents",
+            "production_ready": true,
+            "purpose": "Patch localized source and tests on remediation branch only.",
+            "status": "production",
+            "trust_tier": "tier_2_scoped_write"
+          },
+          {
+            "access": "read",
+            "connector_id": "ci-run-reader",
+            "decision": "allow",
+            "namespace": "ci.runs",
+            "production_ready": true,
+            "purpose": "Read test and scanner outcomes.",
+            "status": "production",
+            "trust_tier": "tier_1_internal_read"
+          }
+        ],
+        "missing_identity_agents": [],
+        "owner": {
+          "accountable_team": "Application Security",
+          "escalation": "secure-code-review",
+          "reviewer_pools": [
+            "appsec",
+            "service-owner"
+          ]
+        },
+        "policy_decisions": [
+          "allow",
+          "allow_scoped_branch"
+        ],
+        "public_path": "/security-remediation/classic-vulnerable-defaults/",
+        "readiness_decision": "scale_ready",
+        "readiness_score": 98,
+        "red_team_drill_count": 7,
+        "status": "active",
+        "title": "Classic Vulnerable Defaults",
+        "workflow_id": "classic-vulnerable-defaults"
+      },
+      {
+        "agent_classes": [
+          "codex",
+          "claude",
+          "cursor"
+        ],
+        "agent_identity_ids": [
+          "sr-agent::crypto-payment-security::codex",
+          "sr-agent::crypto-payment-security::claude",
+          "sr-agent::crypto-payment-security::cursor"
+        ],
+        "applicable_control_ids": [
+          "SR-AI-01",
+          "SR-AI-02",
+          "SR-AI-03",
+          "SR-AI-04",
+          "SR-AI-05",
+          "SR-AI-06",
+          "SR-AI-07",
+          "SR-AI-08",
+          "SR-AI-09"
+        ],
+        "component_id": "workflow::crypto-payment-security",
+        "component_type": "workflows",
+        "content_path": "content/security-remediation/crypto-payments/_index.md",
+        "drift_triggers": [
+          "workflow_changed",
+          "policy_changed",
+          "agent_changed",
+          "mcp_server_changed",
+          "tool_changed"
+        ],
+        "evidence_record_count": 3,
+        "gate_phases": [
+          "admission",
+          "output",
+          "post_merge",
+          "pre_merge",
+          "runtime",
+          "tool_call"
+        ],
+        "kpi_count": 3,
+        "maturity_stage": "crawl",
+        "mcp_namespaces": [
+          {
+            "access": "read",
+            "connector_id": "payment-security-findings",
+            "decision": "allow",
+            "namespace": "payments.findings",
+            "production_ready": false,
+            "purpose": "Read payment-security finding details and affected service metadata.",
+            "status": "pilot",
+            "trust_tier": "tier_1_internal_read"
+          },
+          {
+            "access": "write_branch",
+            "connector_id": "repository-contents",
+            "decision": "allow_scoped_branch",
+            "namespace": "repo.contents",
+            "production_ready": true,
+            "purpose": "Patch validation, policy, and test files on remediation branch only.",
+            "status": "production",
+            "trust_tier": "tier_2_scoped_write"
+          },
+          {
+            "access": "read",
+            "connector_id": "payment-simulation-reader",
+            "decision": "allow",
+            "namespace": "payments.simulation",
+            "production_ready": false,
+            "purpose": "Run or read dry-run transaction simulation output.",
+            "status": "pilot",
+            "trust_tier": "tier_1_internal_read"
+          }
+        ],
+        "missing_identity_agents": [],
+        "owner": {
+          "accountable_team": "Fintech Security",
+          "escalation": "financial-risk",
+          "reviewer_pools": [
+            "fintech-security",
+            "payments-owner"
+          ]
+        },
+        "policy_decisions": [
+          "allow",
+          "allow_scoped_branch"
+        ],
+        "public_path": "/security-remediation/crypto-payments/",
+        "readiness_decision": "pilot_guarded",
+        "readiness_score": 93,
+        "red_team_drill_count": 7,
+        "status": "active",
+        "title": "Cryptocurrency and Crypto Payments Security",
+        "workflow_id": "crypto-payment-security"
+      },
+      {
+        "agent_classes": [
+          "codex",
+          "claude",
+          "cursor"
+        ],
+        "agent_identity_ids": [
+          "sr-agent::defi-blockchain-security::codex",
+          "sr-agent::defi-blockchain-security::claude",
+          "sr-agent::defi-blockchain-security::cursor"
+        ],
+        "applicable_control_ids": [
+          "SR-AI-01",
+          "SR-AI-02",
+          "SR-AI-03",
+          "SR-AI-04",
+          "SR-AI-05",
+          "SR-AI-06",
+          "SR-AI-07",
+          "SR-AI-08",
+          "SR-AI-09"
+        ],
+        "component_id": "workflow::defi-blockchain-security",
+        "component_type": "workflows",
+        "content_path": "content/security-remediation/defi-blockchain/_index.md",
+        "drift_triggers": [
+          "workflow_changed",
+          "policy_changed",
+          "agent_changed",
+          "mcp_server_changed",
+          "tool_changed"
+        ],
+        "evidence_record_count": 3,
+        "gate_phases": [
+          "admission",
+          "output",
+          "post_merge",
+          "pre_merge",
+          "runtime",
+          "tool_call"
+        ],
+        "kpi_count": 3,
+        "maturity_stage": "crawl",
+        "mcp_namespaces": [
+          {
+            "access": "read",
+            "connector_id": "protocol-security-findings",
+            "decision": "allow",
+            "namespace": "protocol.findings",
+            "production_ready": false,
+            "purpose": "Read protocol-security finding details, affected contract, and severity.",
+            "status": "pilot",
+            "trust_tier": "tier_1_internal_read"
+          },
+          {
+            "access": "write_branch",
+            "connector_id": "repository-contents",
+            "decision": "allow_scoped_branch",
+            "namespace": "repo.contents",
+            "production_ready": true,
+            "purpose": "Patch contracts, policy docs, or tests on remediation branch only.",
+            "status": "production",
+            "trust_tier": "tier_2_scoped_write"
+          },
+          {
+            "access": "read",
+            "connector_id": "chain-simulation-reader",
+            "decision": "allow",
+            "namespace": "chain.simulation",
+            "production_ready": false,
+            "purpose": "Run or read fork-test and invariant-test outputs.",
+            "status": "pilot",
+            "trust_tier": "tier_1_internal_read"
+          }
+        ],
+        "missing_identity_agents": [],
+        "owner": {
+          "accountable_team": "Protocol Security",
+          "escalation": "protocol-risk-council",
+          "reviewer_pools": [
+            "protocol-security",
+            "smart-contract-owner"
+          ]
+        },
+        "policy_decisions": [
+          "allow",
+          "allow_scoped_branch"
+        ],
+        "public_path": "/security-remediation/defi-blockchain/",
+        "readiness_decision": "pilot_guarded",
+        "readiness_score": 93,
+        "red_team_drill_count": 7,
+        "status": "active",
+        "title": "DeFi and Blockchain Protocol Security",
+        "workflow_id": "defi-blockchain-security"
+      },
+      {
+        "agent_classes": [
+          "codex",
+          "claude",
+          "cursor",
+          "github_copilot"
+        ],
+        "agent_identity_ids": [
+          "sr-agent::sast-finding-remediation::codex",
+          "sr-agent::sast-finding-remediation::claude",
+          "sr-agent::sast-finding-remediation::cursor",
+          "sr-agent::sast-finding-remediation::github_copilot"
+        ],
+        "applicable_control_ids": [
+          "SR-AI-01",
+          "SR-AI-02",
+          "SR-AI-03",
+          "SR-AI-04",
+          "SR-AI-05",
+          "SR-AI-06",
+          "SR-AI-07",
+          "SR-AI-08",
+          "SR-AI-09"
+        ],
+        "component_id": "workflow::sast-finding-remediation",
+        "component_type": "workflows",
+        "content_path": "content/security-remediation/sast-findings/_index.md",
+        "drift_triggers": [
+          "workflow_changed",
+          "policy_changed",
+          "agent_changed",
+          "mcp_server_changed",
+          "tool_changed"
+        ],
+        "evidence_record_count": 3,
+        "gate_phases": [
+          "admission",
+          "output",
+          "post_merge",
+          "pre_merge",
+          "runtime",
+          "tool_call"
+        ],
+        "kpi_count": 3,
+        "maturity_stage": "crawl",
+        "mcp_namespaces": [
+          {
+            "access": "read",
+            "connector_id": "sast-finding-intake",
+            "decision": "allow",
+            "namespace": "findings.sast",
+            "production_ready": true,
+            "purpose": "Read rule metadata, evidence path, sink/source trace, and severity.",
+            "status": "production",
+            "trust_tier": "tier_1_internal_read"
+          },
+          {
+            "access": "write_branch",
+            "connector_id": "repository-contents",
+            "decision": "allow_scoped_branch",
+            "namespace": "repo.contents",
+            "production_ready": true,
+            "purpose": "Patch localized source and tests on remediation branch only.",
+            "status": "production",
+            "trust_tier": "tier_2_scoped_write"
+          },
+          {
+            "access": "read",
+            "connector_id": "ci-run-reader",
+            "decision": "allow",
+            "namespace": "ci.runs",
+            "production_ready": true,
+            "purpose": "Read test and scanner re-run outcomes.",
+            "status": "production",
+            "trust_tier": "tier_1_internal_read"
+          }
+        ],
+        "missing_identity_agents": [],
+        "owner": {
+          "accountable_team": "Application Security",
+          "escalation": "secure-code-review",
+          "reviewer_pools": [
+            "appsec",
+            "service-owner"
+          ]
+        },
+        "policy_decisions": [
+          "allow",
+          "allow_scoped_branch"
+        ],
+        "public_path": "/security-remediation/sast-findings/",
+        "readiness_decision": "pilot_guarded",
+        "readiness_score": 95,
+        "red_team_drill_count": 7,
+        "status": "active",
+        "title": "SAST Finding Remediation",
+        "workflow_id": "sast-finding-remediation"
+      },
+      {
+        "agent_classes": [
+          "codex",
+          "claude",
+          "cursor",
+          "github_copilot",
+          "devin"
+        ],
+        "agent_identity_ids": [
+          "sr-agent::sensitive-data-remediation::codex",
+          "sr-agent::sensitive-data-remediation::claude",
+          "sr-agent::sensitive-data-remediation::cursor",
+          "sr-agent::sensitive-data-remediation::github_copilot",
+          "sr-agent::sensitive-data-remediation::devin"
+        ],
+        "applicable_control_ids": [
+          "SR-AI-01",
+          "SR-AI-02",
+          "SR-AI-03",
+          "SR-AI-04",
+          "SR-AI-05",
+          "SR-AI-06",
+          "SR-AI-07",
+          "SR-AI-08",
+          "SR-AI-09"
+        ],
+        "component_id": "workflow::sensitive-data-remediation",
+        "component_type": "workflows",
+        "content_path": "content/security-remediation/sensitive-data/_index.md",
+        "drift_triggers": [
+          "workflow_changed",
+          "policy_changed",
+          "agent_changed",
+          "mcp_server_changed",
+          "tool_changed"
+        ],
+        "evidence_record_count": 3,
+        "gate_phases": [
+          "admission",
+          "output",
+          "post_merge",
+          "pre_merge",
+          "runtime",
+          "tool_call"
+        ],
+        "kpi_count": 3,
+        "maturity_stage": "walk",
+        "mcp_namespaces": [
+          {
+            "access": "read",
+            "connector_id": "sde-finding-intake",
+            "decision": "allow",
+            "namespace": "findings.sde",
+            "production_ready": true,
+            "purpose": "Read scanner finding metadata and data classification.",
+            "status": "production",
+            "trust_tier": "tier_1_internal_read"
+          },
+          {
+            "access": "write_branch",
+            "connector_id": "repository-contents",
+            "decision": "allow_scoped_branch",
+            "namespace": "repo.contents",
+            "production_ready": true,
+            "purpose": "Patch scoped files on a remediation branch only.",
+            "status": "production",
+            "trust_tier": "tier_2_scoped_write"
+          },
+          {
+            "access": "write_ticket",
+            "connector_id": "security-ticket-workspace",
+            "decision": "allow_scoped_ticket",
+            "namespace": "tickets.security",
+            "production_ready": true,
+            "purpose": "Open triage tickets when data ownership or redaction rules are unclear.",
+            "status": "production",
+            "trust_tier": "tier_2_scoped_write"
+          }
+        ],
+        "missing_identity_agents": [],
+        "owner": {
+          "accountable_team": "Security Engineering",
+          "escalation": "privacy-security",
+          "reviewer_pools": [
+            "security-remediation",
+            "service-owner"
+          ]
+        },
+        "policy_decisions": [
+          "allow",
+          "allow_scoped_branch",
+          "allow_scoped_ticket"
+        ],
+        "public_path": "/security-remediation/sensitive-data/",
+        "readiness_decision": "scale_ready",
+        "readiness_score": 98,
+        "red_team_drill_count": 7,
+        "status": "active",
+        "title": "Sensitive Data Element Remediation",
+        "workflow_id": "sensitive-data-remediation"
+      },
+      {
+        "agent_classes": [
+          "codex",
+          "claude",
+          "cursor",
+          "github_copilot",
+          "devin"
+        ],
+        "agent_identity_ids": [
+          "sr-agent::vulnerable-dependency-remediation::codex",
+          "sr-agent::vulnerable-dependency-remediation::claude",
+          "sr-agent::vulnerable-dependency-remediation::cursor",
+          "sr-agent::vulnerable-dependency-remediation::github_copilot",
+          "sr-agent::vulnerable-dependency-remediation::devin"
+        ],
+        "applicable_control_ids": [
+          "SR-AI-01",
+          "SR-AI-02",
+          "SR-AI-03",
+          "SR-AI-04",
+          "SR-AI-05",
+          "SR-AI-06",
+          "SR-AI-07",
+          "SR-AI-08",
+          "SR-AI-09"
+        ],
+        "component_id": "workflow::vulnerable-dependency-remediation",
+        "component_type": "workflows",
+        "content_path": "content/security-remediation/vulnerable-dependencies/_index.md",
+        "drift_triggers": [
+          "workflow_changed",
+          "policy_changed",
+          "agent_changed",
+          "mcp_server_changed",
+          "tool_changed"
+        ],
+        "evidence_record_count": 3,
+        "gate_phases": [
+          "admission",
+          "output",
+          "post_merge",
+          "pre_merge",
+          "runtime",
+          "tool_call"
+        ],
+        "kpi_count": 3,
+        "maturity_stage": "walk",
+        "mcp_namespaces": [
+          {
+            "access": "read",
+            "connector_id": "vulnerability-advisory-feed",
+            "decision": "allow",
+            "namespace": "advisories.vulnerability",
+            "production_ready": true,
+            "purpose": "Read advisory ranges, severity, EPSS, and known-exploited status.",
+            "status": "production",
+            "trust_tier": "tier_1_internal_read"
+          },
+          {
+            "access": "read",
+            "connector_id": "sbom-inventory",
+            "decision": "allow",
+            "namespace": "sbom.inventory",
+            "production_ready": true,
+            "purpose": "Locate affected manifests, images, packages, and owners.",
+            "status": "production",
+            "trust_tier": "tier_1_internal_read"
+          },
+          {
+            "access": "write_branch",
+            "connector_id": "repository-contents",
+            "decision": "allow_scoped_branch",
+            "namespace": "repo.contents",
+            "production_ready": true,
+            "purpose": "Patch manifests and lockfiles on remediation branch only.",
+            "status": "production",
+            "trust_tier": "tier_2_scoped_write"
+          }
+        ],
+        "missing_identity_agents": [],
+        "owner": {
+          "accountable_team": "Product Security",
+          "escalation": "supply-chain-security",
+          "reviewer_pools": [
+            "dependency-remediation",
+            "service-owner"
+          ]
+        },
+        "policy_decisions": [
+          "allow",
+          "allow_scoped_branch"
+        ],
+        "public_path": "/security-remediation/vulnerable-dependencies/",
+        "readiness_decision": "scale_ready",
+        "readiness_score": 98,
+        "red_team_drill_count": 7,
+        "status": "active",
+        "title": "Vulnerable Dependency Remediation",
+        "workflow_id": "vulnerable-dependency-remediation"
+      }
+    ]
+  },
+  "enterprise_adoption_packet": {
+    "board_level_claim": "Agentic remediation can be inspected as a governed system, not a set of opaque prompts.",
+    "default_questions_answered": [
+      "Which agents, identities, MCP namespaces, and workflows make up the system?",
+      "Which policies and controls restrict agent action?",
+      "Which evidence artifacts prove current state?",
+      "Which changes force a BOM refresh before scale?",
+      "Which workflows are scale-ready, pilot-guarded, or blocked?"
+    ],
+    "recommended_first_use": "Attach the BOM to AI platform intake, procurement security review, and quarterly agent-access recertification.",
+    "sales_motion": "Lead with open BOM generation, then sell hosted inventory diffing, connector drift alerts, customer evidence ingestion, and trust-center exports."
+  },
+  "failures": [],
+  "generated_at": "2026-05-02",
+  "intent": "Turn SecurityRecipes assurance artifacts into a machine-readable Agentic System Bill of Materials: workflows, agent classes, non-human identities, MCP namespaces, connectors, policies, evidence, evals, and drift triggers that AI platform and GRC teams can inspect before approving production agentic remediation.",
+  "missing_identity_workflows": [],
+  "positioning": {
+    "buyer": "AI Platform, Security Engineering, Product Security, GRC, procurement security, vendor-risk, and acquisition diligence teams",
+    "category": "Agentic AI system BOM and inspectability evidence",
+    "enterprise_promise": "SecurityRecipes can produce a current inventory of the agentic remediation system, including which agents may act, which MCP tools they can reach, what policies constrain them, what evidence proves control, and which changes require BOM regeneration.",
+    "why_now": "Agentic systems are becoming distributed software supply chains: models, prompts, skills, tools, MCP servers, memory, policies, identities, and evidence all change independently. Buyers need inspectability before they can approve scale."
+  },
+  "schema_version": "1.0",
+  "source_artifacts": {
+    "agent_identity_delegation_ledger": {
+      "path": "data/evidence/agent-identity-delegation-ledger.json",
+      "sha256": "be4ea217448ffe5ddc732b5d27b6e8a66e4532335f1c2899bc04c0fdf6150b42"
+    },
+    "agentic_assurance_pack": {
+      "path": "data/evidence/agentic-assurance-pack.json",
+      "sha256": "4491438c29bab11e389aa3dd2479b62ab5171ae635dac5694016eaf21f9b59a9"
+    },
+    "agentic_readiness_scorecard": {
+      "path": "data/evidence/agentic-readiness-scorecard.json",
+      "sha256": "d250827aca3322caaa5b10d7d3ca2ce6a517daafc3ed34a2cc266f2b1740ea5e"
+    },
+    "agentic_red_team_drill_pack": {
+      "path": "data/evidence/agentic-red-team-drill-pack.json",
+      "sha256": "c28356c01555a2badaf678238aa525abeb343ff2ed60e58f27c4af8736d1188b"
+    },
+    "agentic_system_bom_profile": {
+      "path": "data/assurance/agentic-system-bom-profile.json",
+      "sha256": "5d136e95149b04fbc6c7b856293b200ade4245bdb2c2697a583014878bea7725"
+    },
+    "connector_trust_pack": {
+      "path": "data/evidence/mcp-connector-trust-pack.json",
+      "sha256": "2982b7ab2dea084cd78295ad257cc4c8606c52938197cf61bb2692156dcf92be"
+    },
+    "gateway_policy_pack": {
+      "path": "data/policy/mcp-gateway-policy.json",
+      "sha256": "bb1dbf00ec5bee173a19dff65266f13d84501b94aca3239019a03d6e09546de2"
+    },
+    "workflow_control_plane_report": {
+      "path": "data/evidence/workflow-control-plane-report.json",
+      "sha256": "63d7bde4927f99436eb92ec10ded994b37a83517c189dfb61a036ecee9f9564c"
+    },
+    "workflow_manifest": {
+      "path": "data/control-plane/workflow-manifests.json",
+      "sha256": "22f45f06fee190b602ac27f300c94d72ab38646f76a1ad2e4f80923a3a444ceb"
+    }
+  },
+  "standards_alignment": [
+    {
+      "coverage": "AI governance, mapping, measurement, and management of system context and lifecycle risk.",
+      "id": "nist-ai-rmf-1.0",
+      "name": "NIST AI Risk Management Framework 1.0",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+    },
+    {
+      "coverage": "Generative AI lifecycle, third-party, data, measurement, and monitoring risk actions.",
+      "id": "nist-ai-600-1",
+      "name": "NIST AI RMF Generative AI Profile",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence"
+    },
+    {
+      "coverage": "Agent goal hijack, tool misuse, identity abuse, agentic supply chain, memory or context poisoning, cascading failures, and rogue agents.",
+      "id": "owasp-agentic-top-10-2026",
+      "name": "OWASP Top 10 for Agentic Applications 2026",
+      "url": "https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/"
+    },
+    {
+      "coverage": "AI system transparency, auditability, model lineage, data lineage, dependencies, and risk factors.",
+      "id": "owasp-aibom",
+      "name": "OWASP AI Bill of Materials Project",
+      "url": "https://owaspaibom.org/"
+    },
+    {
+      "coverage": "Agent inventory for tools, models, capabilities, MCP servers, knowledge, memory, and dynamic update triggers.",
+      "id": "aos-agbom",
+      "name": "Agent Observability Standard - Agent Bill of Materials",
+      "url": "https://aos.owasp.org/spec/inspect/"
+    },
+    {
+      "coverage": "Machine-readable BOM conventions for software, services, machine learning, cryptography, operations, vulnerabilities, and attestations.",
+      "id": "cyclonedx",
+      "name": "OWASP CycloneDX Bill of Materials",
+      "url": "https://owasp.org/www-project-cyclonedx/"
+    },
+    {
+      "coverage": "MCP confused deputy prevention, token passthrough avoidance, SSRF, session safety, scope minimization, and auditability.",
+      "id": "mcp-security-best-practices",
+      "name": "Model Context Protocol Security Best Practices",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices"
+    },
+    {
+      "coverage": "Vendor-neutral cloud AI control objectives, ownership, evidence, implementation guidance, and auditing guidance.",
+      "id": "csa-aicm",
+      "name": "Cloud Security Alliance AI Controls Matrix",
+      "url": "https://cloudsecurityalliance.org/artifacts/ai-controls-matrix"
+    }
+  ],
+  "update_triggers": [
+    {
+      "component_type": "agent_classes",
+      "id": "agent_changed",
+      "required_action": "Regenerate the BOM, rerun readiness scoring, and review impacted identity contracts.",
+      "trigger": "Agent host, model provider, tool authority, or runtime sandbox changes."
+    },
+    {
+      "component_type": "mcp_connectors",
+      "id": "mcp_server_changed",
+      "required_action": "Regenerate connector trust, red-team drills, readiness, and the BOM before production use.",
+      "trigger": "MCP server transport, endpoint, namespace, auth model, or capabilities change."
+    },
+    {
+      "component_type": "mcp_connectors",
+      "id": "tool_changed",
+      "required_action": "Quarantine the connector until tool-description pinning and result-inspection evidence are refreshed.",
+      "trigger": "Tool description, schema, allowed operation, forbidden operation, or access mode changes."
+    },
+    {
+      "component_type": "agent_classes",
+      "id": "model_changed",
+      "required_action": "Run prompt regression tests, agentic red-team drills, readiness scoring, and BOM regeneration.",
+      "trigger": "Model family, model version, context window, reasoning mode, budget control, or provider contract changes."
+    },
+    {
+      "component_type": "knowledge_sources",
+      "id": "knowledge_changed",
+      "required_action": "Regenerate the BOM and prove source artifact hashes align.",
+      "trigger": "Recipe root, prompt library, workflow manifest, policy pack, or evidence pack changes."
+    },
+    {
+      "component_type": "agent_classes",
+      "id": "memory_changed",
+      "required_action": "Hold for manual review because SecurityRecipes currently treats remediation agents as no-persistent-memory by default.",
+      "trigger": "Persistent memory, vector store, cache, transcript retention, or cross-run context policy changes."
+    },
+    {
+      "component_type": "policy_components",
+      "id": "policy_changed",
+      "required_action": "Regenerate policy, identity, assurance, red-team, readiness, and BOM artifacts in CI.",
+      "trigger": "Gateway default decision, runtime attributes, gate phases, branch scope, approval holds, or kill signals change."
+    },
+    {
+      "component_type": "workflows",
+      "id": "workflow_changed",
+      "required_action": "Regenerate all downstream evidence packs and refresh the workflow BOM row.",
+      "trigger": "Workflow status, maturity, scope, eligible finding class, MCP context, owner, KPI, or evidence contract changes."
+    },
+    {
+      "component_type": "mcp_connectors",
+      "id": "connector_trust_changed",
+      "required_action": "Regenerate connector trust, red-team, readiness, and BOM artifacts.",
+      "trigger": "Connector tier, owner, status, required controls, evidence records, promotion criteria, or kill signals change."
+    },
+    {
+      "component_type": "agent_identities",
+      "id": "identity_contract_changed",
+      "required_action": "Regenerate identity, red-team, readiness, and BOM artifacts.",
+      "trigger": "Delegated authority, explicit denies, token rules, reviewer pool, runtime contract, or credential model changes."
+    },
+    {
+      "component_type": "evaluation_drills",
+      "id": "red_team_scenario_changed",
+      "required_action": "Regenerate drill pack, readiness scorecard, and BOM artifact.",
+      "trigger": "Scenario, attack family, pass criteria, fail signal, expected policy decision, or standards mapping changes."
+    },
+    {
+      "component_type": "evidence_artifacts",
+      "id": "readiness_model_changed",
+      "required_action": "Regenerate readiness scorecard and BOM artifact before reporting scale decisions.",
+      "trigger": "Readiness dimension, weight, blocker rule, or decision threshold changes."
+    }
+  ]
+}

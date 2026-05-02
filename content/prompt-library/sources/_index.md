@@ -4,7 +4,7 @@ linkTitle: Prompt Sources
 weight: 10
 toc: true
 sidebar:
-  open: true
+  open: false
 description: >
   A curated catalog of external, reputable sources for
   pre-engineered security prompts, red-team probes, guardrail
