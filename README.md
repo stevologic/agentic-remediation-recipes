@@ -96,6 +96,12 @@ and ships with:
 - **Secure Context Trust Pack** - generated provenance, source-hash,
   trust-tier, retrieval-policy, and workflow context-package evidence for
   the secure context layer agents consume through MCP.
+- **Secure Context Firewall** - deterministic allow, hold, deny, and
+  kill-session decisions before MCP-backed context is returned to an
+  agent.
+- **Agentic Threat Radar** - generated source-backed threat signals,
+  buyer triggers, mapped controls, and product roadmap priorities for
+  agentic AI and MCP security.
 - **Automation, not agentic** — what deterministic tooling still does
   best, and where agents should *not* replace it.
 - **Contribute** — fork-and-PR guide for adding recipes, prompts, or
@@ -336,6 +342,44 @@ the MCP server as `recipes_secure_context_trust_pack`.
 
 ---
 
+### Evaluate a secure context retrieval decision
+
+The secure context firewall turns the generated trust pack into a
+single pre-retrieval decision an MCP gateway, agent host, CI admission
+check, or policy sidecar can log and enforce:
+
+```bash
+python3 scripts/evaluate_secure_context_retrieval.py \
+  --workflow-id vulnerable-dependency-remediation \
+  --source-id prompt-library-recipes \
+  --retrieval-mode workflow_prompt_context \
+  --requested-path content/prompt-library/general/base-image-bump.md \
+  --expect-decision allow_public_context
+```
+
+The same decision function is exposed through the MCP server as
+`recipes_evaluate_context_retrieval_decision`.
+
+---
+
+### Generate the agentic threat radar
+
+The threat radar turns current agentic AI and MCP security guidance
+into a source-backed product artifact: threat signals, buyer triggers,
+mapped SecurityRecipes controls, MCP tool surfaces, and recommended
+roadmap moves.
+
+```bash
+python3 scripts/generate_agentic_threat_radar.py
+python3 scripts/generate_agentic_threat_radar.py --check
+```
+
+The generated artifact lives at
+`data/evidence/agentic-threat-radar.json` and is exposed through the
+MCP server as `recipes_agentic_threat_radar`.
+
+---
+
 ### Generate the MCP connector trust pack
 
 The connector trust pack joins the MCP connector registry, workflow
@@ -452,7 +496,7 @@ the top nav's **Contribute** link points at) and `LICENSE`.
 | **Agents** | Per-tool recipes for GitHub Copilot, Claude, Cursor, Codex, Devin — each with Install → Configure → Dispatch → Guardrails, plus General and Enterprise onboarding. |
 | **Prompt Library** | Tool-agnostic prompts under `general/` (OWASP Top 10 2026 audit, OWASP Top 10 2026 remediate) plus per-tool prompts for CVE triage, vulnerable deps, and SDE remediation. |
 | **MCP Servers** | Why MCP exists; connector catalog (risk, ownership, ticket, knowledge, code, observability); MCP gateway patterns; integration on-ramp. |
-| **Security Remediation** | Reference workflows a security team can operate: SDE, vulnerable dependencies, SAST, base images, artifact quarantine, classic vulnerable defaults, crypto payments, and DeFi / blockchain security. Includes the workflow control plane, MCP gateway policy pack, runtime decision evaluator, MCP connector trust registry, secure context trust pack, agentic assurance pack, readiness scorecard, red-team drill pack, agent identity ledger, Agentic System BOM, program metrics, reviewer playbook, rollout maturity model, and compliance mapping. |
+| **Security Remediation** | Reference workflows a security team can operate: SDE, vulnerable dependencies, SAST, base images, artifact quarantine, classic vulnerable defaults, crypto payments, and DeFi / blockchain security. Includes the agentic threat radar, workflow control plane, MCP gateway policy pack, runtime decision evaluator, MCP connector trust registry, secure context trust pack, secure context firewall, agentic assurance pack, readiness scorecard, red-team drill pack, agent identity ledger, Agentic System BOM, program metrics, reviewer playbook, rollout maturity model, and compliance mapping. |
 | **Automation** | The "just use a linter" checklist — deterministic automation that earns its keep before an agent ever runs. |
 | **Contribute** | How to add a recipe, a prompt, or a new workflow. |
 
@@ -661,14 +705,35 @@ approved for agent retrieval and how retrieved text is handled:
 
 - registry: `data/context/secure-context-registry.json`
 - generator: `scripts/generate_secure_context_trust_pack.py`
+- runtime evaluator: `scripts/evaluate_secure_context_retrieval.py`
 - pack: `data/evidence/secure-context-trust-pack.json`
-- MCP tool: `recipes_secure_context_trust_pack`
+- MCP tools: `recipes_secure_context_trust_pack`,
+  `recipes_evaluate_context_retrieval_decision`
 
 The pack records source owners, trust tiers, source hashes, retrieval
 decisions, poisoning controls, citation requirements, and per-workflow
 context package hashes. CI runs the generator in `--check` mode so the
 secure context layer cannot drift silently from source-controlled docs,
-policy, evidence, or MCP runtime code.
+policy, evidence, or MCP runtime code. The runtime evaluator uses that
+pack as a default-deny context firewall: unregistered context is denied,
+workflow-unapproved context is denied, hash drift holds for
+recertification, and prohibited data classes kill the session.
+
+### Agentic threat radar
+
+The generated agentic threat radar maps current external guidance to
+SecurityRecipes product capabilities and roadmap priorities:
+
+- source registry: `data/intelligence/agentic-threat-radar-sources.json`
+- generator: `scripts/generate_agentic_threat_radar.py`
+- radar: `data/evidence/agentic-threat-radar.json`
+- MCP tool: `recipes_agentic_threat_radar`
+
+The radar records source-backed signals, priority, horizon, confidence,
+buyer triggers, mapped capabilities, source URLs, and recommended
+roadmap actions. CI runs the generator in `--check` mode so market and
+threat intelligence cannot drift silently from the generated MCP-facing
+artifact.
 
 ### Standalone MCP server (Python + Docker)
 
@@ -729,7 +794,10 @@ Edit `mcp-server.toml`:
 - `agentic_system_bom_path` -> generated Agentic System BOM exposed
   through the `recipes_agentic_system_bom` MCP tool
 - `secure_context_trust_pack_path` -> generated secure context trust pack
-  exposed through the `recipes_secure_context_trust_pack` MCP tool
+  exposed through the `recipes_secure_context_trust_pack` and
+  `recipes_evaluate_context_retrieval_decision` MCP tools
+- `threat_radar_path` -> generated agentic threat radar exposed through
+  the `recipes_agentic_threat_radar` MCP tool
 
 This lets teams host the Hugo site and MCP server under different domains
 without changing code.

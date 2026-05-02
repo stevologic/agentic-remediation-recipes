@@ -42,8 +42,13 @@ readiness_scorecard_path = "./data/evidence/agentic-readiness-scorecard.json"
 agentic_system_bom_path = "./data/evidence/agentic-system-bom.json"
 
 # Generated secure context provenance and retrieval trust pack exposed through
-# the recipes_secure_context_trust_pack MCP tool.
+# the recipes_secure_context_trust_pack and
+# recipes_evaluate_context_retrieval_decision MCP tools.
 secure_context_trust_pack_path = "./data/evidence/secure-context-trust-pack.json"
+
+# Generated source-backed agentic threat and product radar exposed through
+# the recipes_agentic_threat_radar MCP tool.
+threat_radar_path = "./data/evidence/agentic-threat-radar.json"
 
 # Cache and behavior tuning
 cache_ttl_seconds = 3600

@@ -220,6 +220,11 @@ jobs:
         run: |
           python3 scripts/generate_agentic_system_bom.py --check
 
+      - name: Validate agentic threat radar
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/generate_agentic_threat_radar.py --check
+
       - name: Refresh secure context trust pack
         working-directory: ${{ steps.hugo-dir.outputs.path }}
         run: |
@@ -231,7 +236,38 @@ jobs:
       - name: Validate secure context trust pack
         working-directory: ${{ steps.hugo-dir.outputs.path }}
         run: |
-          python3 scripts/generate_secure_context_trust_pack.py --check
+          python3 scripts/generate_secure_context_trust_pack.py --check --update-if-stale
+
+      - name: Validate secure context retrieval decisions
+        working-directory: ${{ steps.hugo-dir.outputs.path }}
+        run: |
+          python3 scripts/evaluate_secure_context_retrieval.py \
+            --workflow-id vulnerable-dependency-remediation \
+            --source-id prompt-library-recipes \
+            --retrieval-mode workflow_prompt_context \
+            --requested-path content/prompt-library/general/base-image-bump.md \
+            --expect-decision allow_public_context
+
+          python3 scripts/evaluate_secure_context_retrieval.py \
+            --workflow-id sensitive-data-remediation \
+            --source-id workflow-control-plane \
+            --retrieval-mode policy_context \
+            --requested-path data/control-plane/workflow-manifests.json \
+            --expect-decision allow_policy_context_with_citation
+
+          python3 scripts/evaluate_secure_context_retrieval.py \
+            --workflow-id vulnerable-dependency-remediation \
+            --source-id mcp-server-runtime \
+            --retrieval-mode tool_contract_context \
+            --requested-path mcp_server.py \
+            --expect-decision deny_unapproved_workflow_context
+
+          python3 scripts/evaluate_secure_context_retrieval.py \
+            --workflow-id vulnerable-dependency-remediation \
+            --source-id prompt-library-recipes \
+            --retrieval-mode workflow_prompt_context \
+            --data-class private_key \
+            --expect-decision kill_session_on_prohibited_context
 
       - name: Build site
         working-directory: ${{ steps.hugo-dir.outputs.path }}

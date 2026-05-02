@@ -248,6 +248,11 @@ menu:
       name: Overview
       pageRef: security-remediation
       weight: 60
+    - identifier: secrem-threat-radar
+      parent: security-remediation
+      name: Agentic Threat Radar
+      pageRef: security-remediation/agentic-threat-radar
+      weight: 66
     - identifier: secrem-control-plane
       parent: security-remediation
       name: Workflow Control Plane

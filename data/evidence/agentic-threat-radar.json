@@ -1,0 +1,1962 @@
+{
+  "acquisition_story": {
+    "category_claim": "SecurityRecipes is the secure context and control evidence layer for agentic AI, not only a prompt library.",
+    "defensibility": [
+      "Open knowledge attracts practitioners and creates distribution.",
+      "Generated evidence packs create machine-readable trust that buyers and MCP clients can consume.",
+      "Runtime evaluators move policy from prose to enforceable decisions.",
+      "Threat radar keeps the product roadmap anchored to current standards and frontier-lab guidance."
+    ],
+    "likely_acquirer_fit": [
+      "Frontier AI labs that need secure MCP and agent governance primitives.",
+      "Security platforms that need agentic remediation and AI control-plane evidence.",
+      "Cloud and developer platforms that need trustworthy agent enablement for enterprise buyers."
+    ],
+    "monetization_path": "Keep the knowledge base open, then sell hosted MCP policy, context signing, connector intake, runtime decision logs, eval replay, and trust-center exports."
+  },
+  "capability_coverage": [
+    {
+      "capability_id": "agent-identity-ledger",
+      "critical_or_high_signal_count": 3,
+      "max_strategic_score": 95,
+      "signal_count": 3,
+      "signal_ids": [
+        "mcp-token-passthrough-and-scope-creep",
+        "agent-identity-explosion",
+        "human-approval-and-tool-safeguards"
+      ]
+    },
+    {
+      "capability_id": "agentic-assurance-pack",
+      "critical_or_high_signal_count": 5,
+      "max_strategic_score": 95,
+      "signal_count": 6,
+      "signal_ids": [
+        "mcp-token-passthrough-and-scope-creep",
+        "agent-identity-explosion",
+        "context-over-sharing-and-memory-poisoning",
+        "ai-data-security-and-provenance",
+        "audit-telemetry-and-evidence-chain",
+        "secure-by-design-agentic-products"
+      ]
+    },
+    {
+      "capability_id": "agentic-readiness-scorecard",
+      "critical_or_high_signal_count": 3,
+      "max_strategic_score": 88,
+      "signal_count": 4,
+      "signal_ids": [
+        "audit-telemetry-and-evidence-chain",
+        "human-approval-and-tool-safeguards",
+        "continuous-red-team-and-evals",
+        "secure-by-design-agentic-products"
+      ]
+    },
+    {
+      "capability_id": "agentic-red-team-drill-pack",
+      "critical_or_high_signal_count": 4,
+      "max_strategic_score": 98,
+      "signal_count": 4,
+      "signal_ids": [
+        "indirect-prompt-injection-social-engineering",
+        "tool-poisoning-and-shadow-mcp",
+        "human-approval-and-tool-safeguards",
+        "continuous-red-team-and-evals"
+      ]
+    },
+    {
+      "capability_id": "agentic-system-bom",
+      "critical_or_high_signal_count": 6,
+      "max_strategic_score": 93,
+      "signal_count": 7,
+      "signal_ids": [
+        "agent-identity-explosion",
+        "context-over-sharing-and-memory-poisoning",
+        "tool-poisoning-and-shadow-mcp",
+        "ai-data-security-and-provenance",
+        "audit-telemetry-and-evidence-chain",
+        "continuous-red-team-and-evals",
+        "secure-by-design-agentic-products"
+      ]
+    },
+    {
+      "capability_id": "agentic-threat-radar",
+      "critical_or_high_signal_count": 3,
+      "max_strategic_score": 88,
+      "signal_count": 4,
+      "signal_ids": [
+        "ai-data-security-and-provenance",
+        "audit-telemetry-and-evidence-chain",
+        "continuous-red-team-and-evals",
+        "secure-by-design-agentic-products"
+      ]
+    },
+    {
+      "capability_id": "mcp-connector-trust-pack",
+      "critical_or_high_signal_count": 2,
+      "max_strategic_score": 95,
+      "signal_count": 2,
+      "signal_ids": [
+        "mcp-token-passthrough-and-scope-creep",
+        "tool-poisoning-and-shadow-mcp"
+      ]
+    },
+    {
+      "capability_id": "mcp-gateway-policy",
+      "critical_or_high_signal_count": 5,
+      "max_strategic_score": 98,
+      "signal_count": 5,
+      "signal_ids": [
+        "indirect-prompt-injection-social-engineering",
+        "mcp-token-passthrough-and-scope-creep",
+        "agent-identity-explosion",
+        "tool-poisoning-and-shadow-mcp",
+        "human-approval-and-tool-safeguards"
+      ]
+    },
+    {
+      "capability_id": "secure-context-firewall",
+      "critical_or_high_signal_count": 2,
+      "max_strategic_score": 98,
+      "signal_count": 2,
+      "signal_ids": [
+        "indirect-prompt-injection-social-engineering",
+        "context-over-sharing-and-memory-poisoning"
+      ]
+    },
+    {
+      "capability_id": "secure-context-trust-pack",
+      "critical_or_high_signal_count": 3,
+      "max_strategic_score": 98,
+      "signal_count": 3,
+      "signal_ids": [
+        "indirect-prompt-injection-social-engineering",
+        "context-over-sharing-and-memory-poisoning",
+        "ai-data-security-and-provenance"
+      ]
+    }
+  ],
+  "enterprise_adoption_packet": {
+    "board_level_claim": "SecurityRecipes tracks current agentic AI risk and maps it to enforceable secure-context, MCP, identity, evidence, and eval controls.",
+    "default_questions_answered": [
+      "Which agentic AI risks are most urgent right now?",
+      "Which sources support each risk signal?",
+      "Which SecurityRecipes controls already address the signal?",
+      "Which MCP tools expose the evidence?",
+      "Which product investments should come next?"
+    ],
+    "recommended_first_use": "Attach this radar to AI platform strategy reviews, MCP server intake, quarterly threat-model updates, procurement security reviews, and acquisition diligence.",
+    "sales_motion": "Lead with public threat intelligence and open recipes, then sell the hosted control plane that keeps customer-specific context, connector evidence, policy decisions, and eval replay current."
+  },
+  "failures": [],
+  "feature_backlog": [
+    {
+      "id": "hosted-context-signing",
+      "related_signal_ids": [
+        "context-over-sharing-and-memory-poisoning",
+        "ai-data-security-and-provenance",
+        "indirect-prompt-injection-social-engineering"
+      ],
+      "status": "recommended_next",
+      "supporting_signal_count": 3,
+      "supporting_signal_max_score": 98,
+      "supporting_signal_priority_counts": {
+        "critical": 1,
+        "high": 2
+      },
+      "title": "Hosted context signing and recertification",
+      "why": "Context provenance and hash drift are central to secure retrieval, and this is a natural paid layer above the open trust pack."
+    },
+    {
+      "id": "mcp-connector-intake-scanner",
+      "related_signal_ids": [
+        "tool-poisoning-and-shadow-mcp",
+        "mcp-token-passthrough-and-scope-creep",
+        "agent-identity-explosion"
+      ],
+      "status": "recommended_next",
+      "supporting_signal_count": 3,
+      "supporting_signal_max_score": 95,
+      "supporting_signal_priority_counts": {
+        "critical": 2,
+        "high": 1
+      },
+      "title": "MCP connector intake scanner",
+      "why": "Connector sprawl, tool poisoning, shadow MCP servers, and scope drift are strong enterprise pain points with a clear MCP-native monetization path."
+    },
+    {
+      "id": "agent-run-attestation",
+      "related_signal_ids": [
+        "agent-identity-explosion",
+        "human-approval-and-tool-safeguards",
+        "audit-telemetry-and-evidence-chain"
+      ],
+      "status": "recommended_next",
+      "supporting_signal_count": 3,
+      "supporting_signal_max_score": 93,
+      "supporting_signal_priority_counts": {
+        "critical": 1,
+        "high": 2
+      },
+      "title": "Agent run attestation and approval receipts",
+      "why": "Buyers need to prove which agent acted, which context it used, which policy allowed it, and who approved high-risk steps."
+    }
+  ],
+  "generated_at": "2026-05-02",
+  "intent": "Maintain a source-backed market and threat radar for SecurityRecipes so the secure context layer tracks current agentic AI risk, MCP security guidance, enterprise buyer pressure, and product opportunities before they become stale documentation.",
+  "path_evidence": [
+    {
+      "path": "content/security-remediation/agentic-threat-radar/_index.md",
+      "sha256": "448f543fbb2f1b3fa02d61127ade37958fd7e0964344233bea577a4d24713197"
+    },
+    {
+      "path": "content/security-remediation/secure-context-firewall/_index.md",
+      "sha256": "0dfbc3b8e019f6e16bbd1e5be69b4ea405413b6c5986085652119aafc4a51e9c"
+    },
+    {
+      "path": "data/assurance/agentic-assurance-control-map.json",
+      "sha256": "46a4d34cbdcaa02cc2f830b6cbaacb13aafda254713dad0146400fd088ebfbc8"
+    },
+    {
+      "path": "data/assurance/agentic-readiness-model.json",
+      "sha256": "dba8c43d2bdf9a2b5e6c2a0ee3d9b57bae08c24db81147a0d833bd0a50e61881"
+    },
+    {
+      "path": "data/assurance/agentic-red-team-scenario-map.json",
+      "sha256": "5c731d46779d814c402d2c179a78bd6027cd133f96000653c3f221c3c353d60a"
+    },
+    {
+      "path": "data/assurance/agentic-system-bom-profile.json",
+      "sha256": "5d136e95149b04fbc6c7b856293b200ade4245bdb2c2697a583014878bea7725"
+    },
+    {
+      "path": "data/context/secure-context-registry.json",
+      "sha256": "2048ca84dc5d53705a90163370e61e6dacc5fe3fdff7755f0df505e5d2896578"
+    },
+    {
+      "path": "data/evidence/agent-identity-delegation-ledger.json",
+      "sha256": "690de03ff300a5d11f99676422fb9f6db0c69c48fb7e03ebccf3a1429ef60551"
+    },
+    {
+      "path": "data/evidence/agentic-assurance-pack.json",
+      "sha256": "0b09ed31de95a42da6d711374b560f326d4e96458f1ea4f1e30c7fa38107563e"
+    },
+    {
+      "path": "data/evidence/agentic-readiness-scorecard.json",
+      "sha256": "ebff0d9edaabc6046f0d167c82544be088222b872f3d6e7f1ccda6adc4ace755"
+    },
+    {
+      "path": "data/evidence/agentic-red-team-drill-pack.json",
+      "sha256": "f06b0824cd1fd68931a63152193469ab91ea480868e34dfde532ae94f229ba8b"
+    },
+    {
+      "path": "data/evidence/agentic-system-bom.json",
+      "sha256": "4cd44626396d6c04077ab0e78ac9830d5e7fba6208e50663a079dcccf12b16e7"
+    },
+    {
+      "path": "data/evidence/mcp-connector-trust-pack.json",
+      "sha256": "2982b7ab2dea084cd78295ad257cc4c8606c52938197cf61bb2692156dcf92be"
+    },
+    {
+      "path": "data/evidence/secure-context-trust-pack.json",
+      "sha256": "e7eb59b441f42e84bf1655f47e4f0512af02c507837739f16f6ab7a2ad9a8530"
+    },
+    {
+      "path": "data/intelligence/agentic-threat-radar-sources.json",
+      "sha256": "f15d9773f0372f38bf6ff2a6a805b03281da66112c07d1ea626b929dca0fb5aa"
+    },
+    {
+      "path": "data/mcp/connector-trust-registry.json",
+      "sha256": "cd05c4d985ed46c7446099134dda29c591a62a9be2678c90c60a0b74de93e47d"
+    },
+    {
+      "path": "data/policy/mcp-gateway-policy.json",
+      "sha256": "bb1dbf00ec5bee173a19dff65266f13d84501b94aca3239019a03d6e09546de2"
+    },
+    {
+      "path": "scripts/evaluate_secure_context_retrieval.py",
+      "sha256": "3269ebdd020842ea0f6234c417aff55b9418a8048d313f9a09bfb8964a1a7537"
+    },
+    {
+      "path": "scripts/generate_agent_identity_ledger.py",
+      "sha256": "83bc081dbe70c64018239903babe7ce1b7b1cfb30bf8ccceb589c1a72346c8a8"
+    },
+    {
+      "path": "scripts/generate_agentic_assurance_pack.py",
+      "sha256": "d76f657cd434ad6cc83d50b78708925aaea85e5626aff1c0e251ef8232b3d6b9"
+    },
+    {
+      "path": "scripts/generate_agentic_readiness_scorecard.py",
+      "sha256": "2c2722eee7645691773c23bde6917faf6e33fd7f57aa270fff9e6401e74b45d1"
+    },
+    {
+      "path": "scripts/generate_agentic_red_team_drill_pack.py",
+      "sha256": "698aa4668588341ca2754a210d045ef797ff093cb9b6606eef7c903c708377c9"
+    },
+    {
+      "path": "scripts/generate_agentic_system_bom.py",
+      "sha256": "22c6dc80ed751191ac7e752a574aded31a6063c5d76801905cd7025c11d9dd83"
+    },
+    {
+      "path": "scripts/generate_mcp_connector_trust_pack.py",
+      "sha256": "2f049089336d36a05faefec7632153b63376715b727893eb5331cb7a90f100c6"
+    },
+    {
+      "path": "scripts/generate_mcp_gateway_policy.py",
+      "sha256": "1b39704bafda6ba2adc09cae5783a33ffe557038d351494aee3cd8aba9edf9f3"
+    },
+    {
+      "path": "scripts/generate_secure_context_trust_pack.py",
+      "sha256": "ed0642a89f46c9aa9717b649062f3b5209ca05f6821a1b89841a1da55a0895aa"
+    }
+  ],
+  "positioning": {
+    "buyer": "AI Platform, Security Engineering, AppSec, Product Security, GRC, procurement security, vendor-risk, and acquisition diligence teams",
+    "category": "Agentic AI threat intelligence and secure context product strategy",
+    "enterprise_promise": "SecurityRecipes converts current agentic AI security guidance into MCP-readable threat signals, mapped controls, buyer triggers, and product roadmap priorities.",
+    "why_now": "Agentic systems now combine autonomy, private data, untrusted context, tool execution, MCP servers, and non-human identities. Enterprise buyers need a continuously reviewed control layer that explains which risks are current, which controls exist, and which gaps deserve investment."
+  },
+  "product_capabilities": [
+    {
+      "buyer_value": "Turns external guidance into a current, source-backed product roadmap and executive risk narrative.",
+      "evidence_paths": [
+        "data/intelligence/agentic-threat-radar-sources.json",
+        "data/evidence/agentic-threat-radar.json",
+        "content/security-remediation/agentic-threat-radar/_index.md"
+      ],
+      "id": "agentic-threat-radar",
+      "mcp_tools": [
+        "recipes_agentic_threat_radar"
+      ],
+      "status": "implemented",
+      "title": "Agentic Threat Radar"
+    },
+    {
+      "buyer_value": "Proves which context sources agents may retrieve, who owns them, and which hashes show current state.",
+      "evidence_paths": [
+        "data/context/secure-context-registry.json",
+        "data/evidence/secure-context-trust-pack.json",
+        "scripts/generate_secure_context_trust_pack.py"
+      ],
+      "id": "secure-context-trust-pack",
+      "mcp_tools": [
+        "recipes_secure_context_trust_pack"
+      ],
+      "status": "implemented",
+      "title": "Secure Context Trust Pack"
+    },
+    {
+      "buyer_value": "Converts retrieval policy into deterministic allow, hold, deny, or kill-session decisions before agents receive context.",
+      "evidence_paths": [
+        "scripts/evaluate_secure_context_retrieval.py",
+        "content/security-remediation/secure-context-firewall/_index.md"
+      ],
+      "id": "secure-context-firewall",
+      "mcp_tools": [
+        "recipes_evaluate_context_retrieval_decision"
+      ],
+      "status": "implemented",
+      "title": "Secure Context Firewall"
+    },
+    {
+      "buyer_value": "Enforces default-deny tool access, approval holds, scoped branch writes, and runtime kill decisions.",
+      "evidence_paths": [
+        "data/policy/mcp-gateway-policy.json",
+        "scripts/generate_mcp_gateway_policy.py"
+      ],
+      "id": "mcp-gateway-policy",
+      "mcp_tools": [
+        "recipes_mcp_gateway_policy",
+        "recipes_evaluate_mcp_gateway_decision"
+      ],
+      "status": "implemented",
+      "title": "MCP Gateway Policy Pack"
+    },
+    {
+      "buyer_value": "Defines non-human identity contracts, delegated authority, explicit denies, owner links, token rules, and revocation expectations.",
+      "evidence_paths": [
+        "data/evidence/agent-identity-delegation-ledger.json",
+        "scripts/generate_agent_identity_ledger.py"
+      ],
+      "id": "agent-identity-ledger",
+      "mcp_tools": [
+        "recipes_agent_identity_ledger"
+      ],
+      "status": "implemented",
+      "title": "Agent Identity and Delegation Ledger"
+    },
+    {
+      "buyer_value": "Inventories MCP namespaces, owners, trust tiers, controls, promotion criteria, and kill signals.",
+      "evidence_paths": [
+        "data/mcp/connector-trust-registry.json",
+        "data/evidence/mcp-connector-trust-pack.json",
+        "scripts/generate_mcp_connector_trust_pack.py"
+      ],
+      "id": "mcp-connector-trust-pack",
+      "mcp_tools": [
+        "recipes_mcp_connector_trust_pack"
+      ],
+      "status": "implemented",
+      "title": "MCP Connector Trust Pack"
+    },
+    {
+      "buyer_value": "Turns agentic risks into repeatable adversarial drills with expected decisions and evidence requirements.",
+      "evidence_paths": [
+        "data/assurance/agentic-red-team-scenario-map.json",
+        "data/evidence/agentic-red-team-drill-pack.json",
+        "scripts/generate_agentic_red_team_drill_pack.py"
+      ],
+      "id": "agentic-red-team-drill-pack",
+      "mcp_tools": [
+        "recipes_agentic_red_team_drill_pack"
+      ],
+      "status": "implemented",
+      "title": "Agentic Red-Team Drill Pack"
+    },
+    {
+      "buyer_value": "Converts control evidence into scale, pilot, gate, or block decisions.",
+      "evidence_paths": [
+        "data/assurance/agentic-readiness-model.json",
+        "data/evidence/agentic-readiness-scorecard.json",
+        "scripts/generate_agentic_readiness_scorecard.py"
+      ],
+      "id": "agentic-readiness-scorecard",
+      "mcp_tools": [
+        "recipes_agentic_readiness_scorecard"
+      ],
+      "status": "implemented",
+      "title": "Agentic Readiness Scorecard"
+    },
+    {
+      "buyer_value": "Makes workflows, agents, identities, MCP connectors, evidence, evals, and drift triggers inspectable.",
+      "evidence_paths": [
+        "data/assurance/agentic-system-bom-profile.json",
+        "data/evidence/agentic-system-bom.json",
+        "scripts/generate_agentic_system_bom.py"
+      ],
+      "id": "agentic-system-bom",
+      "mcp_tools": [
+        "recipes_agentic_system_bom"
+      ],
+      "status": "implemented",
+      "title": "Agentic System BOM"
+    },
+    {
+      "buyer_value": "Packages controls, workflow evidence, standards mapping, and adoption story for AI platform and GRC review.",
+      "evidence_paths": [
+        "data/assurance/agentic-assurance-control-map.json",
+        "data/evidence/agentic-assurance-pack.json",
+        "scripts/generate_agentic_assurance_pack.py"
+      ],
+      "id": "agentic-assurance-pack",
+      "mcp_tools": [
+        "recipes_agentic_assurance_pack"
+      ],
+      "status": "implemented",
+      "title": "Agentic Assurance Pack"
+    }
+  ],
+  "schema_version": "1.0",
+  "selected_feature": {
+    "id": "agentic-threat-radar",
+    "implementation": [
+      "Source registry under data/intelligence.",
+      "Deterministic generator under scripts.",
+      "Generated evidence pack under data/evidence.",
+      "Human-readable docs page under security-remediation.",
+      "MCP tool exposure through recipes_agentic_threat_radar."
+    ],
+    "reason": "It increases credibility by proving SecurityRecipes can translate fast-moving AI security guidance into current, productized, MCP-readable control evidence."
+  },
+  "source_artifacts": {
+    "agentic_threat_radar_sources": {
+      "path": "data/intelligence/agentic-threat-radar-sources.json",
+      "sha256": "f15d9773f0372f38bf6ff2a6a805b03281da66112c07d1ea626b929dca0fb5aa"
+    }
+  },
+  "source_references": [
+    {
+      "id": "owasp-agentic-top-10-2026",
+      "name": "OWASP Top 10 for Agentic Applications",
+      "published": "2025-12-09",
+      "publisher": "OWASP GenAI Security Project",
+      "source_class": "industry_standard",
+      "url": "https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/",
+      "why_it_matters": "Vendor-neutral consensus guidance now names agent behavior hijacking, tool misuse, identity abuse, agentic supply chain, cascading failures, and rogue behavior as distinct risks."
+    },
+    {
+      "id": "owasp-agentic-threats-2025",
+      "name": "Agentic AI Threats and Mitigations",
+      "published": "2025-02-17",
+      "publisher": "OWASP Agentic Security Initiative",
+      "source_class": "industry_standard",
+      "url": "https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/",
+      "why_it_matters": "Threat-model-based agentic AI guidance reinforces that autonomy, tools, delegation, and retrieved context require controls beyond classic LLM app hardening."
+    },
+    {
+      "id": "owasp-mcp-top-10-2025",
+      "name": "OWASP Top 10 for Model Context Protocol",
+      "published": "2025",
+      "publisher": "OWASP Foundation",
+      "source_class": "industry_standard",
+      "url": "https://owasp.org/www-project-mcp-top-10/",
+      "why_it_matters": "MCP-specific risks include token mismanagement, scope creep, tool poisoning, command execution, auth gaps, missing telemetry, shadow servers, and context over-sharing."
+    },
+    {
+      "id": "mcp-authorization-2025-11-25",
+      "name": "Model Context Protocol Authorization Specification",
+      "published": "2025-11-25",
+      "publisher": "Model Context Protocol",
+      "source_class": "protocol_specification",
+      "url": "https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization",
+      "why_it_matters": "The current MCP authorization spec requires OAuth 2.1 style bearer-token handling, resource indicators, token audience validation, PKCE, HTTPS, and strict token use."
+    },
+    {
+      "id": "mcp-security-best-practices-2025",
+      "name": "Model Context Protocol Security Best Practices",
+      "published": "2025-06-18",
+      "publisher": "Model Context Protocol",
+      "source_class": "protocol_guidance",
+      "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices",
+      "why_it_matters": "MCP guidance emphasizes token-passthrough avoidance, confused deputy prevention, scope minimization, session safety, SSRF controls, and auditability."
+    },
+    {
+      "id": "microsoft-indirect-prompt-injection-2026",
+      "name": "Defend against indirect prompt injection attacks",
+      "published": "2026-03-24",
+      "publisher": "Microsoft Learn",
+      "source_class": "vendor_architecture_guidance",
+      "url": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/defend-indirect-prompt-injection",
+      "why_it_matters": "Microsoft frames indirect prompt injection as a defense-in-depth problem requiring prompt shields, spotlighting, plan drift detection, critic agents, tool-chain analysis, IFC, least privilege, short-lived privileges, and human review."
+    },
+    {
+      "id": "openai-prompt-injections-2025",
+      "name": "Understanding prompt injections: a frontier security challenge",
+      "published": "2025-11-07",
+      "publisher": "OpenAI",
+      "source_class": "frontier_lab_guidance",
+      "url": "https://openai.com/index/prompt-injections",
+      "why_it_matters": "OpenAI describes prompt injection as a frontier social-engineering risk that grows as agents gain access to sensitive data and actions."
+    },
+    {
+      "id": "openai-agent-safety-2026",
+      "name": "Safety in building agents",
+      "published": "2026",
+      "publisher": "OpenAI API",
+      "source_class": "frontier_lab_guidance",
+      "url": "https://platform.openai.com/docs/guides/agent-builder-safety",
+      "why_it_matters": "Agent Builder guidance recommends structured outputs, clear developer guidance, tool approvals, guardrails, trace graders, evals, and careful MCP tool calling."
+    },
+    {
+      "id": "openai-agent-prompt-injection-2026",
+      "name": "Designing AI agents to resist prompt injection",
+      "published": "2026-03-11",
+      "publisher": "OpenAI",
+      "source_class": "frontier_lab_guidance",
+      "url": "https://openai.com/index/designing-agents-to-resist-prompt-injection/",
+      "why_it_matters": "OpenAI notes that real prompt injection increasingly resembles social engineering, so defenses cannot depend only on string filtering."
+    },
+    {
+      "id": "nist-ai-rmf-2026-critical-infrastructure",
+      "name": "NIST AI Risk Management Framework",
+      "published": "2026-04-07",
+      "publisher": "NIST",
+      "source_class": "government_framework",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "why_it_matters": "NIST continues expanding AI RMF work, including a 2026 concept note for trustworthy AI in critical infrastructure, reinforcing governance, measurement, and lifecycle risk management."
+    },
+    {
+      "id": "nist-ai-600-1",
+      "name": "Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile",
+      "published": "2024-07-26",
+      "publisher": "NIST",
+      "source_class": "government_framework",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+      "why_it_matters": "The generative AI profile anchors data provenance, third-party, monitoring, evaluation, and risk-management expectations for enterprise AI systems."
+    },
+    {
+      "id": "cisa-ai-data-security-2025",
+      "name": "AI Data Security: Best Practices for Securing Data Used to Train and Operate AI Systems",
+      "published": "2025-05-22",
+      "publisher": "CISA, NSA, FBI, and international partners",
+      "source_class": "government_guidance",
+      "url": "https://www.cisa.gov/resources-tools/resources/ai-data-security-best-practices-securing-data-used-train-operate-ai-systems",
+      "why_it_matters": "Joint guidance highlights data security, integrity, monitoring, threat detection, and network defense across AI development, testing, deployment, and operation."
+    },
+    {
+      "id": "cisa-secure-by-design-ai",
+      "name": "Software Must Be Secure by Design, and Artificial Intelligence Is No Exception",
+      "published": "2023-08-18",
+      "publisher": "CISA",
+      "source_class": "government_guidance",
+      "url": "https://www.cisa.gov/news-events/news/software-must-be-secure-design-and-artificial-intelligence-no-exception",
+      "why_it_matters": "CISA argues that AI is software and should inherit secure-by-design defaults, lifecycle security, transparency, vulnerability handling, SBOM-style accountability, and privacy by default."
+    },
+    {
+      "id": "csa-mcp-resource-center-2025",
+      "name": "Securing the Agentic AI Control Plane: Announcing the MCP Security Resource Center",
+      "published": "2025-08-20",
+      "publisher": "Cloud Security Alliance",
+      "source_class": "industry_guidance",
+      "url": "https://cloudsecurityalliance.org/articles/securing-the-agentic-ai-control-plane-announcing-the-mcp-security-resource-center",
+      "why_it_matters": "CSA frames MCP as part of the agentic AI control plane and highlights rapid adoption, broad client/server growth, and the need for structured MCP security resources."
+    },
+    {
+      "id": "csa-agentic-identity-2025",
+      "name": "Agentic AI, MCP, and the Identity Explosion You Cannot Ignore",
+      "published": "2025-07-10",
+      "publisher": "Cloud Security Alliance",
+      "source_class": "industry_guidance",
+      "url": "https://cloudsecurityalliance.org/blog/2025/07/10/agentic-ai-mcp-and-the-identity-explosion-you-can-t-ignore",
+      "why_it_matters": "Agentic AI creates non-human identity pressure because agents act through credentials, tokens, scopes, and delegated authority that traditional IAM often does not govern cleanly."
+    }
+  ],
+  "threat_radar_summary": {
+    "confidence_counts": {
+      "high": 10
+    },
+    "critical_or_high_signal_count": 9,
+    "feature_backlog_count": 3,
+    "horizon_counts": {
+      "next": 2,
+      "now": 8
+    },
+    "implemented_capability_count": 10,
+    "priority_counts": {
+      "critical": 3,
+      "high": 6,
+      "medium": 1
+    },
+    "signal_count": 10,
+    "source_class_counts": {
+      "frontier_lab_guidance": 3,
+      "government_framework": 2,
+      "government_guidance": 2,
+      "industry_guidance": 2,
+      "industry_standard": 3,
+      "protocol_guidance": 1,
+      "protocol_specification": 1,
+      "vendor_architecture_guidance": 1
+    },
+    "source_reference_count": 15,
+    "top_signals": [
+      {
+        "id": "indirect-prompt-injection-social-engineering",
+        "priority": "critical",
+        "strategic_score": 98,
+        "title": "Indirect prompt injection is now social engineering against agents"
+      },
+      {
+        "id": "mcp-token-passthrough-and-scope-creep",
+        "priority": "critical",
+        "strategic_score": 95,
+        "title": "MCP token audience, passthrough, and scope creep are control-plane risks"
+      },
+      {
+        "id": "agent-identity-explosion",
+        "priority": "critical",
+        "strategic_score": 93,
+        "title": "Agent identities are becoming a new non-human identity class"
+      },
+      {
+        "id": "context-over-sharing-and-memory-poisoning",
+        "priority": "high",
+        "strategic_score": 93,
+        "title": "Context over-sharing and memory poisoning make retrieval policy a product category"
+      },
+      {
+        "id": "tool-poisoning-and-shadow-mcp",
+        "priority": "high",
+        "strategic_score": 90,
+        "title": "Tool poisoning, schema drift, and shadow MCP servers expand the agent attack surface"
+      }
+    ]
+  },
+  "threat_signals": [
+    {
+      "buyer_trigger": "The buyer is connecting agents to mail, tickets, browsers, repositories, logs, or document stores.",
+      "capabilities": [
+        {
+          "buyer_value": "Proves which context sources agents may retrieve, who owns them, and which hashes show current state.",
+          "evidence_paths": [
+            "data/context/secure-context-registry.json",
+            "data/evidence/secure-context-trust-pack.json",
+            "scripts/generate_secure_context_trust_pack.py"
+          ],
+          "id": "secure-context-trust-pack",
+          "mcp_tools": [
+            "recipes_secure_context_trust_pack"
+          ],
+          "status": "implemented",
+          "title": "Secure Context Trust Pack"
+        },
+        {
+          "buyer_value": "Converts retrieval policy into deterministic allow, hold, deny, or kill-session decisions before agents receive context.",
+          "evidence_paths": [
+            "scripts/evaluate_secure_context_retrieval.py",
+            "content/security-remediation/secure-context-firewall/_index.md"
+          ],
+          "id": "secure-context-firewall",
+          "mcp_tools": [
+            "recipes_evaluate_context_retrieval_decision"
+          ],
+          "status": "implemented",
+          "title": "Secure Context Firewall"
+        },
+        {
+          "buyer_value": "Turns agentic risks into repeatable adversarial drills with expected decisions and evidence requirements.",
+          "evidence_paths": [
+            "data/assurance/agentic-red-team-scenario-map.json",
+            "data/evidence/agentic-red-team-drill-pack.json",
+            "scripts/generate_agentic_red_team_drill_pack.py"
+          ],
+          "id": "agentic-red-team-drill-pack",
+          "mcp_tools": [
+            "recipes_agentic_red_team_drill_pack"
+          ],
+          "status": "implemented",
+          "title": "Agentic Red-Team Drill Pack"
+        },
+        {
+          "buyer_value": "Enforces default-deny tool access, approval holds, scoped branch writes, and runtime kill decisions.",
+          "evidence_paths": [
+            "data/policy/mcp-gateway-policy.json",
+            "scripts/generate_mcp_gateway_policy.py"
+          ],
+          "id": "mcp-gateway-policy",
+          "mcp_tools": [
+            "recipes_mcp_gateway_policy",
+            "recipes_evaluate_mcp_gateway_decision"
+          ],
+          "status": "implemented",
+          "title": "MCP Gateway Policy Pack"
+        }
+      ],
+      "confidence": "high",
+      "control_objectives": [
+        "Demote retrieved text to evidence, never instruction.",
+        "Separate untrusted context extraction from privileged tool execution.",
+        "Require high-risk tool approvals and trace review.",
+        "Replay prompt-injection drills on every model or prompt change."
+      ],
+      "enterprise_risk": "A privileged agent can leak data, misdirect a workflow, invoke the wrong tool, or create a plausible but unsafe remediation while appearing to follow the user task.",
+      "horizon": "now",
+      "id": "indirect-prompt-injection-social-engineering",
+      "mapped_capability_ids": [
+        "secure-context-trust-pack",
+        "secure-context-firewall",
+        "agentic-red-team-drill-pack",
+        "mcp-gateway-policy"
+      ],
+      "priority": "critical",
+      "roadmap_action": "Productize a hosted context isolation and prompt-injection regression service around the secure context firewall.",
+      "scores": {
+        "defensibility": 5,
+        "ease_of_adoption": 4,
+        "enterprise_control_value": 5,
+        "market_urgency": 5,
+        "mcp_monetization_fit": 5
+      },
+      "source_ids": [
+        "microsoft-indirect-prompt-injection-2026",
+        "openai-prompt-injections-2025",
+        "openai-agent-prompt-injection-2026",
+        "owasp-agentic-threats-2025"
+      ],
+      "sources": [
+        {
+          "id": "microsoft-indirect-prompt-injection-2026",
+          "name": "Defend against indirect prompt injection attacks",
+          "published": "2026-03-24",
+          "publisher": "Microsoft Learn",
+          "source_class": "vendor_architecture_guidance",
+          "url": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/defend-indirect-prompt-injection"
+        },
+        {
+          "id": "openai-prompt-injections-2025",
+          "name": "Understanding prompt injections: a frontier security challenge",
+          "published": "2025-11-07",
+          "publisher": "OpenAI",
+          "source_class": "frontier_lab_guidance",
+          "url": "https://openai.com/index/prompt-injections"
+        },
+        {
+          "id": "openai-agent-prompt-injection-2026",
+          "name": "Designing AI agents to resist prompt injection",
+          "published": "2026-03-11",
+          "publisher": "OpenAI",
+          "source_class": "frontier_lab_guidance",
+          "url": "https://openai.com/index/designing-agents-to-resist-prompt-injection/"
+        },
+        {
+          "id": "owasp-agentic-threats-2025",
+          "name": "Agentic AI Threats and Mitigations",
+          "published": "2025-02-17",
+          "publisher": "OWASP Agentic Security Initiative",
+          "source_class": "industry_standard",
+          "url": "https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/"
+        }
+      ],
+      "strategic_score": 98,
+      "title": "Indirect prompt injection is now social engineering against agents",
+      "trend": "Agents increasingly process emails, documents, websites, tool results, and retrieved context that can contain hostile instructions. Filtering strings is insufficient because attacks manipulate context and intent."
+    },
+    {
+      "buyer_trigger": "The buyer is approving remote MCP servers or adding OAuth-backed enterprise connectors.",
+      "capabilities": [
+        {
+          "buyer_value": "Enforces default-deny tool access, approval holds, scoped branch writes, and runtime kill decisions.",
+          "evidence_paths": [
+            "data/policy/mcp-gateway-policy.json",
+            "scripts/generate_mcp_gateway_policy.py"
+          ],
+          "id": "mcp-gateway-policy",
+          "mcp_tools": [
+            "recipes_mcp_gateway_policy",
+            "recipes_evaluate_mcp_gateway_decision"
+          ],
+          "status": "implemented",
+          "title": "MCP Gateway Policy Pack"
+        },
+        {
+          "buyer_value": "Defines non-human identity contracts, delegated authority, explicit denies, owner links, token rules, and revocation expectations.",
+          "evidence_paths": [
+            "data/evidence/agent-identity-delegation-ledger.json",
+            "scripts/generate_agent_identity_ledger.py"
+          ],
+          "id": "agent-identity-ledger",
+          "mcp_tools": [
+            "recipes_agent_identity_ledger"
+          ],
+          "status": "implemented",
+          "title": "Agent Identity and Delegation Ledger"
+        },
+        {
+          "buyer_value": "Inventories MCP namespaces, owners, trust tiers, controls, promotion criteria, and kill signals.",
+          "evidence_paths": [
+            "data/mcp/connector-trust-registry.json",
+            "data/evidence/mcp-connector-trust-pack.json",
+            "scripts/generate_mcp_connector_trust_pack.py"
+          ],
+          "id": "mcp-connector-trust-pack",
+          "mcp_tools": [
+            "recipes_mcp_connector_trust_pack"
+          ],
+          "status": "implemented",
+          "title": "MCP Connector Trust Pack"
+        },
+        {
+          "buyer_value": "Packages controls, workflow evidence, standards mapping, and adoption story for AI platform and GRC review.",
+          "evidence_paths": [
+            "data/assurance/agentic-assurance-control-map.json",
+            "data/evidence/agentic-assurance-pack.json",
+            "scripts/generate_agentic_assurance_pack.py"
+          ],
+          "id": "agentic-assurance-pack",
+          "mcp_tools": [
+            "recipes_agentic_assurance_pack"
+          ],
+          "status": "implemented",
+          "title": "Agentic Assurance Pack"
+        }
+      ],
+      "confidence": "high",
+      "control_objectives": [
+        "Require resource-bound tokens and reject tokens issued for another resource.",
+        "Use progressive, least-privilege scopes rather than wildcard access.",
+        "Log scope elevation with correlation IDs.",
+        "Deny tool access by default until workflow policy grants a specific namespace and mode."
+      ],
+      "enterprise_risk": "A compromised client or confused-deputy flow can reuse broad tokens across resources, escalate privileges through permissive scopes, or turn a convenience connector into a cross-system breach path.",
+      "horizon": "now",
+      "id": "mcp-token-passthrough-and-scope-creep",
+      "mapped_capability_ids": [
+        "mcp-gateway-policy",
+        "agent-identity-ledger",
+        "mcp-connector-trust-pack",
+        "agentic-assurance-pack"
+      ],
+      "priority": "critical",
+      "roadmap_action": "Add hosted MCP authorization conformance checks and scope-drift alerts for customer connector fleets.",
+      "scores": {
+        "defensibility": 4,
+        "ease_of_adoption": 4,
+        "enterprise_control_value": 5,
+        "market_urgency": 5,
+        "mcp_monetization_fit": 5
+      },
+      "source_ids": [
+        "mcp-authorization-2025-11-25",
+        "mcp-security-best-practices-2025",
+        "owasp-mcp-top-10-2025",
+        "csa-mcp-resource-center-2025"
+      ],
+      "sources": [
+        {
+          "id": "mcp-authorization-2025-11-25",
+          "name": "Model Context Protocol Authorization Specification",
+          "published": "2025-11-25",
+          "publisher": "Model Context Protocol",
+          "source_class": "protocol_specification",
+          "url": "https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization"
+        },
+        {
+          "id": "mcp-security-best-practices-2025",
+          "name": "Model Context Protocol Security Best Practices",
+          "published": "2025-06-18",
+          "publisher": "Model Context Protocol",
+          "source_class": "protocol_guidance",
+          "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices"
+        },
+        {
+          "id": "owasp-mcp-top-10-2025",
+          "name": "OWASP Top 10 for Model Context Protocol",
+          "published": "2025",
+          "publisher": "OWASP Foundation",
+          "source_class": "industry_standard",
+          "url": "https://owasp.org/www-project-mcp-top-10/"
+        },
+        {
+          "id": "csa-mcp-resource-center-2025",
+          "name": "Securing the Agentic AI Control Plane: Announcing the MCP Security Resource Center",
+          "published": "2025-08-20",
+          "publisher": "Cloud Security Alliance",
+          "source_class": "industry_guidance",
+          "url": "https://cloudsecurityalliance.org/articles/securing-the-agentic-ai-control-plane-announcing-the-mcp-security-resource-center"
+        }
+      ],
+      "strategic_score": 95,
+      "title": "MCP token audience, passthrough, and scope creep are control-plane risks",
+      "trend": "MCP standardization is moving quickly, and the current spec makes audience binding, resource indicators, PKCE, short-lived tokens, precise scopes, and forbidden token passthrough foundational controls."
+    },
+    {
+      "buyer_trigger": "Security leadership asks who owns an agent, what it can do, and how to revoke one unsafe run.",
+      "capabilities": [
+        {
+          "buyer_value": "Defines non-human identity contracts, delegated authority, explicit denies, owner links, token rules, and revocation expectations.",
+          "evidence_paths": [
+            "data/evidence/agent-identity-delegation-ledger.json",
+            "scripts/generate_agent_identity_ledger.py"
+          ],
+          "id": "agent-identity-ledger",
+          "mcp_tools": [
+            "recipes_agent_identity_ledger"
+          ],
+          "status": "implemented",
+          "title": "Agent Identity and Delegation Ledger"
+        },
+        {
+          "buyer_value": "Enforces default-deny tool access, approval holds, scoped branch writes, and runtime kill decisions.",
+          "evidence_paths": [
+            "data/policy/mcp-gateway-policy.json",
+            "scripts/generate_mcp_gateway_policy.py"
+          ],
+          "id": "mcp-gateway-policy",
+          "mcp_tools": [
+            "recipes_mcp_gateway_policy",
+            "recipes_evaluate_mcp_gateway_decision"
+          ],
+          "status": "implemented",
+          "title": "MCP Gateway Policy Pack"
+        },
+        {
+          "buyer_value": "Makes workflows, agents, identities, MCP connectors, evidence, evals, and drift triggers inspectable.",
+          "evidence_paths": [
+            "data/assurance/agentic-system-bom-profile.json",
+            "data/evidence/agentic-system-bom.json",
+            "scripts/generate_agentic_system_bom.py"
+          ],
+          "id": "agentic-system-bom",
+          "mcp_tools": [
+            "recipes_agentic_system_bom"
+          ],
+          "status": "implemented",
+          "title": "Agentic System BOM"
+        },
+        {
+          "buyer_value": "Packages controls, workflow evidence, standards mapping, and adoption story for AI platform and GRC review.",
+          "evidence_paths": [
+            "data/assurance/agentic-assurance-control-map.json",
+            "data/evidence/agentic-assurance-pack.json",
+            "scripts/generate_agentic_assurance_pack.py"
+          ],
+          "id": "agentic-assurance-pack",
+          "mcp_tools": [
+            "recipes_agentic_assurance_pack"
+          ],
+          "status": "implemented",
+          "title": "Agentic Assurance Pack"
+        }
+      ],
+      "confidence": "high",
+      "control_objectives": [
+        "Issue per-run or per-workflow non-human identities.",
+        "Bind delegated scopes to workflow, agent class, owner, and run ID.",
+        "Require short-lived credentials and runtime revocation.",
+        "Preserve human owner and reviewer linkage in audit evidence."
+      ],
+      "enterprise_risk": "Shared bot accounts, human-token borrowing, weak owner links, and missing revocation paths make incidents hard to contain or explain.",
+      "horizon": "now",
+      "id": "agent-identity-explosion",
+      "mapped_capability_ids": [
+        "agent-identity-ledger",
+        "mcp-gateway-policy",
+        "agentic-system-bom",
+        "agentic-assurance-pack"
+      ],
+      "priority": "critical",
+      "roadmap_action": "Build tenant-side identity issuance adapters for OIDC, SPIFFE/SPIRE, source hosts, and MCP gateways.",
+      "scores": {
+        "defensibility": 4,
+        "ease_of_adoption": 3,
+        "enterprise_control_value": 5,
+        "market_urgency": 5,
+        "mcp_monetization_fit": 5
+      },
+      "source_ids": [
+        "owasp-agentic-top-10-2026",
+        "csa-agentic-identity-2025",
+        "mcp-security-best-practices-2025",
+        "microsoft-indirect-prompt-injection-2026"
+      ],
+      "sources": [
+        {
+          "id": "owasp-agentic-top-10-2026",
+          "name": "OWASP Top 10 for Agentic Applications",
+          "published": "2025-12-09",
+          "publisher": "OWASP GenAI Security Project",
+          "source_class": "industry_standard",
+          "url": "https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/"
+        },
+        {
+          "id": "csa-agentic-identity-2025",
+          "name": "Agentic AI, MCP, and the Identity Explosion You Cannot Ignore",
+          "published": "2025-07-10",
+          "publisher": "Cloud Security Alliance",
+          "source_class": "industry_guidance",
+          "url": "https://cloudsecurityalliance.org/blog/2025/07/10/agentic-ai-mcp-and-the-identity-explosion-you-can-t-ignore"
+        },
+        {
+          "id": "mcp-security-best-practices-2025",
+          "name": "Model Context Protocol Security Best Practices",
+          "published": "2025-06-18",
+          "publisher": "Model Context Protocol",
+          "source_class": "protocol_guidance",
+          "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices"
+        },
+        {
+          "id": "microsoft-indirect-prompt-injection-2026",
+          "name": "Defend against indirect prompt injection attacks",
+          "published": "2026-03-24",
+          "publisher": "Microsoft Learn",
+          "source_class": "vendor_architecture_guidance",
+          "url": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/defend-indirect-prompt-injection"
+        }
+      ],
+      "strategic_score": 93,
+      "title": "Agent identities are becoming a new non-human identity class",
+      "trend": "Enterprise agents act through service accounts, OAuth tokens, delegated user scopes, API keys, and MCP connector permissions. Traditional IAM often cannot distinguish which agent run used which authority for which intent."
+    },
+    {
+      "buyer_trigger": "The buyer is moving from prompt libraries to RAG, memory, or MCP-backed runtime context.",
+      "capabilities": [
+        {
+          "buyer_value": "Proves which context sources agents may retrieve, who owns them, and which hashes show current state.",
+          "evidence_paths": [
+            "data/context/secure-context-registry.json",
+            "data/evidence/secure-context-trust-pack.json",
+            "scripts/generate_secure_context_trust_pack.py"
+          ],
+          "id": "secure-context-trust-pack",
+          "mcp_tools": [
+            "recipes_secure_context_trust_pack"
+          ],
+          "status": "implemented",
+          "title": "Secure Context Trust Pack"
+        },
+        {
+          "buyer_value": "Converts retrieval policy into deterministic allow, hold, deny, or kill-session decisions before agents receive context.",
+          "evidence_paths": [
+            "scripts/evaluate_secure_context_retrieval.py",
+            "content/security-remediation/secure-context-firewall/_index.md"
+          ],
+          "id": "secure-context-firewall",
+          "mcp_tools": [
+            "recipes_evaluate_context_retrieval_decision"
+          ],
+          "status": "implemented",
+          "title": "Secure Context Firewall"
+        },
+        {
+          "buyer_value": "Makes workflows, agents, identities, MCP connectors, evidence, evals, and drift triggers inspectable.",
+          "evidence_paths": [
+            "data/assurance/agentic-system-bom-profile.json",
+            "data/evidence/agentic-system-bom.json",
+            "scripts/generate_agentic_system_bom.py"
+          ],
+          "id": "agentic-system-bom",
+          "mcp_tools": [
+            "recipes_agentic_system_bom"
+          ],
+          "status": "implemented",
+          "title": "Agentic System BOM"
+        },
+        {
+          "buyer_value": "Packages controls, workflow evidence, standards mapping, and adoption story for AI platform and GRC review.",
+          "evidence_paths": [
+            "data/assurance/agentic-assurance-control-map.json",
+            "data/evidence/agentic-assurance-pack.json",
+            "scripts/generate_agentic_assurance_pack.py"
+          ],
+          "id": "agentic-assurance-pack",
+          "mcp_tools": [
+            "recipes_agentic_assurance_pack"
+          ],
+          "status": "implemented",
+          "title": "Agentic Assurance Pack"
+        }
+      ],
+      "confidence": "high",
+      "control_objectives": [
+        "Register context roots with owners, data classes, trust tiers, and source hashes.",
+        "Reject unregistered or workflow-unapproved context.",
+        "Keep customer runtime context tenant-side.",
+        "Kill sessions on prohibited data classes such as keys, tokens, signing material, or bulk unredacted PII."
+      ],
+      "enterprise_risk": "Sensitive records, old policies, poisoned snippets, or another user's runtime context can influence an agent or leak through downstream tool calls.",
+      "horizon": "now",
+      "id": "context-over-sharing-and-memory-poisoning",
+      "mapped_capability_ids": [
+        "secure-context-trust-pack",
+        "secure-context-firewall",
+        "agentic-system-bom",
+        "agentic-assurance-pack"
+      ],
+      "priority": "high",
+      "roadmap_action": "Sell context-source recertification, source-hash signing, and tenant evidence ingestion as hosted secure-context features.",
+      "scores": {
+        "defensibility": 5,
+        "ease_of_adoption": 4,
+        "enterprise_control_value": 5,
+        "market_urgency": 5,
+        "mcp_monetization_fit": 5
+      },
+      "source_ids": [
+        "owasp-mcp-top-10-2025",
+        "owasp-agentic-threats-2025",
+        "nist-ai-600-1",
+        "cisa-ai-data-security-2025"
+      ],
+      "sources": [
+        {
+          "id": "owasp-mcp-top-10-2025",
+          "name": "OWASP Top 10 for Model Context Protocol",
+          "published": "2025",
+          "publisher": "OWASP Foundation",
+          "source_class": "industry_standard",
+          "url": "https://owasp.org/www-project-mcp-top-10/"
+        },
+        {
+          "id": "owasp-agentic-threats-2025",
+          "name": "Agentic AI Threats and Mitigations",
+          "published": "2025-02-17",
+          "publisher": "OWASP Agentic Security Initiative",
+          "source_class": "industry_standard",
+          "url": "https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/"
+        },
+        {
+          "id": "nist-ai-600-1",
+          "name": "Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile",
+          "published": "2024-07-26",
+          "publisher": "NIST",
+          "source_class": "government_framework",
+          "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence"
+        },
+        {
+          "id": "cisa-ai-data-security-2025",
+          "name": "AI Data Security: Best Practices for Securing Data Used to Train and Operate AI Systems",
+          "published": "2025-05-22",
+          "publisher": "CISA, NSA, FBI, and international partners",
+          "source_class": "government_guidance",
+          "url": "https://www.cisa.gov/resources-tools/resources/ai-data-security-best-practices-securing-data-used-train-operate-ai-systems"
+        }
+      ],
+      "strategic_score": 93,
+      "title": "Context over-sharing and memory poisoning make retrieval policy a product category",
+      "trend": "Agents rely on large context windows, vector stores, persistent memory, workflow evidence, and MCP-returned data. The value is high, but so is the risk of stale, poisoned, excessive, or cross-tenant context."
+    },
+    {
+      "buyer_trigger": "The buyer's developers are installing local MCP servers faster than security can review them.",
+      "capabilities": [
+        {
+          "buyer_value": "Inventories MCP namespaces, owners, trust tiers, controls, promotion criteria, and kill signals.",
+          "evidence_paths": [
+            "data/mcp/connector-trust-registry.json",
+            "data/evidence/mcp-connector-trust-pack.json",
+            "scripts/generate_mcp_connector_trust_pack.py"
+          ],
+          "id": "mcp-connector-trust-pack",
+          "mcp_tools": [
+            "recipes_mcp_connector_trust_pack"
+          ],
+          "status": "implemented",
+          "title": "MCP Connector Trust Pack"
+        },
+        {
+          "buyer_value": "Enforces default-deny tool access, approval holds, scoped branch writes, and runtime kill decisions.",
+          "evidence_paths": [
+            "data/policy/mcp-gateway-policy.json",
+            "scripts/generate_mcp_gateway_policy.py"
+          ],
+          "id": "mcp-gateway-policy",
+          "mcp_tools": [
+            "recipes_mcp_gateway_policy",
+            "recipes_evaluate_mcp_gateway_decision"
+          ],
+          "status": "implemented",
+          "title": "MCP Gateway Policy Pack"
+        },
+        {
+          "buyer_value": "Turns agentic risks into repeatable adversarial drills with expected decisions and evidence requirements.",
+          "evidence_paths": [
+            "data/assurance/agentic-red-team-scenario-map.json",
+            "data/evidence/agentic-red-team-drill-pack.json",
+            "scripts/generate_agentic_red_team_drill_pack.py"
+          ],
+          "id": "agentic-red-team-drill-pack",
+          "mcp_tools": [
+            "recipes_agentic_red_team_drill_pack"
+          ],
+          "status": "implemented",
+          "title": "Agentic Red-Team Drill Pack"
+        },
+        {
+          "buyer_value": "Makes workflows, agents, identities, MCP connectors, evidence, evals, and drift triggers inspectable.",
+          "evidence_paths": [
+            "data/assurance/agentic-system-bom-profile.json",
+            "data/evidence/agentic-system-bom.json",
+            "scripts/generate_agentic_system_bom.py"
+          ],
+          "id": "agentic-system-bom",
+          "mcp_tools": [
+            "recipes_agentic_system_bom"
+          ],
+          "status": "implemented",
+          "title": "Agentic System BOM"
+        }
+      ],
+      "confidence": "high",
+      "control_objectives": [
+        "Maintain a connector registry with owners, trust tiers, allowed modes, and promotion criteria.",
+        "Pin or diff tool descriptions and schemas before production use.",
+        "Deny unregistered MCP namespaces and shadow servers.",
+        "Run connector-drift red-team drills before trust-tier promotion."
+      ],
+      "enterprise_risk": "An agent may select a poisoned tool, follow malicious tool metadata, trust a fake server, or miss that a connector update changed the reachable blast radius.",
+      "horizon": "now",
+      "id": "tool-poisoning-and-shadow-mcp",
+      "mapped_capability_ids": [
+        "mcp-connector-trust-pack",
+        "mcp-gateway-policy",
+        "agentic-red-team-drill-pack",
+        "agentic-system-bom"
+      ],
+      "priority": "high",
+      "roadmap_action": "Add an MCP connector intake scanner that inventories tool schemas, hashes descriptions, and produces trust-tier diffs.",
+      "scores": {
+        "defensibility": 4,
+        "ease_of_adoption": 4,
+        "enterprise_control_value": 5,
+        "market_urgency": 5,
+        "mcp_monetization_fit": 5
+      },
+      "source_ids": [
+        "owasp-mcp-top-10-2025",
+        "owasp-agentic-top-10-2026",
+        "csa-mcp-resource-center-2025",
+        "mcp-security-best-practices-2025"
+      ],
+      "sources": [
+        {
+          "id": "owasp-mcp-top-10-2025",
+          "name": "OWASP Top 10 for Model Context Protocol",
+          "published": "2025",
+          "publisher": "OWASP Foundation",
+          "source_class": "industry_standard",
+          "url": "https://owasp.org/www-project-mcp-top-10/"
+        },
+        {
+          "id": "owasp-agentic-top-10-2026",
+          "name": "OWASP Top 10 for Agentic Applications",
+          "published": "2025-12-09",
+          "publisher": "OWASP GenAI Security Project",
+          "source_class": "industry_standard",
+          "url": "https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/"
+        },
+        {
+          "id": "csa-mcp-resource-center-2025",
+          "name": "Securing the Agentic AI Control Plane: Announcing the MCP Security Resource Center",
+          "published": "2025-08-20",
+          "publisher": "Cloud Security Alliance",
+          "source_class": "industry_guidance",
+          "url": "https://cloudsecurityalliance.org/articles/securing-the-agentic-ai-control-plane-announcing-the-mcp-security-resource-center"
+        },
+        {
+          "id": "mcp-security-best-practices-2025",
+          "name": "Model Context Protocol Security Best Practices",
+          "published": "2025-06-18",
+          "publisher": "Model Context Protocol",
+          "source_class": "protocol_guidance",
+          "url": "https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices"
+        }
+      ],
+      "strategic_score": 90,
+      "title": "Tool poisoning, schema drift, and shadow MCP servers expand the agent attack surface",
+      "trend": "MCP and agent tool ecosystems make tool descriptions, schemas, connector updates, local servers, and third-party outputs part of the trust boundary."
+    },
+    {
+      "buyer_trigger": "AI governance teams ask whether agent context, evidence, and outputs are sourced and current.",
+      "capabilities": [
+        {
+          "buyer_value": "Proves which context sources agents may retrieve, who owns them, and which hashes show current state.",
+          "evidence_paths": [
+            "data/context/secure-context-registry.json",
+            "data/evidence/secure-context-trust-pack.json",
+            "scripts/generate_secure_context_trust_pack.py"
+          ],
+          "id": "secure-context-trust-pack",
+          "mcp_tools": [
+            "recipes_secure_context_trust_pack"
+          ],
+          "status": "implemented",
+          "title": "Secure Context Trust Pack"
+        },
+        {
+          "buyer_value": "Packages controls, workflow evidence, standards mapping, and adoption story for AI platform and GRC review.",
+          "evidence_paths": [
+            "data/assurance/agentic-assurance-control-map.json",
+            "data/evidence/agentic-assurance-pack.json",
+            "scripts/generate_agentic_assurance_pack.py"
+          ],
+          "id": "agentic-assurance-pack",
+          "mcp_tools": [
+            "recipes_agentic_assurance_pack"
+          ],
+          "status": "implemented",
+          "title": "Agentic Assurance Pack"
+        },
+        {
+          "buyer_value": "Makes workflows, agents, identities, MCP connectors, evidence, evals, and drift triggers inspectable.",
+          "evidence_paths": [
+            "data/assurance/agentic-system-bom-profile.json",
+            "data/evidence/agentic-system-bom.json",
+            "scripts/generate_agentic_system_bom.py"
+          ],
+          "id": "agentic-system-bom",
+          "mcp_tools": [
+            "recipes_agentic_system_bom"
+          ],
+          "status": "implemented",
+          "title": "Agentic System BOM"
+        },
+        {
+          "buyer_value": "Turns external guidance into a current, source-backed product roadmap and executive risk narrative.",
+          "evidence_paths": [
+            "data/intelligence/agentic-threat-radar-sources.json",
+            "data/evidence/agentic-threat-radar.json",
+            "content/security-remediation/agentic-threat-radar/_index.md"
+          ],
+          "id": "agentic-threat-radar",
+          "mcp_tools": [
+            "recipes_agentic_threat_radar"
+          ],
+          "status": "implemented",
+          "title": "Agentic Threat Radar"
+        }
+      ],
+      "confidence": "high",
+      "control_objectives": [
+        "Record source provenance and hashes for context and evidence.",
+        "Separate public guidance from tenant runtime data.",
+        "Define freshness SLAs and recertification triggers.",
+        "Map data classes to retrieval, redaction, and retention controls."
+      ],
+      "enterprise_risk": "Bad or untracked data can create unsafe agent decisions, compliance exposure, and unprovable operational outcomes.",
+      "horizon": "now",
+      "id": "ai-data-security-and-provenance",
+      "mapped_capability_ids": [
+        "secure-context-trust-pack",
+        "agentic-assurance-pack",
+        "agentic-system-bom",
+        "agentic-threat-radar"
+      ],
+      "priority": "high",
+      "roadmap_action": "Add signed context releases and data-class policy export for enterprise DLP and AI governance tooling.",
+      "scores": {
+        "defensibility": 5,
+        "ease_of_adoption": 4,
+        "enterprise_control_value": 5,
+        "market_urgency": 4,
+        "mcp_monetization_fit": 4
+      },
+      "source_ids": [
+        "cisa-ai-data-security-2025",
+        "nist-ai-600-1",
+        "cisa-secure-by-design-ai",
+        "nist-ai-rmf-2026-critical-infrastructure"
+      ],
+      "sources": [
+        {
+          "id": "cisa-ai-data-security-2025",
+          "name": "AI Data Security: Best Practices for Securing Data Used to Train and Operate AI Systems",
+          "published": "2025-05-22",
+          "publisher": "CISA, NSA, FBI, and international partners",
+          "source_class": "government_guidance",
+          "url": "https://www.cisa.gov/resources-tools/resources/ai-data-security-best-practices-securing-data-used-train-operate-ai-systems"
+        },
+        {
+          "id": "nist-ai-600-1",
+          "name": "Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile",
+          "published": "2024-07-26",
+          "publisher": "NIST",
+          "source_class": "government_framework",
+          "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence"
+        },
+        {
+          "id": "cisa-secure-by-design-ai",
+          "name": "Software Must Be Secure by Design, and Artificial Intelligence Is No Exception",
+          "published": "2023-08-18",
+          "publisher": "CISA",
+          "source_class": "government_guidance",
+          "url": "https://www.cisa.gov/news-events/news/software-must-be-secure-design-and-artificial-intelligence-no-exception"
+        },
+        {
+          "id": "nist-ai-rmf-2026-critical-infrastructure",
+          "name": "NIST AI Risk Management Framework",
+          "published": "2026-04-07",
+          "publisher": "NIST",
+          "source_class": "government_framework",
+          "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+        }
+      ],
+      "strategic_score": 88,
+      "title": "AI data security guidance is converging on provenance, integrity, and monitoring",
+      "trend": "Government guidance treats AI data quality, integrity, confidentiality, monitoring, and lifecycle governance as security requirements, not model-tuning details."
+    },
+    {
+      "buyer_trigger": "GRC, procurement, or security architecture asks for evidence before approving agentic workflows.",
+      "capabilities": [
+        {
+          "buyer_value": "Packages controls, workflow evidence, standards mapping, and adoption story for AI platform and GRC review.",
+          "evidence_paths": [
+            "data/assurance/agentic-assurance-control-map.json",
+            "data/evidence/agentic-assurance-pack.json",
+            "scripts/generate_agentic_assurance_pack.py"
+          ],
+          "id": "agentic-assurance-pack",
+          "mcp_tools": [
+            "recipes_agentic_assurance_pack"
+          ],
+          "status": "implemented",
+          "title": "Agentic Assurance Pack"
+        },
+        {
+          "buyer_value": "Converts control evidence into scale, pilot, gate, or block decisions.",
+          "evidence_paths": [
+            "data/assurance/agentic-readiness-model.json",
+            "data/evidence/agentic-readiness-scorecard.json",
+            "scripts/generate_agentic_readiness_scorecard.py"
+          ],
+          "id": "agentic-readiness-scorecard",
+          "mcp_tools": [
+            "recipes_agentic_readiness_scorecard"
+          ],
+          "status": "implemented",
+          "title": "Agentic Readiness Scorecard"
+        },
+        {
+          "buyer_value": "Makes workflows, agents, identities, MCP connectors, evidence, evals, and drift triggers inspectable.",
+          "evidence_paths": [
+            "data/assurance/agentic-system-bom-profile.json",
+            "data/evidence/agentic-system-bom.json",
+            "scripts/generate_agentic_system_bom.py"
+          ],
+          "id": "agentic-system-bom",
+          "mcp_tools": [
+            "recipes_agentic_system_bom"
+          ],
+          "status": "implemented",
+          "title": "Agentic System BOM"
+        },
+        {
+          "buyer_value": "Turns external guidance into a current, source-backed product roadmap and executive risk narrative.",
+          "evidence_paths": [
+            "data/intelligence/agentic-threat-radar-sources.json",
+            "data/evidence/agentic-threat-radar.json",
+            "content/security-remediation/agentic-threat-radar/_index.md"
+          ],
+          "id": "agentic-threat-radar",
+          "mcp_tools": [
+            "recipes_agentic_threat_radar"
+          ],
+          "status": "implemented",
+          "title": "Agentic Threat Radar"
+        }
+      ],
+      "confidence": "high",
+      "control_objectives": [
+        "Capture tool-call, context-retrieval, policy-decision, reviewer, and scanner evidence.",
+        "Include correlation IDs across agent, MCP, source host, ticket, and CI systems.",
+        "Export portable evidence packs for AI platform and GRC review.",
+        "Track readiness and drift over time."
+      ],
+      "enterprise_risk": "Without correlated logs and evidence, teams cannot prove what an agent saw, which tools it used, why a policy allowed it, who approved it, or when drift began.",
+      "horizon": "now",
+      "id": "audit-telemetry-and-evidence-chain",
+      "mapped_capability_ids": [
+        "agentic-assurance-pack",
+        "agentic-readiness-scorecard",
+        "agentic-system-bom",
+        "agentic-threat-radar"
+      ],
+      "priority": "high",
+      "roadmap_action": "Create a customer trust-center export that bundles threat radar, assurance, readiness, BOM, and runtime decision evidence.",
+      "scores": {
+        "defensibility": 4,
+        "ease_of_adoption": 5,
+        "enterprise_control_value": 5,
+        "market_urgency": 4,
+        "mcp_monetization_fit": 4
+      },
+      "source_ids": [
+        "owasp-mcp-top-10-2025",
+        "nist-ai-rmf-2026-critical-infrastructure",
+        "nist-ai-600-1",
+        "cisa-ai-data-security-2025"
+      ],
+      "sources": [
+        {
+          "id": "owasp-mcp-top-10-2025",
+          "name": "OWASP Top 10 for Model Context Protocol",
+          "published": "2025",
+          "publisher": "OWASP Foundation",
+          "source_class": "industry_standard",
+          "url": "https://owasp.org/www-project-mcp-top-10/"
+        },
+        {
+          "id": "nist-ai-rmf-2026-critical-infrastructure",
+          "name": "NIST AI Risk Management Framework",
+          "published": "2026-04-07",
+          "publisher": "NIST",
+          "source_class": "government_framework",
+          "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+        },
+        {
+          "id": "nist-ai-600-1",
+          "name": "Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile",
+          "published": "2024-07-26",
+          "publisher": "NIST",
+          "source_class": "government_framework",
+          "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence"
+        },
+        {
+          "id": "cisa-ai-data-security-2025",
+          "name": "AI Data Security: Best Practices for Securing Data Used to Train and Operate AI Systems",
+          "published": "2025-05-22",
+          "publisher": "CISA, NSA, FBI, and international partners",
+          "source_class": "government_guidance",
+          "url": "https://www.cisa.gov/resources-tools/resources/ai-data-security-best-practices-securing-data-used-train-operate-ai-systems"
+        }
+      ],
+      "strategic_score": 88,
+      "title": "Agentic audit telemetry is becoming mandatory evidence, not observability nice-to-have",
+      "trend": "Guidance increasingly expects monitoring, evidence, traceability, and lifecycle measurement for deployed AI systems, especially when they touch critical or enterprise operations."
+    },
+    {
+      "buyer_trigger": "The buyer wants agents to write PRs, tickets, registry changes, payments, or production-impacting actions.",
+      "capabilities": [
+        {
+          "buyer_value": "Enforces default-deny tool access, approval holds, scoped branch writes, and runtime kill decisions.",
+          "evidence_paths": [
+            "data/policy/mcp-gateway-policy.json",
+            "scripts/generate_mcp_gateway_policy.py"
+          ],
+          "id": "mcp-gateway-policy",
+          "mcp_tools": [
+            "recipes_mcp_gateway_policy",
+            "recipes_evaluate_mcp_gateway_decision"
+          ],
+          "status": "implemented",
+          "title": "MCP Gateway Policy Pack"
+        },
+        {
+          "buyer_value": "Turns agentic risks into repeatable adversarial drills with expected decisions and evidence requirements.",
+          "evidence_paths": [
+            "data/assurance/agentic-red-team-scenario-map.json",
+            "data/evidence/agentic-red-team-drill-pack.json",
+            "scripts/generate_agentic_red_team_drill_pack.py"
+          ],
+          "id": "agentic-red-team-drill-pack",
+          "mcp_tools": [
+            "recipes_agentic_red_team_drill_pack"
+          ],
+          "status": "implemented",
+          "title": "Agentic Red-Team Drill Pack"
+        },
+        {
+          "buyer_value": "Converts control evidence into scale, pilot, gate, or block decisions.",
+          "evidence_paths": [
+            "data/assurance/agentic-readiness-model.json",
+            "data/evidence/agentic-readiness-scorecard.json",
+            "scripts/generate_agentic_readiness_scorecard.py"
+          ],
+          "id": "agentic-readiness-scorecard",
+          "mcp_tools": [
+            "recipes_agentic_readiness_scorecard"
+          ],
+          "status": "implemented",
+          "title": "Agentic Readiness Scorecard"
+        },
+        {
+          "buyer_value": "Defines non-human identity contracts, delegated authority, explicit denies, owner links, token rules, and revocation expectations.",
+          "evidence_paths": [
+            "data/evidence/agent-identity-delegation-ledger.json",
+            "scripts/generate_agent_identity_ledger.py"
+          ],
+          "id": "agent-identity-ledger",
+          "mcp_tools": [
+            "recipes_agent_identity_ledger"
+          ],
+          "status": "implemented",
+          "title": "Agent Identity and Delegation Ledger"
+        }
+      ],
+      "confidence": "high",
+      "control_objectives": [
+        "Assign risk ratings to tools and operations.",
+        "Hold privileged or irreversible operations for explicit approval.",
+        "Make approval prompts structured and auditable.",
+        "Preserve reviewer separation of duties before merge or release."
+      ],
+      "enterprise_risk": "An attacker can manipulate an agent into requesting approval for the wrong thing, hiding sensitive data in a tool call, or bypassing human review through a lower-risk path.",
+      "horizon": "now",
+      "id": "human-approval-and-tool-safeguards",
+      "mapped_capability_ids": [
+        "mcp-gateway-policy",
+        "agentic-red-team-drill-pack",
+        "agentic-readiness-scorecard",
+        "agent-identity-ledger"
+      ],
+      "priority": "high",
+      "roadmap_action": "Add typed approval receipts and approval-bypass replay tests to the MCP policy evaluator.",
+      "scores": {
+        "defensibility": 4,
+        "ease_of_adoption": 4,
+        "enterprise_control_value": 5,
+        "market_urgency": 4,
+        "mcp_monetization_fit": 4
+      },
+      "source_ids": [
+        "openai-agent-safety-2026",
+        "openai-prompt-injections-2025",
+        "microsoft-indirect-prompt-injection-2026",
+        "owasp-agentic-top-10-2026"
+      ],
+      "sources": [
+        {
+          "id": "openai-agent-safety-2026",
+          "name": "Safety in building agents",
+          "published": "2026",
+          "publisher": "OpenAI API",
+          "source_class": "frontier_lab_guidance",
+          "url": "https://platform.openai.com/docs/guides/agent-builder-safety"
+        },
+        {
+          "id": "openai-prompt-injections-2025",
+          "name": "Understanding prompt injections: a frontier security challenge",
+          "published": "2025-11-07",
+          "publisher": "OpenAI",
+          "source_class": "frontier_lab_guidance",
+          "url": "https://openai.com/index/prompt-injections"
+        },
+        {
+          "id": "microsoft-indirect-prompt-injection-2026",
+          "name": "Defend against indirect prompt injection attacks",
+          "published": "2026-03-24",
+          "publisher": "Microsoft Learn",
+          "source_class": "vendor_architecture_guidance",
+          "url": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/defend-indirect-prompt-injection"
+        },
+        {
+          "id": "owasp-agentic-top-10-2026",
+          "name": "OWASP Top 10 for Agentic Applications",
+          "published": "2025-12-09",
+          "publisher": "OWASP GenAI Security Project",
+          "source_class": "industry_standard",
+          "url": "https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/"
+        }
+      ],
+      "strategic_score": 85,
+      "title": "Human approval is shifting from UX prompt to policy-enforced control",
+      "trend": "High-risk agent actions need confirmations, tool safeguards, clear policies, trace grading, and reviewable execution plans. Approval needs a typed policy surface, not a free-text negotiation with the model."
+    },
+    {
+      "buyer_trigger": "The buyer wants to move from pilot to fleet-wide agentic remediation.",
+      "capabilities": [
+        {
+          "buyer_value": "Turns agentic risks into repeatable adversarial drills with expected decisions and evidence requirements.",
+          "evidence_paths": [
+            "data/assurance/agentic-red-team-scenario-map.json",
+            "data/evidence/agentic-red-team-drill-pack.json",
+            "scripts/generate_agentic_red_team_drill_pack.py"
+          ],
+          "id": "agentic-red-team-drill-pack",
+          "mcp_tools": [
+            "recipes_agentic_red_team_drill_pack"
+          ],
+          "status": "implemented",
+          "title": "Agentic Red-Team Drill Pack"
+        },
+        {
+          "buyer_value": "Converts control evidence into scale, pilot, gate, or block decisions.",
+          "evidence_paths": [
+            "data/assurance/agentic-readiness-model.json",
+            "data/evidence/agentic-readiness-scorecard.json",
+            "scripts/generate_agentic_readiness_scorecard.py"
+          ],
+          "id": "agentic-readiness-scorecard",
+          "mcp_tools": [
+            "recipes_agentic_readiness_scorecard"
+          ],
+          "status": "implemented",
+          "title": "Agentic Readiness Scorecard"
+        },
+        {
+          "buyer_value": "Makes workflows, agents, identities, MCP connectors, evidence, evals, and drift triggers inspectable.",
+          "evidence_paths": [
+            "data/assurance/agentic-system-bom-profile.json",
+            "data/evidence/agentic-system-bom.json",
+            "scripts/generate_agentic_system_bom.py"
+          ],
+          "id": "agentic-system-bom",
+          "mcp_tools": [
+            "recipes_agentic_system_bom"
+          ],
+          "status": "implemented",
+          "title": "Agentic System BOM"
+        },
+        {
+          "buyer_value": "Turns external guidance into a current, source-backed product roadmap and executive risk narrative.",
+          "evidence_paths": [
+            "data/intelligence/agentic-threat-radar-sources.json",
+            "data/evidence/agentic-threat-radar.json",
+            "content/security-remediation/agentic-threat-radar/_index.md"
+          ],
+          "id": "agentic-threat-radar",
+          "mcp_tools": [
+            "recipes_agentic_threat_radar"
+          ],
+          "status": "implemented",
+          "title": "Agentic Threat Radar"
+        }
+      ],
+      "confidence": "high",
+      "control_objectives": [
+        "Run adversarial drills before workflow promotion.",
+        "Attach expected policy decisions and pass criteria to each drill.",
+        "Regenerate readiness decisions after eval, model, connector, identity, or context drift.",
+        "Measure failures as product signals, not one-off bugs."
+      ],
+      "enterprise_risk": "A workflow that was safe last month can become unsafe after a model update, connector change, or prompt edit without any source-code vulnerability.",
+      "horizon": "next",
+      "id": "continuous-red-team-and-evals",
+      "mapped_capability_ids": [
+        "agentic-red-team-drill-pack",
+        "agentic-readiness-scorecard",
+        "agentic-system-bom",
+        "agentic-threat-radar"
+      ],
+      "priority": "high",
+      "roadmap_action": "Offer a hosted replay runner that executes threat-radar-derived drills against customer MCP gateways and agent traces.",
+      "scores": {
+        "defensibility": 5,
+        "ease_of_adoption": 3,
+        "enterprise_control_value": 5,
+        "market_urgency": 4,
+        "mcp_monetization_fit": 5
+      },
+      "source_ids": [
+        "openai-agent-safety-2026",
+        "microsoft-indirect-prompt-injection-2026",
+        "owasp-agentic-top-10-2026",
+        "nist-ai-rmf-2026-critical-infrastructure"
+      ],
+      "sources": [
+        {
+          "id": "openai-agent-safety-2026",
+          "name": "Safety in building agents",
+          "published": "2026",
+          "publisher": "OpenAI API",
+          "source_class": "frontier_lab_guidance",
+          "url": "https://platform.openai.com/docs/guides/agent-builder-safety"
+        },
+        {
+          "id": "microsoft-indirect-prompt-injection-2026",
+          "name": "Defend against indirect prompt injection attacks",
+          "published": "2026-03-24",
+          "publisher": "Microsoft Learn",
+          "source_class": "vendor_architecture_guidance",
+          "url": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/defend-indirect-prompt-injection"
+        },
+        {
+          "id": "owasp-agentic-top-10-2026",
+          "name": "OWASP Top 10 for Agentic Applications",
+          "published": "2025-12-09",
+          "publisher": "OWASP GenAI Security Project",
+          "source_class": "industry_standard",
+          "url": "https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/"
+        },
+        {
+          "id": "nist-ai-rmf-2026-critical-infrastructure",
+          "name": "NIST AI Risk Management Framework",
+          "published": "2026-04-07",
+          "publisher": "NIST",
+          "source_class": "government_framework",
+          "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+        }
+      ],
+      "strategic_score": 83,
+      "title": "Continuous agent red-team replay is becoming the only credible scale gate",
+      "trend": "Frontier labs and enterprise guidance converge on evals, trace graders, adversarial testing, plan drift detection, and layered defenses because agent behavior changes with tools, prompts, models, and context."
+    },
+    {
+      "buyer_trigger": "Procurement or diligence asks whether SecurityRecipes is a defensible product or a documentation site.",
+      "capabilities": [
+        {
+          "buyer_value": "Packages controls, workflow evidence, standards mapping, and adoption story for AI platform and GRC review.",
+          "evidence_paths": [
+            "data/assurance/agentic-assurance-control-map.json",
+            "data/evidence/agentic-assurance-pack.json",
+            "scripts/generate_agentic_assurance_pack.py"
+          ],
+          "id": "agentic-assurance-pack",
+          "mcp_tools": [
+            "recipes_agentic_assurance_pack"
+          ],
+          "status": "implemented",
+          "title": "Agentic Assurance Pack"
+        },
+        {
+          "buyer_value": "Makes workflows, agents, identities, MCP connectors, evidence, evals, and drift triggers inspectable.",
+          "evidence_paths": [
+            "data/assurance/agentic-system-bom-profile.json",
+            "data/evidence/agentic-system-bom.json",
+            "scripts/generate_agentic_system_bom.py"
+          ],
+          "id": "agentic-system-bom",
+          "mcp_tools": [
+            "recipes_agentic_system_bom"
+          ],
+          "status": "implemented",
+          "title": "Agentic System BOM"
+        },
+        {
+          "buyer_value": "Converts control evidence into scale, pilot, gate, or block decisions.",
+          "evidence_paths": [
+            "data/assurance/agentic-readiness-model.json",
+            "data/evidence/agentic-readiness-scorecard.json",
+            "scripts/generate_agentic_readiness_scorecard.py"
+          ],
+          "id": "agentic-readiness-scorecard",
+          "mcp_tools": [
+            "recipes_agentic_readiness_scorecard"
+          ],
+          "status": "implemented",
+          "title": "Agentic Readiness Scorecard"
+        },
+        {
+          "buyer_value": "Turns external guidance into a current, source-backed product roadmap and executive risk narrative.",
+          "evidence_paths": [
+            "data/intelligence/agentic-threat-radar-sources.json",
+            "data/evidence/agentic-threat-radar.json",
+            "content/security-remediation/agentic-threat-radar/_index.md"
+          ],
+          "id": "agentic-threat-radar",
+          "mcp_tools": [
+            "recipes_agentic_threat_radar"
+          ],
+          "status": "implemented",
+          "title": "Agentic Threat Radar"
+        }
+      ],
+      "confidence": "high",
+      "control_objectives": [
+        "Make safe defaults enforceable in code and generated policy.",
+        "Expose control evidence through MCP and static artifacts.",
+        "Document residual risk and customer-side evidence requirements.",
+        "Keep open knowledge and commercial enforcement paths clearly separated."
+      ],
+      "enterprise_risk": "A product that relies on careful prompting instead of safe defaults will fail procurement, platform approval, and acquisition diligence.",
+      "horizon": "next",
+      "id": "secure-by-design-agentic-products",
+      "mapped_capability_ids": [
+        "agentic-assurance-pack",
+        "agentic-system-bom",
+        "agentic-readiness-scorecard",
+        "agentic-threat-radar"
+      ],
+      "priority": "medium",
+      "roadmap_action": "Package the generated packs as an enterprise trust center and procurement-security export.",
+      "scores": {
+        "defensibility": 5,
+        "ease_of_adoption": 5,
+        "enterprise_control_value": 5,
+        "market_urgency": 3,
+        "mcp_monetization_fit": 4
+      },
+      "source_ids": [
+        "cisa-secure-by-design-ai",
+        "nist-ai-rmf-2026-critical-infrastructure",
+        "nist-ai-600-1",
+        "owasp-agentic-top-10-2026"
+      ],
+      "sources": [
+        {
+          "id": "cisa-secure-by-design-ai",
+          "name": "Software Must Be Secure by Design, and Artificial Intelligence Is No Exception",
+          "published": "2023-08-18",
+          "publisher": "CISA",
+          "source_class": "government_guidance",
+          "url": "https://www.cisa.gov/news-events/news/software-must-be-secure-design-and-artificial-intelligence-no-exception"
+        },
+        {
+          "id": "nist-ai-rmf-2026-critical-infrastructure",
+          "name": "NIST AI Risk Management Framework",
+          "published": "2026-04-07",
+          "publisher": "NIST",
+          "source_class": "government_framework",
+          "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+        },
+        {
+          "id": "nist-ai-600-1",
+          "name": "Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile",
+          "published": "2024-07-26",
+          "publisher": "NIST",
+          "source_class": "government_framework",
+          "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence"
+        },
+        {
+          "id": "owasp-agentic-top-10-2026",
+          "name": "OWASP Top 10 for Agentic Applications",
+          "published": "2025-12-09",
+          "publisher": "OWASP GenAI Security Project",
+          "source_class": "industry_standard",
+          "url": "https://genai.owasp.org/2025/12/09/owasp-genai-security-project-releases-top-10-risks-and-mitigations-for-agentic-ai-security/"
+        }
+      ],
+      "strategic_score": 77,
+      "title": "Secure-by-design expectations now apply directly to agentic AI products",
+      "trend": "AI systems are being treated as software systems that must be secure by design, transparent, measurable, and safe by default across their lifecycle."
+    }
+  ]
+}

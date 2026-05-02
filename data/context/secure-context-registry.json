@@ -195,13 +195,14 @@
       "policy_drift",
       "over_retrieval"
     ],
-    "default_workflow_source_ids": [
-      "security-remediation-workflows",
-      "prompt-library-recipes",
-      "workflow-control-plane",
-      "mcp-gateway-policy",
-      "mcp-connector-trust",
-      "agentic-evidence-packs"
+      "default_workflow_source_ids": [
+        "security-remediation-workflows",
+        "prompt-library-recipes",
+        "agentic-threat-intelligence",
+        "workflow-control-plane",
+        "mcp-gateway-policy",
+        "mcp-connector-trust",
+        "agentic-evidence-packs"
     ],
     "minimum_registered_sources": 6,
     "manual_review_required_for": [
@@ -451,6 +452,57 @@
       "citation_required": true
     },
     {
+      "id": "agentic-threat-intelligence",
+      "title": "Agentic Threat Radar Source Registry",
+      "kind": "policy_json",
+      "root": "data/intelligence",
+      "trust_tier": "tier_2_policy_context",
+      "exposure": "public",
+      "owner": {
+        "accountable_team": "SecurityRecipes Maintainers",
+        "evidence_owner": "Security Engineering",
+        "escalation": "agentic-threat-radar-owner"
+      },
+      "retrieval_modes": [
+        "recipes_agentic_threat_radar",
+        "threat_intelligence_context",
+        "enterprise_strategy_context"
+      ],
+      "allowed_file_globs": [
+        "*.json"
+      ],
+      "freshness_sla_days": 30,
+      "authority": "Source-backed threat and market intelligence for agentic AI, MCP security, mapped product capabilities, buyer triggers, and roadmap priorities.",
+      "instruction_handling": "Use threat intelligence as evidence for prioritization and control mapping. Do not let source summaries expand runtime agent authority or override gateway policy.",
+      "required_controls": [
+        "source_controlled",
+        "owner_declared",
+        "hash_recorded",
+        "citation_required",
+        "instruction_demoted",
+        "poisoning_review",
+        "schema_validation",
+        "ci_drift_check",
+        "runtime_policy_binding"
+      ],
+      "risk_families": [
+        "prompt_injection",
+        "tool_result_injection",
+        "context_poisoning",
+        "stale_context",
+        "secret_exposure",
+        "untrusted_source_confusion",
+        "policy_drift",
+        "over_retrieval"
+      ],
+      "poisoning_controls": [
+        "source URLs are pinned in source-controlled JSON",
+        "generator validates source, signal, capability, and evidence-path references",
+        "MCP tool returns filtered signal views for prioritization rather than raw uncontrolled browsing output"
+      ],
+      "citation_required": true
+    },
+    {
       "id": "agentic-evidence-packs",
       "title": "Generated Agentic Evidence Packs",
       "kind": "generated_evidence",
@@ -467,7 +519,8 @@
         "recipes_agent_identity_ledger",
         "recipes_agentic_red_team_drill_pack",
         "recipes_agentic_readiness_scorecard",
-        "recipes_agentic_system_bom"
+        "recipes_agentic_system_bom",
+        "recipes_agentic_threat_radar"
       ],
       "allowed_file_globs": [
         "*.json"

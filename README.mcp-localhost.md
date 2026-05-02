@@ -74,6 +74,8 @@ After connecting, the server exposes these tools:
 - `recipes_agentic_readiness_scorecard`
 - `recipes_agentic_system_bom`
 - `recipes_secure_context_trust_pack`
+- `recipes_evaluate_context_retrieval_decision`
+- `recipes_agentic_threat_radar`
 - `recipes_match_finding`
 
 ## Use a custom config
@@ -95,8 +97,9 @@ docker run --rm -it -p 8123:80 `
 Edit `mcp-server.toml` when you need to point the MCP server at a forked
 or self-hosted `recipes-index.json`, workflow manifest, gateway policy,
 assurance pack, identity ledger, connector trust pack, red-team drill
-pack, readiness scorecard, Agentic System BOM, or secure context trust
-pack.
+pack, readiness scorecard, Agentic System BOM, secure context trust
+pack, or agentic threat radar. The secure context retrieval evaluator
+uses the same trust pack and does not require a separate config path.
 
 ## Change the local port
 

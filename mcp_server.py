@@ -23,8 +23,10 @@ from fastmcp import FastMCP
 
 try:
     from scripts.evaluate_mcp_gateway_decision import evaluate_policy_decision
+    from scripts.evaluate_secure_context_retrieval import evaluate_context_retrieval_decision
 except ImportError:  # pragma: no cover - supports direct script-directory execution.
     from evaluate_mcp_gateway_decision import evaluate_policy_decision
+    from evaluate_secure_context_retrieval import evaluate_context_retrieval_decision
 
 DEFAULT_CONFIG_PATH = os.environ.get("RECIPES_MCP_CONFIG", "./mcp-server.toml")
 DEFAULT_TRANSPORT = os.environ.get("RECIPES_MCP_TRANSPORT", "streamable-http")
@@ -79,6 +81,10 @@ class ServerConfig:
     secure_context_trust_pack_path: str = os.environ.get(
         "RECIPES_MCP_SECURE_CONTEXT_TRUST_PACK_PATH",
         "./data/evidence/secure-context-trust-pack.json",
+    )
+    threat_radar_path: str = os.environ.get(
+        "RECIPES_MCP_THREAT_RADAR_PATH",
+        "./data/evidence/agentic-threat-radar.json",
     )
 
 
@@ -1398,6 +1404,157 @@ class SecureContextTrustPack:
             ],
         }
 
+    def evaluate(self, runtime_request: dict[str, Any]) -> dict[str, Any]:
+        try:
+            pack = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "error": f"failed to load secure context trust pack: {exc}",
+                "pack_path": str(self.path),
+            }
+
+        if pack is None:
+            return {
+                "available": False,
+                "error": "secure context trust pack is not present",
+                "pack_path": str(self.path),
+            }
+
+        try:
+            decision = evaluate_context_retrieval_decision(pack, runtime_request)
+        except Exception as exc:
+            return {
+                "available": False,
+                "error": f"failed to evaluate context retrieval decision: {exc}",
+                "pack_path": str(self.path),
+            }
+
+        decision["available"] = True
+        return decision
+
+
+class AgenticThreatRadar:
+    def __init__(self, radar_path: str):
+        self.path = Path(radar_path)
+        self._mtime: float | None = None
+        self._radar: dict[str, Any] | None = None
+        self._signal_by_id: dict[str, dict[str, Any]] = {}
+
+    def _load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+
+        stat = self.path.stat()
+        if self._radar is not None and self._mtime == stat.st_mtime:
+            return self._radar
+
+        radar = json.loads(self.path.read_text(encoding="utf-8"))
+        signals = radar.get("threat_signals") if isinstance(radar, dict) else []
+        self._signal_by_id = {
+            str(signal.get("id")): signal
+            for signal in signals
+            if isinstance(signal, dict) and signal.get("id")
+        }
+        self._radar = radar
+        self._mtime = stat.st_mtime
+        return radar
+
+    @staticmethod
+    def _signal_preview(signal: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "buyer_trigger": signal.get("buyer_trigger"),
+            "capability_ids": signal.get("mapped_capability_ids", []),
+            "confidence": signal.get("confidence"),
+            "horizon": signal.get("horizon"),
+            "id": signal.get("id"),
+            "priority": signal.get("priority"),
+            "roadmap_action": signal.get("roadmap_action"),
+            "source_ids": signal.get("source_ids", []),
+            "strategic_score": signal.get("strategic_score"),
+            "title": signal.get("title"),
+        }
+
+    def get(
+        self,
+        signal_id: str | None = None,
+        priority: str | None = None,
+        horizon: str | None = None,
+        capability_id: str | None = None,
+        minimum_score: int | None = None,
+    ) -> dict[str, Any]:
+        try:
+            radar = self._load()
+        except Exception as exc:
+            return {
+                "available": False,
+                "error": f"failed to load agentic threat radar: {exc}",
+                "radar_path": str(self.path),
+            }
+
+        if radar is None:
+            return {
+                "available": False,
+                "error": "agentic threat radar is not present",
+                "radar_path": str(self.path),
+            }
+
+        if not isinstance(radar, dict):
+            return {
+                "available": False,
+                "error": "agentic threat radar root must be an object",
+                "radar_path": str(self.path),
+            }
+
+        if signal_id:
+            signal = self._signal_by_id.get(signal_id.strip())
+            return {
+                "available": True,
+                "found": signal is not None,
+                "signal": signal,
+                "signal_id": signal_id,
+            }
+
+        signals = list(self._signal_by_id.values())
+        if priority:
+            key = priority.strip()
+            signals = [signal for signal in signals if str(signal.get("priority")) == key]
+        if horizon:
+            key = horizon.strip()
+            signals = [signal for signal in signals if str(signal.get("horizon")) == key]
+        if capability_id:
+            key = capability_id.strip()
+            signals = [
+                signal
+                for signal in signals
+                if key in {str(item) for item in signal.get("mapped_capability_ids", [])}
+            ]
+        if minimum_score is not None:
+            signals = [
+                signal
+                for signal in signals
+                if int(signal.get("strategic_score") or 0) >= minimum_score
+            ]
+
+        return {
+            "available": True,
+            "acquisition_story": radar.get("acquisition_story"),
+            "capability_coverage": radar.get("capability_coverage", []),
+            "enterprise_adoption_packet": radar.get("enterprise_adoption_packet"),
+            "feature_backlog": radar.get("feature_backlog", []),
+            "generated_at": radar.get("generated_at"),
+            "horizon": horizon,
+            "minimum_score": minimum_score,
+            "priority": priority,
+            "product_capabilities": radar.get("product_capabilities", []),
+            "schema_version": radar.get("schema_version"),
+            "signal_count": len(signals),
+            "signals": [self._signal_preview(signal) for signal in signals],
+            "source_artifacts": radar.get("source_artifacts"),
+            "source_references": radar.get("source_references", []),
+            "threat_radar_summary": radar.get("threat_radar_summary"),
+        }
+
 
 def load_config(config_path: str) -> ServerConfig:
     path = Path(config_path)
@@ -1441,6 +1598,7 @@ def load_config(config_path: str) -> ServerConfig:
         "secure_context_trust_pack_path",
         cfg.secure_context_trust_pack_path,
     )
+    cfg.threat_radar_path = data.get("threat_radar_path", cfg.threat_radar_path)
     return cfg
 
 
@@ -1495,6 +1653,7 @@ red_team_drill_pack = AgenticRedTeamDrillPack(config.red_team_drill_pack_path)
 readiness_scorecard = AgenticReadinessScorecard(config.readiness_scorecard_path)
 agentic_system_bom = AgenticSystemBOM(config.agentic_system_bom_path)
 secure_context_trust_pack = SecureContextTrustPack(config.secure_context_trust_pack_path)
+threat_radar = AgenticThreatRadar(config.threat_radar_path)
 mcp = FastMCP(name="security-recipes-mcp")
 
 
@@ -1516,6 +1675,7 @@ async def recipes_server_info() -> dict[str, Any]:
         "readiness_scorecard_path": config.readiness_scorecard_path,
         "agentic_system_bom_path": config.agentic_system_bom_path,
         "secure_context_trust_pack_path": config.secure_context_trust_pack_path,
+        "threat_radar_path": config.threat_radar_path,
     }
 
 
@@ -1704,6 +1864,52 @@ async def recipes_secure_context_trust_pack(
         workflow_id=workflow_id,
         trust_tier=trust_tier,
         decision=decision,
+    )
+
+
+@mcp.tool()
+async def recipes_evaluate_context_retrieval_decision(
+    workflow_id: str,
+    source_id: str,
+    retrieval_mode: str,
+    agent_id: str | None = None,
+    run_id: str | None = None,
+    requested_path: str | None = None,
+    context_hash: str | None = None,
+    tenant_id: str | None = None,
+    data_class: str | None = None,
+) -> dict[str, Any]:
+    """Return a deterministic allow, hold, deny, or kill decision before context is returned."""
+    return secure_context_trust_pack.evaluate(
+        {
+            "agent_id": agent_id,
+            "context_hash": context_hash,
+            "data_class": data_class,
+            "requested_path": requested_path,
+            "retrieval_mode": retrieval_mode,
+            "run_id": run_id,
+            "source_id": source_id,
+            "tenant_id": tenant_id,
+            "workflow_id": workflow_id,
+        }
+    )
+
+
+@mcp.tool()
+async def recipes_agentic_threat_radar(
+    signal_id: str | None = None,
+    priority: str | None = None,
+    horizon: str | None = None,
+    capability_id: str | None = None,
+    minimum_score: int | None = None,
+) -> dict[str, Any]:
+    """Return current source-backed agentic AI threat signals and product priorities."""
+    return threat_radar.get(
+        signal_id=signal_id,
+        priority=priority,
+        horizon=horizon,
+        capability_id=capability_id,
+        minimum_score=minimum_score,
     )
 
 

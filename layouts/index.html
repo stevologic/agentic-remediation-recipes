@@ -13,7 +13,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>{{ .Site.Title }}</title>
-{{ with .Site.Params.description }}<meta name="description" content="{{ . }}">{{ end }}
+{{ $homeDescription := "SecurityRecipes is an open, MIT-licensed library of agentic security remediation recipes, prompts, guardrails, generated governance packs, and a read-only MCP server for trusted context retrieval." }}
+<meta name="description" content="{{ $homeDescription }}">
 {{/*
   Hardening — same as content pages. No PWA manifest (kills the
   "Install app" / "Use an app / extension" banner Chrome otherwise
@@ -1062,32 +1063,32 @@
 <section class="hero">
   <div class="eyebrow reveal d1">
     <span class="dot"></span>
-    <span>2026 Focus · MIT Licensed · Agent-Verified · MCP Native</span>
+    <span>2026 Focus · MIT Licensed · Read-Only MCP · Reviewer-Gated</span>
   </div>
   <h1 class="title reveal d2">
     The trusted secure context layer<br/>
     for <span class="accent">agentic AI and MCP servers</span>.
   </h1>
   <p class="subtitle reveal d3">
-    SecurityRecipes gives teams a professional launchpad: free open recipes for immediate adoption, plus a production MCP server tier for premium, agent-verified context, prompts, and workflows that keep security reviewable at scale.
+    SecurityRecipes is an open playbook for security teams adopting AI coding agents. It provides per-agent setup recipes, reusable prompts and rules files, reviewer-gated remediation workflows, generated governance evidence, and a repo-shipped FastMCP server that returns trusted context from the site and local packs.
   </p>
   <div class="hero-cta-row reveal d3">
-    <a class="hero-cta-primary" href="{{ $base }}/prompt-library/">
-      <span>Browse Free Recipes</span>
+    <a class="hero-cta-primary" href="{{ $base }}/quickstart/">
+      <span>Start With Quick Start</span>
       <span class="hero-cta-kbd">Open</span>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
     <a class="hero-cta-secondary" href="{{ $base }}/mcp-servers/">
-      <span>Access Production MCP Server</span>
+      <span>Explore the MCP Server</span>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
   </div>
   <div class="hero-meta reveal d4">
-    <span>MIT Licensed knowledge base</span>
+    <span>MIT licensed docs and prompts</span>
     <span class="sep"></span>
-    <span>Agent-verified premium context via MCP</span>
+    <span>Read-only FastMCP context server</span>
     <span class="sep"></span>
-    <span>Built for 2026 enterprise rollout</span>
+    <span>Generated trust, policy, and evidence packs</span>
   </div>
   <div class="home-search reveal d4">
     <label class="home-search-label" for="home-search-input">Search recipes</label>
@@ -1104,7 +1105,7 @@
 <section class="tools-section">
   <div class="section-header reveal d4">
     <h2>Pick your agent</h2>
-    <p>Click any tool to see the step-by-step recipe for enabling agentic remediation in your environment.</p>
+    <p>Click any tool to see the step-by-step recipe for enabling reviewer-gated remediation in your environment.</p>
   </div>
 
   <div class="tools-grid">
@@ -1209,11 +1210,11 @@
     <div>
       <div class="promptlib-eyebrow">
         <span class="dot"></span>
-        <span>Prompt Library · Community + Agent-Verified</span>
+        <span>Prompt Library · Community + Reviewed Examples</span>
       </div>
       <h2>Prompt Library</h2>
       <p>
-        Prompt Library blends community prompts with agent-verified premium prompt packs delivered through the production MCP server. Use free prompts to start fast, then unlock premium playbooks when your team needs deterministic quality and enterprise support.
+        Prompt Library collects the actual prompts, rules files, skills, and instruction snippets teams use to steer agents safely. Browse by tool, copy the entry that matches your agent, keep the guardrails and stop conditions intact, and adapt the house rules to your repo.
       </p>
       <div class="promptlib-ctas">
         <a class="btn-primary" href="{{ $base }}/prompt-library/">
@@ -1296,18 +1297,18 @@
   <a class="dual-cta-card mcp reveal d4" href="{{ $base }}/mcp-servers/">
     <div class="dual-cta-eyebrow">
       <span class="dot"></span>
-      <span>MCP Native · Free + Premium</span>
+      <span>MCP Native · Read-Only Context</span>
     </div>
-    <h3>Production MCP Server</h3>
+    <h3>Repo-shipped MCP Server</h3>
     <p>
-      Start with the free MCP tier for public recipe retrieval and community prompt context. Upgrade to premium MCP for agent-verified prompt bundles, higher-rate production endpoints, and advanced remediation features only exposed through the server.
+      The included FastMCP server searches and returns SecurityRecipes pages plus local generated JSON packs. It is read-only by design: no PR creation, no ticket edits, no secret storage, and no live vendor connector calls hidden behind the tool surface.
     </p>
     <div class="dual-cta-tags">
-      <span class="dual-cta-tag">scoped tokens</span>
+      <span class="dual-cta-tag">read-only tools</span>
       <span class="dual-cta-tag">typed tools</span>
-      <span class="dual-cta-tag">audit logs</span>
-      <span class="dual-cta-tag">rate limits</span>
-      <span class="dual-cta-tag">premium-only features</span>
+      <span class="dual-cta-tag">site index</span>
+      <span class="dual-cta-tag">generated packs</span>
+      <span class="dual-cta-tag">runtime decisions</span>
     </div>
     <span class="dual-cta-link">
       Click to find out more
@@ -1320,26 +1321,36 @@
 
 <section class="tools-section">
   <div class="section-header reveal d2">
-    <h2>Free vs Premium</h2>
-    <p>SecurityRecipes is open by default, with premium capabilities delivered through the production MCP server.</p>
+    <h2>What it provides</h2>
+    <p>The open site and repository are the product surface: docs, recipes, prompts, workflows, generated evidence, and a read-only MCP context layer.</p>
   </div>
   <div class="dual-cta-section">
     <div class="dual-cta-card reveal d2">
-      <h3>Free (Open Site)</h3>
-      <p>Community recipes, handbook content, and baseline MCP integration guidance under MIT licensing.</p>
+      <h3>Open Knowledge Base</h3>
+      <p>MIT-licensed fundamentals, per-agent recipes, prompt library entries, automation guidance, and contribution paths that teams can fork, adapt, and run through normal review.</p>
       <div class="dual-cta-tags">
-        <span class="dual-cta-tag">Open recipes</span>
+        <span class="dual-cta-tag">agent recipes</span>
         <span class="dual-cta-tag">MIT licensed</span>
-        <span class="dual-cta-tag">Community prompts</span>
+        <span class="dual-cta-tag">prompt library</span>
+        <span class="dual-cta-tag">quick start</span>
       </div>
     </div>
-    <div class="dual-cta-card mcp reveal d3">
-      <h3>Premium (Production MCP)</h3>
-      <p>Agent-verified premium prompts, advanced policy enforcement, and production-grade throughput/SLA for enterprise teams.</p>
+    <div class="dual-cta-card secrem reveal d3">
+      <h3>Security-Operated Workflows</h3>
+      <p>Reference remediation workflows for sensitive data, vulnerable dependencies, SAST findings, base images, artifact quarantine, and other bounded fix shapes where agents produce PRs or triage notes.</p>
       <div class="dual-cta-tags">
-        <span class="dual-cta-tag">Agent-verified prompts</span>
-        <span class="dual-cta-tag">Production endpoints</span>
-        <span class="dual-cta-tag">Premium-only features</span>
+        <span class="dual-cta-tag">reviewer-gated</span>
+        <span class="dual-cta-tag">bounded scope</span>
+        <span class="dual-cta-tag">clean stop modes</span>
+      </div>
+    </div>
+    <div class="dual-cta-card mcp reveal d4">
+      <h3>MCP Context + Evidence</h3>
+      <p>A read-only server and generated packs for workflow control, gateway policy, connector trust, identity, assurance, readiness, red-team drills, secure context trust, and runtime retrieval decisions.</p>
+      <div class="dual-cta-tags">
+        <span class="dual-cta-tag">FastMCP</span>
+        <span class="dual-cta-tag">JSON packs</span>
+        <span class="dual-cta-tag">default-deny decisions</span>
       </div>
     </div>
   </div>

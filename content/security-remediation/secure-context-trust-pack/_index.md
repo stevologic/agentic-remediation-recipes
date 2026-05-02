@@ -45,6 +45,9 @@ The secure context layer has three artifacts:
   expectations, poisoning controls, and prohibited context classes.
 - `scripts/generate_secure_context_trust_pack.py` - a dependency-free
   generator and validator with `--check` mode for CI drift detection.
+- `scripts/evaluate_secure_context_retrieval.py` - a dependency-free
+  runtime evaluator that turns the pack into an allow, hold, deny, or
+  kill-session retrieval decision.
 - `data/evidence/secure-context-trust-pack.json` - the generated pack
   with source hashes, registered file counts, retrieval contracts, and
   per-workflow context package hashes.
@@ -57,7 +60,8 @@ python3 scripts/generate_secure_context_trust_pack.py --check
 ```
 
 The local MCP server exposes the same bundle through
-`recipes_secure_context_trust_pack`.
+`recipes_secure_context_trust_pack`, and exposes runtime retrieval
+decisions through `recipes_evaluate_context_retrieval_decision`.
 
 ## What is inside the pack
 
@@ -127,6 +131,18 @@ For gateway design, start with `retrieval_decision_contract`. The
 default is `deny_unregistered_context`; customer runtime context holds
 for tenant-side controls; prohibited context kills the session.
 
+For runtime enforcement, evaluate the specific context request before
+retrieval:
+
+```text
+recipes_evaluate_context_retrieval_decision(
+  workflow_id="vulnerable-dependency-remediation",
+  source_id="prompt-library-recipes",
+  retrieval_mode="workflow_prompt_context",
+  requested_path="content/prompt-library/general/base-image-bump.md"
+)
+```
+
 ## CI contract
 
 The generator fails if:
@@ -149,6 +165,8 @@ it.
   - the workflow source of truth.
 - [MCP Gateway Policy Pack]({{< relref "/security-remediation/mcp-gateway-policy" >}})
   - the runtime enforcement contract.
+- [Secure Context Firewall]({{< relref "/security-remediation/secure-context-firewall" >}})
+  - the runtime retrieval gate for context requests.
 - [MCP Connector Trust Registry]({{< relref "/security-remediation/mcp-connector-trust-registry" >}})
   - connector trust tiers and promotion criteria.
 - [Agentic System BOM]({{< relref "/security-remediation/agentic-system-bom" >}})

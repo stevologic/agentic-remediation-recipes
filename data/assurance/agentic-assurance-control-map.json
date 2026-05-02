@@ -98,6 +98,14 @@
       "retention": "per repository history and release artifact retention"
     },
     {
+      "id": "threat_radar_pack",
+      "title": "Generated agentic threat radar",
+      "path": "data/evidence/agentic-threat-radar.json",
+      "availability": "generated",
+      "produced_by": "scripts/generate_agentic_threat_radar.py",
+      "retention": "per repository history and release artifact retention"
+    },
+    {
       "id": "mcp_tool_surface",
       "title": "MCP server tool surface",
       "path": "mcp_server.py",
@@ -464,6 +472,47 @@
           "standard_id": "csa-aicm",
           "control": "AI assurance, monitoring, and control validation",
           "rationale": "The generated pack gives cloud AI programs a portable eval evidence index."
+        }
+      ]
+    },
+    {
+      "id": "SR-AI-10",
+      "title": "Threat Intelligence and Standards Drift",
+      "objective": "Current agentic AI and MCP security guidance is reviewed, mapped to SecurityRecipes controls, and converted into buyer triggers and roadmap priorities before workflows scale.",
+      "product_surface": [
+        "agentic threat radar",
+        "MCP server",
+        "assurance pack",
+        "secure context trust pack"
+      ],
+      "ai_easy_default": "Agents, reviewers, and AI platform teams can ask one MCP tool which current threats matter and which SecurityRecipes controls address them.",
+      "buyer_value": "Shows enterprise buyers that SecurityRecipes has a living control strategy tied to current industry guidance rather than a static prompt library.",
+      "evidence_sources": [
+        "threat_radar_pack",
+        "red_team_drill_pack",
+        "mcp_tool_surface",
+        "workflow_manifest"
+      ],
+      "framework_mappings": [
+        {
+          "standard_id": "nist-ai-rmf-1.0",
+          "control": "Govern, Map, Measure, and Manage",
+          "rationale": "The radar maps external AI risk guidance to current controls and product priorities."
+        },
+        {
+          "standard_id": "owasp-agentic-top-10-2026",
+          "control": "Agentic risk awareness across behavior, tools, identity, supply chain, context, and rogue operation",
+          "rationale": "Threat signals are explicitly mapped to the agentic risks enterprise teams must review before scale."
+        },
+        {
+          "standard_id": "mcp-security-best-practices",
+          "control": "MCP scope minimization, auditability, token safety, and session safety",
+          "rationale": "The radar promotes MCP guidance into roadmap and control-plane requirements."
+        },
+        {
+          "standard_id": "cisa-secure-by-design",
+          "control": "Secure defaults, transparency, and measurable security outcomes",
+          "rationale": "A generated radar turns secure-by-design expectations into inspectable evidence and current product decisions."
         }
       ]
     }
