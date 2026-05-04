@@ -73,6 +73,24 @@
     jiraEmail: 'securityRecipes.ai.integrations.jiraEmail',
     jiraToken: 'securityRecipes.ai.integrations.jiraToken',
     jiraProject: 'securityRecipes.ai.integrations.jiraProject',
+    teamsWebhook: 'securityRecipes.ai.integrations.teamsWebhook',
+    serviceNowBaseUrl: 'securityRecipes.ai.integrations.serviceNowBaseUrl',
+    serviceNowTable: 'securityRecipes.ai.integrations.serviceNowTable',
+    serviceNowToken: 'securityRecipes.ai.integrations.serviceNowToken',
+    linearApiKey: 'securityRecipes.ai.integrations.linearApiKey',
+    linearTeamId: 'securityRecipes.ai.integrations.linearTeamId',
+    splunkHecUrl: 'securityRecipes.ai.integrations.splunkHecUrl',
+    splunkHecToken: 'securityRecipes.ai.integrations.splunkHecToken',
+    splunkIndex: 'securityRecipes.ai.integrations.splunkIndex',
+    splunkSourceType: 'securityRecipes.ai.integrations.splunkSourceType',
+    elasticBaseUrl: 'securityRecipes.ai.integrations.elasticBaseUrl',
+    elasticApiKey: 'securityRecipes.ai.integrations.elasticApiKey',
+    elasticSpaceId: 'securityRecipes.ai.integrations.elasticSpaceId',
+    elasticOwner: 'securityRecipes.ai.integrations.elasticOwner',
+    genericWebhookUrl: 'securityRecipes.ai.integrations.genericWebhookUrl',
+    genericWebhookMethod: 'securityRecipes.ai.integrations.genericWebhookMethod',
+    genericWebhookAuthHeader: 'securityRecipes.ai.integrations.genericWebhookAuthHeader',
+    genericWebhookHeaders: 'securityRecipes.ai.integrations.genericWebhookHeaders',
     depsDevContext: 'securityRecipes.ai.includeDepsDevContext',
     sarifContext: 'securityRecipes.ai.includeSarifContext',
     sbomContext: 'securityRecipes.ai.includeSbomContext',
@@ -1104,7 +1122,25 @@
       jiraBaseUrl: STORE.jiraBaseUrl,
       jiraEmail: STORE.jiraEmail,
       jiraToken: STORE.jiraToken,
-      jiraProject: STORE.jiraProject
+      jiraProject: STORE.jiraProject,
+      teamsWebhook: STORE.teamsWebhook,
+      serviceNowBaseUrl: STORE.serviceNowBaseUrl,
+      serviceNowTable: STORE.serviceNowTable,
+      serviceNowToken: STORE.serviceNowToken,
+      linearApiKey: STORE.linearApiKey,
+      linearTeamId: STORE.linearTeamId,
+      splunkHecUrl: STORE.splunkHecUrl,
+      splunkHecToken: STORE.splunkHecToken,
+      splunkIndex: STORE.splunkIndex,
+      splunkSourceType: STORE.splunkSourceType,
+      elasticBaseUrl: STORE.elasticBaseUrl,
+      elasticApiKey: STORE.elasticApiKey,
+      elasticSpaceId: STORE.elasticSpaceId,
+      elasticOwner: STORE.elasticOwner,
+      genericWebhookUrl: STORE.genericWebhookUrl,
+      genericWebhookMethod: STORE.genericWebhookMethod,
+      genericWebhookAuthHeader: STORE.genericWebhookAuthHeader,
+      genericWebhookHeaders: STORE.genericWebhookHeaders
     }[name] || '';
   }
 
@@ -1119,6 +1155,47 @@
     var clean = collapseText(value || '');
     if (clean) localStorage.setItem(key, clean);
     else localStorage.removeItem(key);
+  }
+
+  function trimText(value) {
+    return String(value || '').replace(/\r\n/g, '\n').trim();
+  }
+
+  function parseJsonObjectInput(text, label) {
+    var raw = trimText(text);
+    if (!raw) return {};
+    var parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (error) {
+      throw new Error((label || 'JSON input') + ' must be valid JSON.');
+    }
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      throw new Error((label || 'JSON input') + ' must be a JSON object.');
+    }
+    return parsed;
+  }
+
+  async function postJson(url, options) {
+    var response = await fetch(url, {
+      method: (options && options.method) || 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, (options && options.headers) || {}),
+      body: JSON.stringify((options && options.body) || {})
+    });
+    var bodyText = await response.text();
+    var data = null;
+    if (bodyText) {
+      try {
+        data = JSON.parse(bodyText);
+      } catch (_error) {
+        data = null;
+      }
+    }
+    return {
+      response: response,
+      data: data,
+      text: bodyText
+    };
   }
 
   function oauthRedirectUri() {
@@ -4805,7 +4882,7 @@
       'Output route runtime support: ' + route.runtime_support,
       'Return a concise, route-specific draft that can be delivered by the browser if the required integration is configured.',
       'For Draft PR packet: include branch name, commit summary, PR title, PR body, test plan, rollback, and reviewer checklist.',
-      'For GitHub issue/Jira/Slack/Email: include a title or subject and a body/message suitable for that destination.',
+      'For GitHub issue, Jira, Slack, Teams, ServiceNow, Linear, Elastic, or Email: include a title or subject and a body/message suitable for that destination.',
       'For Runbook receipt or Server runbook: include exact steps, evidence to collect, stop conditions, and rollback.'
     ].filter(Boolean).join('\n');
   }
@@ -4846,6 +4923,42 @@
     ].join('\n');
   }
 
+  function deliveryReportContext(config, output) {
+    return buildAgentReportContext(config || agentConfig(), output);
+  }
+
+  function deliverySeverity(config, output) {
+    var ctx = deliveryReportContext(config, output);
+    return (ctx && ctx.riskLevel) || 'info';
+  }
+
+  function serviceNowPriorityForSeverity(severity) {
+    return {
+      critical: '1',
+      high: '2',
+      medium: '3',
+      low: '4',
+      info: '4'
+    }[severity || 'info'] || '4';
+  }
+
+  function elasticSeverityForLevel(level) {
+    return {
+      critical: 'critical',
+      high: 'high',
+      medium: 'medium',
+      low: 'low',
+      info: 'low'
+    }[level || 'info'] || 'low';
+  }
+
+  function genericWebhookHeaders() {
+    var headers = parseJsonObjectInput(getIntegrationField('genericWebhookHeaders'), 'Generic webhook headers');
+    var authHeader = trimText(getIntegrationField('genericWebhookAuthHeader'));
+    if (authHeader && !headers.Authorization) headers.Authorization = authHeader;
+    return headers;
+  }
+
   async function deliverGitHubIssue(config, output) {
     var parsed = parseGitHubRepository(currentGitHubRepositoryInput());
     if (!parsed) throw new Error('GitHub issue output needs a repository in Settings, for example owner/repo.');
@@ -4871,6 +4984,18 @@
     });
     if (!response.ok) throw new Error('Slack webhook returned ' + statusLine(response.status, response.statusText) + '.');
     return 'Slack message delivered: ' + statusLine(response.status, response.statusText) + '.';
+  }
+
+  async function deliverTeams(config, output) {
+    var webhook = getIntegrationField('teamsWebhook');
+    if (!webhook) throw new Error('Teams output needs a Teams Workflows webhook URL saved in Agent integrations.');
+    var summary = agentDeliverySummary(config, output);
+    var payload = { text: summary.slice(0, 24000) };
+    var posted = await postJson(webhook, { body: payload });
+    if (!posted.response.ok) {
+      throw new Error('Teams workflow webhook returned ' + statusLine(posted.response.status, posted.response.statusText) + '. Browser CORS or workflow ownership may require a different endpoint.');
+    }
+    return 'Teams workflow accepted handoff: ' + statusLine(posted.response.status, posted.response.statusText) + '.';
   }
 
   async function deliverEmail(config, output) {
@@ -4931,6 +5056,151 @@
     return 'Jira issue created: ' + (data.key || 'created');
   }
 
+  async function deliverServiceNow(config, output) {
+    var base = getIntegrationField('serviceNowBaseUrl').replace(/\/+$/, '');
+    var table = collapseText(getIntegrationField('serviceNowTable') || 'incident');
+    var token = getIntegrationField('serviceNowToken');
+    if (!base || !table || !token) {
+      throw new Error('ServiceNow output needs an instance URL, table name, and OAuth bearer token saved in Agent integrations.');
+    }
+    var title = firstMarkdownTitle(output, 'Security remediation incident');
+    var summary = agentDeliverySummary(config, output);
+    var severity = deliverySeverity(config, output);
+    var posted = await postJson(base + '/api/now/v1/table/' + encodeURIComponent(table), {
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: {
+        short_description: title,
+        description: summary.slice(0, 32000),
+        comments: 'Generated in SecurityRecipes browser runtime.',
+        impact: serviceNowPriorityForSeverity(severity),
+        urgency: serviceNowPriorityForSeverity(severity)
+      }
+    });
+    if (!posted.response.ok) {
+      throw new Error('ServiceNow returned ' + statusLine(posted.response.status, posted.response.statusText) + '. Browser CORS or token scope may require an approved relay.');
+    }
+    var record = posted.data && posted.data.result ? posted.data.result : {};
+    return 'ServiceNow record created: ' + (record.number || record.sys_id || 'created');
+  }
+
+  async function deliverLinear(config, output) {
+    var apiKey = getIntegrationField('linearApiKey');
+    var teamId = getIntegrationField('linearTeamId');
+    if (!apiKey || !teamId) {
+      throw new Error('Linear output needs a personal API key and a team ID saved in Agent integrations.');
+    }
+    var title = firstMarkdownTitle(output, 'Security remediation issue');
+    var summary = agentDeliverySummary(config, output);
+    var posted = await postJson('https://api.linear.app/graphql', {
+      headers: {
+        'Authorization': apiKey
+      },
+      body: {
+        query: 'mutation SecurityRecipesIssueCreate($input: IssueCreateInput!) { issueCreate(input: $input) { success issue { id identifier title url } } }',
+        variables: {
+          input: {
+            title: title,
+            description: summary.slice(0, 50000),
+            teamId: teamId
+          }
+        }
+      }
+    });
+    if (!posted.response.ok) {
+      throw new Error('Linear returned ' + statusLine(posted.response.status, posted.response.statusText) + '. Browser CORS or key permissions may require an approved relay.');
+    }
+    if (posted.data && Array.isArray(posted.data.errors) && posted.data.errors.length) {
+      throw new Error('Linear issue creation failed: ' + (posted.data.errors[0].message || 'GraphQL error') + '.');
+    }
+    var issue = posted.data && posted.data.data && posted.data.data.issueCreate && posted.data.data.issueCreate.issue;
+    return 'Linear issue created: ' + (issue && (issue.identifier || issue.id || issue.title) || 'created');
+  }
+
+  async function deliverSplunkHec(config, output) {
+    var hecUrl = getIntegrationField('splunkHecUrl');
+    var token = getIntegrationField('splunkHecToken');
+    if (!hecUrl || !token) {
+      throw new Error('Splunk output needs an HEC URL and HEC token saved in Agent integrations.');
+    }
+    var envelope = deliveryEnvelopePayload(config, output);
+    var posted = await postJson(hecUrl, {
+      headers: {
+        'Authorization': 'Splunk ' + token
+      },
+      body: {
+        sourcetype: collapseText(getIntegrationField('splunkSourceType') || 'securityrecipes:report'),
+        index: collapseText(getIntegrationField('splunkIndex') || ''),
+        event: envelope
+      }
+    });
+    if (!posted.response.ok) {
+      throw new Error('Splunk HEC returned ' + statusLine(posted.response.status, posted.response.statusText) + '. Browser CORS or HEC settings may require a relay.');
+    }
+    if (posted.data && Number(posted.data.code) !== 0) {
+      throw new Error('Splunk HEC rejected the event: ' + (posted.data.text || 'unknown error') + '.');
+    }
+    return 'Splunk HEC accepted event: ' + statusLine(posted.response.status, posted.response.statusText) + '.';
+  }
+
+  async function deliverElasticCase(config, output) {
+    var base = getIntegrationField('elasticBaseUrl').replace(/\/+$/, '');
+    var apiKey = getIntegrationField('elasticApiKey');
+    if (!base || !apiKey) {
+      throw new Error('Elastic output needs a Kibana base URL and API key saved in Agent integrations.');
+    }
+    var spaceId = collapseText(getIntegrationField('elasticSpaceId'));
+    var owner = collapseText(getIntegrationField('elasticOwner') || 'securitySolution');
+    var path = (spaceId && spaceId !== 'default' ? '/s/' + encodeURIComponent(spaceId) : '') + '/api/cases';
+    var title = firstMarkdownTitle(output, 'Security remediation case');
+    var summary = agentDeliverySummary(config, output);
+    var posted = await postJson(base + path, {
+      headers: {
+        'Authorization': 'ApiKey ' + apiKey,
+        'kbn-xsrf': 'securityrecipes-browser'
+      },
+      body: {
+        connector: {
+          id: 'none',
+          name: 'none',
+          type: '.none',
+          fields: null
+        },
+        description: summary.slice(0, 30000),
+        owner: owner,
+        settings: {
+          extractObservables: true,
+          syncAlerts: false
+        },
+        severity: elasticSeverityForLevel(deliverySeverity(config, output)),
+        status: 'open',
+        tags: ['security-recipes', 'browser-agent'],
+        title: title
+      }
+    });
+    if (!posted.response.ok) {
+      throw new Error('Elastic Cases returned ' + statusLine(posted.response.status, posted.response.statusText) + '. Browser CORS or API key privileges may require an approved relay.');
+    }
+    return 'Elastic case created: ' + ((posted.data && (posted.data.id || posted.data.title)) || 'created');
+  }
+
+  async function deliverGenericWebhook(config, output) {
+    var url = getIntegrationField('genericWebhookUrl');
+    if (!url) throw new Error('Generic webhook output needs a target URL saved in Agent integrations.');
+    var method = collapseText(getIntegrationField('genericWebhookMethod') || 'POST').toUpperCase();
+    var posted = await postJson(url, {
+      method: method,
+      headers: genericWebhookHeaders(),
+      body: deliveryEnvelopePayload(config, output)
+    });
+    if (!posted.response.ok) {
+      throw new Error('Generic webhook returned ' + statusLine(posted.response.status, posted.response.statusText) + '.');
+    }
+    return 'Generic webhook delivered: ' + statusLine(posted.response.status, posted.response.statusText) + '.';
+  }
+
   async function deliverAgentOutput() {
     if (!state.agentLastOutput || !state.agentLastConfig) {
       renderAgentOutput('Generate an agent plan first, then run the selected output.', true);
@@ -4952,8 +5222,14 @@
       var result;
       if (route.value === 'github-issue') result = await deliverGitHubIssue(config, state.agentLastOutput);
       else if (route.value === 'slack') result = await deliverSlack(config, state.agentLastOutput);
+      else if (route.value === 'teams') result = await deliverTeams(config, state.agentLastOutput);
       else if (route.value === 'email') result = await deliverEmail(config, state.agentLastOutput);
       else if (route.value === 'jira') result = await deliverJira(config, state.agentLastOutput);
+      else if (route.value === 'servicenow') result = await deliverServiceNow(config, state.agentLastOutput);
+      else if (route.value === 'linear') result = await deliverLinear(config, state.agentLastOutput);
+      else if (route.value === 'splunk-hec') result = await deliverSplunkHec(config, state.agentLastOutput);
+      else if (route.value === 'elastic-case') result = await deliverElasticCase(config, state.agentLastOutput);
+      else if (route.value === 'generic-webhook') result = await deliverGenericWebhook(config, state.agentLastOutput);
       else {
         var copyValue = (route.runtime_support === 'config_only' || route.value === 'clipboard')
           ? JSON.stringify(deliveryEnvelopePayload(config, state.agentLastOutput), null, 2)
@@ -4990,12 +5266,30 @@
 
   function saveAgentIntegrationSettings() {
     setIntegrationField('slackWebhook', els.slackWebhook && els.slackWebhook.value);
+    setIntegrationField('teamsWebhook', els.teamsWebhook && els.teamsWebhook.value);
     setIntegrationField('emailRecipient', els.emailRecipient && els.emailRecipient.value);
     setIntegrationField('smtpRelayUrl', els.smtpRelayUrl && els.smtpRelayUrl.value);
     setIntegrationField('jiraBaseUrl', els.jiraBaseUrl && els.jiraBaseUrl.value);
     setIntegrationField('jiraEmail', els.jiraEmail && els.jiraEmail.value);
     setIntegrationField('jiraToken', els.jiraToken && els.jiraToken.value);
     setIntegrationField('jiraProject', els.jiraProject && els.jiraProject.value);
+    setIntegrationField('serviceNowBaseUrl', els.serviceNowBaseUrl && els.serviceNowBaseUrl.value);
+    setIntegrationField('serviceNowTable', els.serviceNowTable && els.serviceNowTable.value);
+    setIntegrationField('serviceNowToken', els.serviceNowToken && els.serviceNowToken.value);
+    setIntegrationField('linearApiKey', els.linearApiKey && els.linearApiKey.value);
+    setIntegrationField('linearTeamId', els.linearTeamId && els.linearTeamId.value);
+    setIntegrationField('splunkHecUrl', els.splunkHecUrl && els.splunkHecUrl.value);
+    setIntegrationField('splunkHecToken', els.splunkHecToken && els.splunkHecToken.value);
+    setIntegrationField('splunkIndex', els.splunkIndex && els.splunkIndex.value);
+    setIntegrationField('splunkSourceType', els.splunkSourceType && els.splunkSourceType.value);
+    setIntegrationField('elasticBaseUrl', els.elasticBaseUrl && els.elasticBaseUrl.value);
+    setIntegrationField('elasticApiKey', els.elasticApiKey && els.elasticApiKey.value);
+    setIntegrationField('elasticSpaceId', els.elasticSpaceId && els.elasticSpaceId.value);
+    setIntegrationField('elasticOwner', els.elasticOwner && els.elasticOwner.value);
+    setIntegrationField('genericWebhookUrl', els.genericWebhookUrl && els.genericWebhookUrl.value);
+    setIntegrationField('genericWebhookMethod', els.genericWebhookMethod && els.genericWebhookMethod.value);
+    setIntegrationField('genericWebhookAuthHeader', els.genericWebhookAuthHeader && els.genericWebhookAuthHeader.value);
+    setIntegrationField('genericWebhookHeaders', els.genericWebhookHeaders && els.genericWebhookHeaders.value);
     if (els.agentStatus && !state.agentRunning) {
       els.agentStatus.textContent = 'Agent integration settings saved in this browser.';
       els.agentStatus.setAttribute('data-kind', 'ok');
@@ -5004,12 +5298,30 @@
 
   function updateAgentIntegrationUI() {
     if (els.slackWebhook) els.slackWebhook.value = getIntegrationField('slackWebhook');
+    if (els.teamsWebhook) els.teamsWebhook.value = getIntegrationField('teamsWebhook');
     if (els.emailRecipient) els.emailRecipient.value = getIntegrationField('emailRecipient');
     if (els.smtpRelayUrl) els.smtpRelayUrl.value = getIntegrationField('smtpRelayUrl');
     if (els.jiraBaseUrl) els.jiraBaseUrl.value = getIntegrationField('jiraBaseUrl');
     if (els.jiraEmail) els.jiraEmail.value = getIntegrationField('jiraEmail');
     if (els.jiraToken) els.jiraToken.value = getIntegrationField('jiraToken');
     if (els.jiraProject) els.jiraProject.value = getIntegrationField('jiraProject');
+    if (els.serviceNowBaseUrl) els.serviceNowBaseUrl.value = getIntegrationField('serviceNowBaseUrl');
+    if (els.serviceNowTable) els.serviceNowTable.value = getIntegrationField('serviceNowTable') || 'incident';
+    if (els.serviceNowToken) els.serviceNowToken.value = getIntegrationField('serviceNowToken');
+    if (els.linearApiKey) els.linearApiKey.value = getIntegrationField('linearApiKey');
+    if (els.linearTeamId) els.linearTeamId.value = getIntegrationField('linearTeamId');
+    if (els.splunkHecUrl) els.splunkHecUrl.value = getIntegrationField('splunkHecUrl');
+    if (els.splunkHecToken) els.splunkHecToken.value = getIntegrationField('splunkHecToken');
+    if (els.splunkIndex) els.splunkIndex.value = getIntegrationField('splunkIndex');
+    if (els.splunkSourceType) els.splunkSourceType.value = getIntegrationField('splunkSourceType') || 'securityrecipes:report';
+    if (els.elasticBaseUrl) els.elasticBaseUrl.value = getIntegrationField('elasticBaseUrl');
+    if (els.elasticApiKey) els.elasticApiKey.value = getIntegrationField('elasticApiKey');
+    if (els.elasticSpaceId) els.elasticSpaceId.value = getIntegrationField('elasticSpaceId') || 'default';
+    if (els.elasticOwner) els.elasticOwner.value = getIntegrationField('elasticOwner') || 'securitySolution';
+    if (els.genericWebhookUrl) els.genericWebhookUrl.value = getIntegrationField('genericWebhookUrl');
+    if (els.genericWebhookMethod) els.genericWebhookMethod.value = getIntegrationField('genericWebhookMethod') || 'POST';
+    if (els.genericWebhookAuthHeader) els.genericWebhookAuthHeader.value = getIntegrationField('genericWebhookAuthHeader');
+    if (els.genericWebhookHeaders) els.genericWebhookHeaders.value = getIntegrationField('genericWebhookHeaders');
   }
 
   function saveScheduleDraft() {
@@ -5388,16 +5700,46 @@
                   '</div>' +
                 '</details>' +
                 '<details class="ai-chatbot-agent-integrations">' +
-                  '<summary class="ai-chatbot-github-heading"><span>Delivery integrations</span><small>Only needed for Slack, Jira, Email, or GitHub issue output.</small></summary>' +
+                  '<summary class="ai-chatbot-github-heading"><span>Delivery integrations</span><small>Only needed for live or live_or_copy output routes. Secrets stay in this browser.</small></summary>' +
                   '<div class="ai-chatbot-github-content">' +
-                    '<label class="ai-chatbot-field"><span>Slack webhook</span><input data-slack-webhook type="url" autocomplete="off" placeholder="https://hooks.slack.com/services/..."></label>' +
-                    '<label class="ai-chatbot-field"><span>Email recipient</span><input data-email-recipient type="email" autocomplete="off" placeholder="security@example.com"></label>' +
-                    '<label class="ai-chatbot-field"><span>Email relay URL</span><input data-smtp-relay-url type="url" autocomplete="off" placeholder="Optional CORS-enabled SMTP relay endpoint"></label>' +
+                    '<div class="ai-chatbot-agent-grid">' +
+                      '<label class="ai-chatbot-field"><span>Slack webhook</span><input data-slack-webhook type="url" autocomplete="off" placeholder="https://hooks.slack.com/services/..."></label>' +
+                      '<label class="ai-chatbot-field"><span>Teams workflow webhook</span><input data-teams-webhook type="url" autocomplete="off" placeholder="https://prod-00.westus.logic.azure.com/workflows/..."></label>' +
+                      '<label class="ai-chatbot-field"><span>Email recipient</span><input data-email-recipient type="email" autocomplete="off" placeholder="security@example.com"></label>' +
+                      '<label class="ai-chatbot-field"><span>Email relay URL</span><input data-smtp-relay-url type="url" autocomplete="off" placeholder="Optional CORS-enabled SMTP relay endpoint"></label>' +
+                    '</div>' +
                     '<div class="ai-chatbot-agent-grid">' +
                       '<label class="ai-chatbot-field"><span>Jira URL</span><input data-jira-base-url type="url" autocomplete="off" placeholder="https://example.atlassian.net"></label>' +
                       '<label class="ai-chatbot-field"><span>Jira project</span><input data-jira-project type="text" autocomplete="off" placeholder="SEC"></label>' +
                       '<label class="ai-chatbot-field"><span>Jira email</span><input data-jira-email type="email" autocomplete="off" placeholder="you@example.com"></label>' +
                       '<label class="ai-chatbot-field"><span>Jira token</span><input data-jira-token type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
+                    '</div>' +
+                    '<div class="ai-chatbot-agent-grid">' +
+                      '<label class="ai-chatbot-field"><span>ServiceNow URL</span><input data-servicenow-base-url type="url" autocomplete="off" placeholder="https://example.service-now.com"></label>' +
+                      '<label class="ai-chatbot-field"><span>ServiceNow table</span><input data-servicenow-table type="text" autocomplete="off" placeholder="incident"></label>' +
+                      '<label class="ai-chatbot-field ai-chatbot-wide-field"><span>ServiceNow bearer token</span><input data-servicenow-token type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
+                    '</div>' +
+                    '<div class="ai-chatbot-agent-grid">' +
+                      '<label class="ai-chatbot-field"><span>Linear API key</span><input data-linear-api-key type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
+                      '<label class="ai-chatbot-field"><span>Linear team ID</span><input data-linear-team-id type="text" autocomplete="off" placeholder="9cfb482a-81e3-4154-b5b9-2c805e70a02d"></label>' +
+                      '<label class="ai-chatbot-field"><span>Splunk HEC URL</span><input data-splunk-hec-url type="url" autocomplete="off" placeholder="https://splunk.example.com:8088/services/collector/event"></label>' +
+                      '<label class="ai-chatbot-field"><span>Splunk HEC token</span><input data-splunk-hec-token type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
+                    '</div>' +
+                    '<div class="ai-chatbot-agent-grid">' +
+                      '<label class="ai-chatbot-field"><span>Splunk index</span><input data-splunk-index type="text" autocomplete="off" placeholder="secops"></label>' +
+                      '<label class="ai-chatbot-field"><span>Splunk sourcetype</span><input data-splunk-sourcetype type="text" autocomplete="off" placeholder="securityrecipes:report"></label>' +
+                      '<label class="ai-chatbot-field"><span>Elastic Kibana URL</span><input data-elastic-base-url type="url" autocomplete="off" placeholder="https://elastic.example.com"></label>' +
+                      '<label class="ai-chatbot-field"><span>Elastic API key</span><input data-elastic-api-key type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
+                    '</div>' +
+                    '<div class="ai-chatbot-agent-grid">' +
+                      '<label class="ai-chatbot-field"><span>Elastic space</span><input data-elastic-space-id type="text" autocomplete="off" placeholder="default"></label>' +
+                      '<label class="ai-chatbot-field"><span>Elastic owner</span><input data-elastic-owner type="text" autocomplete="off" placeholder="securitySolution"></label>' +
+                      '<label class="ai-chatbot-field"><span>Generic webhook URL</span><input data-generic-webhook-url type="url" autocomplete="off" placeholder="https://example.internal/hooks/security-recipes"></label>' +
+                      '<label class="ai-chatbot-field"><span>Generic webhook method</span><input data-generic-webhook-method type="text" autocomplete="off" placeholder="POST"></label>' +
+                    '</div>' +
+                    '<div class="ai-chatbot-agent-grid">' +
+                      '<label class="ai-chatbot-field"><span>Generic auth header</span><input data-generic-webhook-auth-header type="text" autocomplete="off" placeholder="Bearer token or ApiKey value"></label>' +
+                      '<label class="ai-chatbot-field ai-chatbot-wide-field"><span>Generic headers JSON</span><input data-generic-webhook-headers type="text" autocomplete="off" placeholder="{&quot;X-Environment&quot;:&quot;prod&quot;}"></label>' +
                     '</div>' +
                     '<button class="ai-chatbot-agent-button secondary" type="button" data-agent-save-integrations>Save integrations</button>' +
                   '</div>' +
@@ -5502,12 +5844,30 @@
     els.agentPreview = shell.querySelector('[data-agent-preview]');
     els.agentDeliver = shell.querySelector('[data-agent-deliver]');
     els.slackWebhook = shell.querySelector('[data-slack-webhook]');
+    els.teamsWebhook = shell.querySelector('[data-teams-webhook]');
     els.emailRecipient = shell.querySelector('[data-email-recipient]');
     els.smtpRelayUrl = shell.querySelector('[data-smtp-relay-url]');
     els.jiraBaseUrl = shell.querySelector('[data-jira-base-url]');
     els.jiraEmail = shell.querySelector('[data-jira-email]');
     els.jiraToken = shell.querySelector('[data-jira-token]');
     els.jiraProject = shell.querySelector('[data-jira-project]');
+    els.serviceNowBaseUrl = shell.querySelector('[data-servicenow-base-url]');
+    els.serviceNowTable = shell.querySelector('[data-servicenow-table]');
+    els.serviceNowToken = shell.querySelector('[data-servicenow-token]');
+    els.linearApiKey = shell.querySelector('[data-linear-api-key]');
+    els.linearTeamId = shell.querySelector('[data-linear-team-id]');
+    els.splunkHecUrl = shell.querySelector('[data-splunk-hec-url]');
+    els.splunkHecToken = shell.querySelector('[data-splunk-hec-token]');
+    els.splunkIndex = shell.querySelector('[data-splunk-index]');
+    els.splunkSourceType = shell.querySelector('[data-splunk-sourcetype]');
+    els.elasticBaseUrl = shell.querySelector('[data-elastic-base-url]');
+    els.elasticApiKey = shell.querySelector('[data-elastic-api-key]');
+    els.elasticSpaceId = shell.querySelector('[data-elastic-space-id]');
+    els.elasticOwner = shell.querySelector('[data-elastic-owner]');
+    els.genericWebhookUrl = shell.querySelector('[data-generic-webhook-url]');
+    els.genericWebhookMethod = shell.querySelector('[data-generic-webhook-method]');
+    els.genericWebhookAuthHeader = shell.querySelector('[data-generic-webhook-auth-header]');
+    els.genericWebhookHeaders = shell.querySelector('[data-generic-webhook-headers]');
 
     cleanupLegacyGitHubAuth();
     updatePanelOffset();
