@@ -24,5 +24,4 @@ Thumbs.db
 LICENSE
 README.md
 
-# The Dockerfile itself is in context but nginx config is embedded;
-# no need to copy it twice.
+# Keep docker/nginx/default.conf in context; the runtime image copies it.
