@@ -25485,7 +25485,13 @@
     if (state.sending) return;
     var rows = contextAuditRows();
     var localSummary = contextAuditMarkdown(rows, 'Context check summary');
-    var prompt = 'Summarize the following browser-local SecurityRecipes chat context into a concise bullet list for a vulnerability remediation operator. Separate ready context, missing or stale context, and recommended next action.\n\n' + localSummary;
+    var prompt = [
+      'Summarize the following browser-local SecurityRecipes chat context into a concise bullet list for a vulnerability remediation operator.',
+      'Separate ready context, missing or stale context, and recommended next action.',
+      'The context check data is provided below; do not say it was requested but not provided.',
+      '',
+      localSummary
+    ].join('\n');
     var userMessage = {
       role: 'user',
       content: 'Context check',
@@ -25493,10 +25499,10 @@
     };
     var assistantMessage = {
       role: 'assistant',
-      content: hasProviderRuntime(getAgentProvider()) ? '' : localSummary,
+      content: localSummary,
       createdAt: nowIso(),
       provider: getAgentProvider(),
-      streaming: !!hasProviderRuntime(getAgentProvider())
+      streaming: false
     };
     state.messages.push(userMessage, assistantMessage);
     saveChatHistoryStorage();
@@ -25517,7 +25523,11 @@
     }
     state.sending = true;
     if (els.send) els.send.disabled = true;
-    setStatus('Summarizing current context with ' + providerConfig(getAgentProvider()).label + '...', '');
+    assistantMessage.streaming = true;
+    assistantMessage.content = localSummary + '\n\nSummarizing with ' + providerConfig(getAgentProvider()).label + '...';
+    saveChatHistoryStorage();
+    renderMessages();
+    setStatus('Context check generated locally; refining with ' + providerConfig(getAgentProvider()).label + '...', '');
     try {
       var answer = await sendToProvider(prompt, {
         provider: getAgentProvider(),
@@ -25526,7 +25536,13 @@
         system: 'You summarize remediation context. Use short bullets. Do not invent loaded sources or credentials.'
       });
       assistantMessage.streaming = false;
-      assistantMessage.content = answer || localSummary;
+      assistantMessage.content = [
+        localSummary,
+        '',
+        'Provider summary:',
+        '',
+        answer || 'No additional provider summary was returned.'
+      ].join('\n');
       saveChatHistoryStorage();
       setStatus('Context check completed', 'ok');
       appendActivityRecord({
@@ -25683,6 +25699,25 @@
       els.send.disabled = false;
       renderMessages();
     }
+  }
+
+  function submitChatForm() {
+    if (!els.form || state.sending) return;
+    if (typeof els.form.requestSubmit === 'function') {
+      els.form.requestSubmit();
+      return;
+    }
+    var submitEvent;
+    if (typeof SubmitEvent === 'function') {
+      submitEvent = new SubmitEvent('submit', {
+        bubbles: true,
+        cancelable: true,
+        submitter: els.send || null
+      });
+    } else {
+      submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+    }
+    els.form.dispatchEvent(submitEvent);
   }
 
   function mount() {
@@ -27161,8 +27196,7 @@
           els.prompt.value = text;
           els.prompt.focus();
         }
-        if (els.form && typeof els.form.requestSubmit === 'function') els.form.requestSubmit();
-        else if (els.form) els.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+        submitChatForm();
       });
     }
 
@@ -29005,15 +29039,18 @@
       });
     }
 
-    shell.querySelector('[data-reset]').addEventListener('click', function () {
-      clearChatMessages();
-    });
+    var resetButton = shell.querySelector('[data-reset]');
+    if (resetButton) {
+      resetButton.addEventListener('click', function () {
+        clearChatMessages();
+      });
+    }
 
     els.form.addEventListener('submit', handleSend);
     els.prompt.addEventListener('keydown', function (event) {
-      if (event.key === 'Enter' && !event.shiftKey) {
+      if (event.key === 'Enter' && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey && !event.isComposing) {
         event.preventDefault();
-        els.form.requestSubmit();
+        submitChatForm();
       }
     });
 

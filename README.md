@@ -180,10 +180,14 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
-On droplets with the legacy Compose binary, use:
+If a droplet only has the legacy Python `docker-compose` binary, install Compose
+v2 or run legacy Compose in detached mode. Attached legacy runs can throw a
+Python `compose.cli.log_printer` event-watcher exception even when the site
+container is healthy.
 
 ```bash
-docker-compose up -d --build
+sudo bash scripts/setup_digitalocean_droplet.sh --no-caddy --no-firewall --no-upgrade
+docker compose up -d --build
 ```
 
 The compose stack starts:

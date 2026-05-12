@@ -182,6 +182,59 @@ create_app_user() {
   install -d -o "${APP_USER}" -g "${APP_GROUP}" -m 750 "/var/lib/${APP_USER}"
 }
 
+configure_docker_apt_repo() {
+  local os_id os_codename arch
+
+  . /etc/os-release
+  os_id="${ID}"
+  os_codename="${VERSION_CODENAME:-}"
+  arch="$(dpkg --print-architecture)"
+
+  if [[ -z "${os_codename}" ]]; then
+    log "Could not determine Debian/Ubuntu codename; skipping Docker upstream apt repository."
+    return 1
+  fi
+
+  log "Configuring Docker upstream apt repository for Compose v2."
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL "https://download.docker.com/linux/${os_id}/gpg" -o /etc/apt/keyrings/docker.asc
+  chmod a+r /etc/apt/keyrings/docker.asc
+
+  cat >/etc/apt/sources.list.d/docker.list <<EOF
+deb [arch=${arch} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/${os_id} ${os_codename} stable
+EOF
+
+  apt-get update
+}
+
+install_docker_stack() {
+  if docker compose version >/dev/null 2>&1; then
+    log "Docker Compose v2 is already available."
+    return 0
+  fi
+
+  if configure_docker_apt_repo; then
+    if apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin; then
+      if docker compose version >/dev/null 2>&1; then
+        log "Installed Docker Engine and Compose v2 plugin from Docker upstream packages."
+        return 0
+      fi
+    fi
+    log "Docker upstream packages did not provide a working Compose v2 install; falling back to distro packages."
+  fi
+
+  if apt-get install -y docker.io docker-compose-plugin; then
+    if docker compose version >/dev/null 2>&1; then
+      log "Installed Docker and Compose v2 plugin from distro packages."
+      return 0
+    fi
+  fi
+
+  log "Compose v2 is unavailable; installing legacy docker-compose fallback."
+  log "Use legacy docker-compose in detached mode only: docker-compose up -d --build"
+  run apt-get install -y docker.io docker-compose
+}
+
 install_packages() {
   run apt-get update
   if [[ "${ENABLE_UPGRADE}" == "true" ]]; then
@@ -196,13 +249,9 @@ install_packages() {
     lsb-release \
     ufw \
     fail2ban \
-    unattended-upgrades \
-    docker.io
+    unattended-upgrades
 
-  if ! apt-get install -y docker-compose-plugin; then
-    log "docker-compose-plugin was not available; installing legacy docker-compose."
-    run apt-get install -y docker-compose
-  fi
+  install_docker_stack
 
   if [[ "${ENABLE_CADDY}" == "true" ]]; then
     if ! apt-get install -y caddy; then
