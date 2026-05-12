@@ -32,11 +32,11 @@ This repository currently ships:
 - 50+ generated evidence packs under `data/evidence/`.
 - 90+ Python generator, validator, and evaluator scripts under `scripts/`.
 - A read-only FastMCP server in `mcp_server.py` exposing search, recipe retrieval, evidence packs, and deterministic runtime evaluators.
-- A server-side chatbot API in `chatbot_server.py` for OpenAI, Grok/xAI, and Anthropic-backed chat.
+- A browser chatbot UI that accepts a user-supplied provider key and proxies provider calls through the same-origin site for that request.
 - A browser-side agent planner documented in `README.browser-agents.md`.
-- Docker images for the static site, chatbot API, and MCP server.
-- A `docker-compose.yml` stack that serves the site, `/api/chat`, and `/mcp` behind one origin.
-- GitHub Pages-friendly Hugo output and forkable repo links.
+- Docker images for the static site and MCP server.
+- A `docker-compose.yml` stack that serves the site, provider relay paths, and `/mcp` behind one origin.
+- Hugo output for static hosting, containerized DigitalOcean deployment, and forkable repo links.
 
 ## Repository map
 
@@ -53,8 +53,8 @@ This repository currently ships:
 | `data/marketplace/` | Control-plane marketplace catalog data for inputs, outputs, reports, workflows, and readiness. |
 | `scripts/` | Generators, evaluators, validators, and GitHub Advisory Database import tooling. |
 | `mcp_server.py` | Read-only FastMCP server for recipes, packs, and runtime decisions. |
-| `chatbot_server.py` | Small HTTP chatbot API used by the Docker/nginx production stack. |
-| `Dockerfile` | Multi-stage Hugo/nginx site image with proxy routes for chat, MCP, and provider relays. |
+| `chatbot_server.py` | Legacy local chatbot API kept for development experiments; not used by the production Compose stack. |
+| `Dockerfile` | Multi-stage Hugo/nginx site image with proxy routes for MCP and BYO-key provider relays. |
 | `Dockerfile.mcp-server` | Standalone MCP server image. |
 | `Dockerfile.chatbot-server` | Standalone chatbot API image. |
 
@@ -140,12 +140,13 @@ On Windows PowerShell, activate with:
 
 ## Chatbot and browser planner
 
-The site includes an AI chatbot UI and a small server-side API.
+The site includes an AI chatbot UI that uses user-supplied provider credentials. The production Docker stack does not store OpenAI, xAI/Grok, or Anthropic keys in server environment variables.
 
-- `chatbot_server.py` exposes `/api/chat` and `/api/chat/health`.
 - `assets/js/ai-chatbot.js` and `assets/css/ai-chatbot.css` implement the browser UI.
-- Provider keys are supplied through environment variables such as `OPENAI_API_KEY`, `XAI_API_KEY`, `GROK_API_KEY`, and `ANTHROPIC_API_KEY`.
-- The Docker/nginx runtime can proxy `/api/chat` to the chatbot API so provider keys stay server-side.
+- Users paste their provider key in the browser settings panel.
+- The key is held only in page memory for the current tab/session.
+- The Docker/nginx runtime proxies that single request through `/ai-provider-proxy/openai/`, `/ai-provider-proxy/xai/`, or `/ai-provider-proxy/anthropic/`.
+- `chatbot_server.py` remains in the repo as a legacy/local development helper, but the production Compose stack does not run it.
 
 The browser-side agent planner is beta and local-profile based. It gathers page, recipe, GitHub, and dependency context, asks the selected provider for a remediation handoff, and delivers draft outputs through user-selected routes. See `README.browser-agents.md` for its security model and limits.
 
@@ -172,7 +173,7 @@ http://localhost:1313
 
 ## Run the production-style Docker stack
 
-Copy the environment template and set at least the public URL. Add provider keys if you want the server-side chatbot to work.
+Copy the environment template and set at least the public URL. Do not put model-provider API keys in `.env`; users bring their own keys in the browser.
 
 ```bash
 cp .env.example .env
@@ -188,30 +189,96 @@ docker-compose up -d --build
 The compose stack starts:
 
 - `security-recipes`: Hugo/nginx site
-- `chatbot-api`: server-side chat API
 - `mcp-server`: hosted read-only MCP server
 
 Default routes:
 
 ```text
 site: / 
-chat health: /api/chat/health?provider=openai
+provider relay: /ai-provider-proxy/openai/v1/responses
 MCP endpoint: /mcp
 ```
 
-## Generate and validate artifacts
+For a fresh Ubuntu DigitalOcean droplet, you can use the bootstrap script:
 
-Most generated artifacts follow the same pattern:
+```bash
+sudo bash scripts/setup_digitalocean_droplet.sh \
+  --domain security-recipes.ai \
+  --email admin@security-recipes.ai
+```
+
+The script installs Docker/Compose, creates a locked `security-recipes` host
+user to own the checkout and `.env`, enables unattended security updates,
+configures fail2ban and UFW, binds the compose site to localhost, starts the
+site/MCP stack, and places Caddy in front for HTTPS.
+
+The managed app user has no password, no sudo, no SSH keys by default, and is
+not added to the Docker group. This limits host file access if a web-facing
+process is compromised. Root still performs package, firewall, Caddy, and Docker
+orchestration.
+
+The setup script is idempotent: it can be run again after a pull to update
+packages, refresh managed host config, rebuild containers, repair checkout
+ownership, and restart the compose stack. It does not write model-provider API
+keys to `.env`.
+
+### GitHub Actions deployment
+
+The repository workflow builds the Hugo site, checks the Docker Compose config,
+builds the Docker images, and then deploys to the DigitalOcean droplet over SSH.
+It no longer publishes to `gh-pages`.
+
+Configure these GitHub repository secrets:
+
+- `DIGITALOCEAN_HOST`: droplet IP address or DNS name.
+- `DIGITALOCEAN_SSH_PRIVATE_KEY`: private SSH key whose public key is authorized on the droplet.
+
+Optional secrets:
+
+- `DIGITALOCEAN_USER`: SSH user. Defaults to `root`.
+- `DIGITALOCEAN_PORT`: SSH port. Defaults to `22`.
+- `DIGITALOCEAN_APP_DIR`: repo checkout path. Defaults to `/opt/security-recipes.ai`.
+- `DIGITALOCEAN_APP_USER`: locked host user that owns the checkout. Defaults to `security-recipes`.
+
+On deploy, the action SSHes into the droplet, fetches the deployed branch,
+resets the checkout to that remote branch, preserves `.env`, rebuilds the
+Compose stack, restores checkout ownership to the managed app user, and
+restarts the site and MCP server.
+
+To uninstall the managed deployment while leaving Docker packages and the repo in place:
+
+```bash
+sudo bash scripts/uninstall_digitalocean_droplet.sh
+```
+
+For deeper cleanup:
+
+```bash
+sudo bash scripts/uninstall_digitalocean_droplet.sh \
+  --remove-repo \
+  --remove-images \
+  --remove-app-user
+```
+
+## Regenerate artifacts
+
+The build and deployment workflow only builds the Hugo site. It does not run
+generator checks, checksum comparisons, or control-plane validations as required
+build gates.
+
+Generated artifacts can still be refreshed manually when you intentionally
+change source models, manifests, policies, or scripts:
 
 ```bash
 python scripts/generate_agentic_assurance_pack.py
-python scripts/generate_agentic_assurance_pack.py --check
 ```
 
-The workflow control plane has a dedicated validator:
+Optional maintenance scripts remain available for deeper local review, but they
+are not required before building or deploying the site:
 
 ```bash
 python scripts/validate_workflow_control_plane.py
+python scripts/generate_agentic_assurance_pack.py --check
 ```
 
 Representative generator and evaluator families:
@@ -222,7 +289,8 @@ Representative generator and evaluator families:
 - `validate_workflow_control_plane.py`: validates workflow manifests and emits an audit report.
 - `generate_cve_recipes_from_ghad.py`: drafts CVE recipe pages from a local GitHub Advisory Database checkout.
 
-Generated files are part of the repo's source-controlled evidence surface. When changing source models, manifests, policies, or scripts, regenerate the affected artifacts and run the corresponding `--check` commands.
+Generated files are part of the repo's source-controlled evidence surface, but
+checksum and validation drift no longer blocks the site build.
 
 ## Add content
 
@@ -264,9 +332,10 @@ The goal is not just to link to standards. The goal is to make workflow scope, r
 
 ## Deployment notes
 
-The repo is ready for GitHub Pages-style static publishing and for containerized hosting.
+The repo is ready for containerized DigitalOcean hosting and can still be built
+as a static Hugo site for other platforms.
 
-For a single-origin production deployment, the provided Docker stack is the most complete shape. It serves the static site, proxies the server-side chatbot API, and exposes the hosted MCP endpoint from the same public origin. Set `SECURITY_RECIPES_BASE_URL`, `SECURITY_RECIPES_REPO_URL`, `RECIPES_MCP_PUBLIC_BASE_URL`, and provider keys in `.env`.
+For a single-origin production deployment, the provided Docker stack is the most complete shape. It serves the static site, proxies browser-supplied model-provider requests, and exposes the hosted MCP endpoint from the same public origin. Set `SECURITY_RECIPES_BASE_URL`, `SECURITY_RECIPES_REPO_URL`, and `RECIPES_MCP_PUBLIC_BASE_URL` in `.env`.
 
 Use TLS in front of the container through your platform load balancer or a host-level reverse proxy such as Caddy or Nginx.
 

@@ -1,7 +1,7 @@
 /*
  * SecurityRecipes AI chatbot.
- * Supports a server-side same-origin chat API for production hosting, while
- * keeping browser-held provider credentials available for static deployments.
+ * Uses browser-supplied provider credentials and a same-origin relay path for
+ * production hosting. Model provider API keys are held in page memory only.
  */
 (function () {
   'use strict';
@@ -283,6 +283,7 @@
 
   var state = {
     provider: localStorage.getItem(STORE.provider) || 'openai',
+    providerTokens: {},
     messages: loadChatHistoryStorage(),
     docs: [],
     docsLoading: null,
@@ -394,6 +395,11 @@
     activityContext: null,
     lastOperationSession: null
   };
+  Object.keys(PROVIDERS).forEach(function (provider) {
+    localStorage.removeItem(STORE.token + provider);
+    localStorage.removeItem(STORE.token + provider + '.api_key');
+    localStorage.removeItem(STORE.token + provider + '.oauth');
+  });
   if (!Array.isArray(state.agentActions)) state.agentActions = [];
   hydrateImportedContextState('sarif');
   hydrateImportedContextState('scanner');
@@ -7208,11 +7214,7 @@
   }
 
   function serverChatEndpoint() {
-    var raw = window.__SECURITY_RECIPES_CHAT_API__;
-    if (typeof raw !== 'string') return '';
-    raw = raw.trim();
-    if (!raw) return '';
-    return new URL(raw, window.location.origin).toString();
+    return '';
   }
 
   function providerRelayConfigured() {
@@ -7247,20 +7249,17 @@
   }
 
   function serverChatHealthEndpoint(provider) {
-    var endpoint = serverChatEndpoint();
-    if (!endpoint) return '';
-    return endpoint.replace(/\/+$/, '') + '/health?provider=' + encodeURIComponent(provider || state.provider);
+    return '';
   }
 
   function hasProviderRuntime(provider) {
-    return !!(getToken(provider || state.provider) || serverChatEndpoint());
+    return !!getToken(provider || state.provider);
   }
 
   function providerRuntimeStatusText(provider) {
     var resolvedProvider = provider || state.provider;
     var token = getToken(resolvedProvider);
-    if (token) return maskToken(token);
-    if (serverChatEndpoint()) return providerFor(resolvedProvider).label + ' server-side chat API configured';
+    if (token) return maskSessionToken(token);
     return 'No provider credential configured';
   }
 
@@ -7297,8 +7296,7 @@
   function getToken(provider, mode) {
     var resolvedProvider = provider || state.provider;
     var resolvedMode = mode || getCredentialMode(resolvedProvider);
-    return localStorage.getItem(tokenKey(resolvedProvider, resolvedMode)) ||
-      (resolvedMode === 'api_key' ? localStorage.getItem(legacyTokenKey(resolvedProvider)) || '' : '');
+    return state.providerTokens[resolvedProvider + '.' + resolvedMode] || '';
   }
 
   function tokenLabel(provider, mode) {
@@ -7612,7 +7610,7 @@
 
   function saveOAuthToken(provider, token) {
     setCredentialMode(provider, 'oauth');
-    localStorage.setItem(tokenKey(provider, 'oauth'), token);
+    state.providerTokens[provider + '.oauth'] = token;
     state.provider = provider;
     localStorage.setItem(STORE.provider, provider);
   }
@@ -7709,7 +7707,7 @@
     url.searchParams.set('code_challenge_method', 'S256');
     if (scope) url.searchParams.set('scope', scope);
 
-    var message = 'Continue ' + cfg.label + ' sign-in in the popup. The bearer token will be saved only in this browser.';
+    var message = 'Continue ' + cfg.label + ' sign-in in the popup. The bearer token will be held only for this page session.';
     setOAuthStatus(message, '');
     setStatus('Opening ' + cfg.label + ' sign-in...', '');
     if (popup && !popup.closed) {
@@ -7839,10 +7837,10 @@
       localStorage.removeItem(STORE.oauthPending);
       clearOAuthCallbackUrl();
       updateProviderUI();
-      var savedMessage = providerConfig(pending.provider).label + ' OAuth bearer saved locally: ' + maskToken(token);
+      var savedMessage = providerConfig(pending.provider).label + ' OAuth bearer active for this page session: ' + maskSessionToken(token);
       setStatus(savedMessage, 'ok');
       setOAuthStatus(savedMessage, 'ok');
-      if (postOAuthPopupResult({ ok: true, provider: pending.provider, tokenPreview: maskToken(token) })) {
+      if (postOAuthPopupResult({ ok: true, provider: pending.provider, token: token, tokenPreview: maskSessionToken(token) })) {
         window.setTimeout(function () { window.close(); }, 240);
       }
     } catch (error) {
@@ -7864,6 +7862,12 @@
     if (!token) return 'No token saved';
     if (token.length <= 8) return 'Token saved';
     return 'Saved locally: ' + token.slice(0, 4) + '...' + token.slice(-4);
+  }
+
+  function maskSessionToken(token) {
+    if (!token) return 'No token active';
+    if (token.length <= 8) return 'Token active for this session';
+    return 'Active this session: ' + token.slice(0, 4) + '...' + token.slice(-4);
   }
 
   function setOAuthStatus(text, kind) {
@@ -8113,11 +8117,10 @@
   function providerTooltip(provider) {
     var cfg = providerFor(provider);
     var token = getToken(provider);
-    var serverEndpoint = serverChatEndpoint();
     var last = state.connectivity[provider];
     if (!last) {
       return cfg.label + ' connectivity: not checked yet. Credential source: ' +
-        (token ? 'browser-held ' + credentialModeLabel(provider).toLowerCase() : (serverEndpoint ? 'server-side chat API' : 'none')) +
+        (token ? 'page-session ' + credentialModeLabel(provider).toLowerCase() : 'none') +
         ' Status code: n/a.';
     }
     if (last.checking) {
@@ -12861,7 +12864,7 @@
       detail: detail
     });
     if ((response.status === 404 || response.status === 405) && endpoint && endpoint.indexOf('/ai-provider-proxy/') !== -1) {
-      return new Error(PROVIDERS[provider].label + ' relay is not available at ' + endpoint + '. Status code: ' + statusLine(response.status, response.statusText) + '. The /ai-provider-proxy routes are only available when the Docker/nginx runtime is deployed. Static hosts such as GitHub Pages should use direct browser provider calls or a configured server-side chat API.');
+      return new Error(PROVIDERS[provider].label + ' relay is not available at ' + endpoint + '. Status code: ' + statusLine(response.status, response.statusText) + '. The /ai-provider-proxy routes are only available when the Docker/nginx runtime is deployed. Static hosts such as GitHub Pages should use direct browser provider calls.');
     }
     return new Error(PROVIDERS[provider].label + ' API returned status ' + statusLine(response.status, response.statusText) + ': ' + detail);
   }
@@ -13099,26 +13102,7 @@
   }
 
   async function callServerChat(provider, model, system, history, options) {
-    options = options || {};
-    var endpoint = serverChatEndpoint();
-    if (!endpoint) throw new Error('Server-side chat API is not configured for this site build.');
-    var response = await providerFetch(provider, endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        provider: provider,
-        model: model,
-        system: system,
-        history: history
-      })
-    });
-    if (!response.ok) throw await responseError(response, provider, endpoint);
-    var data = await response.json();
-    var text = data && typeof data.text === 'string' ? data.text.trim() : '';
-    if (!text) text = 'The server-side chat API did not include text output.';
-    return options.onDelta ? emitFallbackDelta(text, options.onDelta) : text;
+    throw new Error('Server-held provider keys are disabled. Paste a provider API key for this page session; requests are proxied only for the current call.');
   }
 
   async function sendToProvider(userText, options) {
@@ -13130,8 +13114,7 @@
     if (!history.length && userText) history = [{ role: 'user', content: userText }];
     var system = options.system || buildSystemPrompt(userText);
 
-    if (!token && serverChatEndpoint()) return callServerChat(provider, model, system, history, options);
-    if (!token) throw new Error('Save a ' + tokenLabel(provider) + ' in Settings before sending, or deploy the site with SECURITY_RECIPES_CHAT_API_PATH=/api/chat and a server-side provider key.');
+    if (!token) throw new Error('Paste a ' + tokenLabel(provider) + ' in Settings before sending. The key is held only in page memory and proxied through the site for this request.');
 
     if (provider === 'openai') return callOpenAI(token, model, system, history, options);
     if (provider === 'grok') return callGrok(token, model, system, history, options);
@@ -13226,15 +13209,14 @@
     options = options || {};
     var provider = state.provider;
     var token = getToken(provider);
-    var serverHealth = serverChatHealthEndpoint(provider);
-    if (!token && !serverHealth) {
+    if (!token) {
       recordConnectivity(provider, {
         endpoint: providerEndpoint(provider),
         connected: false,
         apiKeyStatus: 'not validated',
         statusCode: null,
         statusText: '',
-        detail: 'No token saved.'
+        detail: 'No token supplied for this page session.'
       });
       if (!options.silent) setStatus('Save a ' + tokenLabel(provider) + ' before checking connectivity.', 'error');
       return;
@@ -13243,35 +13225,13 @@
     state.connectivity[provider] = {
       provider: provider,
       checkedAt: nowIso(),
-      endpoint: token ? providerEndpoint(provider) : serverHealth,
+      endpoint: providerEndpoint(provider),
       checking: true
     };
     updateProviderBadge();
     if (!options.silent) setStatus('Checking ' + providerFor(provider).label + ' connectivity...', '');
 
     try {
-      if (!token && serverHealth) {
-        var healthResponse = await providerFetch(provider, serverHealth, { method: 'GET' });
-        if (!healthResponse.ok) throw await responseError(healthResponse, provider, serverHealth);
-        var health = await healthResponse.json();
-        recordConnectivity(provider, {
-          endpoint: serverHealth,
-          connected: true,
-          apiKeyStatus: health && health.configured ? 'server-side key configured' : 'server-side key missing',
-          statusCode: healthResponse.status,
-          statusText: healthResponse.statusText,
-          detail: health && health.configured ? '' : 'Set the matching provider API key in the chatbot-api service environment.'
-        });
-        if (!options.silent) {
-          setStatus(
-            health && health.configured
-              ? 'Server-side chat API is configured for ' + providerFor(provider).label + '.'
-              : 'Server-side chat API is reachable, but no ' + providerFor(provider).label + ' key is configured.',
-            health && health.configured ? 'ok' : 'error'
-          );
-        }
-        return;
-      }
       var request = healthCheckRequest(provider, token, getModel(provider));
       var response = await providerFetch(provider, request.endpoint, request.options);
       if (!response.ok) throw await responseError(response, provider, request.endpoint);
@@ -14465,7 +14425,6 @@
 
   function credentialStorageTooltip() {
     var cfg = providerConfig();
-    var serverEndpoint = serverChatEndpoint();
     var githubToken = getGitHubToken();
     var githubNote = githubToken
       ? ' GitHub ' + githubCredentialLabel(githubAuthMode()).toLowerCase() + ' is also saved in this browser profile and is sent only to GitHub API requests for repository context, code scanning intake, or issue creation.'
@@ -14487,13 +14446,10 @@
       ? ' Local asset and ownership records are also stored in this browser profile until you delete them.'
       : '';
     var importNote = ' Imported SARIF, scanner export, and SBOM summaries, if you load them, are also stored in this browser profile until you clear them.';
-    if (serverEndpoint && !getToken()) {
-      return cfg.label + ' requests use the server-side chat API at ' + serverEndpoint + '. Provider keys are expected in the chatbot API service environment, not browser storage. You can still save a browser-local credential to override this for your own session.' + githubNote + externalSourceNote + caseboardNote + assetLibraryNote + importNote;
-    }
     if (!getToken()) {
-      return 'No ' + cfg.label + ' credential is saved. If you save one, it stays in this browser profile for ' + window.location.origin + ' until you clear it. Production Docker builds can instead use the server-side chat API.' + githubNote + externalSourceNote + caseboardNote + assetLibraryNote + importNote;
+      return 'No ' + cfg.label + ' credential is active. Paste a key to hold it only in page memory; it is proxied through this site for the current provider request and is not stored by the site.' + githubNote + externalSourceNote + caseboardNote + assetLibraryNote + importNote;
     }
-    return cfg.label + ' ' + credentialModeLabel(state.provider).toLowerCase() + ' is saved in this browser profile for ' + window.location.origin + ' using localStorage. It is not stored in a site database; ' + providerTransportNote(state.provider) + ' Clear it here or in browser site data if this is a shared machine.' + githubNote + externalSourceNote + caseboardNote + assetLibraryNote + importNote;
+    return cfg.label + ' ' + credentialModeLabel(state.provider).toLowerCase() + ' is held only in page memory for this tab. It is sent to the provider through the same-origin relay for each request and is not stored by the site.' + githubNote + externalSourceNote + caseboardNote + assetLibraryNote + importNote;
   }
 
   function updateSettingsSummary() {
@@ -14569,7 +14525,7 @@
     if (els.agentStatus && !state.agentRunning) {
       els.agentStatus.textContent = hasProviderRuntime(provider)
         ? 'Beta agents use ' + providerRuntimeStatusText(provider) + ', selected marketplace inputs, report pack, and optional delivery integrations. Browser schedules run only while this site is open in a tab.'
-        : 'Save a ' + tokenLabel(provider) + ' in Settings or configure the server-side chat API before running this agent.';
+        : 'Paste a ' + tokenLabel(provider) + ' in Settings before running this agent. The key is held only for this page session.';
       els.agentStatus.removeAttribute('data-kind');
     }
   }
@@ -14598,7 +14554,7 @@
     if (mode === 'oauth') {
       var token = getToken(state.provider, 'oauth');
       if (token) {
-        setOAuthStatus(cfg.label + ' connected. OAuth bearer saved locally: ' + maskToken(token), 'ok');
+        setOAuthStatus(cfg.label + ' connected for this page session: ' + maskSessionToken(token), 'ok');
       } else if (hasOAuthBrowserConfig(state.provider)) {
         setOAuthStatus('Click Authorize in browser to connect ' + cfg.label + '. Tokens stay local to this browser.', '');
       } else {
@@ -21712,36 +21668,28 @@
   function plannerReadinessProviderItem(config) {
     var provider = config && config.provider ? config.provider : getAgentProvider();
     var token = getToken(provider);
-    var serverEndpoint = serverChatEndpoint();
     var mode = getCredentialMode(provider);
     var label = providerConfig(provider).label;
-    var ready = !!(token || serverEndpoint);
+    var ready = !!token;
     return {
       key: 'provider',
       label: 'Provider runtime',
       state: ready ? 'ready' : 'blocked',
       summary: token
-        ? (label + ' ' + credentialModeLabel(provider, mode).toLowerCase() + ' is saved locally for this browser profile.')
-        : (serverEndpoint
-          ? (label + ' will run through the server-side chat API.')
-          : ('Save a ' + tokenLabel(provider, mode).toLowerCase() + ' or configure the server-side chat API before generating a run plan.')),
-      badges: uniqueStrings([label, token ? credentialModeLabel(provider, mode) : (serverEndpoint ? 'server-side API' : credentialModeLabel(provider, mode))], 3),
+        ? (label + ' ' + credentialModeLabel(provider, mode).toLowerCase() + ' is held only for this page session.')
+        : ('Paste a ' + tokenLabel(provider, mode).toLowerCase() + ' before generating a run plan.'),
+      badges: uniqueStrings([label, credentialModeLabel(provider, mode), token ? 'page session' : 'key required'], 3),
       notes: token
         ? [
             providerRelayLikelyAvailable()
               ? 'Requests run from this browser via the configured same-origin relay path.'
               : 'Requests run directly from this browser to the provider API because no server relay is configured.',
-            'Provider secrets stay in browser storage for this session unless a server-side API is configured.'
+            'Provider secrets are not stored by the site and are cleared when this page reloads or closes.'
           ]
-        : (serverEndpoint
-          ? [
-              'Requests run through the private chatbot API service behind the Hugo/nginx container.',
-              'Provider keys should be configured as environment variables on the server.'
-            ]
-          : [
-              'Credentials stay in browser storage for this origin only.',
-              'Use the settings drawer to save an API key or OAuth bearer before the next run.'
-            ]),
+        : [
+            'Use the settings drawer to provide an API key or OAuth bearer for this page session.',
+            'The deployed site proxies the request without storing provider credentials.'
+          ],
       action: {
         label: ready ? 'Review provider setup' : 'Open provider settings',
         action: 'open-provider-settings',
@@ -25555,7 +25503,7 @@
     renderMessages();
     appendTerminalRecord('system', 'context check requested');
     if (!hasProviderRuntime(getAgentProvider())) {
-      setStatus('Context check generated locally. Save a provider credential or configure the server-side chat API for LLM summarization.', 'ok');
+      setStatus('Context check generated locally. Paste a provider key for this page session to enable LLM summarization.', 'ok');
       appendActivityRecord({
         category: 'chat',
         eventType: 'context_check_local',
@@ -25672,7 +25620,7 @@
           assistantMessage = { role: 'assistant', content: '', createdAt: nowIso(), streaming: true, provider: state.provider };
           state.messages.push(assistantMessage);
           renderMessages();
-          setStatus((getToken(state.provider) ? 'Streaming from ' : 'Generating through server-side ') + providerConfig().label + '...', '');
+          setStatus('Streaming from ' + providerConfig().label + ' through the same-origin relay...', '');
           var answer = await sendToProvider(text, {
             history: history,
             system: system,
@@ -25748,7 +25696,7 @@
         '<header class="ai-chatbot-header">' +
           '<div class="ai-chatbot-title">' +
             '<strong>Security Remediation AI</strong>' +
-            '<span>Server-side chat API or browser token</span>' +
+            '<span>BYO key, proxied per request</span>' +
             '<button class="ai-chatbot-provider-badge" type="button" data-provider-badge></button>' +
           '</div>' +
           '<div class="ai-chatbot-header-actions">' +
@@ -25784,7 +25732,7 @@
               '</button>' +
               '<div id="ai-chatbot-settings-content" class="ai-chatbot-settings-content" data-settings-content hidden>' +
                 '<details class="ai-chatbot-settings-block" data-provider-credential-details>' +
-                  '<summary class="ai-chatbot-github-heading">' + icon('settings') + '<span>Model Provider</span><small>Provider, model, and server-side or browser-local credential.</small></summary>' +
+                  '<summary class="ai-chatbot-github-heading">' + icon('settings') + '<span>Model Provider</span><small>Provider, model, and a BYO key held only for this page session.</small></summary>' +
                   '<div class="ai-chatbot-github-content">' +
                     '<div class="ai-chatbot-settings-row">' +
                       '<label class="ai-chatbot-field"><span>Provider</span><select data-provider><option value="openai">OpenAI</option><option value="grok">Grok</option><option value="claude">Claude</option></select></label>' +
@@ -25795,8 +25743,8 @@
                       '<button class="ai-chatbot-mode-button" type="button" data-credential-mode="oauth" aria-pressed="false">OAuth bearer</button>' +
                     '</div>' +
                     '<div class="ai-chatbot-token-row">' +
-                      '<label class="ai-chatbot-field"><span data-token-label>API token</span><input data-token type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
-                      '<button class="ai-chatbot-action" type="button" data-save-token>' + icon('save') + '<span>Save</span></button>' +
+                      '<label class="ai-chatbot-field"><span data-token-label>API token</span><input data-token type="password" autocomplete="off" placeholder="Held only until this page is closed"></label>' +
+                      '<button class="ai-chatbot-action" type="button" data-save-token>' + icon('save') + '<span>Use</span></button>' +
                       '<button class="ai-chatbot-action danger" type="button" data-clear-token>Clear</button>' +
                     '</div>' +
                     '<section class="ai-chatbot-oauth-block ai-chatbot-oauth-simple" data-oauth-details hidden>' +
@@ -28486,16 +28434,18 @@
         setStatus('Paste a token first.', 'error');
         return;
       }
-      localStorage.setItem(tokenKey(state.provider), value);
+      state.providerTokens[state.provider + '.' + getCredentialMode(state.provider)] = value;
       if (getCredentialMode(state.provider) === 'api_key') localStorage.removeItem(legacyTokenKey(state.provider));
       els.tokenInput.value = '';
       updateProviderBadge();
-      setStatus(maskToken(value), 'ok');
+      setStatus(maskSessionToken(value), 'ok');
       updateAgentUI();
       scheduleProviderConnectivityChecks();
     });
 
     shell.querySelector('[data-clear-token]').addEventListener('click', function () {
+      delete state.providerTokens[state.provider + '.api_key'];
+      delete state.providerTokens[state.provider + '.oauth'];
       localStorage.removeItem(tokenKey(state.provider, 'api_key'));
       localStorage.removeItem(tokenKey(state.provider, 'oauth'));
       localStorage.removeItem(legacyTokenKey(state.provider));
@@ -29106,10 +29056,14 @@
         state.provider = data.provider;
         localStorage.setItem(STORE.provider, state.provider);
       }
+      if (data.ok && data.token && data.provider && PROVIDERS[data.provider]) {
+        state.providerTokens[data.provider + '.oauth'] = String(data.token);
+        setCredentialMode(data.provider, 'oauth');
+      }
       updateProviderUI();
       setSettingsOpen(true);
       if (data.ok) {
-        setOAuthStatus(providerConfig(state.provider).label + ' connected. OAuth bearer saved locally: ' + (data.tokenPreview || maskToken(getToken(state.provider, 'oauth'))), 'ok');
+        setOAuthStatus(providerConfig(state.provider).label + ' connected for this page session: ' + (data.tokenPreview || maskSessionToken(getToken(state.provider, 'oauth'))), 'ok');
       } else {
         setOAuthStatus(data.error || 'OAuth sign-in did not complete.', 'error');
       }

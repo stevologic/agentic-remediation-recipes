@@ -3,15 +3,19 @@
 The SecurityRecipes chatbot includes a beta browser-side agent planner.
 It is not a background worker. It is a thin local orchestrator that:
 
-- stores provider, GitHub, and delivery credentials in the current
-  browser profile with `localStorage`
+- holds model-provider credentials only in page memory for the current
+  browser tab/session
+- stores optional GitHub, context-source, and delivery credentials in
+  the current browser profile with `localStorage`
 - gathers selected site, recipe, GitHub, and deps.dev context
 - asks the selected provider, OpenAI, Grok, or Claude, for a focused
-  remediation output
+  remediation output through a same-origin proxy when Docker/nginx is deployed
 - delivers that output only through the route the user selected
 
-No credential is stored in the site database because the static site has
-no database.
+No credential is stored in a site database because the static site has no
+database. Model-provider keys are not stored in server environment
+variables by the production Compose stack and are not persisted in browser
+storage; users paste a provider key for the current page session only.
 
 ## Context Sources
 
@@ -72,7 +76,10 @@ worker, a shared browser profile, or an external delivery path.
 
 ## Security Notes
 
-- Provider and GitHub credentials stay in browser `localStorage`.
+- Model-provider credentials stay only in page memory and are cleared on
+  page reload or tab close.
+- GitHub, context-source, and delivery credentials may still be stored in
+  browser `localStorage` when those optional integrations are configured.
 - Tokens are visible to JavaScript on this origin, so do not use this on
   an untrusted or shared browser profile.
 - Use short-lived or least-privilege tokens where possible.
