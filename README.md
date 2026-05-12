@@ -226,28 +226,41 @@ packages, refresh managed host config, rebuild containers, repair checkout
 ownership, and restart the compose stack. It does not write model-provider API
 keys to `.env`.
 
-### GitHub Actions deployment
+### GitHub Actions build
 
-The repository workflow builds the Hugo site, checks the Docker Compose config,
-builds the Docker images, and then deploys to the DigitalOcean droplet over SSH.
-It no longer publishes to `gh-pages`.
+The repository workflow only validates the Hugo build, chatbot JavaScript,
+Docker Compose config, and Docker image build. It does not deploy to the
+DigitalOcean droplet.
 
-Configure these GitHub repository secrets:
+### Server-side cron deploy
 
-- `DIGITALOCEAN_HOST`: droplet IP address or DNS name.
-- `DIGITALOCEAN_SSH_PRIVATE_KEY`: private SSH key whose public key is authorized on the droplet.
+Use the droplet-side redeploy script to pull from GitHub and rebuild the Compose
+stack when `origin/main` changes:
 
-Optional secrets:
+```bash
+sudo bash /opt/security-recipes.ai/scripts/redeploy_from_github.sh
+```
 
-- `DIGITALOCEAN_USER`: SSH user. Defaults to `root`.
-- `DIGITALOCEAN_PORT`: SSH port. Defaults to `22`.
-- `DIGITALOCEAN_APP_DIR`: repo checkout path. Defaults to `/opt/security-recipes.ai`.
-- `DIGITALOCEAN_APP_USER`: locked host user that owns the checkout. Defaults to `security-recipes`.
+Example root cron entry to check every five minutes:
 
-On deploy, the action SSHes into the droplet, fetches the deployed branch,
-resets the checkout to that remote branch, preserves `.env`, rebuilds the
-Compose stack, restores checkout ownership to the managed app user, and
-restarts the site and MCP server.
+```cron
+*/5 * * * * /usr/bin/bash /opt/security-recipes.ai/scripts/redeploy_from_github.sh >> /var/log/security-recipes-redeploy.log 2>&1
+```
+
+The script uses a lock file, skips rebuilds when the branch has not changed,
+preserves `.env` and `mcp-server.toml`, repairs checkout ownership to the
+managed `security-recipes` app user, and runs:
+
+```bash
+docker compose up -d --build --remove-orphans
+```
+
+Useful options:
+
+```bash
+sudo bash /opt/security-recipes.ai/scripts/redeploy_from_github.sh --force
+sudo bash /opt/security-recipes.ai/scripts/redeploy_from_github.sh --branch main --prune-images
+```
 
 To uninstall the managed deployment while leaving Docker packages and the repo in place:
 

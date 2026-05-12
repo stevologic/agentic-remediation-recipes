@@ -1,15 +1,5 @@
-# Test the Hugo/Docker build, then deploy the Compose stack on DigitalOcean.
-#
-# Required GitHub repository secrets:
-#   DIGITALOCEAN_HOST
-#   DIGITALOCEAN_SSH_PRIVATE_KEY
-#
-# Optional secrets:
-#   DIGITALOCEAN_USER     defaults to root
-#   DIGITALOCEAN_PORT     defaults to 22
-#   DIGITALOCEAN_APP_DIR  defaults to /opt/security-recipes.ai
-#   DIGITALOCEAN_APP_USER defaults to security-recipes
-name: Build and deploy to DigitalOcean
+# Test the Hugo and Docker build. Deployment is handled on the server.
+name: Build
 
 on:
   push:
@@ -20,8 +10,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: digitalocean-deploy
-  cancel-in-progress: false
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 defaults:
   run:
@@ -88,77 +78,3 @@ jobs:
           SECURITY_RECIPES_BASE_URL: ${{ steps.site.outputs.base_url }}
           SECURITY_RECIPES_REPO_URL: "https://github.com/${{ github.repository }}"
         run: docker compose build
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment: production
-    steps:
-      - name: Validate deployment secrets
-        env:
-          DIGITALOCEAN_HOST: ${{ secrets.DIGITALOCEAN_HOST }}
-          DIGITALOCEAN_SSH_PRIVATE_KEY: ${{ secrets.DIGITALOCEAN_SSH_PRIVATE_KEY }}
-        run: |
-          test -n "$DIGITALOCEAN_HOST" || { echo "::error::Missing DIGITALOCEAN_HOST secret"; exit 1; }
-          test -n "$DIGITALOCEAN_SSH_PRIVATE_KEY" || { echo "::error::Missing DIGITALOCEAN_SSH_PRIVATE_KEY secret"; exit 1; }
-
-      - name: Deploy on droplet
-        env:
-          DIGITALOCEAN_HOST: ${{ secrets.DIGITALOCEAN_HOST }}
-          DIGITALOCEAN_USER: ${{ secrets.DIGITALOCEAN_USER }}
-          DIGITALOCEAN_PORT: ${{ secrets.DIGITALOCEAN_PORT }}
-          DIGITALOCEAN_APP_DIR: ${{ secrets.DIGITALOCEAN_APP_DIR }}
-          DIGITALOCEAN_APP_USER: ${{ secrets.DIGITALOCEAN_APP_USER }}
-          DIGITALOCEAN_SSH_PRIVATE_KEY: ${{ secrets.DIGITALOCEAN_SSH_PRIVATE_KEY }}
-        run: |
-          DO_USER="${DIGITALOCEAN_USER:-root}"
-          DO_PORT="${DIGITALOCEAN_PORT:-22}"
-          APP_DIR="${DIGITALOCEAN_APP_DIR:-/opt/security-recipes.ai}"
-          APP_USER="${DIGITALOCEAN_APP_USER:-security-recipes}"
-          REPO_URL="https://github.com/${GITHUB_REPOSITORY}.git"
-          BRANCH="${GITHUB_REF_NAME}"
-
-          install -m 700 -d ~/.ssh
-          printf '%s\n' "$DIGITALOCEAN_SSH_PRIVATE_KEY" > ~/.ssh/digitalocean_deploy_key
-          chmod 600 ~/.ssh/digitalocean_deploy_key
-          ssh-keyscan -p "$DO_PORT" -H "$DIGITALOCEAN_HOST" >> ~/.ssh/known_hosts
-
-          ssh \
-            -i ~/.ssh/digitalocean_deploy_key \
-            -p "$DO_PORT" \
-            -o IdentitiesOnly=yes \
-            -o StrictHostKeyChecking=yes \
-            "${DO_USER}@${DIGITALOCEAN_HOST}" \
-            'bash -s' -- "$APP_DIR" "$BRANCH" "$REPO_URL" "$APP_USER" <<'REMOTE'
-          set -Eeuo pipefail
-
-          APP_DIR="$1"
-          BRANCH="$2"
-          REPO_URL="$3"
-          APP_USER="$4"
-
-          cd "$APP_DIR"
-          git remote set-url origin "$REPO_URL"
-          git fetch --prune origin "$BRANCH"
-          git reset --hard "origin/$BRANCH"
-          git clean -fd -e .env -e mcp-server.toml
-
-          if id -u "$APP_USER" >/dev/null 2>&1; then
-            chown -R "$APP_USER:$APP_USER" "$APP_DIR"
-            chmod 750 "$APP_DIR"
-            [ ! -f "$APP_DIR/.env" ] || chmod 600 "$APP_DIR/.env"
-          fi
-
-          if docker compose version >/dev/null 2>&1; then
-            COMPOSE=(docker compose)
-          elif command -v docker-compose >/dev/null 2>&1; then
-            COMPOSE=(docker-compose)
-          else
-            echo "Docker Compose is not installed on the droplet." >&2
-            exit 1
-          fi
-
-          "${COMPOSE[@]}" up -d --build --remove-orphans
-          "${COMPOSE[@]}" ps
-          docker image prune -f
-          REMOTE

@@ -487,6 +487,7 @@ Useful commands:
   cd ${APP_DIR}
   docker compose ps || docker-compose ps
   docker compose logs -f security-recipes || docker-compose logs -f security-recipes
+  bash ${APP_DIR}/scripts/redeploy_from_github.sh
   systemctl status caddy
   ufw status verbose
 
