@@ -157,4 +157,3 @@ output:
 - GitHub Advisory: <https://github.com/advisories/GHSA-6xcp-7mpr-m7wm>
 - Vendor advisory: <https://github.com/open-webui/open-webui/security/advisories/GHSA-6xcp-7mpr-m7wm>
 - Open WebUI source: <https://github.com/open-webui/open-webui>
-

@@ -169,4 +169,3 @@ Produce exactly one output:
 - GitHub Advisory: <https://github.com/advisories/GHSA-v6wj-c83f-v46x>
 - Vendor advisory: <https://github.com/profullstack/mcp-server/security/advisories/GHSA-v6wj-c83f-v46x>
 - Package source: <https://github.com/profullstack/mcp-server>
-

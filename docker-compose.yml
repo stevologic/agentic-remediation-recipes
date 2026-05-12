@@ -1,4 +1,4 @@
-name: security-recipes
+version: "2.4"
 
 services:
   security-recipes:

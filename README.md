@@ -179,6 +179,12 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
+On droplets with the legacy Compose binary, use:
+
+```bash
+docker-compose up -d --build
+```
+
 The compose stack starts:
 
 - `security-recipes`: Hugo/nginx site
