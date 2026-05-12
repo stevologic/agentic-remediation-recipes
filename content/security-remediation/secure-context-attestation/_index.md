@@ -12,7 +12,7 @@ description: >
 
 {{< callout type="info" >}}
 **Why this page exists.** The Secure Context Trust Pack proves which
-context sources exist. This pack answers the next buyer question:
+context sources exist. This pack answers the next reviewer question:
 which context was attested, which hash should an MCP gateway verify, and
 what has to be signed before production use?
 {{< /callout >}}
@@ -98,7 +98,7 @@ The evaluator returns:
   in open-reference and CI environments.
 - `allow_attested_workflow_context` for active workflow context packages
   whose source set is covered by context-source attestations.
-- `hold_for_signature` when a production, trust-center, or acquisition
+- `hold_for_signature` when a production, trust-center, or trust review
   diligence request lacks signature and transparency-log evidence.
 - `hold_for_recertification` when a subject is registered but stale,
   inactive, or missing source coverage.
@@ -136,7 +136,7 @@ This feature follows current primary guidance:
   signing, provenance, and attestation pattern this pack is shaped to
   support.
 
-## Commercial path
+## Trusted-source path
 
 The open pack is valuable by itself because teams can inspect the context
 surface and fail CI on drift. The enterprise product path is stronger:
@@ -171,4 +171,4 @@ layer for the context agents depend on.
   - data-boundary decisions before retrieved context leaves a tenant,
   model, MCP server, telemetry sink, or public corpus.
 - [Agentic Control Plane Blueprint]({{< relref "/security-remediation/agentic-control-plane-blueprint" >}})
-  - the broader acquisition-ready control-plane architecture.
+  - the broader review-ready control-plane architecture.

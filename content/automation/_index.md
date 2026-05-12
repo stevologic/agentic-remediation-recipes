@@ -193,7 +193,7 @@ an alternative.
   Harbor / Quay-style private registries.
 - **[Docker Scout](https://docs.docker.com/scout/)** — Docker Hub–native scanning with
   vulnerability policy and base-image recommendations.
-- **[Snyk Container](https://docs.snyk.io/scan-with-snyk/snyk-container) / [Wiz](https://www.wiz.io/) / [Prisma Cloud](https://www.paloaltonetworks.com/prisma/cloud) / [Aqua](https://www.aquasec.com/)** — commercial
+- **[Snyk Container](https://docs.snyk.io/scan-with-snyk/snyk-container) / [Wiz](https://www.wiz.io/) / [Prisma Cloud](https://www.paloaltonetworks.com/prisma/cloud) / [Aqua](https://www.aquasec.com/)** — vendor
   scanners with richer prioritization, context, and
   registry-level reporting. All layer on top of the same CVE
   feeds; the differentiator is usually prioritization, not
@@ -261,7 +261,7 @@ harder to gate safely.
 **Representative tooling:**
 
 - **Chainguard Images** — distroless, minimal-CVE, signed,
-  SBOM-embedded base images rebuilt continuously. Commercial
+  SBOM-embedded base images rebuilt continuously. Vendor
   with a free tier.
 - **Wolfi** (Chainguard) — open-source distro purpose-built for
   container images; widely used as the foundation for custom

@@ -96,16 +96,31 @@ DEFAULT_PATH = os.environ.get("RECIPES_MCP_PATH")
 DEFAULT_LOG_LEVEL = os.environ.get("RECIPES_MCP_LOG_LEVEL")
 
 
+def _env_csv_list(name: str, default: list[str]) -> list[str]:
+    raw = os.environ.get(name, "").strip()
+    if not raw:
+        return default
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
 @dataclass
 class ServerConfig:
-    source_index_url: str = "https://security-recipes.ai/recipes-index.json"
-    allowed_source_hosts: list[str] = field(default_factory=lambda: ["security-recipes.ai"])
+    source_index_url: str = os.environ.get(
+        "RECIPES_MCP_SOURCE_INDEX_URL",
+        "https://security-recipes.ai/recipes-index.json",
+    )
+    allowed_source_hosts: list[str] = field(
+        default_factory=lambda: _env_csv_list("RECIPES_MCP_ALLOWED_SOURCE_HOSTS", ["security-recipes.ai"])
+    )
     cache_ttl_seconds: int = 3600
     request_timeout_seconds: int = 15
     max_results_default: int = 8
     max_results_cap: int = 25
     # Public-facing URL for this MCP server (metadata only).
-    server_public_base_url: str = "https://mcp.security-recipes.ai"
+    server_public_base_url: str = os.environ.get(
+        "RECIPES_MCP_PUBLIC_BASE_URL",
+        "https://mcp.security-recipes.ai",
+    )
     control_plane_manifest_path: str = os.environ.get(
         "RECIPES_MCP_CONTROL_PLANE_PATH",
         "./data/control-plane/workflow-manifests.json",
@@ -9937,6 +9952,9 @@ def load_config(config_path: str) -> ServerConfig:
         "model_provider_routing_pack_path",
         cfg.model_provider_routing_pack_path,
     )
+    cfg.source_index_url = os.environ.get("RECIPES_MCP_SOURCE_INDEX_URL", cfg.source_index_url)
+    cfg.allowed_source_hosts = _env_csv_list("RECIPES_MCP_ALLOWED_SOURCE_HOSTS", cfg.allowed_source_hosts)
+    cfg.server_public_base_url = os.environ.get("RECIPES_MCP_PUBLIC_BASE_URL", cfg.server_public_base_url)
     return cfg
 
 
@@ -9955,6 +9973,13 @@ def _env_int(name: str, value: str, default: int) -> int:
         return int(value)
     except ValueError as exc:
         raise ValueError(f"{name} must be an integer, got {value!r}") from exc
+
+
+def _env_bool(name: str, default: bool = False) -> bool:
+    value = os.environ.get(name, "").strip().lower()
+    if not value:
+        return default
+    return value in {"1", "true", "yes", "on"}
 
 
 def run_mcp_server() -> None:
@@ -12861,8 +12886,13 @@ async def recipes_match_finding(
 
 
 def main() -> None:
-    # Validate config and do an eager refresh to fail fast if misconfigured.
-    asyncio.run(index.refresh(force=False))
+    if _env_bool("RECIPES_MCP_EAGER_REFRESH", False):
+        asyncio.run(index.refresh(force=False))
+    else:
+        try:
+            asyncio.run(index.refresh(force=False))
+        except Exception as exc:  # pragma: no cover - startup resilience for hosted containers.
+            print(f"warning: initial recipe index refresh failed; MCP server will retry lazily: {exc}", flush=True)
     run_mcp_server()
 
 

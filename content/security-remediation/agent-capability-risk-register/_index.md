@@ -21,7 +21,7 @@ the residual risk before MCP access scales.
 
 SecurityRecipes is positioned as **the secure context layer for
 agentic AI**, but credible enterprise adoption also needs a capability
-risk view. A buyer approving an MCP-backed agent has to answer four
+risk view. A reviewer approving an MCP-backed agent has to answer four
 questions before the first rollout cohort:
 
 - How critical is the system or workflow domain?

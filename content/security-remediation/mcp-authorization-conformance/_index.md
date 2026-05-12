@@ -21,7 +21,7 @@ the tool call stayed inside the workflow.
 
 SecurityRecipes is positioned as **the secure context layer for
 agentic AI**. Context trust, egress controls, and run receipts are not
-enough if MCP authorization is loose. A production buyer will ask:
+enough if MCP authorization is loose. A production reviewer will ask:
 
 - Is the token bound to the MCP resource, not a generic upstream API?
 - Does the MCP server validate audience, issuer, expiry, and scope?
@@ -150,9 +150,9 @@ This feature follows current primary guidance:
   [NIST Generative AI Profile](https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence)
   for governed, mapped, measured, and managed AI risk.
 
-## Commercial path
+## Trusted-source path
 
-The open pack is the proof model. The premium production opportunity is
+The open pack is the proof model. The reviewed production opportunity is
 a hosted MCP authorization scanner:
 
 - discover live protected-resource and authorization-server metadata,

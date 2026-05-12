@@ -11,7 +11,7 @@ description: >
 ---
 
 {{< callout type="info" >}}
-**Why this page exists.** A policy pack is valuable when buyers can
+**Why this page exists.** A policy pack is valuable when reviewers can
 review it. It becomes enterprise infrastructure when an agent host, MCP
 gateway, or CI admission check can execute the same policy before a tool
 call happens.

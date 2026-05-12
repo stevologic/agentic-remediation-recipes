@@ -5,16 +5,16 @@ weight: 12
 sidebar:
   open: true
 description: >
-  A generated acquisition- and enterprise-value model that turns the
+  A generated trust review- and trust-value model that turns the
   open SecurityRecipes corpus, generated evidence packs, and production
-  MCP path into conservative ROI scenarios and buyer diligence answers.
+  MCP path into conservative operational-impact scenarios and reviewer diligence answers.
 ---
 
 {{< callout type="info" >}}
 **Why this page exists.** SecurityRecipes should not look like a pile of
 interesting artifacts. It should look like a product that can become a
 hosted secure context layer. The value model explains the open moat, the
-paid wedges, the buyer segments, and the conservative ROI assumptions in
+hosted-ready proof paths, the reviewer segments, and the conservative operational-impact assumptions in
 one MCP-readable artifact.
 {{< /callout >}}
 
@@ -22,27 +22,27 @@ SecurityRecipes is positioned as **The Secure Context Layer for Agentic
 AI**. The technical foundation is already in place: secure context
 packs, MCP authorization and drift controls, run receipts, telemetry
 contracts, evals, incident response, entitlement review, protocol
-conformance, and a trust-center export. The next acquisition-grade move
+conformance, and a trust-center export. The next review-ready move
 is to make the business case explicit.
 
 The **Secure Context Value Model** does that without pretending the
-public repo has already proven hosted revenue. It names what is proven
-now, what remains assumption-based, which buyer segments care, which
-paid product wedges are natural, and what customer telemetry must be
-attached before the ROI story becomes sales-grade.
+public repo has already proven hosted adoption proof. It names what is proven
+now, what remains assumption-based, which reviewer segments care, which
+hosted-ready deployment paths are natural, and what customer telemetry must be
+attached before the operational-impact story becomes review-grade.
 
 ## What was added
 
 - `data/assurance/secure-context-value-model-profile.json` - source
-  profile for buyer segments, value drivers, adoption scenarios,
-  monetization wedges, diligence questions, and source references.
+  profile for reviewer segments, value drivers, adoption scenarios,
+  hosted-readiness paths, diligence questions, and source references.
 - `scripts/generate_secure_context_value_model.py` - deterministic
   generator and `--check` validator.
 - `data/evidence/secure-context-value-model.json` - generated value
   model with scenario economics, evidence hashes, source-pack status,
-  and acquisition readiness.
+  and trust review readiness.
 - `recipes_secure_context_value_model` - MCP tool for the full model,
-  a value driver, buyer segment, scenario, monetization wedge, or
+  a value driver, reviewer segment, scenario, hosted-readiness path, or
   diligence question.
 
 Run it from the repo root:
@@ -58,13 +58,13 @@ python3 scripts/generate_secure_context_value_model.py --check
 | --- | --- |
 | `value_model_summary` | Source-pack readiness, scenario count, value-driver count, assumption status, and annual net value range from the default scenarios. |
 | `value_drivers` | Open knowledge distribution, production MCP control plane, trust-center evidence, runtime receipts/evals, and standards drift. |
-| `buyer_segments` | Frontier model lab, AI platform vendor, security platform vendor, and regulated enterprise buyer views. |
+| `buyer_segments` | Frontier model lab, AI platform vendor, security platform vendor, and regulated enterprise reviewer views. |
 | `adoption_scenarios` | Conservative pilot, platform rollout, and hosted MCP control-plane economics. |
-| `monetization_wedges` | Hosted MCP policy, private secure-context registry, run-receipt vault, trust-center API, and continuous agentic evals. |
-| `diligence_questions` | Answers to why this is not docs-only, what is open, what is paid, what proves ROI, and what remains unproven. |
-| `acquisition_readiness` | Current signal, missing proof points, and the conditions needed before a $10-20M outcome is credible. |
+| `hosted_readiness_gates` | Hosted MCP policy, private secure-context registry, run-receipt vault, trust-center API, and continuous agentic evals. |
+| `diligence_questions` | Answers to why this is not docs-only, what is open, what is hosted-ready, what proves operational impact, and what remains unproven. |
+| `acquisition_readiness` | Current signal, missing proof points, and the conditions needed before a trusted-source outcome is credible. |
 
-The ROI math is intentionally conservative and explicit. It uses
+The Operational-impact model is intentionally conservative and explicit. It uses
 assumptions such as runs per month, avoided remediation hours, reviewer
 time, loaded hourly cost, platform cost, and implementation cost. The
 generated pack labels those numbers as assumptions until customer run
@@ -73,18 +73,18 @@ receipts and telemetry replace them.
 ## Product implications
 
 This feature pushes the site toward the right shape for a serious
-enterprise or acquirer review:
+enterprise or reviewer review:
 
 - The open corpus remains the distribution engine.
 - The generated evidence packs become the product proof.
 - The MCP server becomes the inspectable access layer.
 - Hosted MCP policy, private context, drift monitoring, receipts, eval
-  replay, and trust-center APIs become the paid surface.
+  replay, and trust-center APIs become the hosted-ready surface.
 - Customer telemetry becomes the proof point for ROI and renewal.
 
-That is a more credible path than selling prompts. A buyer can inspect
+That is a more credible path than selling prompts. A reviewer can inspect
 the technical artifacts, understand the economic assumptions, and see
-exactly what still needs to be built for hosted enterprise value.
+exactly what still needs to be built for hosted trust value.
 
 ## MCP examples
 

@@ -42,13 +42,13 @@ artifact instead of reverse-engineering a failure from chat transcripts.
 
 - `data/assurance/agentic-incident-response-profile.json` - source
   contract for incident classes, response phases, required evidence,
-  severity thresholds, standards alignment, and commercial packaging.
+  severity thresholds, standards alignment, and operational packaging.
 - `scripts/generate_agentic_incident_response_pack.py` - deterministic
   generator and `--check` validator.
 - `scripts/evaluate_agentic_incident_response_decision.py` -
   deterministic monitor, triage, hold, contain, or kill evaluator.
 - `data/evidence/agentic-incident-response-pack.json` - generated
-  incident response pack for MCP clients, CI drift checks, and buyer
+  incident response pack for MCP clients, CI drift checks, and reviewer
   diligence.
 - `recipes_agentic_incident_response_pack` - MCP lookup by incident
   class, workflow, severity, or response decision.
@@ -154,15 +154,15 @@ Evaluate one runtime incident signal:
 }
 ```
 
-## Why it is acquisition-grade
+## Why it is review-ready
 
 The prevention layer creates trust. The incident layer creates
-enterprise confidence.
+operational confidence.
 
-For a $10-20M outcome, the product cannot be only a documentation site
-or prompt library. It needs a control-plane story that an acquirer can
-turn into hosted software. Agentic incident response is a natural paid
-surface:
+The site should not be only a documentation archive or prompt library.
+It needs a control-plane story that a security team can inspect, run,
+and improve. Agentic incident response becomes useful when the open
+evidence can support:
 
 - hosted run-receipt vault,
 - SIEM and SOAR exports,
@@ -173,9 +173,9 @@ surface:
 - workflow recertification gates after context, connector, model, or
   policy drift.
 
-That is a credible commercial layer around the open knowledge base:
+That is a credible trusted-source layer around the open knowledge base:
 public guidance creates distribution, generated evidence creates trust,
-and hosted response automation creates enterprise value.
+and hosted response automation remains a later deployment concern.
 
 ## Industry alignment
 

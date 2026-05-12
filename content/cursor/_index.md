@@ -41,7 +41,7 @@ or team can do today without waiting on an enterprise rollout.
 1. **Pick a plan.** Cursor's Pro tier is enough to evaluate
    rules, custom commands, and MCP. Background Agents and
    Automations require **Business** or **Enterprise**.
-   See [Cursor plans & pricing](https://cursor.com/pricing).
+   See [Cursor plan documentation](https://cursor.com/plan documentation).
 2. **Install the editor.** Download Cursor from
    [cursor.com](https://cursor.com/) and sign in.
 3. **Connect your source host.** Link GitHub / GitLab /
@@ -68,7 +68,7 @@ or team can do today without waiting on an enterprise rollout.
 - [Background Agents](https://docs.cursor.com/en/background-agent)
 - [Automations (scheduled + event-driven runs)](https://cursor.com/docs/cloud-agent/automations)
 - [MCP](https://docs.cursor.com/context/mcp)
-- [Plans & pricing](https://cursor.com/pricing)
+- [Plan documentation](https://cursor.com/plan documentation)
 - [Security & privacy](https://docs.cursor.com/account/privacy)
 
 ## Enterprise onboarding

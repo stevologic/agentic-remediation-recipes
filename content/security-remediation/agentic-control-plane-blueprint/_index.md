@@ -4,7 +4,7 @@ linkTitle: Control Plane Blueprint
 weight: 17
 toc: true
 description: >
-  Generated architecture and buyer-diligence artifact that positions
+  Generated architecture and reviewer-diligence artifact that positions
   SecurityRecipes as the secure context and control plane for agentic AI,
   MCP authorization, connector trust, identity, egress, receipts, and
   measurement.
@@ -26,15 +26,15 @@ run receipts, red-team drills, readiness scoring, catastrophic-risk
 gates, measurement probes, and an enterprise trust-center export.
 
 The **Agentic Control Plane Blueprint** turns those individual artifacts
-into one product story a buyer, AI platform owner, security architect,
-GRC reviewer, or acquirer can evaluate quickly:
+into one product story a reviewer, AI platform owner, security architect,
+GRC reviewer, or reviewer can evaluate quickly:
 
 - What is the reference architecture?
 - Which generated packs prove each layer?
 - Which MCP tools expose the evidence to agents and review portals?
 - Which current industry references does the architecture track?
 - Which standards controls map to generated evidence instead of prose?
-- What is the path from open knowledge to production MCP revenue?
+- What is the path from open knowledge to production MCP adoption proof?
 
 ## Generated artifact
 
@@ -86,12 +86,12 @@ queryable, and enforceable.
 | Measurement, red-team replay, and threat alignment | Current threat signals become probes, drills, readiness decisions, and roadmap actions. | Threat Radar, Measurement Probe Pack, Red-Team Drill Pack, Readiness Scorecard |
 | Standards crosswalk and diligence | OWASP, NIST, MCP, and frontier-lab guidance map to generated evidence and MCP tools. | Agentic Standards Crosswalk, Threat Radar, Control Plane Blueprint |
 | Catastrophic risk and high-impact autonomy | High-impact agent actions are held, denied, or killed when approval, identity, policy, risk acceptance, or receipt evidence is missing. | Catastrophic Risk Annex, Capability Risk Register, Run Receipts, Readiness Scorecard |
-| Enterprise trust-center export | Buyer and acquisition diligence can start from one compact packet with evidence paths, hashes, MCP tools, runtime fields, and diligence answers. | Enterprise Trust Center Export, Threat Radar, Control Plane Blueprint |
+| Enterprise trust-center export | reviewer and trust review diligence can start from one compact packet with evidence paths, hashes, MCP tools, runtime fields, and diligence answers. | Enterprise Trust Center Export, Threat Radar, Control Plane Blueprint |
 
-## Buyer diligence questions
+## reviewer diligence questions
 
 Use the generated `buyer_due_diligence_matrix` when a customer or
-acquirer asks for evidence:
+reviewer asks for evidence:
 
 | Question | Evidence path |
 | --- | --- |
@@ -103,19 +103,19 @@ acquirer asks for evidence:
 | Which workflows are ready to scale, which stay in a guarded pilot, and which are blocked? | `recipes_agentic_readiness_scorecard`, `recipes_agentic_measurement_probe_pack` |
 | Which current agentic AI, MCP, NIST, and prompt-injection references map to generated evidence? | `recipes_agentic_standards_crosswalk` |
 | Which high-impact agent actions are held, denied, or killed before severe consequences? | `recipes_agentic_catastrophic_risk_annex`, `recipes_evaluate_agentic_catastrophic_risk_decision` |
-| What should a buyer inspect first during procurement, platform review, or acquisition diligence? | `recipes_enterprise_trust_center_export`, `recipes_agentic_control_plane_blueprint` |
+| What should a reviewer inspect first during procurement, platform review, or trust review diligence? | `recipes_enterprise_trust_center_export`, `recipes_agentic_control_plane_blueprint` |
 
 ## Product strategy
 
 The open project should stay useful and forkable. That is the adoption
-engine. The commercial value sits above it:
+engine. The vendor value sits above it:
 
 | Stage | Product surface |
 | --- | --- |
 | Open foundation | MIT-licensed recipes, generated evidence packs, read-only MCP server, deterministic policy evaluators. |
 | Production MCP server | Hosted secure-context retrieval, context signing, MCP authorization conformance, connector trust monitoring, and run receipt storage. |
 | Enterprise expansion | Tenant evidence ingestion, identity-provider adapters, hosted red-team replay, measurement probes, and trust-center exports. |
-| Strategic acquisition fit | Frontier labs, AI coding platforms, cloud platforms, and security vendors need a credible control layer for agentic tool use and context. |
+| Strategic trust review fit | Frontier labs, AI coding platforms, cloud platforms, and security vendors need a credible control layer for agentic tool use and context. |
 
 ## MCP examples
 
@@ -133,7 +133,7 @@ Get one blueprint layer:
 }
 ```
 
-Get buyer evidence for a diligence question:
+Get reviewer evidence for a diligence question:
 
 ```json
 {

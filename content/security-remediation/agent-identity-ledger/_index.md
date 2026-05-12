@@ -25,7 +25,7 @@ SecurityRecipes already has a
 and an
 [MCP Gateway Policy Pack]({{< relref "/security-remediation/mcp-gateway-policy" >}}).
 The missing enterprise surface is identity: IAM, AI Platform, GRC, and
-acquisition diligence teams will ask whether agent permissions are
+trust review diligence teams will ask whether agent permissions are
 unique, scoped, auditable, and revocable.
 
 The Agent Identity & Delegation Ledger is the answer. It turns each
@@ -156,7 +156,7 @@ The generator fails if:
 - Approval-required namespaces lack human approval metadata.
 - The generated ledger is stale in `--check` mode.
 
-That is the acquisition-grade bar: AI identities are not implied by
+That is the review-ready bar: AI identities are not implied by
 tool access. They are declared, checked, versioned, exposed over MCP,
 and ready to enforce.
 
@@ -169,6 +169,6 @@ and ready to enforce.
 - [MCP Connector Trust Registry]({{< relref "/security-remediation/mcp-connector-trust-registry" >}})
   - connector trust tiers and controls for the namespaces delegated to agents.
 - [Agentic Assurance Pack]({{< relref "/security-remediation/agentic-assurance-pack" >}})
-  - the buyer- and auditor-ready control narrative.
+  - the reviewer- and auditor-ready control narrative.
 - [Runtime Controls]({{< relref "/security-remediation/runtime-controls" >}})
   - session disablement and inline enforcement.

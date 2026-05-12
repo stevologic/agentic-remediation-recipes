@@ -19,14 +19,14 @@ agent before the agent relies on it.
 
 SecurityRecipes is positioned as **The Secure Context Layer for Agentic
 AI**. The Secure Context Eval Pack turns that positioning into a
-CI-ready product surface: a buyer can inspect scenario results, source
+CI-ready product surface: a reviewer can inspect scenario results, source
 hashes, expected runtime decisions, citation requirements, and
 agent-to-agent handoff limits through the repo and MCP server.
 
 This is the next high-value layer after the Secure Context Trust Pack
 and Secure Context Attestation. The trust pack proves what context is
 registered. Attestation proves the context package can be certified.
-The eval pack proves the runtime behavior a buyer actually cares about:
+The eval pack proves the runtime behavior a reviewer actually cares about:
 will the system return the right context, hold when signatures are
 missing, terminate on prohibited data classes, preserve citations, and
 keep remote-agent handoffs metadata-only?
@@ -72,9 +72,9 @@ python3 scripts/evaluate_secure_context_eval_case.py \
 | Answer contract | Runtime answers preserve source IDs, hashes, and citations instead of turning retrieved text into hidden authority. |
 | Agent-to-agent handoff boundary | Remote-agent handoffs carry task summaries, workflow IDs, source hashes, and approval state, not internal memory or tenant runtime context. |
 
-## Why it is acquisition-grade
+## Why it is review-ready
 
-Enterprise buyers and likely acquirers will not value another prompt
+Enterprise reviewers and likely reviewers will not value another prompt
 library by itself. They will value a control surface that makes agentic
 AI easier to approve, monitor, and defend. This eval layer is designed
 to answer diligence questions directly:
@@ -87,7 +87,7 @@ to answer diligence questions directly:
 - Can it extend from MCP tool use into agent-to-agent protocols where
   remote agents are opaque applications?
 
-The open artifact creates trust and distribution. The commercial path is
+The open artifact creates trust and distribution. The trusted-source path is
 hosted eval replay, customer corpus eval ingestion, model/provider
 regression tracking, signed eval results, and trust-center exports.
 

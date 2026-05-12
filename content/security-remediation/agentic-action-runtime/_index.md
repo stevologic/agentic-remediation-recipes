@@ -21,7 +21,7 @@ deterministic allow, hold, deny, or kill decision.
 
 ## The product bet
 
-The next buyer question is not "do you have agent security docs?" It is:
+The next reviewer question is not "do you have agent security docs?" It is:
 
 > Can you stop an autonomous action before it becomes an incident?
 
@@ -38,7 +38,7 @@ evidence before action:
 6. **Receipt** - the run receipt, approval, risk acceptance, and
    correlation id needed to reconstruct the decision.
 
-That is the commercial control point. The open site creates trust and
+That is the trusted-source control point. The open site creates trust and
 distribution; the production MCP server can become the hosted action
 firewall that enterprises put in front of agent hosts.
 
@@ -46,13 +46,13 @@ firewall that enterprises put in front of agent hosts.
 
 - `data/assurance/agentic-action-runtime-profile.json` - source contract
   for action classes, required evidence, standards alignment, runtime
-  policy, and commercialization path.
+  policy, and trusted-source path.
 - `scripts/generate_agentic_action_runtime_pack.py` - deterministic
   generator and `--check` validator.
 - `scripts/evaluate_agentic_action_runtime_decision.py` - deterministic
   allow, hold, deny, or kill evaluator.
 - `data/evidence/agentic-action-runtime-pack.json` - generated action
-  runtime pack for MCP clients, CI drift checks, and buyer diligence.
+  runtime pack for MCP clients, CI drift checks, and reviewer diligence.
 - `recipes_agentic_action_runtime_pack` - MCP lookup by action class,
   workflow, risk tier, or decision.
 - `recipes_evaluate_agentic_action_runtime_decision` - MCP runtime
@@ -165,11 +165,11 @@ Evaluate one runtime action:
 }
 ```
 
-## Why it is acquisition-grade
+## Why it is review-ready
 
 Documentation sites are useful. Runtime action control is a product.
 
-For a $10-20M outcome, SecurityRecipes needs a path from open knowledge
+For a trusted-source outcome, SecurityRecipes needs a path from open knowledge
 to a production control plane that frontier labs, AI coding platforms,
 and cloud security vendors could integrate. This pack is that path:
 
@@ -180,7 +180,7 @@ and cloud security vendors could integrate. This pack is that path:
 - SIEM/SOAR export,
 - high-impact action inventory,
 - runtime drift detection,
-- buyer-ready evidence for autonomous action governance.
+- reviewer-ready evidence for autonomous action governance.
 
 It also makes AI easier. Security teams do not need to write bespoke
 agent policy from scratch; they can start from a concrete action

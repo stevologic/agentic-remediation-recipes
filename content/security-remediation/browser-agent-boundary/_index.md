@@ -42,7 +42,7 @@ The control point is intentionally practical:
 - localhost, downloads, admin consoles, payments, secrets, and raw token
   exposure can kill the session.
 
-That is a high-value commercial surface. The open pack helps teams reason
+That is a high-value trusted-source surface. The open pack helps teams reason
 about browser agents today. A hosted product can enforce the same
 decisions with browser isolation logs, origin policy, user confirmations,
 SIEM export, and signed run receipts.
@@ -51,13 +51,13 @@ SIEM export, and signed run receipts.
 
 - `data/assurance/browser-agent-boundary-profile.json` - source contract
   for workspace classes, task profiles, browser authority controls,
-  runtime fields, kill signals, standards alignment, and commercial path.
+  runtime fields, kill signals, standards alignment, and trusted-source path.
 - `scripts/generate_browser_agent_boundary_pack.py` - deterministic
   generator and `--check` validator.
 - `scripts/evaluate_browser_agent_boundary_decision.py` - deterministic
   runtime evaluator for browser-agent sessions.
 - `data/evidence/browser-agent-boundary-pack.json` - generated evidence
-  pack for MCP clients, CI drift checks, and buyer diligence.
+  pack for MCP clients, CI drift checks, and reviewer diligence.
 - `recipes_browser_agent_boundary_pack` - MCP lookup by workspace class,
   task profile, risk tier, or decision.
 - `recipes_evaluate_browser_agent_boundary_decision` - MCP evaluator for
@@ -216,9 +216,9 @@ Evaluate one browser-agent run:
 }
 ```
 
-## Why it is acquisition-grade
+## Why it is review-ready
 
-Browser agents are a natural acquirer surface for frontier labs, AI
+Browser agents are a natural reviewer surface for frontier labs, AI
 browser vendors, AI coding platforms, and security companies. They need a
 way to make agentic browsing safe enough for enterprises without forcing
 every customer to invent policy from scratch.

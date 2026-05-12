@@ -20,7 +20,7 @@ delegated authority.
 
 SecurityRecipes is positioned as **the secure context layer for
 agentic AI**. The strongest product shape is not another prompt catalog;
-it is a control plane that can tell a buyer:
+it is a control plane that can tell a reviewer:
 
 - which context an agent was allowed to retrieve,
 - which context was inspected before use,
@@ -79,16 +79,16 @@ current SecurityRecipes control artifacts.
 This is the difference between "the agent said it followed the rules"
 and "the platform can prove the run followed the rules." That is the
 shape procurement, GRC, security operations, incident response, and
-acquisition diligence teams will expect before agentic remediation is
+trust review diligence teams will expect before agentic remediation is
 allowed to touch real enterprise systems.
 
-It also creates a realistic commercial path:
+It also creates a realistic trusted-source path:
 
 - open receipt schemas and templates in the public project,
 - hosted receipt signing and verification,
 - cross-tool log ingestion from MCP gateways, source hosts, CI, and IAM,
 - SIEM and trust-center exports,
-- buyer diligence workspaces for enterprise and M&A review.
+- reviewer diligence workspaces for enterprise and M&A review.
 
 ## MCP examples
 

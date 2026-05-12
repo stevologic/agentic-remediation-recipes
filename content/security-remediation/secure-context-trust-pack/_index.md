@@ -34,7 +34,7 @@ I use?" It has to answer:
 The Secure Context Trust Pack answers those questions in one generated
 artifact. It is designed for AI platform intake, MCP server approval,
 retrieval-augmented-agent design review, procurement security, and
-acquisition diligence.
+trust review diligence.
 
 ## What was added
 

@@ -16,7 +16,7 @@ boundaries, and evidence combine into action paths before agents act.
 {{< /callout >}}
 
 SecurityRecipes is positioned as **the secure context layer for
-agentic AI**, but secure context becomes valuable only when a buyer can
+agentic AI**, but secure context becomes valuable only when a reviewer can
 see where that context can travel. The **Agentic Exposure Graph** turns
 the existing evidence packs into a single inspectable graph:
 
@@ -29,7 +29,7 @@ the existing evidence packs into a single inspectable graph:
 - Which paths deserve architecture review before scale?
 
 That is a stronger enterprise artifact than another checklist. It gives
-AI platform, security architecture, IAM, GRC, and acquisition reviewers
+AI platform, security architecture, IAM, GRC, and trust review reviewers
 an exposure-management surface for agentic AI.
 
 ## Generated artifact
@@ -135,7 +135,7 @@ Find paths for one MCP namespace:
 }
 ```
 
-## Buyer diligence questions
+## reviewer diligence questions
 
 - Which agent identities create the highest-risk exposure paths?
 - Which workflows combine high residual risk with write or

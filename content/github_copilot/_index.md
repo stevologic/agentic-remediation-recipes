@@ -43,7 +43,7 @@ without waiting on an enterprise rollout.
    try chat + inline suggestions. The **Copilot coding agent**
    requires **Copilot Business** or **Copilot Enterprise** on a
    GitHub org. See
-   [Copilot plans & pricing](https://github.com/features/copilot/plans).
+   [Copilot plan documentation](https://github.com/features/copilot/plans).
 2. **Install Copilot in your editor** (VS Code, JetBrains,
    Visual Studio, Neovim) and sign in. See
    [GitHub Copilot docs home](https://docs.github.com/en/copilot).
@@ -72,7 +72,7 @@ without waiting on an enterprise rollout.
 - [Best practices](https://docs.github.com/en/copilot/get-started/best-practices)
 - [Custom instructions (`.github/copilot-instructions.md`)](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-repository-instructions)
 - [Extend with MCP](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/extend-coding-agent-with-mcp)
-- [Plans & pricing](https://github.com/features/copilot/plans)
+- [Plan documentation](https://github.com/features/copilot/plans)
 - [GitHub Trust Center](https://github.com/trust-center)
 
 The feature is referred to as the **Copilot coding agent** (and
@@ -488,7 +488,7 @@ configure existing plumbing.
 - **CODEOWNERS as a hard stop.** Anything you can't afford the agent to
   change (migrations, IaC, API schemas) should require human CODEOWNERS
   approval so branch protection blocks the merge.
-- **Cost caps.** Watch your premium-request usage in the Copilot usage report.
+- **Cost caps.** Watch your model-request usage in the Copilot usage report.
   The `copilot-paused` label is your kill-switch.
 
 ## Troubleshooting

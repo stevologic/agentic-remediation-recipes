@@ -8,7 +8,7 @@ description: >
   A generated hosted-MCP readiness plan that turns the open
   SecurityRecipes corpus into a tenant-safe enterprise product roadmap:
   protected-resource authorization, private context ingestion, connector
-  isolation, telemetry, signed receipts, metering, and buyer rollout
+  isolation, telemetry, signed receipts, metering, and reviewer rollout
   gates.
 ---
 
@@ -24,7 +24,7 @@ SecurityRecipes is positioned as **The Secure Context Layer for Agentic
 AI**. The long-term product is not just documentation. It is a hosted
 secure context and MCP control plane that lets agent hosts ask safer
 questions, call tools with bounded authority, and produce evidence that
-security, GRC, and buyers can inspect.
+security, GRC, and reviewers can inspect.
 
 The **Hosted MCP Readiness Pack** makes that path concrete. It names the
 controls that are already reference-ready, the controls that need
@@ -35,15 +35,15 @@ hosted claims until a tenant-safe service exists.
 
 - `data/assurance/hosted-mcp-readiness-profile.json` - source profile
   for hosted MCP positioning, current source references, source-pack
-  dependencies, stages, controls, rollout gates, buyer evidence,
-  commercialization, risks, and next 90 days.
+  dependencies, stages, controls, rollout gates, reviewer evidence,
+  vendorization, risks, and next 90 days.
 - `scripts/generate_hosted_mcp_readiness_pack.py` - deterministic
   generator and `--check` validator.
 - `data/evidence/hosted-mcp-readiness-pack.json` - generated pack with
   14 source packs, 5 rollout stages, 21 readiness controls, 7 gates, 5
-  buyer evidence items, and 7 hosted-product risks.
+  reviewer evidence items, and 7 hosted-product risks.
 - `recipes_hosted_mcp_readiness_pack` - MCP tool for the full pack, one
-  readiness stage, control, rollout gate, buyer evidence item, risk, or
+  readiness stage, control, rollout gate, reviewer evidence item, risk, or
   implementation-status view.
 
 Run it from the repo root:
@@ -79,7 +79,7 @@ operational controls, metering, and customer proof.
 | Design partner private context pilot | One scoped tenant binds private context, redacted telemetry, proof metrics, and reviewer outcomes. |
 | Protected hosted MCP gateway | Hosted MCP enforces resource indicators, audience validation, scope challenge, no token passthrough, connector isolation, and tool-surface drift controls. |
 | Assurance and operations | Receipts, SOC detection, incident containment, retention/deletion, SLO, and recovery controls become inspectable. |
-| Commercial packaging and acquisition readiness | Metering, plan boundaries, renewal metrics, support model, and paid-wedge proof become explicit. |
+| Operational packaging and trust readiness | Metering, plan boundaries, renewal metrics, support model, and hosted-ready-proof proof become explicit. |
 
 ## Controls that matter most
 
@@ -103,7 +103,7 @@ The pack intentionally focuses on high-leverage enterprise controls:
 - **Signed or verifiable run receipts** - every governed run needs
   tamper-evident proof linking identity, context, MCP authorization,
   egress, approvals, verifier output, and closure.
-- **Metering and entitlement** - the paid wedge is usage of tenant-bound
+- **Metering and entitlement** - the hosted-ready proof path is usage of tenant-bound
   context packages, governed MCP decisions, connector namespaces,
   trust-center exports, and proof retention.
 
@@ -115,28 +115,28 @@ The pack intentionally focuses on high-leverage enterprise controls:
 | Protected-resource authorization gate | Hold hosted MCP until resource, audience, issuer, session, scope, and token checks pass. |
 | Connector promotion gate | Hold connector promotion until isolation, tool-surface drift, and elicitation checks pass. |
 | Telemetry redaction gate | Hold customer proof until telemetry is useful without leaking sensitive data. |
-| Receipt integrity gate | Hold acquisition claims until receipts are tamper-evident or externally verifiable. |
+| Receipt integrity gate | Hold trust review claims until receipts are tamper-evident or externally verifiable. |
 | Operations gate | Hold enterprise rollout until incident, support, SLO, recovery, and disablement paths are tested. |
-| Commercial gate | Hold the revenue story until usage meters, renewal metrics, and a budget-owned paid wedge exist. |
+| Trust gate | Hold the trust story until usage meters, renewal metrics, and a budget-owned hosted-ready proof path exist. |
 
-## Why it is acquisition-grade
+## Why it is review-ready
 
-This pack turns the $10-20M vision into diligence artifacts an acquirer
+This pack turns the trusted-source vision into diligence artifacts an reviewer
 can inspect:
 
-- It separates the open reference moat from the paid hosted product.
+- It separates the open reference moat from the future hosted service.
 - It names the runtime controls that must exist before private customer
   context is allowed.
 - It maps MCP authorization, connector drift, source freshness,
   telemetry, SOC detection, receipts, and trust-center exports into one
   hosted roadmap.
 - It treats no-token-passthrough, step-up authorization, egress holds,
-  and kill decisions as premium product value.
-- It defines usage meters and plan boundaries before revenue is claimed.
+  and kill decisions as trusted-source value.
+- It defines usage meters and plan boundaries before adoption proof is claimed.
 
 The resulting story is more credible: open knowledge creates
 distribution and trust; hosted MCP turns that knowledge into enforceable
-context; customer proof and metering create the enterprise value.
+context; customer proof and metering create the trust value.
 
 ## MCP examples
 
@@ -164,10 +164,10 @@ Find all controls that still need hosted runtime implementation:
 recipes_hosted_mcp_readiness_pack(status="hosted_runtime_required")
 ```
 
-Find buyer evidence for the acquirer revenue story:
+Find reviewer evidence for the reviewer trust story:
 
 ```text
-recipes_hosted_mcp_readiness_pack(buyer_evidence_id="acquirer-revenue-proof")
+recipes_hosted_mcp_readiness_pack(buyer_evidence_id="reviewer-adoption proof-proof")
 ```
 
 ## Industry alignment
@@ -206,7 +206,7 @@ The profile is grounded in current primary sources:
 - [Production MCP Server]({{< relref "/mcp-servers" >}})
 - [Secure Context Customer Proof Pack]({{< relref "/security-remediation/secure-context-customer-proof-pack" >}})
 - [Design Partner Pilot Pack]({{< relref "/security-remediation/design-partner-pilot-pack" >}})
-- [Secure Context Buyer Diligence Brief]({{< relref "/security-remediation/secure-context-buyer-diligence-brief" >}})
+- [Secure Context Reviewer Brief]({{< relref "/security-remediation/secure-context-buyer-diligence-brief" >}})
 - [MCP Authorization Conformance]({{< relref "/security-remediation/mcp-authorization-conformance" >}})
 - [MCP Tool Surface Drift Sentinel]({{< relref "/security-remediation/mcp-tool-surface-drift-sentinel" >}})
 - [Agentic Telemetry Contract]({{< relref "/security-remediation/agentic-telemetry-contract" >}})

@@ -78,7 +78,7 @@ solve prompt injection. It creates evidence and routing:
 
 ## Why this is enterprise-grade
 
-This feature makes AI easier for buyers because it turns a hard question
+This feature makes AI easier for reviewers because it turns a hard question
 into a simple artifact:
 
 > Can this context be returned to an agent?
@@ -94,7 +94,7 @@ The generated pack supports:
 - MCP server intake,
 - quarterly secure-context recertification,
 - red-team replay planning,
-- acquisition diligence,
+- trust review diligence,
 - and future hosted context monitoring.
 
 ## MCP examples

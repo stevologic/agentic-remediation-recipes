@@ -15,7 +15,7 @@
 <meta http-equiv="Content-Language" content="en">
 <meta name="apple-mobile-web-app-capable" content="no">
 <meta name="mobile-web-app-capable" content="no">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.openai.com https://api.x.ai https://api.anthropic.com https://api.github.com https://api.deps.dev https://*.snyk.io https://*.atlassian.net https://api.atlassian.com https://gitlab.com https://*.gitlab.com https://dev.azure.com https://*.dev.azure.com https://*.visualstudio.com https://api.security.microsoft.com https://*.security.microsoft.com https://management.azure.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://services.nvd.nist.gov https://api.openai.com https://api.x.ai https://api.anthropic.com https://api.github.com https://api.deps.dev https://*.snyk.io https://*.atlassian.net https://api.atlassian.com https://gitlab.com https://*.gitlab.com https://dev.azure.com https://*.dev.azure.com https://*.visualstudio.com https://api.security.microsoft.com https://*.security.microsoft.com https://management.azure.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'none';">
 <link rel="icon" type="image/svg+xml" href="{{ "/images/logo.svg" | relURL }}">
 {{ with resources.Get "css/ai-chatbot.css" | minify | fingerprint }}
 <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">
@@ -216,27 +216,112 @@
     margin: 0 auto;
   }
 
-  .eyebrow {
+  .hero-cve-ticker {
+    width: min(760px, 100%);
+    min-height: 38px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    margin: 0 auto 28px;
+    padding: 5px 6px 5px 12px;
+    border: 1px solid rgba(20, 184, 166, 0.2);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.035);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+  }
+
+  .hero-cve-ticker-label {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 7px 14px 7px 10px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    font-size: 12px;
-    color: var(--ink-1);
-    letter-spacing: 0.02em;
-    backdrop-filter: blur(10px);
-    margin-bottom: 28px;
+    gap: 8px;
+    color: #99f6e4;
     font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
   }
-  .eyebrow .dot {
-    width: 6px; height: 6px;
+
+  .hero-cve-ticker-label::before {
+    content: '';
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: var(--accent-2);
-    box-shadow: 0 0 10px var(--accent-2);
+    background: #2dd4bf;
+    box-shadow: 0 0 12px rgba(45, 212, 191, 0.9);
     animation: pulse 1.8s ease-in-out infinite;
+  }
+
+  .hero-cve-ticker-window {
+    min-width: 0;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .hero-cve-ticker-track {
+    width: max-content;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: cveTicker 38s linear infinite;
+  }
+
+  .hero-cve-ticker:hover .hero-cve-ticker-track,
+  .hero-cve-ticker:focus-within .hero-cve-ticker-track {
+    animation-play-state: paused;
+  }
+
+  .hero-cve-ticker-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    max-width: 320px;
+    padding: 5px 9px;
+    border: 1px solid rgba(56, 189, 248, 0.18);
+    border-radius: 999px;
+    background: rgba(2, 6, 23, 0.5);
+    color: var(--ink-1);
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .hero-cve-ticker-item:hover,
+  .hero-cve-ticker-item:focus-visible {
+    border-color: rgba(20, 184, 166, 0.42);
+    color: var(--ink-0);
+    outline: none;
+  }
+
+  .hero-cve-id {
+    flex: none;
+    color: #67e8f9;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .hero-cve-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .hero-cve-date {
+    flex: none;
+    color: var(--ink-3);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+  }
+
+  @keyframes cveTicker {
+    to { transform: translateX(-50%); }
   }
 
   h1.title {
@@ -271,19 +356,6 @@
     margin: 0 auto 18px;
     font-weight: 400;
   }
-
-  .hero-meta {
-    display: inline-flex;
-    align-items: center;
-    gap: 18px;
-    color: var(--ink-3);
-    font-size: 12px;
-    font-family: var(--font-mono);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-  .hero-meta span { display: inline-flex; align-items: center; gap: 6px; }
-  .hero-meta .sep { width: 4px; height: 4px; border-radius: 50%; background: var(--ink-3); }
 
   /* ============ LANDING SEARCH ============ */
   .home-search {
@@ -788,7 +860,7 @@
   }
   .latest-cves-kicker {
     margin-bottom: 8px;
-    color: var(--accent-2);
+    color: #5eead4;
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.08em;
@@ -809,8 +881,8 @@
     border: 1px solid var(--card-border);
     border-radius: 18px;
     background:
-      radial-gradient(ellipse 90% 120% at 0% 0%, rgba(245, 158, 11, 0.13), transparent 58%),
-      radial-gradient(ellipse 90% 120% at 100% 100%, rgba(20, 184, 166, 0.12), transparent 58%),
+      radial-gradient(ellipse 90% 120% at 0% 0%, rgba(20, 184, 166, 0.12), transparent 58%),
+      radial-gradient(ellipse 90% 120% at 100% 100%, rgba(56, 189, 248, 0.1), transparent 58%),
       rgba(255, 255, 255, 0.024);
     color: inherit;
     text-decoration: none;
@@ -822,8 +894,8 @@
     transform: translateY(-3px);
     border-color: var(--card-hover-border);
     background:
-      radial-gradient(ellipse 90% 120% at 0% 0%, rgba(245, 158, 11, 0.17), transparent 58%),
-      radial-gradient(ellipse 90% 120% at 100% 100%, rgba(20, 184, 166, 0.15), transparent 58%),
+      radial-gradient(ellipse 90% 120% at 0% 0%, rgba(20, 184, 166, 0.16), transparent 58%),
+      radial-gradient(ellipse 90% 120% at 100% 100%, rgba(56, 189, 248, 0.13), transparent 58%),
       rgba(255, 255, 255, 0.034);
   }
   .latest-cve-card-top {
@@ -872,9 +944,9 @@
     color: #fca5a5;
   }
   .latest-cve-badge--severity-high {
-    background: rgba(249, 115, 22, 0.13);
-    border: 1px solid rgba(249, 115, 22, 0.34);
-    color: #fdba74;
+    background: rgba(56, 189, 248, 0.13);
+    border: 1px solid rgba(56, 189, 248, 0.34);
+    color: #bae6fd;
   }
   .latest-cve-badge--severity-medium {
     background: rgba(234, 179, 8, 0.13);
@@ -925,7 +997,7 @@
     align-items: center;
     gap: 8px;
     margin-top: 20px;
-    color: var(--accent-2);
+    color: #5eead4;
     font-size: 13.5px;
     font-weight: 600;
     transition: gap .22s ease;
@@ -1183,6 +1255,15 @@
   @media (max-width: 720px) {
     .nav { padding: 20px 24px; }
     .hero { padding: 48px 24px 24px; }
+    .hero-cve-ticker {
+      grid-template-columns: minmax(0, 1fr);
+      border-radius: 18px;
+      padding: 9px 10px;
+      text-align: left;
+    }
+    .hero-cve-ticker-window {
+      width: 100%;
+    }
     .tools-section { padding: 48px 24px 16px; }
     .latest-cves-section { padding: 28px 24px 48px; }
     .promptlib-section { padding: 24px 24px 40px; }
@@ -1210,6 +1291,12 @@
   .reveal.d4 { animation-delay: 0.35s; }
   .reveal.d5 { animation-delay: 0.45s; }
   .reveal.d6 { animation-delay: 0.55s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-cve-ticker-track {
+      animation: none;
+    }
+  }
 </style>
 </head>
 <body>
@@ -1236,6 +1323,15 @@
 {{/* Dynamic repo URL — set HUGO_PARAMS_REPOURL at build time (see GH Action).
      Falls back to editURL base or a sensible default. */}}
 {{ $repoURL := .Site.Params.repoURL | default "https://github.com" }}
+{{- $allCveRecipes := slice -}}
+{{- with site.GetPage "/prompt-library/cve" -}}
+  {{- range $recipe := .Pages -}}
+    {{- if $recipe.Params.cve -}}
+      {{- $allCveRecipes = $allCveRecipes | append $recipe -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $latestCveRecipes := first 6 (sort $allCveRecipes "Date" "desc") -}}
 
 <!-- Nav -->
 <nav class="nav reveal">
@@ -1258,9 +1354,24 @@
 
 <!-- Hero -->
 <section class="hero">
-  <div class="eyebrow reveal d1">
-    <span class="dot"></span>
-    <span>2026 Focus - MIT Licensed - Read-Only MCP - Reviewer-Gated</span>
+  <div class="hero-cve-ticker reveal d1" data-cve-ticker aria-label="Latest NVD CVEs">
+    <span class="hero-cve-ticker-label">Latest NVD CVEs</span>
+    <div class="hero-cve-ticker-window">
+      <div class="hero-cve-ticker-track" data-cve-ticker-track>
+        {{- range $latestCveRecipes }}
+          <a class="hero-cve-ticker-item" href="https://nvd.nist.gov/vuln/detail/{{ .Params.cve }}" target="_blank" rel="noopener">
+            <span class="hero-cve-id">{{ .Params.cve }}</span>
+            <span class="hero-cve-title">{{ .Title | plainify | truncate 72 }}</span>
+            <span class="hero-cve-date">{{ .Date.Format "Jan 2" }}</span>
+          </a>
+        {{- else }}
+          <a class="hero-cve-ticker-item" href="https://nvd.nist.gov/vuln/search" target="_blank" rel="noopener">
+            <span class="hero-cve-id">NVD</span>
+            <span class="hero-cve-title">Loading latest published CVEs</span>
+          </a>
+        {{- end }}
+      </div>
+    </div>
   </div>
   <h1 class="title reveal d2">
     The Secure Context Layer<br/>
@@ -1279,13 +1390,6 @@
       <span>Explore the MCP Server</span>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
-  </div>
-  <div class="hero-meta reveal d4">
-    <span>Open knowledge base</span>
-    <span class="sep"></span>
-    <span>Production MCP surface</span>
-    <span class="sep"></span>
-    <span>Trust, policy, eval, SOC, egress, and run evidence</span>
   </div>
   <div class="home-search reveal d4">
     <label class="home-search-label" for="home-search-input">Search docs</label>
@@ -1316,8 +1420,8 @@
   </div>
   <div class="proof-item reveal d4">
     <div class="proof-label">Adoption</div>
-    <strong>Open core with enterprise path</strong>
-    <span>Open knowledge compounds into premium context packs, assurance workflows, and governed MCP deployment.</span>
+    <strong>Trusted source first</strong>
+    <span>Open knowledge compounds through reviewed recipes, transparent evidence, and community contribution before future hosting work.</span>
   </div>
 </section>
 
@@ -1466,15 +1570,40 @@
   </div>
 </section>
 
-{{- $allCveRecipes := slice -}}
-{{- with site.GetPage "/prompt-library/cve" -}}
-  {{- range $recipe := .Pages -}}
-    {{- if $recipe.Params.cve -}}
-      {{- $allCveRecipes = $allCveRecipes | append $recipe -}}
-    {{- end -}}
-  {{- end -}}
-{{- end -}}
-{{- $latestCveRecipes := first 6 (sort $allCveRecipes "Date" "desc") -}}
+<!-- Prompt Library CTA -->
+<section class="promptlib-section">
+  <div class="promptlib-card reveal d2">
+    <div>
+      <div class="promptlib-eyebrow">
+        <span class="dot"></span>
+        <span>Prompt Library - Community + Reviewed Examples</span>
+      </div>
+      <h2>Prompt Library</h2>
+      <p>
+        Prompt Library collects the actual prompts, rules files, skills, and instruction snippets teams use to steer agents safely. Browse by tool, copy the entry that matches your agent, keep the guardrails and stop conditions intact, and adapt the house rules to your repo.
+      </p>
+      <div class="promptlib-ctas">
+        <a class="btn-primary" href="{{ "/prompt-library/" | relURL }}">
+          Browse Prompt Library
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="btn-secondary" href="{{ "/contribute/" | relURL }}#contributing-a-prompt">
+          Submit a community prompt
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="promptlib-chips">
+      <div class="chip" data-for="copilot"><span class="chip-dot"></span> copilot-instructions.md</div>
+      <div class="chip" data-for="claude"><span class="chip-dot"></span> CLAUDE.md + skills</div>
+      <div class="chip" data-for="cursor"><span class="chip-dot"></span> .cursor/rules/*.mdc</div>
+      <div class="chip" data-for="codex"><span class="chip-dot"></span> AGENTS.md</div>
+      <div class="chip" data-for="devin"><span class="chip-dot"></span> Devin Knowledge entries</div>
+      <div class="chip"><span class="chip-dot"></span> PreToolUse hooks</div>
+    </div>
+  </div>
+</section>
+
 {{- if $latestCveRecipes }}
 <!-- Latest CVE recipes -->
 <section class="latest-cves-section" aria-labelledby="latest-cves-title">
@@ -1524,40 +1653,6 @@
   </div>
 </section>
 {{- end }}
-
-<!-- Prompt Library CTA -->
-<section class="promptlib-section">
-  <div class="promptlib-card reveal d2">
-    <div>
-      <div class="promptlib-eyebrow">
-        <span class="dot"></span>
-        <span>Prompt Library · Community + Reviewed Examples</span>
-      </div>
-      <h2>Prompt Library</h2>
-      <p>
-        Prompt Library collects the actual prompts, rules files, skills, and instruction snippets teams use to steer agents safely. Browse by tool, copy the entry that matches your agent, keep the guardrails and stop conditions intact, and adapt the house rules to your repo.
-      </p>
-      <div class="promptlib-ctas">
-        <a class="btn-primary" href="{{ "/prompt-library/" | relURL }}">
-          Browse Prompt Library
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <a class="btn-secondary" href="{{ "/contribute/" | relURL }}#contributing-a-prompt">
-          Submit a community prompt
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-      </div>
-    </div>
-    <div class="promptlib-chips">
-      <div class="chip" data-for="copilot"><span class="chip-dot"></span> copilot-instructions.md</div>
-      <div class="chip" data-for="claude"><span class="chip-dot"></span> CLAUDE.md · skills</div>
-      <div class="chip" data-for="cursor"><span class="chip-dot"></span> .cursor/rules/*.mdc</div>
-      <div class="chip" data-for="codex"><span class="chip-dot"></span> AGENTS.md</div>
-      <div class="chip" data-for="devin"><span class="chip-dot"></span> Devin Knowledge entries</div>
-      <div class="chip"><span class="chip-dot"></span> PreToolUse hooks</div>
-    </div>
-  </div>
-</section>
 
 <!-- Triple CTA: Automation + Agentic Security Remediation + MCP Server access -->
 <section class="dual-cta-section">
@@ -1644,21 +1739,21 @@
 
 <section class="trust-stack">
   <div class="section-header reveal d2">
-    <h2>Built for Due Diligence</h2>
-    <p>SecurityRecipes is shaped as a credible open foundation with a production MCP path: auditable context, deterministic controls, and artifacts a platform team or diligence reviewer can inspect.</p>
+    <h2>Built for Trust</h2>
+    <p>SecurityRecipes is shaped as a credible open foundation: auditable context, deterministic controls, and artifacts a platform or security team can inspect.</p>
   </div>
   <div class="trust-grid">
     <div class="trust-card reveal d1">
-      <h3>Open Knowledge Moat</h3>
-      <p>Reviewed recipes and CVE prompts create durable search demand while giving security teams a practical reason to return, fork, contribute, and trust the corpus.</p>
+      <h3>Open Knowledge Base</h3>
+      <p>Reviewed recipes and CVE prompts give security teams practical, inspectable remediation context they can return to, fork, contribute to, and improve over time.</p>
       <div class="dual-cta-tags">
         <span class="dual-cta-tag">MIT docs</span>
-        <span class="dual-cta-tag">CVE prompts</span>
+        <span class="dual-cta-tag">reviewed prompts</span>
       </div>
     </div>
     <div class="trust-card reveal d2">
-      <h3>Secure Context Product</h3>
-      <p>The MCP server turns static knowledge into governed context retrieval, policy decisions, eval evidence, run receipts, SOC detections, trust-center exports, and hosted-MCP readiness evidence.</p>
+      <h3>Secure Context Layer</h3>
+      <p>The MCP server turns static knowledge into governed context retrieval, policy decisions, eval evidence, run receipts, SOC detections, and reviewable handoff artifacts.</p>
       <div class="dual-cta-tags">
         <span class="dual-cta-tag">FastMCP</span>
         <span class="dual-cta-tag">typed tools</span>
@@ -1666,19 +1761,19 @@
     </div>
     <div class="trust-card reveal d3">
       <h3>Trust Center Ready</h3>
-      <p>Generated JSON packs give procurement, platform, security reviewers, and acquisition diligence teams concrete artifacts instead of claims about agent safety.</p>
+      <p>Generated JSON packs give platform teams and security reviewers concrete artifacts instead of vague claims about agent safety.</p>
       <div class="dual-cta-tags">
         <span class="dual-cta-tag">attestation</span>
         <span class="dual-cta-tag">provenance</span>
       </div>
     </div>
     <div class="trust-card reveal d4">
-      <h3>Commercial Expansion</h3>
-      <p>The natural paid surface is hosted MCP with tenant-bound context packs, protected-resource authorization, connector isolation, signed receipts, enterprise policy mappings, and remediation workflow assurance.</p>
+      <h3>Trusted Source First</h3>
+      <p>The priority is a dependable public corpus: clear sources, conservative claims, reproducible context packs, and remediation workflows that security teams can verify before they rely on the tool.</p>
       <div class="dual-cta-tags">
-        <span class="dual-cta-tag">open core</span>
-        <span class="dual-cta-tag">pilot proof</span>
-        <span class="dual-cta-tag">enterprise MCP</span>
+        <span class="dual-cta-tag">clear sources</span>
+        <span class="dual-cta-tag">reviewed recipes</span>
+        <span class="dual-cta-tag">community trust</span>
       </div>
     </div>
   </div>
@@ -1836,6 +1931,111 @@
     });
   })();
 
+  (function () {
+    const ticker = document.querySelector('[data-cve-ticker]');
+    const track = document.querySelector('[data-cve-ticker-track]');
+    if (!ticker || !track) return;
+
+    function escapeHtml(s) {
+      return String(s || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function truncate(s, max) {
+      const value = String(s || '').replace(/\s+/g, ' ').trim();
+      return value.length > max ? value.slice(0, max - 1).trim() + '...' : value;
+    }
+
+    function dateLabel(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+      return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    }
+
+    function nvdDescription(cve) {
+      const descriptions = Array.isArray(cve.descriptions) ? cve.descriptions : [];
+      const english = descriptions.find(item => item && item.lang === 'en') || descriptions[0];
+      return english && english.value ? english.value : 'Newly published NVD vulnerability record';
+    }
+
+    function nvdSeverity(cve) {
+      const metrics = cve.metrics || {};
+      const groups = [metrics.cvssMetricV40, metrics.cvssMetricV31, metrics.cvssMetricV30, metrics.cvssMetricV2];
+      for (const group of groups) {
+        if (Array.isArray(group) && group[0] && group[0].cvssData && group[0].cvssData.baseSeverity) {
+          return group[0].cvssData.baseSeverity;
+        }
+      }
+      return '';
+    }
+
+    function renderItems(items, state) {
+      if (!items.length) return;
+      const html = items.concat(items).map(item => (
+        `<a class="hero-cve-ticker-item" href="${escapeHtml(item.href)}" target="_blank" rel="noopener">
+          <span class="hero-cve-id">${escapeHtml(item.id)}</span>
+          <span class="hero-cve-title">${escapeHtml(item.title)}</span>
+          ${item.meta ? `<span class="hero-cve-date">${escapeHtml(item.meta)}</span>` : ''}
+        </a>`
+      )).join('');
+      track.innerHTML = html;
+      ticker.setAttribute('data-state', state || 'ready');
+    }
+
+    function duplicateFallbackItems() {
+      if (track.children.length === 0 || track.getAttribute('data-duplicated')) return;
+      Array.from(track.children).forEach(item => track.appendChild(item.cloneNode(true)));
+      track.setAttribute('data-duplicated', 'true');
+    }
+
+    function nvdUrl(days) {
+      const end = new Date();
+      const start = new Date(end.getTime() - days * 24 * 60 * 60 * 1000);
+      const url = new URL('https://services.nvd.nist.gov/rest/json/cves/2.0');
+      url.searchParams.set('pubStartDate', start.toISOString());
+      url.searchParams.set('pubEndDate', end.toISOString());
+      url.searchParams.set('resultsPerPage', '12');
+      return url;
+    }
+
+    async function loadNvd() {
+      for (const days of [7, 30]) {
+        try {
+          const response = await fetch(nvdUrl(days).href, { cache: 'no-store' });
+          if (!response.ok) continue;
+          const payload = await response.json();
+          const records = Array.isArray(payload.vulnerabilities) ? payload.vulnerabilities : [];
+          const items = records
+            .map(record => record && record.cve)
+            .filter(Boolean)
+            .sort((a, b) => new Date(b.published || 0) - new Date(a.published || 0))
+            .slice(0, 8)
+            .map(cve => ({
+              id: cve.id || 'CVE',
+              title: truncate(nvdDescription(cve), 88),
+              meta: nvdSeverity(cve) || dateLabel(cve.published),
+              href: 'https://nvd.nist.gov/vuln/detail/' + encodeURIComponent(cve.id || '')
+            }));
+          if (items.length) {
+            renderItems(items, 'nvd');
+            return;
+          }
+        } catch (error) {
+          break;
+        }
+      }
+      duplicateFallbackItems();
+      ticker.setAttribute('data-state', 'local');
+    }
+
+    duplicateFallbackItems();
+    loadNvd();
+  })();
+
   // Mouse-tracked card glow (matches uploaded design)
   document.querySelectorAll('.tool-card').forEach(card => {
     card.addEventListener('mousemove', e => {
@@ -1882,6 +2082,10 @@ window.__SECURITY_RECIPES_MARKETPLACE_SCHEMAS = {
   routingPolicy: {{ "/marketplace-schemas/routing-policy.schema.json" | relURL | jsonify | safeJS }},
   routingLibrary: {{ "/marketplace-schemas/routing-library.schema.json" | relURL | jsonify | safeJS }}
 };
+{{ $chatApiPath := site.Params.chatApiPath | default site.Params.chatapipath | default "" }}
+{{ $aiProviderRelay := site.Params.aiProviderRelay | default site.Params.aiproviderrelay | default "" }}
+window.__SECURITY_RECIPES_CHAT_API__ = {{ $chatApiPath | jsonify | safeJS }};
+window.__SECURITY_RECIPES_AI_PROVIDER_RELAY__ = {{ $aiProviderRelay | jsonify | safeJS }};
 </script>
 {{ with resources.Get "js/ai-chatbot.js" | fingerprint }}
 <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>

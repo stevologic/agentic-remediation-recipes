@@ -147,7 +147,7 @@ guardrails on every recipe exist to catch exactly that failure.
 ## The five tools this site covers
 
 All five tools are the same idea — LLM + tools + loop + goal — with
-different packaging, integration surface, and pricing. Pick the one
+different packaging, integration surface, and plan documentation. Pick the one
 your team already has licenses for; don't shop for a new agent just
 to follow this site.
 

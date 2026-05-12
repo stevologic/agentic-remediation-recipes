@@ -75,7 +75,7 @@ agent host, or MCP gateway needs:
 | `kpis` | Promotion and kill metrics for the workflow. |
 | `kill_signals` | Conditions that pause the workflow immediately. |
 
-This is intentionally boring. Boring is what auditors, acquirers, and
+This is intentionally boring. Boring is what auditors, reviewers, and
 platform teams can operate.
 
 ## Industry alignment
@@ -144,7 +144,7 @@ scale.
 - [Runtime Controls]({{< relref "/security-remediation/runtime-controls" >}})
   - how MCP gateway and session controls enforce the manifest at runtime.
 - [Agentic Assurance Pack]({{< relref "/security-remediation/agentic-assurance-pack" >}})
-  - how to export the manifest and policy as buyer- and auditor-ready evidence.
+  - how to export the manifest and policy as reviewer- and auditor-ready evidence.
 - [Agent Identity & Delegation Ledger]({{< relref "/security-remediation/agent-identity-ledger" >}})
   - how to turn workflow policy into non-human identity contracts.
 - [Compliance & Audit]({{< relref "/security-remediation/compliance" >}})

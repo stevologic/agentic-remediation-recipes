@@ -15,7 +15,7 @@ description: >
 **Why this page exists.** Governance proves the workflow has a declared
 shape. Red-team replay proves the shape holds when the agent receives
 hostile instructions, poisoned tool results, malformed approvals, or
-stale evidence. Enterprise buyers will expect both.
+stale evidence. Enterprise reviewers will expect both.
 {{< /callout >}}
 
 ## The product bet
@@ -74,7 +74,7 @@ all 8 active workflows.
 | `workflow_drills` | Per-workflow drill bundles with matched MCP namespaces, connector trust tiers, expected agent behavior, evidence, pass criteria, and fail signals. |
 | `scenario_contract` | Required gate phases, policy decisions, and evidence records every drill pack relies on. |
 | `source_artifacts` | Hashes for the scenario map, workflow manifest, gateway policy, connector trust pack, and identity ledger. |
-| `enterprise_adoption_packet` | Buyer-facing claim, questions answered, first-use guidance, and commercial motion. |
+| `enterprise_adoption_packet` | reviewer-facing claim, questions answered, first-use guidance, and adoption motion. |
 
 ## Scenario families
 
@@ -161,7 +161,7 @@ than a one-time security exercise.
 - [Agent Identity & Delegation Ledger]({{< relref "/security-remediation/agent-identity-ledger" >}})
   - non-human identity and delegated authority.
 - [Agentic Assurance Pack]({{< relref "/security-remediation/agentic-assurance-pack" >}})
-  - the buyer and auditor control evidence bundle.
+  - the reviewer and auditor control evidence bundle.
 - [Agentic Readiness Scorecard]({{< relref "/security-remediation/agentic-readiness-scorecard" >}})
   - the workflow promotion gate that consumes red-team coverage.
 - [Agentic Red-Team Replay Harness]({{< relref "/security-remediation/agentic-red-team-replay-harness" >}})

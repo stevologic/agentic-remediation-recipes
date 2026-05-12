@@ -19,7 +19,7 @@ expires, who must review it, and what kills the session.
 
 ## The product bet
 
-The next enterprise buyer question is not only "which agent can act?"
+The next enterprise reviewer question is not only "which agent can act?"
 It is:
 
 > Does this agent still have this permission right now?
@@ -47,13 +47,13 @@ webhooks, and IdP/SIEM integrations.
 
 - `data/assurance/agentic-entitlement-review-profile.json` - source
   contract for entitlement tiers, review cadences, lease TTLs,
-  standards alignment, buyer views, and commercialization path.
+  standards alignment, reviewer views, and trusted-source path.
 - `scripts/generate_agentic_entitlement_review_pack.py` - deterministic
   generator and `--check` validator.
 - `scripts/evaluate_agentic_entitlement_decision.py` - deterministic
   allow, hold, deny, or kill evaluator.
 - `data/evidence/agentic-entitlement-review-pack.json` - generated
-  entitlement pack for MCP clients, CI drift checks, and buyer diligence.
+  entitlement pack for MCP clients, CI drift checks, and reviewer diligence.
 - `recipes_agentic_entitlement_review_pack` - MCP lookup by entitlement,
   identity, workflow, namespace, risk tier, or access mode.
 - `recipes_evaluate_agentic_entitlement_decision` - MCP runtime evaluator
@@ -166,7 +166,7 @@ Evaluate one entitlement use:
 }
 ```
 
-## Why it is acquisition-grade
+## Why it is review-ready
 
 Enterprise agent fleets will not scale on prompt text. They need
 access lifecycle controls that look familiar to IAM and GRC teams but
@@ -182,7 +182,7 @@ are adapted for autonomous systems:
 - run receipts and telemetry fields for audit.
 
 That makes the project easier to buy, integrate, and diligence. It
-also creates a natural paid surface: hosted entitlement review APIs
+also creates a natural hosted-ready surface: hosted entitlement review APIs
 between agent hosts, IdPs, MCP gateways, approval systems, and SIEMs.
 
 ## Industry alignment

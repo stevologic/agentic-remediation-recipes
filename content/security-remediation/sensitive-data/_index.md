@@ -33,7 +33,7 @@ The orchestrator expects a deterministic scanner to be producing
 structured findings it can consume — for example,
 [Earlybird]({{< relref "/automation#sensitive-data-element-sde-detection" >}})
 for in-repo SDE scanning, Gitleaks or TruffleHog for credentials,
-or a commercial DLP product for data-in-motion. The
+or a dedicated DLP product for data-in-motion. The
 [Automation page]({{< relref "/automation" >}}) catalogs the
 common scanners; the agentic remediation here picks up *after*
 the scanner has fired.

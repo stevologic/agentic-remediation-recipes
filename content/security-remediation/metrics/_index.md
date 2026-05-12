@@ -117,8 +117,8 @@ line item.
 - **Avoided cost** — engineer-hours saved vs. the manual baseline.
   Subtract the three costs above from this to get the net.
 
-If the net is negative at the program level, you have a sales
-problem, not a security problem.
+If the net is negative at the program level, pause the workflow and
+revisit the task selection, evidence quality, and reviewer burden.
 
 ### 6. Coverage
 

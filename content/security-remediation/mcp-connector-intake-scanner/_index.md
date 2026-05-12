@@ -24,7 +24,7 @@ It should own the **pre-approval gate**: the repeatable review that says
 whether a new MCP server is safe to pilot, must be held for missing
 controls, or should be denied until redesigned.
 
-That is a high-value enterprise surface because the buyer's hard
+That is a high-value enterprise surface because the reviewer's hard
 question is no longer "can an agent call a tool?" It is:
 
 - Which MCP servers are entering the environment?
@@ -155,7 +155,7 @@ The generator fails if:
 - A generated intake decision falls outside the allowed decision set.
 - The checked-in pack is stale in `--check` mode.
 
-That gives SecurityRecipes a credible path from open knowledge to paid
+That gives SecurityRecipes a credible path from open knowledge to hosted-ready
 MCP governance: public intake logic, private hosted discovery, schema
 diffing, continuous connector recertification, and trust-center export.
 

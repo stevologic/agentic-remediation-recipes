@@ -20,7 +20,7 @@ final protocol decisions.
 ## What this workflow covers
 
 - **Upgrade diff review** for proxy and immutable deployments.
-- **Oracle and pricing guardrails** for manipulation-resistant execution.
+- **Oracle and scope guardrails** for manipulation-resistant execution.
 - **Bridge and multisig emergency runbooks** for containment.
 
 ## Eligibility profile

@@ -96,7 +96,7 @@ id, receipt id, policy decision, and redaction state. Raw prompts, model
 outputs, tool arguments, tool results, HTTP bodies, and retrieved
 context snippets are not required for initial SOC detection.
 
-That choice matters for regulated buyers. A detection pack that requires
+That choice matters for regulated reviewers. A detection pack that requires
 full transcripts will be blocked by privacy, legal, and customer-data
 review. A pack built on hashes, decisions, receipts, and trace links can
 ship into production sooner.

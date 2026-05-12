@@ -39,9 +39,9 @@ OpenAI's documented Codex CLI flow.
 
 1. **Get an OpenAI account.** Sign up at
    [platform.openai.com](https://platform.openai.com/) or
-   sign in with ChatGPT. An active paid plan (or API credit) is
+   sign in with ChatGPT. An active eligible plan (or API credit) is
    required. See
-   [OpenAI API pricing](https://openai.com/api/pricing).
+   [OpenAI API documentation](https://openai.com/api/plan documentation).
 2. **Install the Codex CLI.** See the section below, or
    Anthropic's — sorry, OpenAI's —
    [quickstart](https://developers.openai.com/codex/quickstart).
@@ -73,7 +73,7 @@ OpenAI's documented Codex CLI flow.
 - [Models](https://developers.openai.com/codex/models)
 - [Config reference](https://developers.openai.com/codex/config-basic)
 - [OpenAI enterprise privacy](https://openai.com/enterprise-privacy)
-- [API pricing](https://openai.com/api/pricing)
+- [API documentation](https://openai.com/api/plan documentation)
 - [OpenAI trust & compliance](https://trust.openai.com)
 
 ## Enterprise onboarding

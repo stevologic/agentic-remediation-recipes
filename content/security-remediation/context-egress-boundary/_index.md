@@ -12,7 +12,7 @@ description: >
 
 {{< callout type="info" >}}
 **Why this page exists.** A secure context layer is incomplete if it
-only controls retrieval. Enterprise buyers also need to know where
+only controls retrieval. Enterprise reviewers also need to know where
 context is allowed to go after retrieval.
 {{< /callout >}}
 
@@ -183,7 +183,7 @@ recipes_evaluate_context_egress_decision(
 ## Why this is enterprise-grade
 
 This moves SecurityRecipes closer to a product an AI platform team can
-approve and a buyer can diligence:
+approve and a reviewer can diligence:
 
 - It separates public context from tenant runtime context.
 - It makes model providers and remote MCP servers explicit external
@@ -192,7 +192,7 @@ approve and a buyer can diligence:
   and trust-tier requirements as policy inputs.
 - It gives privacy, security, and platform teams a shared vocabulary for
   data movement.
-- It creates a paid-product path for tenant-side egress enforcement,
+- It creates a hosted-ready path for tenant-side egress enforcement,
   DLP integrations, provider adapters, residency alerts, and customer
   trust-center exports.
 

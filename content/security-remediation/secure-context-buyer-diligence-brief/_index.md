@@ -1,11 +1,11 @@
 ---
-title: Secure Context Buyer Diligence Brief
-linkTitle: Buyer Diligence Brief
+title: Secure Context Reviewer Brief
+linkTitle: Reviewer Brief
 weight: 14
 sidebar:
   open: true
 description: >
-  A generated buyer and acquirer diligence brief that compresses the
+  A generated security reviewer brief that compresses the
   SecurityRecipes secure-context, MCP, telemetry, pilot, source-freshness,
   and value evidence into review-ready answers.
 ---
@@ -13,22 +13,22 @@ description: >
 {{< callout type="info" >}}
 **Why this page exists.** SecurityRecipes has enough evidence that the
 next problem is not adding more claims. The next problem is making the
-first buyer review easy: one brief, exact evidence paths, clear
+first reviewer review easy: one brief, exact evidence paths, clear
 objection handling, and no overclaiming before customer runtime proof.
 {{< /callout >}}
 
 SecurityRecipes is positioned as **The Secure Context Layer for Agentic
-AI**. That is a strong category claim, but a serious enterprise buyer,
-frontier lab, or acquirer will not start by reading every artifact. They
+AI**. That is a strong category claim, but a serious enterprise reviewer,
+frontier lab, or reviewer will not start by reading every artifact. They
 will ask:
 
 - What is the product in one sentence?
 - Why is this timely now?
 - Why is it more than docs?
 - Which MCP, A2A, telemetry, identity, and context risks are covered?
-- What is open, what is paid, and what proof is still missing?
+- What is open, what is hosted-ready, and what proof is still missing?
 
-The **Secure Context Buyer Diligence Brief** turns those questions into
+The **Secure Context Reviewer Brief** turns those questions into
 a generated MCP-readable packet. It pulls from the trust-center export,
 value model, pilot pack, source freshness watch, control-plane
 blueprint, standards crosswalk, protocol conformance, MCP authorization,
@@ -37,16 +37,16 @@ telemetry contract, run receipts, app intake, and posture snapshot.
 ## What was added
 
 - `data/assurance/secure-context-buyer-diligence-profile.json` - source
-  profile for buyer briefs, enterprise questions, objection handlers,
-  industry bets, and deal-room next steps.
+  profile for reviewer briefs, enterprise questions, objection handlers,
+  industry bets, and evidence-room next steps.
 - `scripts/generate_secure_context_buyer_diligence_brief.py` -
   deterministic generator and `--check` validator.
 - `data/evidence/secure-context-buyer-diligence-brief.json` - generated
-  brief with source-pack hashes, 5 buyer briefs, 12 enterprise
+  brief with source-pack hashes, 5 reviewer briefs, 12 enterprise
   questions, 8 objection handlers, 4 industry bets, and 4 next proof
   steps.
 - `recipes_secure_context_buyer_diligence_brief` - MCP tool for the full
-  brief, a buyer persona, enterprise question, objection, industry bet,
+  brief, a reviewer persona, enterprise question, objection, industry bet,
   source reference, or status-filtered view.
 
 Run it from the repo root:
@@ -60,35 +60,35 @@ python3 scripts/generate_secure_context_buyer_diligence_brief.py --check
 
 | Section | Purpose |
 | --- | --- |
-| `features_assessed` | Records the high-value feature options considered and why this buyer brief was selected for this run. |
-| `buyer_briefs` | Frontier lab, AI platform, security platform, regulated enterprise, and VC/acquirer review angles. |
+| `features_assessed` | Records the high-value feature options considered and why this reviewer brief was selected for this run. |
+| `buyer_briefs` | Frontier lab, AI platform, security platform, regulated enterprise, and security-reviewer review angles. |
 | `enterprise_questions` | RFP-style answers for product shape, urgency, MCP safety, A2A handoffs, telemetry, ROI, secure-by-design, and exit readiness. |
-| `objection_handlers` | Crisp answers to docs-only, no-revenue, MCP-risk, prompt-injection, incumbent, private-data, and artifact-sprawl objections. |
-| `industry_bets` | Current bets around MCP, A2A, OpenTelemetry, and agentic control planes with monetizable surfaces. |
+| `objection_handlers` | Crisp answers to docs-only, no-adoption proof, MCP-risk, prompt-injection, incumbent, private-data, and artifact-sprawl objections. |
+| `industry_bets` | Current bets around MCP, A2A, OpenTelemetry, and agentic control planes with operational surfaces. |
 | `deal_room_next_steps` | The proof points needed next: design partners, hosted MCP auth, private context registry, and trust-center API. |
 
 The generated artifact currently reports `buyer_diligence_brief_ready`
 with 12/12 source packs ready, 12/12 enterprise questions backed by
 reference evidence, and 8/8 objections tied to generated evidence.
 
-## Why it is acquisition-grade
+## Why it is review-ready
 
-This is the packet a buyer should see before a broad demo. It makes the
+This is the packet a reviewer should see before a broad demo. It makes the
 site feel like a company foundation instead of a collection of pages:
 
-- It names the buyer and acquirer personas explicitly.
+- It names the security reviewer personas explicitly.
 - It turns the open corpus into a review workflow.
 - It separates reference evidence from customer runtime proof.
 - It points each claim to generated JSON and MCP tools.
-- It keeps the next valuation proof concrete: design partners, hosted
+- It keeps the next trust assessment proof concrete: design partners, hosted
   auth, tenant isolation, private context ingestion, signed receipts,
   metering, and renewal signal.
 
-That is the right posture for a credible $10-20M path. The project does
-not need to pretend revenue exists today. It needs to prove that the
+That is the right posture for a credible trusted-source path. The project does
+not need to pretend adoption proof exists today. It needs to prove that the
 open secure-context layer can become a hosted MCP control plane that a
-frontier lab, AI platform, or security vendor would rather buy than
-rebuild.
+frontier lab, AI platform, or security team can trust before they
+rebuild similar controls themselves.
 
 ## MCP examples
 
@@ -98,13 +98,13 @@ Inspect the full brief:
 recipes_secure_context_buyer_diligence_brief()
 ```
 
-Inspect the acquirer view:
+Inspect the reviewer view:
 
 ```text
-recipes_secure_context_buyer_diligence_brief(buyer_id="vc-or-acquirer")
+recipes_secure_context_buyer_diligence_brief(buyer_id="security-platform")
 ```
 
-Answer a buyer question:
+Answer a reviewer question:
 
 ```text
 recipes_secure_context_buyer_diligence_brief(question_id="mcp-authorization")

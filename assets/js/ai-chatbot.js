@@ -1,7 +1,7 @@
 /*
  * SecurityRecipes AI chatbot.
- * Runs in the browser: provider credentials are stored client-side and
- * requests use the same-origin provider relay when the site runtime exposes it.
+ * Supports a server-side same-origin chat API for production hosting, while
+ * keeping browser-held provider credentials available for static deployments.
  */
 (function () {
   'use strict';
@@ -43,6 +43,7 @@
     agentActions: 'securityRecipes.ai.agent.actions',
     agentInputChannels: 'securityRecipes.ai.agent.inputChannels',
     marketplaceContextSources: 'securityRecipes.ai.marketplace.contextSources',
+    marketplaceOutputRoutes: 'securityRecipes.ai.marketplace.outputRoutes',
     agentWorkflowTemplate: 'securityRecipes.ai.agent.workflowTemplate',
     caseFiles: 'securityRecipes.ai.caseFiles',
     caseboardSelected: 'securityRecipes.ai.caseboard.selected',
@@ -953,8 +954,138 @@
   function installMarketplaceContextSource(channelId) {
     if (!optionalContextSourceConfigByChannel(channelId)) return;
     saveStoredJson(STORE.marketplaceContextSources, uniqueStrings(installedMarketplaceContextSourceIds().concat([channelId]), 32));
+    renderImportedContextSettings();
     renderInstalledMarketplaceSettings();
-    if (els.marketplaceSettingsDetails) els.marketplaceSettingsDetails.open = true;
+    if (isImportedContextChannelId(channelId)) {
+      if (els.importedContextDetails) els.importedContextDetails.open = true;
+    } else if (els.marketplaceSettingsDetails) {
+      els.marketplaceSettingsDetails.open = true;
+    }
+  }
+
+  function installedMarketplaceOutputRouteIds() {
+    var ids = loadStoredJson(STORE.marketplaceOutputRoutes, []);
+    return Array.isArray(ids) ? uniqueStrings(ids.filter(Boolean), 48) : [];
+  }
+
+  function outputRouteTokenList(routeOrId) {
+    var route = routeOrId && typeof routeOrId === 'object'
+      ? routeOrId
+      : outputChannels().find(function (channel) {
+          return channel.id === routeOrId || channel.value === routeOrId;
+        });
+    var tokens = [];
+    if (route) {
+      tokens.push(route.id, route.value, outputChannelPublicId(route));
+      if (route.driver) tokens.push(route.driver);
+    } else if (routeOrId) {
+      tokens.push(String(routeOrId));
+    }
+    return uniqueStrings(tokens.filter(Boolean), 8);
+  }
+
+  function outputRouteMatchesToken(route, token) {
+    return outputRouteTokenList(route).indexOf(token) !== -1;
+  }
+
+  function defaultOutputRouteIds() {
+    return ['draft-pr-packet', 'draft-pr', 'github-issue', 'runbook-receipt', 'runbook', 'server-runbook'];
+  }
+
+  function outputRouteIsDefault(routeOrId) {
+    var defaults = defaultOutputRouteIds();
+    return outputRouteTokenList(routeOrId).some(function (token) {
+      return defaults.indexOf(token) !== -1;
+    });
+  }
+
+  function outputRouteIsInstalled(routeOrId) {
+    var installed = installedMarketplaceOutputRouteIds();
+    var route = routeOrId && typeof routeOrId === 'object' ? routeOrId : null;
+    if (route && route.source === 'local') return true;
+    return outputRouteTokenList(routeOrId).some(function (token) {
+      return installed.indexOf(token) !== -1;
+    });
+  }
+
+  function installMarketplaceOutputRoute(routeId) {
+    var route = outputChannels().find(function (channel) {
+      return channel.id === routeId || channel.value === routeId;
+    });
+    if (!route) return;
+    saveStoredJson(STORE.marketplaceOutputRoutes, uniqueStrings(installedMarketplaceOutputRouteIds().concat([route.id]), 48));
+    renderDeliverySettings();
+  }
+
+  function isImportedContextChannelId(channelId) {
+    return channelId === importedContextChannelId('sarif') ||
+      channelId === importedContextChannelId('scanner') ||
+      channelId === importedContextChannelId('sbom');
+  }
+
+  function importedContextSettingsCardIsVisible(channelId) {
+    var config = optionalContextSourceConfigByChannel(channelId);
+    return !!config && (
+      marketplaceContextSourceIsVisible(config) ||
+      sourceHasSetupValue(channelId)
+    );
+  }
+
+  function renderImportedContextSettings() {
+    if (!els.importedContextDetails || !els.importedSettingsCards) return;
+    var visibleCount = 0;
+    Array.prototype.forEach.call(els.importedSettingsCards, function (card) {
+      var channelId = card.getAttribute('data-imported-settings-card');
+      var visible = importedContextSettingsCardIsVisible(channelId);
+      card.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+    els.importedContextDetails.hidden = visibleCount === 0;
+  }
+
+  function outputRouteHasSetupValue(routeOrId) {
+    var tokens = outputRouteTokenList(routeOrId);
+    var value = tokens[0] || '';
+    var route = outputChannels().find(function (channel) {
+      return tokens.some(function (token) { return outputRouteMatchesToken(channel, token); });
+    });
+    if (route) value = route.value;
+    if (tokens.some(function (token) { return sourceHasSetupValue(token); })) return true;
+    if (value === 'slack') return !!collapseText(getIntegrationField('slackWebhook'));
+    if (value === 'pagerduty') return !!trimText(getIntegrationField('pagerDutyRoutingKey'));
+    if (value === 'google-chat') return !!collapseText(getIntegrationField('googleChatWebhook'));
+    if (value === 'teams') return !!collapseText(getIntegrationField('teamsWebhook'));
+    if (value === 'email') return !!(collapseText(getIntegrationField('emailRecipient')) || collapseText(getIntegrationField('smtpRelayUrl')));
+    if (value === 'tines') return !!(collapseText(getIntegrationField('tinesWebhook')) || collapseText(getIntegrationField('tinesWebhookAuthHeader')) || collapseText(getIntegrationField('tinesWebhookHeaders')));
+    if (value === 'torq') return !!(collapseText(getIntegrationField('torqWebhook')) || collapseText(getIntegrationField('torqWebhookAuthHeader')) || collapseText(getIntegrationField('torqWebhookHeaders')));
+    if (value === 'xsoar') return !!(collapseText(getIntegrationField('xsoarBaseUrl')) || collapseText(getIntegrationField('xsoarApiKeyId')) || trimText(getIntegrationField('xsoarApiKey')) || collapseText(getIntegrationField('xsoarIncidentType')));
+    if (value === 'splunk-soar') return !!(collapseText(getIntegrationField('splunkSoarBaseUrl')) || trimText(getIntegrationField('splunkSoarToken')) || collapseText(getIntegrationField('splunkSoarLabel')));
+    if (value === 'jira') return !!(collapseText(getIntegrationField('jiraBaseUrl')) || collapseText(getIntegrationField('jiraProject')) || collapseText(getIntegrationField('jiraEmail')) || trimText(getIntegrationField('jiraToken')));
+    if (value === 'servicenow') return !!(collapseText(getIntegrationField('serviceNowBaseUrl')) || collapseText(getIntegrationField('serviceNowTable')) || trimText(getIntegrationField('serviceNowToken')));
+    if (value === 'linear') return !!(trimText(getIntegrationField('linearApiKey')) || collapseText(getIntegrationField('linearTeamId')));
+    if (value === 'gitlab-issue') return !!(collapseText(getIntegrationField('gitLabBaseUrl')) || collapseText(getIntegrationField('gitLabProject')) || trimText(getIntegrationField('gitLabToken')) || collapseText(getIntegrationField('gitLabLabels')) || collapseText(getIntegrationField('gitLabIssueType')));
+    if (value === 'azure-devops') return !!(collapseText(getIntegrationField('azureDevOpsBaseUrl')) || collapseText(getIntegrationField('azureDevOpsOrganization')) || collapseText(getIntegrationField('azureDevOpsProject')) || collapseText(getIntegrationField('azureDevOpsRepository')) || trimText(getIntegrationField('azureDevOpsToken')));
+    if (value === 'splunk-hec') return !!(collapseText(getIntegrationField('splunkHecUrl')) || trimText(getIntegrationField('splunkHecToken')) || collapseText(getIntegrationField('splunkIndex')) || collapseText(getIntegrationField('splunkSourceType')));
+    if (value === 'elastic-case') return !!(collapseText(getIntegrationField('elasticBaseUrl')) || trimText(getIntegrationField('elasticApiKey')) || collapseText(getIntegrationField('elasticSpaceId')) || collapseText(getIntegrationField('elasticOwner')));
+    if (value === 'generic-webhook') return !!(collapseText(getIntegrationField('genericWebhookUrl')) || collapseText(getIntegrationField('genericWebhookMethod')) || collapseText(getIntegrationField('genericWebhookAuthHeader')) || collapseText(getIntegrationField('genericWebhookHeaders')));
+    return false;
+  }
+
+  function deliverySettingsTokenIsVisible(token) {
+    if (outputRouteIsDefault(token) || outputRouteIsInstalled(token) || outputRouteHasSetupValue(token)) return true;
+    return marketplaceSettingsChannelIsVisible(token);
+  }
+
+  function renderDeliverySettings() {
+    if (!els.deliverySettingsCards) return;
+    var visibleCount = 0;
+    Array.prototype.forEach.call(els.deliverySettingsCards, function (card) {
+      var tokens = String(card.getAttribute('data-delivery-settings-card') || '').split(/\s+/).filter(Boolean);
+      var visible = tokens.some(deliverySettingsTokenIsVisible);
+      card.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+    if (els.deliverySettingsSave) els.deliverySettingsSave.hidden = visibleCount === 0;
   }
 
   function marketplaceContextSourceIsVisible(config) {
@@ -991,6 +1122,7 @@
     visible.forEach(function (config) {
       if (els[config.elementKey]) els[config.elementKey].checked = !!state[config.stateKey];
     });
+    renderImportedContextSettings();
     renderInstalledMarketplaceSettings();
   }
 
@@ -1103,6 +1235,15 @@
       .map(function (channel) { return normalizeOutputChannel(channel, { source: 'catalog' }); })
       .concat(local.map(function (channel) { return normalizeOutputChannel(channel, { source: 'local' }); }));
     return marketplaceCache.outputChannels;
+  }
+
+  function agentOutputChannels() {
+    var channels = outputChannels().filter(function (route) {
+      return outputRouteIsDefault(route) ||
+        outputRouteIsInstalled(route) ||
+        outputRouteHasSetupValue(route);
+    });
+    return channels.length ? channels : outputChannels().slice(0, 1);
   }
 
   function reportProfilePublicId(profile) {
@@ -7056,10 +7197,71 @@
     return PROVIDERS[provider || state.provider] || PROVIDERS.openai;
   }
 
-  function providerEndpoint(provider) {
+  function directProviderEndpoint(provider) {
+    return providerFor(provider).endpoint;
+  }
+
+  function sameOriginProviderRelayEndpoint(provider) {
     var cfg = providerFor(provider);
-    if (cfg.proxyPath) return new URL(cfg.proxyPath, window.location.origin).toString();
-    return cfg.endpoint;
+    if (!cfg.proxyPath) return '';
+    return new URL(cfg.proxyPath, window.location.origin).toString();
+  }
+
+  function serverChatEndpoint() {
+    var raw = window.__SECURITY_RECIPES_CHAT_API__;
+    if (typeof raw !== 'string') return '';
+    raw = raw.trim();
+    if (!raw) return '';
+    return new URL(raw, window.location.origin).toString();
+  }
+
+  function providerRelayConfigured() {
+    var raw = window.__SECURITY_RECIPES_AI_PROVIDER_RELAY__;
+    if (typeof raw === 'boolean') return raw;
+    if (typeof raw === 'number') return raw > 0;
+    if (typeof raw === 'string') {
+      var normalized = raw.trim().toLowerCase();
+      if (!normalized) return false;
+      if (['1', 'true', 'yes', 'on', 'proxy', 'same-origin', 'same_origin'].indexOf(normalized) !== -1) return true;
+      if (['0', 'false', 'no', 'off', 'direct', 'none'].indexOf(normalized) !== -1) return false;
+    }
+    return false;
+  }
+
+  function providerRelayLikelyAvailable() {
+    return providerRelayConfigured();
+  }
+
+  function providerEndpoint(provider) {
+    var relayEndpoint = sameOriginProviderRelayEndpoint(provider);
+    if (relayEndpoint && providerRelayLikelyAvailable()) return relayEndpoint;
+    return directProviderEndpoint(provider);
+  }
+
+  function providerTransportNote(provider) {
+    var cfg = providerFor(provider || state.provider);
+    if (providerRelayLikelyAvailable()) {
+      return 'Requests send it from this browser to the selected provider through the same-origin relay.';
+    }
+    return 'Requests send it directly from this browser to ' + cfg.label + '. Static hosts such as GitHub Pages cannot serve the Docker/nginx /ai-provider-proxy relay path.';
+  }
+
+  function serverChatHealthEndpoint(provider) {
+    var endpoint = serverChatEndpoint();
+    if (!endpoint) return '';
+    return endpoint.replace(/\/+$/, '') + '/health?provider=' + encodeURIComponent(provider || state.provider);
+  }
+
+  function hasProviderRuntime(provider) {
+    return !!(getToken(provider || state.provider) || serverChatEndpoint());
+  }
+
+  function providerRuntimeStatusText(provider) {
+    var resolvedProvider = provider || state.provider;
+    var token = getToken(resolvedProvider);
+    if (token) return maskToken(token);
+    if (serverChatEndpoint()) return providerFor(resolvedProvider).label + ' server-side chat API configured';
+    return 'No provider credential configured';
   }
 
   function credentialModeKey(provider) {
@@ -7911,10 +8113,11 @@
   function providerTooltip(provider) {
     var cfg = providerFor(provider);
     var token = getToken(provider);
+    var serverEndpoint = serverChatEndpoint();
     var last = state.connectivity[provider];
     if (!last) {
-      return cfg.label + ' connectivity: not checked yet. API key validation: ' +
-        (token ? 'send a message to validate the saved token.' : 'no token saved.') +
+      return cfg.label + ' connectivity: not checked yet. Credential source: ' +
+        (token ? 'browser-held ' + credentialModeLabel(provider).toLowerCase() : (serverEndpoint ? 'server-side chat API' : 'none')) +
         ' Status code: n/a.';
     }
     if (last.checking) {
@@ -7922,7 +8125,7 @@
     }
 
     return cfg.label + ' connectivity: ' + (last.connected ? 'HTTP response received' : 'failed before HTTP response') + '. ' +
-      'API key validation: ' + last.apiKeyStatus + '. ' +
+      'Credential validation: ' + last.apiKeyStatus + '. ' +
       'Status code: ' + statusLine(last.statusCode, last.statusText) + '. ' +
       'Checked: ' + formatTimestamp(last.checkedAt) + '. ' +
       'Endpoint: ' + last.endpoint + (last.detail ? '. Detail: ' + last.detail : '');
@@ -10807,6 +11010,7 @@
     if (kind === 'scanner' && els.includeScannerExport) els.includeScannerExport.checked = bundle.enabled;
     if (kind === 'sbom' && els.includeSbom) els.includeSbom.checked = bundle.enabled;
     if (kind === 'scanner') renderScannerExportList(bundle);
+    renderImportedContextSettings();
     updateSettingsSummary();
 
     if (bundle.meta && bundle.loadedAt) {
@@ -12506,7 +12710,7 @@
       parts.push('Recent browser-local workbench activity log. Use it as operator history for source sync, agent runs, case actions, and exports:');
       parts.push(activityContext);
     }
-    parts.push('The browser terminal supports safe commands such as whoami, pwd, ls, cd, cat, echo, date, uname, env, history, status, context, ops, tools, recipes <query>, recipe <query>, run <query>, agent queue, agent preview, sources refresh, settings, and search <query>. Do not claim a real operating-system command ran unless the terminal transcript or user says it did.');
+      parts.push('The browser terminal supports safe commands such as whoami, pwd, ls, cd, cat, tail, diff, echo, date, uname, env, history, ping, nc, wget, git status, status, context, ops, tools, recipes <query>, recipe <query>, run <query>, agent queue, agent preview, sources refresh, settings, and search <query>. Network and git commands are browser-local probes/summaries, not operating-system shell execution.');
 
     if (state.includeContext) {
       parts.push('Current page title: ' + page.title);
@@ -12642,7 +12846,9 @@
     try {
       var text = await response.text();
       var data = JSON.parse(text);
-      detail = data.error && (data.error.message || data.error.type) ? (data.error.message || data.error.type) : text;
+      detail = data.error && (data.error.message || data.error.type)
+        ? (data.error.message || data.error.type)
+        : (typeof data.error === 'string' ? data.error : text);
     } catch (e) {
       detail = response.statusText || 'Request failed';
     }
@@ -12655,7 +12861,7 @@
       detail: detail
     });
     if ((response.status === 404 || response.status === 405) && endpoint && endpoint.indexOf('/ai-provider-proxy/') !== -1) {
-      return new Error(PROVIDERS[provider].label + ' relay is not available at ' + endpoint + '. Status code: ' + statusLine(response.status, response.statusText) + '. The Docker/nginx runtime must expose the same-origin AI provider relay.');
+      return new Error(PROVIDERS[provider].label + ' relay is not available at ' + endpoint + '. Status code: ' + statusLine(response.status, response.statusText) + '. The /ai-provider-proxy routes are only available when the Docker/nginx runtime is deployed. Static hosts such as GitHub Pages should use direct browser provider calls or a configured server-side chat API.');
     }
     return new Error(PROVIDERS[provider].label + ' API returned status ' + statusLine(response.status, response.statusText) + ': ' + detail);
   }
@@ -12892,14 +13098,40 @@
     return options.onDelta ? emitFallbackDelta(claudeText, options.onDelta) : claudeText;
   }
 
+  async function callServerChat(provider, model, system, history, options) {
+    options = options || {};
+    var endpoint = serverChatEndpoint();
+    if (!endpoint) throw new Error('Server-side chat API is not configured for this site build.');
+    var response = await providerFetch(provider, endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        provider: provider,
+        model: model,
+        system: system,
+        history: history
+      })
+    });
+    if (!response.ok) throw await responseError(response, provider, endpoint);
+    var data = await response.json();
+    var text = data && typeof data.text === 'string' ? data.text.trim() : '';
+    if (!text) text = 'The server-side chat API did not include text output.';
+    return options.onDelta ? emitFallbackDelta(text, options.onDelta) : text;
+  }
+
   async function sendToProvider(userText, options) {
     options = options || {};
     var provider = options.provider || state.provider;
     var token = getToken(provider);
-    if (!token) throw new Error('Save a ' + tokenLabel(provider) + ' in Settings before sending.');
     var model = options.model || getModel(provider);
     var history = options.history || apiHistory();
+    if (!history.length && userText) history = [{ role: 'user', content: userText }];
     var system = options.system || buildSystemPrompt(userText);
+
+    if (!token && serverChatEndpoint()) return callServerChat(provider, model, system, history, options);
+    if (!token) throw new Error('Save a ' + tokenLabel(provider) + ' in Settings before sending, or deploy the site with SECURITY_RECIPES_CHAT_API_PATH=/api/chat and a server-side provider key.');
 
     if (provider === 'openai') return callOpenAI(token, model, system, history, options);
     if (provider === 'grok') return callGrok(token, model, system, history, options);
@@ -12973,7 +13205,7 @@
       window.clearInterval(state.connectivityTimer);
       state.connectivityTimer = null;
     }
-    if (!getToken(state.provider)) return;
+    if (!hasProviderRuntime(state.provider)) return;
     state.connectivityTimer = window.setInterval(function () {
       if (document.visibilityState === 'hidden') return;
       refreshProviderConnectivity({ silent: true }).catch(function () {
@@ -12982,7 +13214,7 @@
     }, CONNECTIVITY_CHECK_INTERVAL_MS);
     if (!state.connectivity[state.provider]) {
       window.setTimeout(function () {
-        if (document.visibilityState === 'hidden' || !getToken(state.provider)) return;
+        if (document.visibilityState === 'hidden' || !hasProviderRuntime(state.provider)) return;
         refreshProviderConnectivity({ silent: true }).catch(function () {
           // Initial automatic refresh is best-effort.
         });
@@ -12994,7 +13226,8 @@
     options = options || {};
     var provider = state.provider;
     var token = getToken(provider);
-    if (!token) {
+    var serverHealth = serverChatHealthEndpoint(provider);
+    if (!token && !serverHealth) {
       recordConnectivity(provider, {
         endpoint: providerEndpoint(provider),
         connected: false,
@@ -13010,13 +13243,35 @@
     state.connectivity[provider] = {
       provider: provider,
       checkedAt: nowIso(),
-      endpoint: providerEndpoint(provider),
+      endpoint: token ? providerEndpoint(provider) : serverHealth,
       checking: true
     };
     updateProviderBadge();
     if (!options.silent) setStatus('Checking ' + providerFor(provider).label + ' connectivity...', '');
 
     try {
+      if (!token && serverHealth) {
+        var healthResponse = await providerFetch(provider, serverHealth, { method: 'GET' });
+        if (!healthResponse.ok) throw await responseError(healthResponse, provider, serverHealth);
+        var health = await healthResponse.json();
+        recordConnectivity(provider, {
+          endpoint: serverHealth,
+          connected: true,
+          apiKeyStatus: health && health.configured ? 'server-side key configured' : 'server-side key missing',
+          statusCode: healthResponse.status,
+          statusText: healthResponse.statusText,
+          detail: health && health.configured ? '' : 'Set the matching provider API key in the chatbot-api service environment.'
+        });
+        if (!options.silent) {
+          setStatus(
+            health && health.configured
+              ? 'Server-side chat API is configured for ' + providerFor(provider).label + '.'
+              : 'Server-side chat API is reachable, but no ' + providerFor(provider).label + ' key is configured.',
+            health && health.configured ? 'ok' : 'error'
+          );
+        }
+        return;
+      }
       var request = healthCheckRequest(provider, token, getModel(provider));
       var response = await providerFetch(provider, request.endpoint, request.options);
       if (!response.ok) throw await responseError(response, provider, request.endpoint);
@@ -13040,6 +13295,7 @@
     if (!els.messages) return;
     if (!state.messages.length) {
       els.messages.innerHTML = '<div class="ai-chatbot-empty">Ask for a fix plan, run a recipe, or issue a browser terminal command.</div>';
+      updateChatQuickActions();
       return;
     }
     els.messages.innerHTML = state.messages.map(function (m) {
@@ -13057,6 +13313,7 @@
     }).join('');
     els.messages.scrollTop = els.messages.scrollHeight;
     if (!state.messages.some(function (m) { return m.streaming; })) queueMermaidRender();
+    updateChatQuickActions();
   }
 
   function normalizeActivityCategory(value) {
@@ -13293,7 +13550,7 @@
     if (!state.terminalRecords.length) {
       text = [
         'SecurityRecipes MiniBox (browser-local)',
-        'Try: status, context, evidence, routes, schedule, run log4j, agent validate'
+        'Try: status, context, evidence, routes, schedule, ping localhost, wget /recipes-index.json, git status'
       ].join('\n');
     } else {
       text = state.terminalRecords.map(function (record) {
@@ -13359,7 +13616,7 @@
       return channel ? channel.label : id;
     });
     return [
-      'Provider: ' + providerConfig(provider).label + ' / ' + getModel(provider) + (getToken(provider) ? ' (credential saved)' : ' (credential missing)'),
+      'Provider: ' + providerConfig(provider).label + ' / ' + getModel(provider) + (hasProviderRuntime(provider) ? ' (' + providerRuntimeStatusText(provider) + ')' : ' (credential missing)'),
       'Recipe: ' + (collapseText(els.agentRecipeInput && els.agentRecipeInput.value) || 'none selected'),
       'Target: ' + (collapseText(els.agentScope && els.agentScope.value) || 'not set'),
       'Workflow: ' + currentAgentWorkflow().label,
@@ -13401,7 +13658,7 @@
     var route = currentAgentOutputRoute();
     var recipe = selectedRecipe();
     return {
-      provider: providerConfig(getAgentProvider()).label + ' / ' + getModel(getAgentProvider()) + (getToken(getAgentProvider()) ? ' with saved credential' : ' without saved credential'),
+      provider: providerConfig(getAgentProvider()).label + ' / ' + getModel(getAgentProvider()) + (hasProviderRuntime(getAgentProvider()) ? ' with ' + providerRuntimeStatusText(getAgentProvider()) : ' without configured provider runtime'),
       recipe: recipe ? recipeLabel(recipe) : (collapseText(els.agentRecipeInput && els.agentRecipeInput.value) || 'No recipe selected'),
       target: collapseText(els.agentScope && els.agentScope.value) || 'No target selected',
       sourceRows: evidenceRows,
@@ -13415,7 +13672,7 @@
 
   function contextAuditGaps(selectedInputs, evidenceRows) {
     var gaps = [];
-    if (!getToken(getAgentProvider())) gaps.push('Provider credential is missing, so LLM-backed chat and agent runs cannot call the selected model yet.');
+    if (!hasProviderRuntime(getAgentProvider())) gaps.push('Provider credential is missing, so LLM-backed chat and agent runs cannot call the selected model yet.');
     if (!collapseText(els.agentScope && els.agentScope.value)) gaps.push('Target scope is empty. Add a repo, package, CVE, service, file path, or case before running remediation.');
     if (!selectedRecipe() && !collapseText(els.agentRecipeInput && els.agentRecipeInput.value)) gaps.push('No recipe or finding is selected yet.');
     if (!selectedInputs.length) gaps.push('No marketplace input/tool is selected for the agent planner.');
@@ -13457,7 +13714,7 @@
 
   function terminalRoutesText() {
     var current = currentAgentOutputRoute();
-    var rows = outputChannels().slice(0, 14).map(function (route) {
+    var rows = agentOutputChannels().slice(0, 14).map(function (route) {
       return '- ' + route.label + ' [' + route.runtime_support + ']' + (current && current.id === route.id ? ' (selected)' : '');
     });
     return [
@@ -13685,6 +13942,280 @@
     }).join('\n');
   }
 
+  function terminalTokenize(value) {
+    var tokens = String(value || '').match(/"[^"]*"|'[^']*'|\S+/g) || [];
+    return tokens.map(function (token) {
+      if ((token.charAt(0) === '"' && token.charAt(token.length - 1) === '"') ||
+          (token.charAt(0) === "'" && token.charAt(token.length - 1) === "'")) {
+        return token.slice(1, -1);
+      }
+      return token;
+    }).filter(Boolean);
+  }
+
+  function terminalFileRead(token) {
+    var target = terminalResolvePath(token || '.');
+    var files = terminalVirtualFiles();
+    var dirs = terminalVirtualDirs(files);
+    if (dirs[target]) return { ok: false, path: target, error: token + ': Is a directory' };
+    if (!Object.prototype.hasOwnProperty.call(files, target)) return { ok: false, path: target, error: token + ': No such file or directory' };
+    return { ok: true, path: target, label: token || terminalDisplayPath(target), content: String(files[target] || '') };
+  }
+
+  function terminalTailCommand(args) {
+    var tokens = terminalTokenize(args);
+    var lineCount = 10;
+    var paths = [];
+    tokens.forEach(function (token, index) {
+      if (token === '-n' && tokens[index + 1]) {
+        lineCount = Math.max(1, Math.min(200, parseInt(tokens[index + 1], 10) || lineCount));
+        return;
+      }
+      if (/^-n\d+$/.test(token)) {
+        lineCount = Math.max(1, Math.min(200, parseInt(token.slice(2), 10) || lineCount));
+        return;
+      }
+      if (/^--lines=\d+$/.test(token)) {
+        lineCount = Math.max(1, Math.min(200, parseInt(token.split('=')[1], 10) || lineCount));
+        return;
+      }
+      if (token.charAt(0) === '-' || (index > 0 && tokens[index - 1] === '-n')) return;
+      paths.push(token);
+    });
+    if (!paths.length) paths = ['tmp/history.txt'];
+    var blocks = paths.map(function (path) {
+      var file = terminalFileRead(path);
+      if (!file.ok) return 'tail: ' + file.error;
+      var lines = file.content.split(/\r?\n/).slice(-lineCount);
+      return (paths.length > 1 ? '==> ' + path + ' <==\n' : '') + lines.join('\n');
+    });
+    return blocks.join('\n\n');
+  }
+
+  function terminalDiffCommand(args) {
+    var paths = terminalTokenize(args).filter(function (token) {
+      return token.charAt(0) !== '-';
+    });
+    if (paths.length < 2) return 'diff: missing operand after ' + (paths[0] || 'diff') + '\nTry: diff context.json recipe.txt';
+    var left = terminalFileRead(paths[0]);
+    var right = terminalFileRead(paths[1]);
+    if (!left.ok) return 'diff: ' + left.error;
+    if (!right.ok) return 'diff: ' + right.error;
+    if (left.content === right.content) return '';
+    var a = left.content.split(/\r?\n/);
+    var b = right.content.split(/\r?\n/);
+    var max = Math.max(a.length, b.length);
+    var rows = ['--- ' + paths[0], '+++ ' + paths[1], '@@ browser-local virtual files @@'];
+    for (var i = 0; i < max && rows.length < 80; i += 1) {
+      if (a[i] === b[i]) {
+        if (a[i] && rows.length < 14) rows.push(' ' + a[i]);
+        continue;
+      }
+      if (typeof a[i] !== 'undefined') rows.push('-' + a[i]);
+      if (typeof b[i] !== 'undefined') rows.push('+' + b[i]);
+    }
+    if (max > 72) rows.push('... diff truncated');
+    return rows.join('\n');
+  }
+
+  function terminalNormalizeUrl(value, options) {
+    var raw = collapseText(value || '');
+    options = options || {};
+    if (!raw) return null;
+    try {
+      if (/^[a-z][a-z0-9+.-]*:\/\//i.test(raw) || raw.charAt(0) === '/') return new URL(raw, window.location.href);
+      return new URL((options.scheme || 'https') + '://' + raw);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function terminalHostIsLocal(hostname) {
+    var value = String(hostname || '').toLowerCase();
+    return value === 'localhost' || value === '127.0.0.1' || value === '::1' || value === window.location.hostname.toLowerCase();
+  }
+
+  async function terminalFetchProbe(url, options) {
+    var start = performance.now();
+    options = options || {};
+    try {
+      var response = await fetch(url.href, {
+        method: options.method || 'GET',
+        mode: options.mode || 'cors',
+        cache: 'no-store'
+      });
+      return {
+        ok: true,
+        elapsedMs: Math.max(1, Math.round(performance.now() - start)),
+        status: response.status,
+        statusText: response.statusText,
+        type: response.type,
+        contentType: response.headers && response.headers.get ? response.headers.get('content-type') || '' : '',
+        response: response
+      };
+    } catch (firstError) {
+      if (options.noCorsFallback === false) {
+        return { ok: false, elapsedMs: Math.max(1, Math.round(performance.now() - start)), error: firstError && firstError.message ? firstError.message : 'request blocked' };
+      }
+      try {
+        var opaque = await fetch(url.href, { method: 'GET', mode: 'no-cors', cache: 'no-store' });
+        return {
+          ok: true,
+          elapsedMs: Math.max(1, Math.round(performance.now() - start)),
+          status: opaque.status,
+          statusText: opaque.statusText,
+          type: opaque.type,
+          contentType: '',
+          response: opaque,
+          corsLimited: true
+        };
+      } catch (secondError) {
+        return { ok: false, elapsedMs: Math.max(1, Math.round(performance.now() - start)), error: secondError && secondError.message ? secondError.message : 'request failed' };
+      }
+    }
+  }
+
+  async function terminalPingCommand(args) {
+    var tokens = terminalTokenize(args);
+    var count = 4;
+    var host = '';
+    tokens.forEach(function (token, index) {
+      if ((token === '-c' || token === '-n') && tokens[index + 1]) {
+        count = Math.max(1, Math.min(6, parseInt(tokens[index + 1], 10) || count));
+        return;
+      }
+      if (token.charAt(0) !== '-' && !(index > 0 && (tokens[index - 1] === '-c' || tokens[index - 1] === '-n'))) host = token;
+    });
+    if (!host) return 'ping: missing host';
+    var explicitScheme = /^[a-z][a-z0-9+.-]*:\/\//i.test(host);
+    var hostNameOnly = host.replace(/^\[/, '').replace(/\].*$/, '').split(':')[0];
+    var url = !explicitScheme && terminalHostIsLocal(hostNameOnly)
+      ? new URL(window.location.origin)
+      : terminalNormalizeUrl(host, { scheme: 'https' });
+    if (!url) return 'ping: unknown host ' + host;
+    var probe = await terminalFetchProbe(url, { method: 'GET' });
+    var rows = [
+      'PING ' + url.hostname + ' (browser MiniBox probe)',
+      'ICMP is not available from the browser; using an HTTP reachability probe against ' + url.origin + '.'
+    ];
+    if (probe.ok) {
+      for (var i = 0; i < count; i += 1) {
+        rows.push('64 bytes from ' + url.hostname + ': seq=' + String(i) + ' ttl=browser time=' + String(probe.elapsedMs + i) + ' ms');
+      }
+      rows.push('--- ' + url.hostname + ' ping statistics ---');
+      rows.push(String(count) + ' packets transmitted, ' + String(count) + ' received, 0% packet loss');
+      if (probe.corsLimited || probe.type === 'opaque') rows.push('Note: response body is opaque because of browser CORS rules.');
+    } else {
+      rows.push('Request failed: ' + probe.error);
+      rows.push('0 packets received. Try wget ' + url.href + ' or nc -vz ' + url.hostname + ' 443 for more detail.');
+    }
+    return rows.join('\n');
+  }
+
+  async function terminalNcCommand(args) {
+    var tokens = terminalTokenize(args).filter(function (token) {
+      return !/^-/.test(token);
+    });
+    if (tokens.length < 2) return 'nc: usage: nc -vz <host> <port>';
+    var host = tokens[tokens.length - 2];
+    var port = parseInt(tokens[tokens.length - 1], 10);
+    if (!host || !isFinite(port)) return 'nc: usage: nc -vz <host> <port>';
+    var scheme = port === 443 ? 'https' : 'http';
+    var url = terminalNormalizeUrl(host + ':' + String(port), { scheme: scheme });
+    if (!url) return 'nc: bad address ' + host;
+    if ([80, 443, 8080, 3000, 5173].indexOf(port) === -1 && !terminalHostIsLocal(url.hostname)) {
+      return 'nc: raw TCP sockets are unavailable in browser MiniBox.\n' +
+        'Recorded target ' + host + ':' + String(port) + '. Browser probes can check HTTP/TLS ports such as 80, 443, 8080, 3000, or 5173.';
+    }
+    var probe = await terminalFetchProbe(url, { method: 'GET' });
+    if (probe.ok) {
+      return 'Connection to ' + host + ' ' + String(port) + ' port [' + scheme + '] succeeded in ' + String(probe.elapsedMs) + ' ms' +
+        ((probe.corsLimited || probe.type === 'opaque') ? '\nResponse is opaque because of browser CORS rules.' : '');
+    }
+    return 'nc: connect to ' + host + ' port ' + String(port) + ' failed: ' + probe.error;
+  }
+
+  async function terminalWgetCommand(args) {
+    var tokens = terminalTokenize(args);
+    var spider = tokens.indexOf('--spider') !== -1;
+    var outputStdout = tokens.indexOf('-qO-') !== -1 || tokens.indexOf('-O-') !== -1;
+    var urlToken = tokens.find(function (token) {
+      return token.charAt(0) !== '-' && token !== 'O-' && token !== '-';
+    });
+    if (!urlToken) return 'wget: missing URL';
+    var url = terminalNormalizeUrl(urlToken, { scheme: 'https' });
+    if (!url) return 'wget: invalid URL ' + urlToken;
+    var probe = await terminalFetchProbe(url, { method: spider ? 'HEAD' : 'GET' });
+    if (!probe.ok) return 'wget: unable to retrieve ' + url.href + '\n' + probe.error;
+    var rows = [
+      '-- MiniBox wget ' + url.href,
+      'HTTP: ' + (probe.status || (probe.type === 'opaque' ? 'opaque' : 'ok')) + (probe.statusText ? ' ' + probe.statusText : ''),
+      'Type: ' + (probe.contentType || probe.type || 'unknown'),
+      'Time: ' + String(probe.elapsedMs) + ' ms'
+    ];
+    if (spider) {
+      rows.push('Remote file exists' + ((probe.corsLimited || probe.type === 'opaque') ? ' but metadata is opaque due to CORS.' : '.'));
+      return rows.join('\n');
+    }
+    if (probe.corsLimited || probe.type === 'opaque') {
+      rows.push('Downloaded body is not readable because the browser received an opaque cross-origin response.');
+      return rows.join('\n');
+    }
+    var text = '';
+    try {
+      text = await probe.response.text();
+    } catch (error) {
+      rows.push('Body could not be read: ' + (error && error.message ? error.message : 'unknown read error'));
+      return rows.join('\n');
+    }
+    rows.push('Length: ' + String(text.length) + ' bytes');
+    if (outputStdout || /^(text\/|application\/json|application\/xml|application\/javascript)/i.test(probe.contentType || '')) {
+      rows.push('');
+      rows.push(text.slice(0, 1400) + (text.length > 1400 ? '\n... body truncated' : ''));
+    } else {
+      rows.push('Saved nothing. MiniBox does not persist downloads; use wget -qO- <url> for a text preview.');
+    }
+    return rows.join('\n');
+  }
+
+  function terminalGitCommand(args) {
+    var tokens = terminalTokenize(args);
+    var subcommand = (tokens[0] || 'status').toLowerCase();
+    var repo = collapseText(state.githubRepoUrl || getIntegrationField('gitHubProject') || '');
+    var recipe = selectedRecipe();
+    var route = currentAgentOutputRoute();
+    if (subcommand === 'status') {
+      var changed = ['context.json', 'recipe.txt'];
+      if (state.agentActions && state.agentActions.length) changed.push('queue.txt');
+      if (state.caseFiles && state.caseFiles.length) changed.push('cases/index.json');
+      if (state.includeSarif || state.includeScannerExport || state.includeSbom) changed.push('evidence/summary.txt');
+      return [
+        'On branch browser-remediation',
+        repo ? 'Remote: ' + repo : 'Remote: not configured',
+        'MiniBox worktree: browser-local virtual files',
+        '',
+        'Changes in working tree:',
+        changed.map(function (file) { return '  modified: ' + file; }).join('\n'),
+        '',
+        'No operating-system git commands were run.'
+      ].join('\n');
+    }
+    if (subcommand === 'branch') return '* browser-remediation\n  main';
+    if (subcommand === 'remote') return repo ? 'origin\t' + repo + ' (fetch)\norigin\t' + repo + ' (push)' : '';
+    if (subcommand === 'log') return terminalHistoryText();
+    if (subcommand === 'diff') return terminalDiffCommand(tokens.slice(1).join(' ') || 'context.json recipe.txt') || 'No virtual file diff.';
+    if (subcommand === 'show') {
+      return [
+        'commit browser-local-preview',
+        'Author: SecurityRecipes MiniBox <browser@security-recipes.ai>',
+        'Date: ' + new Date().toString(),
+        '',
+        '    ' + (recipe ? recipeLabel(recipe) : currentAgentWorkflow().label) + ' -> ' + (route ? route.label : 'reviewed handoff')
+      ].join('\n');
+    }
+    return 'git: supported MiniBox subcommands: status, branch, remote -v, log, diff, show';
+  }
+
   function terminalEnvText() {
     return [
       'USER=remediator',
@@ -13700,7 +14231,11 @@
   function terminalHelpText() {
     return [
       'MiniBox commands:',
-      'whoami, pwd, ls [-la] [path], cd [path], cat <file>, echo <text>, date, uname [-a], env, history, clear',
+      'whoami, pwd, ls [-la] [path], cd [path], cat <file>, tail [-n N] <file>, diff <file> <file>, echo <text>, date, uname [-a], env, history, clear',
+      'ping <host> - browser HTTP reachability probe; ICMP is unavailable',
+      'nc -vz <host> <port> - browser-safe HTTP/TLS port probe',
+      'wget [--spider|-qO-] <url> - fetch readable same-origin/CORS text, report opaque cross-origin responses',
+      'git status|branch|remote -v|log|diff|show - summarize the browser-local remediation worktree',
       '',
       'Workbench commands:',
       'status - show provider, workflow, inputs, output, queue, and cases',
@@ -13787,6 +14322,10 @@
         output = terminalChangeDirectory(args);
       } else if (/^cat(?:\s+|$)/i.test(raw)) {
         output = terminalCatCommand(args);
+      } else if (/^tail(?:\s+|$)/i.test(raw)) {
+        output = terminalTailCommand(args);
+      } else if (/^diff(?:\s+|$)/i.test(raw)) {
+        output = terminalDiffCommand(args);
       } else if (/^echo(?:\s+|$)/i.test(raw)) {
         output = args;
       } else if (lower === 'date') {
@@ -13813,6 +14352,14 @@
         output = terminalHistoryText();
       } else if (lower === 'tools' || lower === 'marketplace') {
         output = terminalToolsText();
+      } else if (/^ping(?:\s+|$)/i.test(raw)) {
+        output = await terminalPingCommand(args);
+      } else if (/^(nc|netcat)(?:\s+|$)/i.test(raw)) {
+        output = await terminalNcCommand(args);
+      } else if (/^wget(?:\s+|$)/i.test(raw)) {
+        output = await terminalWgetCommand(args);
+      } else if (/^git(?:\s+|$)/i.test(raw)) {
+        output = terminalGitCommand(args);
       } else if (/^recipes(?:\s+|$)/i.test(raw)) {
         await ensureDocsIndex();
         matches = matchAgentRecipes(args || collapseText(els.agentRecipeInput && els.agentRecipeInput.value) || 'remediation');
@@ -13899,7 +14446,7 @@
 
   function settingsSummary() {
     var pieces = [providerConfig().label, getModel()];
-    pieces.push(getToken() ? credentialModeLabel(state.provider) + ' saved' : 'no credential');
+    pieces.push(hasProviderRuntime(state.provider) ? providerRuntimeStatusText(state.provider) : 'no credential');
     if (state.includeGitHub) pieces.push(state.githubRepoUrl ? 'GitHub repo context on' : 'GitHub repo needed');
     if (state.includeGitHubCodeScanning) pieces.push(state.githubRepoUrl && getGitHubToken() ? 'GitHub code scanning on' : 'GitHub code scanning needs repo/token');
     if (state.includeGitLabProject) pieces.push(currentGitLabProjectInput() ? 'GitLab project on' : 'GitLab project needed');
@@ -13918,6 +14465,7 @@
 
   function credentialStorageTooltip() {
     var cfg = providerConfig();
+    var serverEndpoint = serverChatEndpoint();
     var githubToken = getGitHubToken();
     var githubNote = githubToken
       ? ' GitHub ' + githubCredentialLabel(githubAuthMode()).toLowerCase() + ' is also saved in this browser profile and is sent only to GitHub API requests for repository context, code scanning intake, or issue creation.'
@@ -13939,10 +14487,13 @@
       ? ' Local asset and ownership records are also stored in this browser profile until you delete them.'
       : '';
     var importNote = ' Imported SARIF, scanner export, and SBOM summaries, if you load them, are also stored in this browser profile until you clear them.';
-    if (!getToken()) {
-      return 'No ' + cfg.label + ' credential is saved. If you save one, it stays in this browser profile for ' + window.location.origin + ' until you clear it.' + githubNote + externalSourceNote + caseboardNote + assetLibraryNote + importNote;
+    if (serverEndpoint && !getToken()) {
+      return cfg.label + ' requests use the server-side chat API at ' + serverEndpoint + '. Provider keys are expected in the chatbot API service environment, not browser storage. You can still save a browser-local credential to override this for your own session.' + githubNote + externalSourceNote + caseboardNote + assetLibraryNote + importNote;
     }
-    return cfg.label + ' ' + credentialModeLabel(state.provider).toLowerCase() + ' is saved in this browser profile for ' + window.location.origin + ' using localStorage. It is not stored in a site database; requests send it from this browser to the selected provider through the same-origin relay. Clear it here or in browser site data if this is a shared machine.' + githubNote + externalSourceNote + caseboardNote + assetLibraryNote + importNote;
+    if (!getToken()) {
+      return 'No ' + cfg.label + ' credential is saved. If you save one, it stays in this browser profile for ' + window.location.origin + ' until you clear it. Production Docker builds can instead use the server-side chat API.' + githubNote + externalSourceNote + caseboardNote + assetLibraryNote + importNote;
+    }
+    return cfg.label + ' ' + credentialModeLabel(state.provider).toLowerCase() + ' is saved in this browser profile for ' + window.location.origin + ' using localStorage. It is not stored in a site database; ' + providerTransportNote(state.provider) + ' Clear it here or in browser site data if this is a shared machine.' + githubNote + externalSourceNote + caseboardNote + assetLibraryNote + importNote;
   }
 
   function updateSettingsSummary() {
@@ -13993,8 +14544,13 @@
     if (els.agentReportProfile && persistedReportProfile() && reportProfileById(persistedReportProfile())) {
       els.agentReportProfile.value = persistedReportProfile();
     }
-    if (els.agentOutputRoute && persistedAgentOutputChannel() && outputChannelById(persistedAgentOutputChannel())) {
-      els.agentOutputRoute.value = outputChannelById(persistedAgentOutputChannel()).id;
+    if (els.agentOutputRoute && persistedAgentOutputChannel()) {
+      var persistedOutputRoute = outputChannels().find(function (route) {
+        return route.id === persistedAgentOutputChannel() || route.value === persistedAgentOutputChannel();
+      });
+      if (persistedOutputRoute && agentOutputChannels().some(function (route) { return route.id === persistedOutputRoute.id; })) {
+        els.agentOutputRoute.value = persistedOutputRoute.id;
+      }
     }
     if (els.agentInputChannels) setSelectValues(els.agentInputChannels, storedInputChannelIds());
     setAgentWorkflow(els.agentWorkflow && els.agentWorkflow.value ? els.agentWorkflow.value : AGENT_WORKFLOWS[0].value);
@@ -14011,9 +14567,9 @@
     populateRoutingLabOptions();
     renderAgentActions();
     if (els.agentStatus && !state.agentRunning) {
-      els.agentStatus.textContent = getToken(provider)
-        ? 'Beta agents use the saved ' + providerConfig(provider).label + ' credential, selected marketplace inputs, report pack, and optional delivery integrations. Browser schedules run only while this site is open in a tab.'
-        : 'Save a ' + tokenLabel(provider) + ' in Settings before running this agent.';
+      els.agentStatus.textContent = hasProviderRuntime(provider)
+        ? 'Beta agents use ' + providerRuntimeStatusText(provider) + ', selected marketplace inputs, report pack, and optional delivery integrations. Browser schedules run only while this site is open in a tab.'
+        : 'Save a ' + tokenLabel(provider) + ' in Settings or configure the server-side chat API before running this agent.';
       els.agentStatus.removeAttribute('data-kind');
     }
   }
@@ -14059,9 +14615,9 @@
     populateModelSelect(els.model, state.provider);
     if (els.tokenLabel) els.tokenLabel.textContent = tokenLabel(state.provider);
     if (els.tokenInput) els.tokenInput.value = '';
-    if (els.providerCredentialDetails) els.providerCredentialDetails.open = !getToken(state.provider);
+    if (els.providerCredentialDetails) els.providerCredentialDetails.open = !hasProviderRuntime(state.provider);
     updateOAuthUI();
-    setStatus(maskToken(getToken()), getToken() ? 'ok' : '');
+    setStatus(providerRuntimeStatusText(state.provider), hasProviderRuntime(state.provider) ? 'ok' : '');
     setSettingsOpen(state.settingsOpen);
     updateAgentUI();
     scheduleProviderConnectivityChecks();
@@ -15173,14 +15729,36 @@
     var outputs = outputChannels().length;
     var reports = reportProfiles().length;
     var workflows = workflowTemplates().length;
+    var selectedKind = selectedMarketplaceKind();
     els.controlPlaneStats.innerHTML = [
-      { label: 'Inputs', value: inputs },
-      { label: 'Outputs', value: outputs },
-      { label: 'Reports', value: reports },
-      { label: 'Workflow packs', value: workflows }
+      { label: 'Inputs', value: inputs, kind: 'input' },
+      { label: 'Outputs', value: outputs, kind: 'output' },
+      { label: 'Reports', value: reports, kind: 'report' },
+      { label: 'Workflow packs', value: workflows, kind: 'workflow' }
     ].map(function (item) {
-      return '<article><strong>' + html(String(item.value)) + '</strong><span>' + html(item.label) + '</span></article>';
+      var active = selectedKind === item.kind;
+      return '<button class="ai-chatbot-control-plane-stat" type="button" data-control-plane-kind-filter="' + html(item.kind) + '" data-active="' + (active ? 'true' : 'false') + '" aria-pressed="' + (active ? 'true' : 'false') + '" title="Show ' + html(item.label.toLowerCase()) + '">' +
+        '<strong>' + html(String(item.value)) + '</strong>' +
+        '<span>' + html(item.label) + '</span>' +
+      '</button>';
     }).join('');
+  }
+
+  function updateControlPlaneStatSelection() {
+    if (!els.controlPlaneStats) return;
+    var selectedKind = selectedMarketplaceKind();
+    Array.prototype.forEach.call(els.controlPlaneStats.querySelectorAll('[data-control-plane-kind-filter]'), function (button) {
+      var active = selectedKind === button.getAttribute('data-control-plane-kind-filter');
+      button.setAttribute('data-active', active ? 'true' : 'false');
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  function setControlPlaneKindFilter(kind) {
+    var normalized = ['input', 'output', 'report', 'workflow'].indexOf(kind) !== -1 ? kind : 'all';
+    if (els.controlPlaneKind) els.controlPlaneKind.value = normalized;
+    renderControlPlaneResults();
+    updateControlPlaneStatSelection();
   }
 
   function marketplaceGovernanceCoverageSummary() {
@@ -15404,6 +15982,124 @@
     return entry.id || entry.key || '';
   }
 
+  function marketplaceEntryIsInstalled(entry) {
+    var id = entry && (entry.id || (entry.raw && entry.raw.id));
+    var current;
+    if (!entry || !id) return false;
+    if (entry.kind === 'input') {
+      return currentInputChannelIds().indexOf(id) !== -1;
+    }
+    if (entry.kind === 'output') {
+      current = currentAgentOutputRoute();
+      return outputRouteIsDefault(entry.raw) ||
+        outputRouteIsInstalled(entry.raw) ||
+        (current && outputRouteMatchesToken(entry.raw, current.id));
+    }
+    if (entry.kind === 'report') {
+      current = currentReportProfile();
+      return !!(current && current.id === id);
+    }
+    if (entry.kind === 'workflow') {
+      current = currentWorkflowTemplate();
+      return !!(current && current.id === id);
+    }
+    return false;
+  }
+
+  function marketplaceInstalledControlHtml(entry) {
+    return '<label class="ai-chatbot-marketplace-installed" title="' + html(entry.label) + ' is installed in this browser">' +
+      '<input type="checkbox" checked disabled aria-label="' + html(entry.label + ' installed') + '">' +
+      '<span>Installed</span>' +
+    '</label>';
+  }
+
+  var MARKETPLACE_BRAND_LOGOS = [
+    { key: 'github', label: 'GitHub', src: 'images/integrations/github.svg', terms: ['github', 'code scanning', 'draft pr'] },
+    { key: 'gitlab', label: 'GitLab', src: 'images/integrations/gitlab.svg', terms: ['gitlab'] },
+    { key: 'bitbucket', label: 'Bitbucket', src: 'images/integrations/bitbucket.svg', terms: ['bitbucket'] },
+    { key: 'jira', label: 'Jira', src: 'images/integrations/jira.svg', terms: ['jira'] },
+    { key: 'confluence', label: 'Confluence', src: 'images/integrations/confluence.svg', terms: ['confluence'] },
+    { key: 'slack', label: 'Slack', src: 'images/integrations/slack.svg', terms: ['slack'] },
+    { key: 'teams', label: 'Microsoft Teams', src: 'images/integrations/microsoft-teams.svg', terms: ['microsoft teams', 'teams workflow', 'teams webhook'] },
+    { key: 'servicenow', label: 'ServiceNow', src: 'images/integrations/servicenow.svg', terms: ['servicenow', 'service now'] },
+    { key: 'linear', label: 'Linear', src: 'images/integrations/linear.svg', terms: ['linear'] },
+    { key: 'snyk', label: 'Snyk', src: 'images/integrations/snyk.svg', terms: ['snyk'] },
+    { key: 'wiz', label: 'Wiz', src: 'images/integrations/wiz.svg', terms: ['wiz'] },
+    { key: 'aws', label: 'AWS', src: 'images/integrations/aws.svg', terms: ['aws', 'amazon inspector', 'security hub'] },
+    { key: 'azure', label: 'Azure', src: 'images/integrations/azure.svg', terms: ['azure', 'sentinel'] },
+    { key: 'defender', label: 'Microsoft Defender', src: 'images/integrations/microsoft-defender.svg', terms: ['defender xdr', 'microsoft defender'] },
+    { key: 'google-cloud', label: 'Google Cloud', src: 'images/integrations/google-cloud.svg', terms: ['google cloud', 'google chat', 'scc'] },
+    { key: 'splunk', label: 'Splunk', src: 'images/integrations/splunk.svg', terms: ['splunk'] },
+    { key: 'elastic', label: 'Elastic', src: 'images/integrations/elastic.svg', terms: ['elastic', 'kibana'] },
+    { key: 'pagerduty', label: 'PagerDuty', src: 'images/integrations/pagerduty.svg', terms: ['pagerduty'] },
+    { key: 'palo-alto', label: 'Palo Alto Networks', src: 'images/integrations/palo-alto.svg', terms: ['palo alto', 'prisma cloud', 'xsoar', 'cortex'] },
+    { key: 'checkmarx', label: 'Checkmarx', src: 'images/integrations/checkmarx.svg', terms: ['checkmarx'] },
+    { key: 'semgrep', label: 'Semgrep', src: 'images/integrations/semgrep.svg', terms: ['semgrep'] },
+    { key: 'sonarqube', label: 'SonarQube', src: 'images/integrations/sonarqube.svg', terms: ['sonarqube', 'sonar qube'] },
+    { key: 'veracode', label: 'Veracode', src: 'images/integrations/veracode.svg', terms: ['veracode'] },
+    { key: 'rapid7', label: 'Rapid7', src: 'images/integrations/rapid7.svg', terms: ['rapid7', 'insightvm'] },
+    { key: 'orca', label: 'Orca Security', src: 'images/integrations/orca.svg', terms: ['orca'] },
+    { key: 'lacework', label: 'Lacework', src: 'images/integrations/lacework.svg', terms: ['lacework'] },
+    { key: 'crowdstrike', label: 'CrowdStrike', src: 'images/integrations/crowdstrike.svg', terms: ['crowdstrike', 'falcon'] },
+    { key: 'tenable', label: 'Tenable', src: 'images/integrations/tenable.svg', terms: ['tenable'] },
+    { key: 'tines', label: 'Tines', src: 'images/integrations/tines.svg', terms: ['tines'] },
+    { key: 'torq', label: 'Torq', src: 'images/integrations/torq.svg', terms: ['torq'] },
+    { key: 'ibm', label: 'IBM', src: 'images/integrations/ibm.svg', terms: ['ibm soar'] },
+    { key: 'docker', label: 'Docker', src: 'images/integrations/docker.svg', terms: ['docker', 'base image'] },
+    { key: 'kubernetes', label: 'Kubernetes', src: 'images/integrations/kubernetes.svg', terms: ['kubernetes', 'k8s'] },
+    { key: 'securityrecipes', label: 'SecurityRecipes', src: 'images/logo.svg', terms: ['securityrecipes', 'recipe index', 'workflow pack'] }
+  ];
+
+  function marketplaceEntryBrandText(entry) {
+    if (!entry) return '';
+    var raw = entry.raw || {};
+    var config = raw.config || {};
+    var primary = [
+      entry.id,
+      entry.key,
+      entry.label,
+      entry.kind,
+      raw.driver,
+      raw.workflow_value,
+      config.type,
+      raw.default_output_channel_id
+    ].join(' ').toLowerCase();
+    var secondary = [
+      entry.description,
+      entry.category,
+      config.base_url,
+      config.source,
+      config.resource,
+      config.endpoint,
+      (raw.default_input_channel_ids || []).join(' '),
+      raw.default_report_profile_id
+    ].join(' ').toLowerCase();
+    return { primary: primary, secondary: secondary };
+  }
+
+  function marketplaceEntryBrand(entry) {
+    var text = marketplaceEntryBrandText(entry);
+    if (!text) return null;
+    var matchBrand = function (source) {
+      return MARKETPLACE_BRAND_LOGOS.find(function (brand) {
+        return brand.terms.some(function (term) {
+          return source.indexOf(term) !== -1;
+        });
+      }) || null;
+    };
+    return matchBrand(text.primary || '') || matchBrand(text.secondary || '');
+  }
+
+  function marketplaceEntryLogoHtml(entry) {
+    var brand = marketplaceEntryBrand(entry);
+    if (!brand || !brand.src) {
+      return '<span class="ai-chatbot-marketplace-icon">' + html(marketplaceEntryInitials(entry)) + '</span>';
+    }
+    return '<span class="ai-chatbot-marketplace-icon ai-chatbot-marketplace-icon-logo" data-brand="' + html(brand.key) + '" title="' + html(brand.label) + '">' +
+      '<img src="' + html(siteHref(brand.src)) + '" alt="" loading="lazy" decoding="async">' +
+      '</span>';
+  }
+
   function marketplaceEntryInitials(entry) {
     var label = collapseText(entry && entry.label) || collapseText(entry && entry.id) || 'add';
     var lowered = (label + ' ' + String((entry && entry.id) || '')).toLowerCase();
@@ -15442,6 +16138,7 @@
     if (!entries.length) {
       els.controlPlaneResults.innerHTML = '<div class="ai-chatbot-search-empty">No marketplace entries matched the current filters.</div>';
       if (els.controlPlaneStatus) els.controlPlaneStatus.textContent = '0 entries';
+      updateControlPlaneStatSelection();
       return;
     }
     els.controlPlaneResults.innerHTML = entries.map(function (entry) {
@@ -15456,7 +16153,9 @@
       if (docsHref) {
         actions.push('<a class="ai-chatbot-agent-button secondary" href="' + html(docsHref) + '" target="_blank" rel="noopener noreferrer">Open docs</a>');
       }
-      if (entry.kind === 'workflow') {
+      if (marketplaceEntryIsInstalled(entry)) {
+        primaryAction = marketplaceInstalledControlHtml(entry);
+      } else if (entry.kind === 'workflow') {
         primaryAction = '<button class="ai-chatbot-agent-button" type="button" data-control-plane-apply-template="' + html(entry.id) + '">Add</button>';
         actions.push('<button class="ai-chatbot-agent-button secondary" type="button" data-control-plane-apply-template="' + html(entry.id) + '">Apply pack</button>');
         actions.push('<button class="ai-chatbot-agent-button secondary" type="button" data-control-plane-clone-template="' + html(entry.id) + '">Use as base</button>');
@@ -15470,7 +16169,7 @@
       }
       return '<article class="ai-chatbot-control-plane-card">' +
         '<header>' +
-          '<span class="ai-chatbot-marketplace-icon">' + html(marketplaceEntryInitials(entry)) + '</span>' +
+          marketplaceEntryLogoHtml(entry) +
           '<div>' +
             '<span class="ai-chatbot-control-plane-kind">' + html(entry.kindLabel) + '</span>' +
             '<h3>' + html(entry.label) + '</h3>' +
@@ -15521,6 +16220,7 @@
     if (els.controlPlaneStatus) {
       els.controlPlaneStatus.textContent = String(entries.length) + ' entries shown. Public feeds and schemas stay machine-readable and browser-safe.';
     }
+    updateControlPlaneStatSelection();
   }
 
   function renderControlPlane() {
@@ -15536,9 +16236,14 @@
   }
 
   function handleControlPlaneAction(event) {
+    var statFilterButton = event.target.closest('[data-control-plane-kind-filter]');
     var copyTrackButton = event.target.closest('[data-control-plane-copy-track]');
     var copyButton = event.target.closest('[data-control-plane-copy-item]');
     var addChannelButton = event.target.closest('[data-control-plane-add-channel]');
+    if (statFilterButton) {
+      setControlPlaneKindFilter(statFilterButton.getAttribute('data-control-plane-kind-filter'));
+      return;
+    }
     if (copyTrackButton) {
       var coverage = strategicTrackCoverageById(copyTrackButton.getAttribute('data-control-plane-copy-track'));
       if (!coverage) return;
@@ -15565,6 +16270,8 @@
           els.agentStatus.setAttribute('data-kind', 'ok');
         }
       } else {
+        installMarketplaceOutputRoute(addEntry.id || addEntry.raw.id);
+        populateAgentOutputRoutes();
         if (els.agentOutputRoute) els.agentOutputRoute.value = addEntry.id || addEntry.raw.id;
         localStorage.setItem(STORE.agentOutputChannel, els.agentOutputRoute ? els.agentOutputRoute.value : (addEntry.id || addEntry.raw.id));
         switchTab('agents');
@@ -18305,6 +19012,9 @@
 
   function openSourceSetup(sourceId) {
     var config = sourceSetupConfig(sourceId);
+    renderMarketplaceContextSources();
+    renderImportedContextSettings();
+    renderDeliverySettings();
     var detail = config.detailSelector && els.shell
       ? els.shell.querySelector(config.detailSelector)
       : null;
@@ -18314,7 +19024,7 @@
     window.setTimeout(function () {
       if (config.focusTarget && typeof config.focusTarget.focus === 'function') {
         config.focusTarget.focus();
-      } else if (els.prompt && getToken()) {
+      } else if (els.prompt && hasProviderRuntime(state.provider)) {
         els.prompt.focus();
       }
     }, 0);
@@ -20718,6 +21428,7 @@
 
   function openRouteSetup(routeValue) {
     var config = routeSetupConfig(routeValue);
+    renderDeliverySettings();
     var detail = config.detailSelector && els.shell
       ? els.shell.querySelector(config.detailSelector)
       : null;
@@ -21001,27 +21712,38 @@
   function plannerReadinessProviderItem(config) {
     var provider = config && config.provider ? config.provider : getAgentProvider();
     var token = getToken(provider);
+    var serverEndpoint = serverChatEndpoint();
     var mode = getCredentialMode(provider);
     var label = providerConfig(provider).label;
+    var ready = !!(token || serverEndpoint);
     return {
       key: 'provider',
-      label: 'Provider credential',
-      state: token ? 'ready' : 'blocked',
+      label: 'Provider runtime',
+      state: ready ? 'ready' : 'blocked',
       summary: token
         ? (label + ' ' + credentialModeLabel(provider, mode).toLowerCase() + ' is saved locally for this browser profile.')
-        : ('Save a ' + tokenLabel(provider, mode).toLowerCase() + ' before generating a run plan.'),
-      badges: uniqueStrings([label, credentialModeLabel(provider, mode)], 3),
+        : (serverEndpoint
+          ? (label + ' will run through the server-side chat API.')
+          : ('Save a ' + tokenLabel(provider, mode).toLowerCase() + ' or configure the server-side chat API before generating a run plan.')),
+      badges: uniqueStrings([label, token ? credentialModeLabel(provider, mode) : (serverEndpoint ? 'server-side API' : credentialModeLabel(provider, mode))], 3),
       notes: token
         ? [
-            'Requests run from this browser via the configured same-origin relay path.',
-            'Provider secrets stay in browser storage; there is no server-side token vault in this app.'
+            providerRelayLikelyAvailable()
+              ? 'Requests run from this browser via the configured same-origin relay path.'
+              : 'Requests run directly from this browser to the provider API because no server relay is configured.',
+            'Provider secrets stay in browser storage for this session unless a server-side API is configured.'
           ]
-        : [
-            'Credentials stay in browser storage for this origin only.',
-            'Use the settings drawer to save an API key or OAuth bearer before the next run.'
-          ],
+        : (serverEndpoint
+          ? [
+              'Requests run through the private chatbot API service behind the Hugo/nginx container.',
+              'Provider keys should be configured as environment variables on the server.'
+            ]
+          : [
+              'Credentials stay in browser storage for this origin only.',
+              'Use the settings drawer to save an API key or OAuth bearer before the next run.'
+            ]),
       action: {
-        label: token ? 'Review provider setup' : 'Open provider settings',
+        label: ready ? 'Review provider setup' : 'Open provider settings',
         action: 'open-provider-settings',
         value: provider
       }
@@ -22761,11 +23483,14 @@
   function populateAgentOutputRoutes() {
     if (!els.agentOutputRoute) return;
     var current = els.agentOutputRoute.value || persistedAgentOutputChannel();
-    var channels = outputChannels();
+    var channels = agentOutputChannels();
+    var currentRoute = outputChannels().find(function (route) {
+      return route.id === current || route.value === current;
+    });
     els.agentOutputRoute.innerHTML = channels.map(function (route) {
       return '<option value="' + html(route.id) + '">' + html(route.label) + '</option>';
     }).join('');
-    if (current && agentOutputRouteByValue(current)) els.agentOutputRoute.value = agentOutputRouteByValue(current).id;
+    if (currentRoute && channels.some(function (route) { return route.id === currentRoute.id; })) els.agentOutputRoute.value = currentRoute.id;
     else if (channels[0]) els.agentOutputRoute.value = channels[0].id;
     updateAgentRouteHint();
   }
@@ -22895,6 +23620,7 @@
     state.includeScannerExport = ids.indexOf(importedContextChannelId('scanner')) !== -1;
     state.includeSbom = ids.indexOf(importedContextChannelId('sbom')) !== -1;
     renderMarketplaceContextSources();
+    renderDeliverySettings();
     if (els.includeContext) els.includeContext.checked = state.includeContext;
     if (els.includeRelated) els.includeRelated.checked = state.includeRelated;
     if (els.includeGitHub) els.includeGitHub.checked = state.includeGitHub;
@@ -22977,6 +23703,8 @@
     if (state.includeSbom) ids.push(importedContextChannelId('sbom'));
     setSelectValues(els.agentInputChannels, ids);
     localStorage.setItem(STORE.agentInputChannels, JSON.stringify(ids));
+    renderMarketplaceContextSources();
+    renderDeliverySettings();
     updateAgentTemplateHint();
     updateAgentMarketplacePreview();
   }
@@ -23153,6 +23881,16 @@
   function updateChatQuickActions() {
     if (!els.chatQuickActions) return;
     var runButton = els.chatQuickActions.querySelector('[data-chat-quick="run-recipe"]');
+    var clearButton = els.chatQuickActions.querySelector('[data-chat-quick="clear-chat"]');
+    if (clearButton) {
+      var hasMessages = Array.isArray(state.messages) && state.messages.length > 0;
+      clearButton.disabled = !hasMessages || !!state.sending;
+      clearButton.title = state.sending
+        ? 'Wait for the current response to finish before clearing chat.'
+        : hasMessages
+        ? 'Clear this chat transcript from browser storage.'
+        : 'Chat is already clear.';
+    }
     if (!runButton) return;
     var ready = false;
     try {
@@ -23166,6 +23904,20 @@
       runButton.title = 'Select a model, recipe, target, context/tool, and output route before running.';
     }
     runButton.setAttribute('data-ready', ready ? 'true' : 'false');
+  }
+
+  function clearChatMessages() {
+    if (state.sending) {
+      setStatus('Wait for the current response to finish before clearing chat.', 'error');
+      return;
+    }
+    var hadMessages = Array.isArray(state.messages) && state.messages.length > 0;
+    state.messages = [];
+    clearChatHistoryStorage();
+    renderMessages();
+    updateChatQuickActions();
+    setStatus(hadMessages ? 'Chat cleared from this browser.' : 'Chat is already clear.', hadMessages ? 'ok' : '');
+    if (els.prompt) els.prompt.focus();
   }
 
   function formatAgentSchedule(value, cadence) {
@@ -24444,6 +25196,8 @@
     setIntegrationField('genericWebhookMethod', els.genericWebhookMethod && els.genericWebhookMethod.value);
     setIntegrationField('genericWebhookAuthHeader', els.genericWebhookAuthHeader && els.genericWebhookAuthHeader.value);
     setIntegrationField('genericWebhookHeaders', els.genericWebhookHeaders && els.genericWebhookHeaders.value);
+    renderDeliverySettings();
+    populateAgentOutputRoutes();
     updateGitLabContextUI();
     updateAzureDevOpsContextUI();
     if (els.agentStatus && !state.agentRunning) {
@@ -24507,6 +25261,7 @@
     if (els.genericWebhookMethod) els.genericWebhookMethod.value = getIntegrationField('genericWebhookMethod') || 'POST';
     if (els.genericWebhookAuthHeader) els.genericWebhookAuthHeader.value = getIntegrationField('genericWebhookAuthHeader');
     if (els.genericWebhookHeaders) els.genericWebhookHeaders.value = getIntegrationField('genericWebhookHeaders');
+    renderDeliverySettings();
     updateGitLabContextUI();
     updateAzureDevOpsContextUI();
     renderRouter();
@@ -24790,17 +25545,17 @@
     };
     var assistantMessage = {
       role: 'assistant',
-      content: getToken(getAgentProvider()) ? '' : localSummary,
+      content: hasProviderRuntime(getAgentProvider()) ? '' : localSummary,
       createdAt: nowIso(),
       provider: getAgentProvider(),
-      streaming: !!getToken(getAgentProvider())
+      streaming: !!hasProviderRuntime(getAgentProvider())
     };
     state.messages.push(userMessage, assistantMessage);
     saveChatHistoryStorage();
     renderMessages();
     appendTerminalRecord('system', 'context check requested');
-    if (!getToken(getAgentProvider())) {
-      setStatus('Context check generated locally. Save a provider credential for LLM summarization.', 'ok');
+    if (!hasProviderRuntime(getAgentProvider())) {
+      setStatus('Context check generated locally. Save a provider credential or configure the server-side chat API for LLM summarization.', 'ok');
       appendActivityRecord({
         category: 'chat',
         eventType: 'context_check_local',
@@ -24917,7 +25672,7 @@
           assistantMessage = { role: 'assistant', content: '', createdAt: nowIso(), streaming: true, provider: state.provider };
           state.messages.push(assistantMessage);
           renderMessages();
-          setStatus('Streaming from ' + providerConfig().label + '...', '');
+          setStatus((getToken(state.provider) ? 'Streaming from ' : 'Generating through server-side ') + providerConfig().label + '...', '');
           var answer = await sendToProvider(text, {
             history: history,
             system: system,
@@ -24929,7 +25684,7 @@
           assistantMessage.streaming = false;
           if (!assistantMessage.content.trim()) assistantMessage.content = answer;
           saveChatHistoryStorage();
-          setStatus(maskToken(getToken()), 'ok');
+          setStatus(providerRuntimeStatusText(state.provider), 'ok');
           appendActivityRecord({
             category: 'chat',
             eventType: 'chat_completed',
@@ -24945,7 +25700,7 @@
             badges: [providerConfig().label, getModel(), String(currentInputChannelIds().length) + ' inputs']
           });
         } catch (error) {
-          if (!getToken()) setSettingsOpen(true);
+          if (!hasProviderRuntime(state.provider)) setSettingsOpen(true);
           if (assistantMessage) {
             assistantMessage.streaming = false;
             assistantMessage.error = true;
@@ -24993,7 +25748,7 @@
         '<header class="ai-chatbot-header">' +
           '<div class="ai-chatbot-title">' +
             '<strong>Security Remediation AI</strong>' +
-            '<span>Client-side provider token</span>' +
+            '<span>Server-side chat API or browser token</span>' +
             '<button class="ai-chatbot-provider-badge" type="button" data-provider-badge></button>' +
           '</div>' +
           '<div class="ai-chatbot-header-actions">' +
@@ -25015,6 +25770,7 @@
             '<div class="ai-chatbot-chat-actions" data-chat-quick-actions aria-label="Common remediation actions">' +
               '<button class="ai-chatbot-chat-action" type="button" data-chat-quick="run-recipe">' + icon('play') + '<span>Run recipe</span></button>' +
               '<button class="ai-chatbot-chat-action" type="button" data-chat-quick="context">' + icon('database') + '<span>Context check</span></button>' +
+              '<button class="ai-chatbot-chat-action danger" type="button" data-chat-quick="clear-chat">' + icon('trash') + '<span>Clear chat</span></button>' +
             '</div>' +
             '<form class="ai-chatbot-composer" data-form>' +
               '<label class="ai-chatbot-field"><textarea data-prompt placeholder="Ask for a remediation plan, prompt, runbook, or context check"></textarea></label>' +
@@ -25028,7 +25784,7 @@
               '</button>' +
               '<div id="ai-chatbot-settings-content" class="ai-chatbot-settings-content" data-settings-content hidden>' +
                 '<details class="ai-chatbot-settings-block" data-provider-credential-details>' +
-                  '<summary class="ai-chatbot-github-heading">' + icon('settings') + '<span>Model Provider</span><small>Provider, model, and browser-local API/OAuth credential.</small></summary>' +
+                  '<summary class="ai-chatbot-github-heading">' + icon('settings') + '<span>Model Provider</span><small>Provider, model, and server-side or browser-local credential.</small></summary>' +
                   '<div class="ai-chatbot-github-content">' +
                     '<div class="ai-chatbot-settings-row">' +
                       '<label class="ai-chatbot-field"><span>Provider</span><select data-provider><option value="openai">OpenAI</option><option value="grok">Grok</option><option value="claude">Claude</option></select></label>' +
@@ -25196,16 +25952,14 @@
                     '</div>' +
                   '</div>' +
                 '</details>' +
-                '<details class="ai-chatbot-settings-block" data-imported-context-details>' +
-                  '<summary class="ai-chatbot-github-heading">' + icon('file') + '<span>Imported scan evidence</span><small>Upload local SARIF or SBOM files. The browser stores only a bounded summary until you clear it.</small></summary>' +
+                '<details class="ai-chatbot-settings-block" data-imported-context-details hidden>' +
+                  '<summary class="ai-chatbot-github-heading">' + icon('file') + '<span>Imported scan evidence</span><small>Marketplace-installed upload sources only.</small></summary>' +
                   '<div class="ai-chatbot-github-content">' +
                     '<div class="ai-chatbot-capability-list">' +
-                      '<span>SARIF 2.1.0 uploads <em>CodeQL, Semgrep, Snyk, Gitleaks, Checkov, and other scanners that export SARIF.</em></span>' +
-                      '<span>Major findings exports <em>AWS Security Hub ASFF, Tenable vulnerability export chunks, DefectDojo findings JSON, and generic findings arrays.</em></span>' +
-                      '<span>CycloneDX or SPDX JSON uploads <em>Software inventory, dependency relationships, and vulnerability metadata for package review.</em></span>' +
+                      '<span>Installed scan inputs <em>Upload controls appear here after adding SARIF, scanner export, or SBOM from Marketplace.</em></span>' +
                     '</div>' +
                     '<div class="ai-chatbot-agent-grid">' +
-                      '<div class="ai-chatbot-settings-block">' +
+                      '<div class="ai-chatbot-settings-block" data-imported-settings-card="sarif-manual-import" hidden>' +
                         '<div class="ai-chatbot-github-heading"><span>SARIF findings</span><small>Attach scanner results locally for SAST, SCA, secret, or IaC triage.</small></div>' +
                         '<label class="ai-chatbot-field"><span>Local SARIF file</span><input data-sarif-file type="file" accept=".sarif,.sarif.json,.json,application/json"></label>' +
                         '<div class="ai-chatbot-actions-row">' +
@@ -25213,7 +25967,7 @@
                           '<button class="ai-chatbot-action danger" type="button" data-clear-sarif-context>Clear</button>' +
                         '</div>' +
                       '</div>' +
-                      '<div class="ai-chatbot-settings-block">' +
+                      '<div class="ai-chatbot-settings-block" data-imported-settings-card="scanner-export-bundle" hidden>' +
                         '<div class="ai-chatbot-github-heading"><span>Scanner export bundle</span><small>Normalize major findings-platform JSON exports locally so they feed the queue, router, and report desk without a server relay.</small></div>' +
                         '<label class="ai-chatbot-field"><span>Local findings JSON</span><input data-scanner-export-files type="file" accept=".json,application/json" multiple></label>' +
                         '<div class="ai-chatbot-actions-row">' +
@@ -25222,7 +25976,7 @@
                         '</div>' +
                         '<div class="ai-chatbot-workflow-lab-list" data-scanner-export-list></div>' +
                       '</div>' +
-                      '<div class="ai-chatbot-settings-block">' +
+                      '<div class="ai-chatbot-settings-block" data-imported-settings-card="sbom-manual-import" hidden>' +
                         '<div class="ai-chatbot-github-heading"><span>SBOM inventory</span><small>Attach CycloneDX or SPDX JSON locally for dependency and package risk review.</small></div>' +
                         '<label class="ai-chatbot-field"><span>Local SBOM file</span><input data-sbom-file type="file" accept=".cdx.json,.spdx.json,.bom.json,.json,application/json"></label>' +
                         '<div class="ai-chatbot-actions-row">' +
@@ -25234,67 +25988,68 @@
                   '</div>' +
                 '</details>' +
                 '<details class="ai-chatbot-settings-block" data-delivery-settings-details>' +
-                  '<summary class="ai-chatbot-github-heading">' + icon('send') + '<span>Delivery integrations</span><small>Optional routes for live or copyable handoff. Secrets stay in this browser.</small></summary>' +
+                  '<summary class="ai-chatbot-github-heading">' + icon('send') + '<span>Delivery integrations</span><small>Default GitHub handoff and terminal output; add other routes from Marketplace.</small></summary>' +
                   '<div class="ai-chatbot-github-content">' +
                     '<div class="ai-chatbot-capability-list">' +
-                      '<span>Collaboration and ticketing <em>Slack, Teams, Google Chat, email, Jira, ServiceNow, Linear, GitHub, GitLab, and Azure DevOps routes.</em></span>' +
-                      '<span>SOAR, telemetry, and webhooks <em>Cortex XSOAR, Splunk SOAR, Splunk HEC, Elastic Security, PagerDuty, Tines, Torq, and generic browser-deliverable payloads.</em></span>' +
+                      '<span>Draft PR packet <em>Copy-ready GitHub branch, PR body, tests, rollback, and reviewer checklist.</em></span>' +
+                      '<span>GitHub issue <em>Uses the GitHub repository login or token when issue creation is selected.</em></span>' +
+                      '<span>Terminal stdout <em>Runbook receipts stay available in the MiniBox terminal for local review.</em></span>' +
                     '</div>' +
                     '<div class="ai-chatbot-agent-grid">' +
-                      '<label class="ai-chatbot-field"><span>Slack webhook</span><input data-slack-webhook type="url" autocomplete="off" placeholder="https://hooks.slack.com/services/..."></label>' +
-                      '<label class="ai-chatbot-field"><span>PagerDuty routing key</span><input data-pagerduty-routing-key type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
-                      '<label class="ai-chatbot-field"><span>Google Chat webhook</span><input data-google-chat-webhook type="url" autocomplete="off" placeholder="https://chat.googleapis.com/v1/spaces/..."></label>' +
-                      '<label class="ai-chatbot-field"><span>Teams workflow webhook</span><input data-teams-webhook type="url" autocomplete="off" placeholder="https://prod-00.westus.logic.azure.com/workflows/..."></label>' +
-                      '<label class="ai-chatbot-field"><span>Email recipient</span><input data-email-recipient type="email" autocomplete="off" placeholder="security@example.com"></label>' +
-                      '<label class="ai-chatbot-field"><span>Email relay URL</span><input data-smtp-relay-url type="url" autocomplete="off" placeholder="Optional CORS-enabled SMTP relay endpoint"></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="slack-webhook slack" hidden><span>Slack webhook</span><input data-slack-webhook type="url" autocomplete="off" placeholder="https://hooks.slack.com/services/..."></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="pagerduty-events-v2 pagerduty" hidden><span>PagerDuty routing key</span><input data-pagerduty-routing-key type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="google-chat-webhook google-chat" hidden><span>Google Chat webhook</span><input data-google-chat-webhook type="url" autocomplete="off" placeholder="https://chat.googleapis.com/v1/spaces/..."></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="teams-workflow-webhook teams" hidden><span>Teams workflow webhook</span><input data-teams-webhook type="url" autocomplete="off" placeholder="https://prod-00.westus.logic.azure.com/workflows/..."></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="email-handoff email" hidden><span>Email recipient</span><input data-email-recipient type="email" autocomplete="off" placeholder="security@example.com"></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="email-handoff email" hidden><span>Email relay URL</span><input data-smtp-relay-url type="url" autocomplete="off" placeholder="Optional CORS-enabled SMTP relay endpoint"></label>' +
                     '</div>' +
-                    '<div class="ai-chatbot-agent-grid">' +
+                    '<div class="ai-chatbot-agent-grid" data-delivery-settings-card="tines-webhook tines" hidden>' +
                       '<label class="ai-chatbot-field"><span>Tines webhook URL</span><input data-tines-webhook type="url" autocomplete="off" placeholder="https://tenant.tines.com/webhook/..."></label>' +
                       '<label class="ai-chatbot-field"><span>Tines auth header</span><input data-tines-webhook-auth-header type="text" autocomplete="off" placeholder="Optional Authorization header"></label>' +
                       '<label class="ai-chatbot-field ai-chatbot-wide-field"><span>Tines headers JSON</span><input data-tines-webhook-headers type="text" autocomplete="off" placeholder="{&quot;X-Story&quot;:&quot;securityrecipes&quot;}"></label>' +
                     '</div>' +
-                    '<div class="ai-chatbot-agent-grid">' +
+                    '<div class="ai-chatbot-agent-grid" data-delivery-settings-card="torq-webhook torq" hidden>' +
                       '<label class="ai-chatbot-field"><span>Torq webhook URL</span><input data-torq-webhook type="url" autocomplete="off" placeholder="https://api.torq.io/webhooks/..."></label>' +
                       '<label class="ai-chatbot-field"><span>Torq auth header</span><input data-torq-webhook-auth-header type="text" autocomplete="off" placeholder="Optional Authorization header"></label>' +
                       '<label class="ai-chatbot-field ai-chatbot-wide-field"><span>Torq headers JSON</span><input data-torq-webhook-headers type="text" autocomplete="off" placeholder="{&quot;X-Workflow&quot;:&quot;securityrecipes-handoff&quot;}"></label>' +
                     '</div>' +
-                    '<div class="ai-chatbot-agent-grid">' +
+                    '<div class="ai-chatbot-agent-grid" data-delivery-settings-card="cortex-xsoar-incident xsoar" hidden>' +
                       '<label class="ai-chatbot-field ai-chatbot-wide-field"><span>Cortex XSOAR URL</span><input data-xsoar-base-url type="url" autocomplete="off" placeholder="https://api-yourfqdn or https://api-yourfqdn/xsoar/public/v1/incident"></label>' +
                       '<label class="ai-chatbot-field"><span>XSOAR API key ID</span><input data-xsoar-api-key-id type="text" autocomplete="off" placeholder="2841"></label>' +
                       '<label class="ai-chatbot-field"><span>XSOAR API key</span><input data-xsoar-api-key type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
                       '<label class="ai-chatbot-field"><span>XSOAR incident type</span><input data-xsoar-incident-type type="text" autocomplete="off" placeholder="Security"></label>' +
                       '<label class="ai-chatbot-field"><span>XSOAR investigation</span><select data-xsoar-create-investigation><option value="true">Create + start investigation</option><option value="false">Create incident only</option></select></label>' +
                     '</div>' +
-                    '<div class="ai-chatbot-agent-grid">' +
+                    '<div class="ai-chatbot-agent-grid" data-delivery-settings-card="splunk-soar-incident splunk-soar" hidden>' +
                       '<label class="ai-chatbot-field ai-chatbot-wide-field"><span>Splunk SOAR URL</span><input data-splunk-soar-base-url type="url" autocomplete="off" placeholder="https://phantom.example.com or https://phantom.example.com/rest/container"></label>' +
                       '<label class="ai-chatbot-field ai-chatbot-wide-field"><span>Splunk SOAR ph-auth-token</span><input data-splunk-soar-token type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
                       '<label class="ai-chatbot-field"><span>Splunk SOAR label</span><input data-splunk-soar-label type="text" autocomplete="off" placeholder="events"></label>' +
                       '<label class="ai-chatbot-field"><span>Splunk SOAR container type</span><select data-splunk-soar-container-type><option value="case">Case container</option><option value="default">Event container</option></select></label>' +
                     '</div>' +
-                    '<div class="ai-chatbot-agent-grid">' +
+                    '<div class="ai-chatbot-agent-grid" data-delivery-settings-card="jira-ticket jira" hidden>' +
                       '<label class="ai-chatbot-field"><span>Jira URL</span><input data-jira-base-url type="url" autocomplete="off" placeholder="https://example.atlassian.net"></label>' +
                       '<label class="ai-chatbot-field"><span>Jira project</span><input data-jira-project type="text" autocomplete="off" placeholder="SEC"></label>' +
                       '<label class="ai-chatbot-field"><span>Jira email</span><input data-jira-email type="email" autocomplete="off" placeholder="you@example.com"></label>' +
                       '<label class="ai-chatbot-field"><span>Jira token</span><input data-jira-token type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
                     '</div>' +
-                    '<div class="ai-chatbot-agent-grid">' +
+                    '<div class="ai-chatbot-agent-grid" data-delivery-settings-card="servicenow-incident servicenow" hidden>' +
                       '<label class="ai-chatbot-field"><span>ServiceNow URL</span><input data-servicenow-base-url type="url" autocomplete="off" placeholder="https://example.service-now.com"></label>' +
                       '<label class="ai-chatbot-field"><span>ServiceNow table</span><input data-servicenow-table type="text" autocomplete="off" placeholder="incident"></label>' +
                       '<label class="ai-chatbot-field ai-chatbot-wide-field"><span>ServiceNow bearer token</span><input data-servicenow-token type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
                     '</div>' +
                     '<div class="ai-chatbot-agent-grid">' +
-                      '<label class="ai-chatbot-field"><span>Linear API key</span><input data-linear-api-key type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
-                      '<label class="ai-chatbot-field"><span>Linear team ID</span><input data-linear-team-id type="text" autocomplete="off" placeholder="9cfb482a-81e3-4154-b5b9-2c805e70a02d"></label>' +
-                      '<label class="ai-chatbot-field"><span>GitLab API URL</span><input data-gitlab-base-url type="url" autocomplete="off" placeholder="https://gitlab.com/api/v4"></label>' +
-                      '<label class="ai-chatbot-field"><span>GitLab project</span><input data-gitlab-project type="text" autocomplete="off" placeholder="group/project or 12345"></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="linear-issue linear" hidden><span>Linear API key</span><input data-linear-api-key type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="linear-issue linear" hidden><span>Linear team ID</span><input data-linear-team-id type="text" autocomplete="off" placeholder="9cfb482a-81e3-4154-b5b9-2c805e70a02d"></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="gitlab-issue gitlab-project-context gitlab-vulnerability-findings" hidden><span>GitLab API URL</span><input data-gitlab-base-url type="url" autocomplete="off" placeholder="https://gitlab.com/api/v4"></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="gitlab-issue gitlab-project-context gitlab-vulnerability-findings" hidden><span>GitLab project</span><input data-gitlab-project type="text" autocomplete="off" placeholder="group/project or 12345"></label>' +
                     '</div>' +
                     '<div class="ai-chatbot-agent-grid">' +
-                      '<label class="ai-chatbot-field"><span>GitLab token</span><input data-gitlab-token type="password" autocomplete="off" placeholder="PAT or Bearer token, stored locally"></label>' +
-                      '<label class="ai-chatbot-field"><span>GitLab labels</span><input data-gitlab-labels type="text" autocomplete="off" placeholder="security-remediation,ai-agent"></label>' +
-                      '<label class="ai-chatbot-field"><span>GitLab issue type</span><input data-gitlab-issue-type type="text" autocomplete="off" placeholder="issue"></label>' +
-                      '<label class="ai-chatbot-field"><span>Azure DevOps URL</span><input data-azure-devops-base-url type="url" autocomplete="off" placeholder="https://dev.azure.com"></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="gitlab-issue gitlab-project-context gitlab-vulnerability-findings" hidden><span>GitLab token</span><input data-gitlab-token type="password" autocomplete="off" placeholder="PAT or Bearer token, stored locally"></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="gitlab-issue gitlab-project-context gitlab-vulnerability-findings" hidden><span>GitLab labels</span><input data-gitlab-labels type="text" autocomplete="off" placeholder="security-remediation,ai-agent"></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="gitlab-issue gitlab-project-context gitlab-vulnerability-findings" hidden><span>GitLab issue type</span><input data-gitlab-issue-type type="text" autocomplete="off" placeholder="issue"></label>' +
+                      '<label class="ai-chatbot-field" data-delivery-settings-card="azure-devops-work-item azure-devops azure-devops-repository" hidden><span>Azure DevOps URL</span><input data-azure-devops-base-url type="url" autocomplete="off" placeholder="https://dev.azure.com"></label>' +
                     '</div>' +
-                    '<div class="ai-chatbot-settings-block">' +
+                    '<div class="ai-chatbot-settings-block" data-delivery-settings-card="gitlab-issue gitlab-project-context gitlab-vulnerability-findings" hidden>' +
                       '<div class="ai-chatbot-github-heading"><span>GitLab live intake</span><small>Reuse the saved GitLab project and token to pull bounded project context or vulnerability findings directly in the browser.</small></div>' +
                       '<div class="ai-chatbot-actions-row">' +
                         '<div class="ai-chatbot-status" data-gitlab-project-status></div>' +
@@ -25310,14 +26065,14 @@
                         '</div>' +
                       '</div>' +
                     '</div>' +
-                    '<div class="ai-chatbot-agent-grid">' +
+                    '<div class="ai-chatbot-agent-grid" data-delivery-settings-card="azure-devops-work-item azure-devops azure-devops-repository" hidden>' +
                       '<label class="ai-chatbot-field"><span>Azure DevOps org</span><input data-azure-devops-organization type="text" autocomplete="off" placeholder="your-organization"></label>' +
                       '<label class="ai-chatbot-field"><span>Azure DevOps project</span><input data-azure-devops-project type="text" autocomplete="off" placeholder="security-platform"></label>' +
                       '<label class="ai-chatbot-field"><span>Azure DevOps repo</span><input data-azure-devops-repository type="text" autocomplete="off" placeholder="payments-api or repository ID"></label>' +
                       '<label class="ai-chatbot-field"><span>Work item type</span><input data-azure-devops-work-item-type type="text" autocomplete="off" placeholder="Issue"></label>' +
                       '<label class="ai-chatbot-field"><span>Azure DevOps token</span><input data-azure-devops-token type="password" autocomplete="off" placeholder="PAT or Bearer token, stored locally"></label>' +
                     '</div>' +
-                    '<div class="ai-chatbot-settings-block">' +
+                    '<div class="ai-chatbot-settings-block" data-delivery-settings-card="azure-devops-work-item azure-devops azure-devops-repository" hidden>' +
                       '<div class="ai-chatbot-github-heading"><span>Azure DevOps live intake</span><small>Reuse the saved Azure DevOps org, project, repository, and token to pull bounded repo, PR, and work-item context directly in the browser.</small></div>' +
                       '<div class="ai-chatbot-actions-row">' +
                         '<div class="ai-chatbot-status" data-azure-devops-repository-status></div>' +
@@ -25327,25 +26082,25 @@
                         '</div>' +
                       '</div>' +
                     '</div>' +
-                    '<div class="ai-chatbot-agent-grid">' +
+                    '<div class="ai-chatbot-agent-grid" data-delivery-settings-card="splunk-hec" hidden>' +
                       '<label class="ai-chatbot-field"><span>Splunk HEC URL</span><input data-splunk-hec-url type="url" autocomplete="off" placeholder="https://splunk.example.com:8088/services/collector/event"></label>' +
                       '<label class="ai-chatbot-field"><span>Splunk HEC token</span><input data-splunk-hec-token type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
                       '<label class="ai-chatbot-field"><span>Splunk index</span><input data-splunk-index type="text" autocomplete="off" placeholder="secops"></label>' +
                       '<label class="ai-chatbot-field"><span>Splunk sourcetype</span><input data-splunk-sourcetype type="text" autocomplete="off" placeholder="securityrecipes:report"></label>' +
                     '</div>' +
-                    '<div class="ai-chatbot-agent-grid">' +
+                    '<div class="ai-chatbot-agent-grid" data-delivery-settings-card="elastic-security-case elastic-case" hidden>' +
                       '<label class="ai-chatbot-field"><span>Elastic Kibana URL</span><input data-elastic-base-url type="url" autocomplete="off" placeholder="https://elastic.example.com"></label>' +
                       '<label class="ai-chatbot-field"><span>Elastic API key</span><input data-elastic-api-key type="password" autocomplete="off" placeholder="Stored in this browser"></label>' +
                       '<label class="ai-chatbot-field"><span>Elastic space</span><input data-elastic-space-id type="text" autocomplete="off" placeholder="default"></label>' +
                       '<label class="ai-chatbot-field"><span>Elastic owner</span><input data-elastic-owner type="text" autocomplete="off" placeholder="securitySolution"></label>' +
                     '</div>' +
-                    '<div class="ai-chatbot-agent-grid">' +
+                    '<div class="ai-chatbot-agent-grid" data-delivery-settings-card="generic-webhook" hidden>' +
                       '<label class="ai-chatbot-field"><span>Generic webhook URL</span><input data-generic-webhook-url type="url" autocomplete="off" placeholder="https://example.internal/hooks/security-recipes"></label>' +
                       '<label class="ai-chatbot-field"><span>Generic webhook method</span><input data-generic-webhook-method type="text" autocomplete="off" placeholder="POST"></label>' +
                       '<label class="ai-chatbot-field"><span>Generic auth header</span><input data-generic-webhook-auth-header type="text" autocomplete="off" placeholder="Bearer token or ApiKey value"></label>' +
                       '<label class="ai-chatbot-field"><span>Generic headers JSON</span><input data-generic-webhook-headers type="text" autocomplete="off" placeholder="{&quot;X-Environment&quot;:&quot;prod&quot;}"></label>' +
                     '</div>' +
-                    '<button class="ai-chatbot-action secondary" type="button" data-agent-save-integrations>Save delivery settings</button>' +
+                    '<button class="ai-chatbot-action secondary" type="button" data-agent-save-integrations data-delivery-settings-save hidden>Save delivery settings</button>' +
                   '</div>' +
                 '</details>' +
                 '<div class="ai-chatbot-actions-row">' +
@@ -25373,7 +26128,7 @@
                 '<pre class="ai-chatbot-terminal-screen" data-terminal-output></pre>' +
                 '<form class="ai-chatbot-terminal-form" data-terminal-form>' +
                   '<span class="ai-chatbot-terminal-prompt" data-terminal-prompt>remediator@minibox:~$</span>' +
-                  '<input data-terminal-input type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Terminal command" placeholder="status, context, evidence, routes, schedule, agent validate">' +
+                  '<input data-terminal-input type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Terminal command" placeholder="status, ping localhost, wget /recipes-index.json, git status">' +
                   '<button class="ai-chatbot-agent-button ai-chatbot-terminal-run" type="submit" data-terminal-run title="Run command" aria-label="Run terminal command">' + icon('play') + '<span>Run</span></button>' +
                 '</form>' +
               '</section>' +
@@ -25384,6 +26139,12 @@
                 '<button type="button" data-terminal-command="routes">routes</button>' +
                 '<button type="button" data-terminal-command="schedule">schedule</button>' +
                 '<button type="button" data-terminal-command="agent validate">agent validate</button>' +
+                '<button type="button" data-terminal-command="ping localhost">ping</button>' +
+                '<button type="button" data-terminal-command="nc -vz localhost 8080">nc</button>' +
+                '<button type="button" data-terminal-command="wget --spider /recipes-index.json">wget</button>' +
+                '<button type="button" data-terminal-command="tail -n 8 tmp/history.txt">tail</button>' +
+                '<button type="button" data-terminal-command="diff context.json recipe.txt">diff</button>' +
+                '<button type="button" data-terminal-command="git status">git</button>' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -25748,7 +26509,7 @@
           '<div class="ai-chatbot-tab-panel" data-panel="agents" hidden>' +
             '<div class="ai-chatbot-agents">' +
               '<div class="ai-chatbot-agent-hero">' +
-                '<div class="ai-chatbot-agent-hero-copy"><strong>Remediation agent</strong><span>Pick a recipe and target. Everything else uses safe defaults until you change it.</span></div>' +
+                '<div class="ai-chatbot-agent-hero-copy"><strong>Remediation agent selection</strong><span>Choose the runtime once, then walk through input, recipe, tool, output, and delivery.</span><div class="ai-chatbot-agent-path" aria-label="Agent setup steps"><span>Input</span><span>Recipe</span><span>Tool</span><span>Output</span><span>Run</span></div></div>' +
                 '<div class="ai-chatbot-agent-runtime">' +
                   '<label class="ai-chatbot-field"><span>Provider</span><select data-agent-provider><option value="openai">OpenAI</option><option value="grok">Grok</option><option value="claude">Claude</option></select></label>' +
                   '<label class="ai-chatbot-field"><span>Model</span><select data-agent-model></select></label>' +
@@ -25757,48 +26518,48 @@
               '<div class="ai-chatbot-agent-workbench">' +
                 '<div class="ai-chatbot-agent-main">' +
                   '<section class="ai-chatbot-agent-step">' +
-                    '<div class="ai-chatbot-agent-step-title"><span>1</span><div><strong>What should be fixed?</strong><small>Use a recipe, CVE, scanner finding, package, repo, file, or service.</small></div></div>' +
+                    '<div class="ai-chatbot-agent-step-title"><span>1</span><div><strong>Select input</strong><small>Start with a GitHub path, package, CVE, uploaded evidence, or installed marketplace source.</small></div></div>' +
+                    '<div class="ai-chatbot-agent-grid">' +
+                      '<label class="ai-chatbot-field ai-chatbot-wide-field"><span>GitHub path or target</span><input data-agent-scope type="text" autocomplete="off" placeholder="owner/repo, package, service, CVE, or file path"></label>' +
+                      '<label class="ai-chatbot-field ai-chatbot-wide-field ai-chatbot-agent-input-select"><span>Context source</span><select data-agent-input-channels multiple></select></label>' +
+                    '</div>' +
+                    '<div class="ai-chatbot-agent-hint ai-chatbot-agent-hint-inline ai-chatbot-agent-context-line">' + icon('package') + '<span data-agent-template-hint></span><button class="ai-chatbot-agent-button secondary" type="button" data-open-panel="control-plane">Add input</button></div>' +
+                  '</section>' +
+                  '<section class="ai-chatbot-agent-step">' +
+                    '<div class="ai-chatbot-agent-step-title"><span>2</span><div><strong>Select recipe</strong><small>Pick the remediation recipe, CVE, scanner finding, or runbook to apply.</small></div></div>' +
                     '<div class="ai-chatbot-agent-grid">' +
                       '<div class="ai-chatbot-field ai-chatbot-typeahead ai-chatbot-wide-field">' +
                         '<label for="ai-chatbot-agent-recipe"><span>Recipe</span></label>' +
                         '<input id="ai-chatbot-agent-recipe" data-agent-recipe type="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ai-chatbot-agent-recipe-results" placeholder="CVE-2024..., log4j, dependency fix, SAST triage">' +
                         '<div id="ai-chatbot-agent-recipe-results" class="ai-chatbot-typeahead-results" data-agent-recipe-results hidden></div>' +
                       '</div>' +
-                      '<label class="ai-chatbot-field ai-chatbot-wide-field"><span>Target</span><input data-agent-scope type="text" autocomplete="off" placeholder="owner/repo, package, service, CVE, or file path"></label>' +
                     '</div>' +
                   '</section>' +
                   '<section class="ai-chatbot-agent-step">' +
-                    '<div class="ai-chatbot-agent-step-title"><span>2</span><div><strong>Mode</strong><small>Pick the closest remediation shape.</small></div></div>' +
+                    '<div class="ai-chatbot-agent-step-title"><span>3</span><div><strong>Select tool</strong><small>Choose the remediation tool shape the agent should use.</small></div></div>' +
                     '<select data-agent-workflow hidden><option value="dependency">Vulnerable dependency remediation</option><option value="sast">SAST finding triage</option><option value="sensitive-data">Sensitive data remediation</option><option value="mcp-guardrail">MCP connector guardrail review</option><option value="base-image">Base image update</option><option value="recipe-runbook">Apply SecurityRecipes runbook</option></select>' +
                     '<div class="ai-chatbot-agent-cards" role="group" aria-label="Agent action type">' +
-                      '<button class="ai-chatbot-agent-card" type="button" data-agent-workflow-card="dependency" data-accent="teal" aria-pressed="true">' + icon('package') + '<h3>Dependency</h3></button>' +
-                      '<button class="ai-chatbot-agent-card" type="button" data-agent-workflow-card="sast" data-accent="amber" aria-pressed="false">' + icon('scan') + '<h3>SAST</h3></button>' +
+                      '<button class="ai-chatbot-agent-card" type="button" data-agent-workflow-card="dependency" data-accent="teal" aria-pressed="true">' + icon('package') + '<h3>Dependency fix</h3></button>' +
+                      '<button class="ai-chatbot-agent-card" type="button" data-agent-workflow-card="sast" data-accent="blue" aria-pressed="false">' + icon('scan') + '<h3>SAST triage</h3></button>' +
                       '<button class="ai-chatbot-agent-card" type="button" data-agent-workflow-card="sensitive-data" data-accent="rose" aria-pressed="false">' + icon('key') + '<h3>Secrets</h3></button>' +
-                      '<button class="ai-chatbot-agent-card" type="button" data-agent-workflow-card="mcp-guardrail" data-accent="violet" aria-pressed="false">' + icon('shield') + '<h3>MCP</h3></button>' +
-                      '<button class="ai-chatbot-agent-card" type="button" data-agent-workflow-card="base-image" data-accent="slate" aria-pressed="false">' + icon('cube') + '<h3>Image</h3></button>' +
-                      '<button class="ai-chatbot-agent-card" type="button" data-agent-workflow-card="recipe-runbook" data-accent="blue" aria-pressed="false">' + icon('file') + '<h3>Recipe</h3></button>' +
+                      '<button class="ai-chatbot-agent-card" type="button" data-agent-workflow-card="mcp-guardrail" data-accent="violet" aria-pressed="false">' + icon('shield') + '<h3>MCP guardrail</h3></button>' +
+                      '<button class="ai-chatbot-agent-card" type="button" data-agent-workflow-card="base-image" data-accent="slate" aria-pressed="false">' + icon('cube') + '<h3>Base image</h3></button>' +
+                      '<button class="ai-chatbot-agent-card" type="button" data-agent-workflow-card="recipe-runbook" data-accent="teal" aria-pressed="false">' + icon('file') + '<h3>Runbook</h3></button>' +
                     '</div>' +
                   '</section>' +
                   '<section class="ai-chatbot-agent-step" data-agent-deliver-step>' +
-                    '<div class="ai-chatbot-agent-step-title"><span>3</span><div><strong>Deliver</strong><small>Pick the output and decide whether this runs now or later.</small></div></div>' +
+                    '<div class="ai-chatbot-agent-step-title"><span>4</span><div><strong>Select output</strong><small>Choose where the result goes. Defaults stay reviewer-gated.</small></div></div>' +
                     '<div class="ai-chatbot-agent-grid ai-chatbot-agent-deliver-grid">' +
                       '<label class="ai-chatbot-field" hidden><span>Workflow pack</span><select data-agent-template></select></label>' +
                       '<label class="ai-chatbot-field" hidden><span>Report profile</span><select data-agent-report-profile></select></label>' +
-                      '<label class="ai-chatbot-field ai-chatbot-wide-field" hidden><span>Marketplace inputs and tools</span><select data-agent-input-channels multiple></select></label>' +
-                      '<label class="ai-chatbot-field"><span>Send to</span><select data-agent-output-route></select></label>' +
+                      '<label class="ai-chatbot-field"><span>Output</span><select data-agent-output-route></select></label>' +
                       '<label class="ai-chatbot-field"><span>When</span><select data-agent-cadence><option>Manual approval</option><option>Once at next run</option><option>Hourly</option><option>Daily</option><option>Weekly</option></select></label>' +
                       '<label class="ai-chatbot-field" data-agent-next-run-field hidden><span>Start at</span><input data-agent-next-run type="datetime-local"></label>' +
                       '<label class="ai-chatbot-field" hidden><span>Approval gate</span><select data-agent-approval><option>Security reviewer required</option><option>Code owner required</option><option>Ticket required</option><option>Two-person review</option></select></label>' +
                       '<label class="ai-chatbot-field" hidden><span>Context pack</span><select data-agent-context-pack><option>Secure context trust pack</option><option>Agentic assurance pack</option><option>MCP gateway policy</option><option>Runtime controls</option></select></label>' +
                     '</div>' +
-                    '<div class="ai-chatbot-agent-hint ai-chatbot-agent-hint-inline ai-chatbot-agent-context-line">' + icon('package') + '<span data-agent-template-hint></span><button class="ai-chatbot-agent-button secondary" type="button" data-open-panel="control-plane">Add context</button></div>' +
                     '<div class="ai-chatbot-agent-hint" data-agent-route-hint hidden></div>' +
                     '<div class="ai-chatbot-agent-hint" data-agent-routing-hint hidden></div>' +
-                    '<div class="ai-chatbot-agent-actions ai-chatbot-agent-primary-actions">' +
-                      '<button class="ai-chatbot-agent-button" type="button" data-agent-add-action>' + icon('plus') + '<span>Add action to queue</span></button>' +
-                      '<button class="ai-chatbot-agent-button secondary" type="button" data-agent-clear-actions>' + icon('trash') + '<span>Clear queue</span></button>' +
-                      '<button class="ai-chatbot-agent-button secondary" type="button" data-agent-apply-routing disabled hidden>' + icon('route') + '<span>Apply routing recommendation</span></button>' +
-                    '</div>' +
                     '<details class="ai-chatbot-agent-integrations" hidden>' +
                       '<summary class="ai-chatbot-github-heading"><span>Launch readiness</span><small>Audit credential, target, source, workflow-pack, report, and route blockers before you run.</small></summary>' +
                       '<div class="ai-chatbot-github-content ai-chatbot-agent-readiness-wrap">' +
@@ -25840,11 +26601,15 @@
                   '</section>' +
                 '</div>' +
                 '<aside class="ai-chatbot-agent-sidecar">' +
-                  '<section class="ai-chatbot-agent-sidecard">' +
+                  '<section class="ai-chatbot-agent-step ai-chatbot-agent-sidecard">' +
+                    '<div class="ai-chatbot-agent-step-title"><span>5</span><div><strong>Run and deliver</strong><small>Validate the setup, queue the action, then run now or schedule it.</small></div></div>' +
                     '<div class="ai-chatbot-agent-sidecard-head"><div>' + icon('route') + '<span>Run queue</span></div><small>One or many recipes</small></div>' +
                     '<div class="ai-chatbot-agent-queue" data-agent-action-list></div>' +
-                  '</section>' +
-                  '<section class="ai-chatbot-agent-footer">' +
+                    '<div class="ai-chatbot-agent-actions ai-chatbot-agent-primary-actions">' +
+                      '<button class="ai-chatbot-agent-button" type="button" data-agent-add-action>' + icon('plus') + '<span>Add to queue</span></button>' +
+                      '<button class="ai-chatbot-agent-button secondary" type="button" data-agent-clear-actions>' + icon('trash') + '<span>Clear queue</span></button>' +
+                      '<button class="ai-chatbot-agent-button secondary" type="button" data-agent-apply-routing disabled hidden>' + icon('route') + '<span>Apply route</span></button>' +
+                    '</div>' +
                     '<div class="ai-chatbot-status" data-agent-status>Validate, run now, or schedule this remediation agent. Browser schedules run while this tab is open.</div>' +
                     '<div class="ai-chatbot-agent-output" data-agent-output hidden></div>' +
                     '<div class="ai-chatbot-agent-actions ai-chatbot-agent-run-actions">' +
@@ -25903,6 +26668,11 @@
     els.marketplaceContextSources = shell.querySelector('[data-marketplace-context-sources]');
     els.marketplaceSettingsDetails = shell.querySelector('[data-marketplace-settings-details]');
     els.marketplaceSettingsCards = shell.querySelectorAll('[data-marketplace-settings-card]');
+    els.importedContextDetails = shell.querySelector('[data-imported-context-details]');
+    els.importedSettingsCards = shell.querySelectorAll('[data-imported-settings-card]');
+    els.deliverySettingsDetails = shell.querySelector('[data-delivery-settings-details]');
+    els.deliverySettingsCards = shell.querySelectorAll('[data-delivery-settings-card]');
+    els.deliverySettingsSave = shell.querySelector('[data-delivery-settings-save]');
     refreshOptionalContextSourceElements();
     els.githubRepoInput = shell.querySelector('[data-github-repo-url]');
     els.githubStatus = shell.querySelector('[data-github-status]');
@@ -26246,6 +27016,7 @@
     cleanupLegacyGitHubAuth();
     updatePanelOffset();
     renderMarketplaceContextSources();
+    renderDeliverySettings();
     els.includeContext.checked = state.includeContext;
     els.includeRelated.checked = state.includeRelated;
     els.includeGitHub.checked = state.includeGitHub;
@@ -26431,6 +27202,10 @@
         if (!action) return;
         if (action === 'context') {
           handleContextCheckQuickAction();
+          return;
+        }
+        if (action === 'clear-chat') {
+          clearChatMessages();
           return;
         }
         text = 'Run the best matching SecurityRecipes remediation recipe using the current page context, selected marketplace inputs, uploaded evidence, and reviewer-gated output route. Produce commands, checks, rollback, and the handoff packet.';
@@ -28281,11 +29056,7 @@
     }
 
     shell.querySelector('[data-reset]').addEventListener('click', function () {
-      state.messages = [];
-      clearChatHistoryStorage();
-      renderMessages();
-      setStatus(maskToken(getToken()), getToken() ? 'ok' : '');
-      els.prompt.focus();
+      clearChatMessages();
     });
 
     els.form.addEventListener('submit', handleSend);

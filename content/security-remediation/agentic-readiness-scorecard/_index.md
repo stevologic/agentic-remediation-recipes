@@ -11,7 +11,7 @@ description: >
 ---
 
 {{< callout type="info" >}}
-**Why this page exists.** Enterprise buyers do not need another static
+**Why this page exists.** Enterprise reviewers do not need another static
 maturity label. They need a decision surface: which agentic remediation
 workflows can scale now, which remain pilot-only, which require manual
 approval, and which are blocked by missing evidence.
@@ -29,7 +29,7 @@ turns that scope into runtime decisions. The
 explains the control story. The readiness scorecard turns all of that
 evidence into an adoption decision.
 
-That matters for an enterprise or acquirer because agentic AI programs
+That matters for an enterprise or reviewer because agentic AI programs
 are moving from pilots to platform rollout. The hard question is no
 longer "can an agent fix this?" It is "which agentic workflows can we
 scale without inventing new governance every time?"
@@ -137,7 +137,7 @@ evidence that justifies them.
 ## See also
 
 - [Agentic Assurance Pack]({{< relref "/security-remediation/agentic-assurance-pack" >}})
-  - the buyer and auditor control narrative.
+  - the reviewer and auditor control narrative.
 - [Agent Capability Risk Register]({{< relref "/security-remediation/agent-capability-risk-register" >}})
   - the capability and residual-risk view before MCP access expands.
 - [Agentic Red-Team Drill Pack]({{< relref "/security-remediation/agentic-red-team-drills" >}})

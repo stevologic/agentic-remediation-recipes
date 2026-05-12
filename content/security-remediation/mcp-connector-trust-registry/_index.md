@@ -32,7 +32,7 @@ gateway policy. A serious AI platform team will ask:
 
 The MCP Connector Trust Registry is the answer. It turns the connector
 catalog from prose into an inventory a gateway, agent host, auditor, or
-buyer can consume directly.
+reviewer can consume directly.
 
 ## What was added
 
@@ -81,7 +81,7 @@ human review before merge.
 | `connectors` | One trust contract per MCP namespace: owner, data classes, allowed operations, forbidden operations, controls, evidence, promotion criteria, and kill signals. |
 | `workflow_connector_map` | Per-workflow mapping from MCP namespace to connector ID, access mode, gateway decision, status, and trust tier. |
 | `policy_alignment` | Gateway default decision, policy ID, namespace coverage, policy decisions, and manifest hash alignment. |
-| `enterprise_adoption_packet` | Buyer questions answered, first-use guidance, and sales motion for hosted gateway and evidence exports. |
+| `enterprise_adoption_packet` | reviewer questions answered, first-use guidance, and adoption motion for hosted gateway and evidence exports. |
 | `source_artifacts` | Hashes for the registry, workflow manifest, and gateway policy pack. |
 
 The initial registry covers all workflow MCP namespaces currently used by
@@ -161,4 +161,4 @@ That turns MCP trust from a review meeting into a build contract.
 - [Runtime Controls]({{< relref "/security-remediation/runtime-controls" >}})
   - inline action proxies, result inspection, and session disablement.
 - [Agentic Assurance Pack]({{< relref "/security-remediation/agentic-assurance-pack" >}})
-  - the broader buyer and auditor evidence export.
+  - the broader reviewer and auditor evidence export.

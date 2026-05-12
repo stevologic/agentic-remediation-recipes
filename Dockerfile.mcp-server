@@ -16,13 +16,14 @@ RUN pip install --no-cache-dir -r /app/requirements-mcp-server.txt
 COPY mcp_server.py /app/mcp_server.py
 COPY scripts /app/scripts
 COPY mcp-server.toml.example /app/mcp-server.toml.example
-COPY data/control-plane /app/data/control-plane
-COPY data/policy /app/data/policy
-COPY data/evidence /app/data/evidence
+COPY data /app/data
 
 # Copy default config if the caller doesn't mount one.
 RUN cp /app/mcp-server.toml.example /app/mcp-server.toml
 
 EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD python -c "import socket; socket.create_connection(('127.0.0.1', 80), timeout=3).close()" || exit 1
 
 CMD ["python", "/app/mcp_server.py"]

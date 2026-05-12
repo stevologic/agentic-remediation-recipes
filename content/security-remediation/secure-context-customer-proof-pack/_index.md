@@ -6,24 +6,24 @@ sidebar:
   open: true
 description: >
   A generated customer-proof contract that tells design partners,
-  buyers, and acquirers exactly which runtime events, metrics, receipts,
+  reviewers, and reviewers exactly which runtime events, metrics, receipts,
   and renewal gates must exist before SecurityRecipes can claim
-  acquisition-grade value.
+  review-ready value.
 ---
 
 {{< callout type="info" >}}
 **Why this page exists.** SecurityRecipes now has strong reference
 evidence. The next credibility gap is customer proof: runtime events,
-receipts, MCP decisions, redacted telemetry, ROI metrics, and renewal
+receipts, MCP decisions, redacted telemetry, operational-impact metrics, and renewal
 signals that prove the secure context layer works in a real pilot.
 {{< /callout >}}
 
 SecurityRecipes is positioned as **The Secure Context Layer for Agentic
 AI**. The open project already shows the control model: secure context,
 MCP authorization, protocol conformance, source freshness, telemetry,
-run receipts, evals, buyer diligence, and value modeling. That is enough
+run receipts, evals, reviewer diligence, and value modeling. That is enough
 to start serious conversations, but it is not enough to claim recurring
-revenue or a $10-20M acquisition outcome.
+adoption proof or a trusted-source outcome.
 
 The **Secure Context Customer Proof Pack** closes that gap honestly. It
 defines what a design partner must measure before customer evidence can
@@ -33,7 +33,7 @@ replace assumptions.
 
 - `data/assurance/secure-context-customer-proof-profile.json` - source
   profile for proof claims, runtime event classes, metrics, renewal
-  gates, acquirer readout, and proof risks.
+  gates, reviewer readout, and proof risks.
 - `scripts/generate_secure_context_customer_proof_pack.py` -
   deterministic generator and `--check` validator.
 - `data/evidence/secure-context-customer-proof-pack.json` - generated
@@ -55,34 +55,34 @@ python3 scripts/generate_secure_context_customer_proof_pack.py --check
 | Section | Purpose |
 | --- | --- |
 | `customer_proof_summary` | Contract status, source-pack readiness, proof-claim count, metric count, renewal-gate count, and failure count. |
-| `proof_claims` | Buyer claims that require customer runtime proof, including context retrieval, MCP authorization, safe holds, redacted telemetry, ROI replacement, source freshness, and paid-wedge evidence. |
+| `proof_claims` | reviewer claims that require customer runtime proof, including context retrieval, MCP authorization, safe holds, redacted telemetry, ROI replacement, source freshness, and hosted-ready-proof evidence. |
 | `runtime_event_classes` | Metadata-first events a design partner should emit, such as `context.package.returned`, `mcp.authorization.decided`, `approval.receipt.validated`, and `reviewer.outcome.recorded`. |
-| `metric_definitions` | Renewal metrics such as receipt completeness, context hash coverage, MCP pre-execution decisions, safe hold behavior, sensitive telemetry escape count, reviewer minutes, and paid-wedge confirmation. |
-| `renewal_gates` | Hold conditions that block renewal, expansion, buyer export, or acquisition claims until customer evidence passes. |
+| `metric_definitions` | Renewal metrics such as receipt completeness, context hash coverage, MCP pre-execution decisions, safe hold behavior, sensitive telemetry escape count, reviewer minutes, and hosted-ready-proof confirmation. |
+| `renewal_gates` | Hold conditions that block renewal, expansion, reviewer export, or trust review claims until customer evidence passes. |
 | `acquirer_readout` | What is ready, what is not ready, and the next 90 days of proof collection. |
-| `risk_register` | How the project avoids overclaiming from synthetic demos, leaky telemetry, unproven MCP auth, weak ROI proof, source drift, or vague paid wedges. |
+| `risk_register` | How the project avoids overclaiming from synthetic demos, leaky telemetry, unproven MCP auth, weak operational-impact proof, source drift, or vague hosted-ready proof paths. |
 
 The generated artifact currently reports `customer_proof_contract_ready`
 with 10/10 source packs ready. It still marks the actual proof state as
 `customer_runtime_evidence_required`, which is intentional.
 
-## Why it is acquisition-grade
+## Why it is review-ready
 
-This pack gives the project a more serious posture in buyer and acquirer
+This pack gives the project a more serious posture in security reviewer
 conversations:
 
 - It turns a design-partner pilot into a measurable evidence contract.
 - It treats holds, denials, and kill decisions as product value when
   they prevent unsafe agent action.
 - It requires metadata-first telemetry and zero counted secret capture.
-- It blocks ROI and renewal claims until customer runtime evidence
+- It blocks operational-impact claims until customer runtime evidence
   replaces default assumptions.
-- It names the next commercial proof: paid wedge, budget owner,
+- It names the next vendor proof: hosted-ready proof path, budget owner,
   expansion trigger, support burden, and renewal signal.
 
 That makes the path to a valuable project clearer: open evidence creates
 trust, customer proof validates the wedge, and hosted MCP controls become
-the sellable enterprise layer.
+the review-ready hosted layer.
 
 ## MCP examples
 
@@ -107,7 +107,7 @@ recipes_secure_context_customer_proof_pack(event_id="mcp.authorization.decided")
 Inspect one renewal gate:
 
 ```text
-recipes_secure_context_customer_proof_pack(gate_id="roi-replaces-assumptions")
+recipes_secure_context_customer_proof_pack(gate_id="roi-impact-replaces-assumptions")
 ```
 
 Find contract areas that still require customer evidence:
@@ -142,7 +142,7 @@ The profile is grounded in current primary sources:
 
 ## See also
 
-- [Secure Context Buyer Diligence Brief]({{< relref "/security-remediation/secure-context-buyer-diligence-brief" >}})
+- [Secure Context Reviewer Brief]({{< relref "/security-remediation/secure-context-buyer-diligence-brief" >}})
 - [Design Partner Pilot Pack]({{< relref "/security-remediation/design-partner-pilot-pack" >}})
 - [Secure Context Value Model]({{< relref "/security-remediation/secure-context-value-model" >}})
 - [Enterprise Trust Center Export]({{< relref "/security-remediation/enterprise-trust-center-export" >}})

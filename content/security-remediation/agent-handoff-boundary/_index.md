@@ -75,10 +75,10 @@ python3 scripts/evaluate_agent_handoff_boundary_decision.py \
 | `approval-gated` | `allow_approved_handoff` | The target agent receives high-impact task context after explicit approval and scoped authority. |
 | `prohibited-context` | `kill_session_on_secret_handoff` | Credential material, internal memory, hidden prompts, raw tool traces, or unrestricted customer data appear. |
 
-## Why it is acquisition-grade
+## Why it is review-ready
 
 MCP and A2A are becoming the enterprise interoperability substrate for
-agentic systems. A buyer or acquirer will ask whether SecurityRecipes can
+agentic systems. A reviewer or reviewer will ask whether SecurityRecipes can
 govern that substrate, not just document it.
 
 This pack answers concrete diligence questions:
@@ -90,7 +90,7 @@ This pack answers concrete diligence questions:
 - Can the product kill sessions when hidden prompts, memory, raw traces,
   credentials, or signing material are about to cross a boundary?
 
-The commercial path is hosted handoff enforcement, signed Agent Card
+The trusted-source path is hosted handoff enforcement, signed Agent Card
 trust, agent-to-agent replay, tenant evidence ingestion, approval
 receipts, and trust-center exports.
 

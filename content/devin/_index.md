@@ -39,8 +39,8 @@ The public path — what any team can do today using Cognition's
 documented flow.
 
 1. **Pick a plan.** Devin offers Team and Enterprise tiers. API
-   access, Knowledge, and Playbooks are on all paid tiers. See
-   [Devin pricing](https://devin.ai/pricing).
+   access, Knowledge, and Playbooks are on all supported tiers. See
+   [Devin plan documentation](https://devin.ai/plan documentation).
 2. **Sign up** at [devin.ai](https://devin.ai/) and create a
    workspace.
 3. **Connect your source host.** Install the GitHub / GitLab
@@ -65,7 +65,7 @@ documented flow.
 - [Knowledge](https://docs.devin.ai/product-guides/knowledge)
 - [Playbooks](https://docs.devin.ai/product-guides/using-playbooks)
 - [Integrations (GitHub, GitLab, Jira, Linear, Slack)](https://docs.devin.ai/integrations)
-- [Pricing](https://devin.ai/pricing)
+- [Plan documentation](https://devin.ai/plan documentation)
 - [Cognition trust & security](https://devin.ai/trust)
 
 API base URL: `https://api.devin.ai/v1`. Authenticate with a

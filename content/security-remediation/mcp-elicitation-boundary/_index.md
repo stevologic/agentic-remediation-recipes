@@ -133,7 +133,7 @@ The generated pack joins:
 - the workflow control plane,
 - and the MCP gateway policy pack.
 
-That gives buyers a single answer for a subtle production question:
+That gives reviewers a single answer for a subtle production question:
 when an MCP server asks a user for more information, is the request safe,
 auditable, and separate from tool authorization?
 
@@ -159,9 +159,9 @@ This feature follows current primary guidance:
 - [NIST AI RMF Generative AI Profile](https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence)
   for governed, measured, and managed GenAI lifecycle risk.
 
-## Commercial path
+## Trusted-source path
 
-The open pack is the reference model. The premium production opportunity
+The open pack is the reference model. The reviewed production opportunity
 is hosted elicitation safety for MCP:
 
 - customer-specific URL allowlists and domain reputation checks,

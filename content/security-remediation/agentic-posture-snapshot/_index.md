@@ -6,7 +6,7 @@ toc: true
 description: >
   Generated enterprise posture evidence for agentic AI systems across secure
   context, MCP tools, A2A handoffs, identity, skills, telemetry, exposure
-  paths, readiness, standards, and buyer diligence.
+  paths, readiness, standards, and reviewer diligence.
 ---
 
 {{< callout type="info" >}}
@@ -14,7 +14,7 @@ description: >
 which agents exist, what they can reach, how they are identified, which
 context they consume, where high-autonomy and XPIA exposure meet, and
 which evidence proves the current state. This pack turns the open
-SecurityRecipes corpus into a posture snapshot a buyer can inspect.
+SecurityRecipes corpus into a posture snapshot a reviewer can inspect.
 {{< /callout >}}
 
 ## What this adds
@@ -29,14 +29,14 @@ It joins them into one generated artifact:
 - Secure-context provenance, poisoning findings, and egress policy.
 - A2A Agent Card, handoff, and skill supply-chain controls.
 - Runtime telemetry, run receipts, readiness, and exposure paths.
-- Standards and buyer-diligence mapping for procurement and acquisition.
+- Standards and reviewer-diligence mapping for procurement and trust review.
 
 The result is a generated posture decision, workflow-level posture rows,
-risk-factor summary, buyer views, and source hashes for every source pack.
+risk-factor summary, reviewer views, and source hashes for every source pack.
 
 ## Why this is valuable
 
-Enterprise buyers are no longer asking only whether an agent has a good
+Enterprise reviewers are no longer asking only whether an agent has a good
 prompt. They are asking whether the agentic system has posture:
 
 1. Which agents and identities exist?
@@ -104,7 +104,7 @@ The snapshot scores eight posture dimensions:
   redaction, incident linkage, and replay evidence.
 - **Exposure Path Management** - risk-ranked paths across context,
   identities, MCP namespaces, and workflow maturity.
-- **Standards and Buyer Diligence** - current OWASP, NIST, MCP, OpenAI,
+- **Standards and reviewer Diligence** - current OWASP, NIST, MCP, OpenAI,
   A2A, and posture-management guidance mapped to SecurityRecipes evidence.
 
 Global posture decisions are:
@@ -127,7 +127,7 @@ The MCP server exposes:
 - `recipes_agentic_posture_snapshot`
 - `recipes_evaluate_agentic_posture_decision`
 
-Use the snapshot tool for board, platform, procurement, and acquirer
+Use the snapshot tool for board, platform, procurement, and reviewer
 questions. Use the evaluator before a runtime event crosses a posture
 boundary, especially when high-autonomy agents touch untrusted content,
 pilot MCP connectors, A2A Agent Cards, or approval-required namespaces.
@@ -155,7 +155,7 @@ This feature is intentionally aligned with current industry movement:
 
 ## What to look at first
 
-For a buyer or acquirer, start with:
+For a reviewer or reviewer, start with:
 
 1. `posture_summary` - the single posture score and decision.
 2. `risk_factor_summary` - XPIA, high-exposure, pilot connector, skill,
@@ -164,6 +164,6 @@ For a buyer or acquirer, start with:
    architecture review.
 4. `source_artifacts` - hashes proving which generated packs produced the
    answer.
-5. `commercialization_path` - how the open evidence becomes hosted MCP,
+5. `vendorization_path` - how the open evidence becomes hosted MCP,
    private evidence overlays, and trust-center APIs.
 

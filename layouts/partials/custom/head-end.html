@@ -142,10 +142,15 @@ window.__SECURITY_RECIPES_MARKETPLACE_SCHEMAS = {
   routingPolicy: {{ "/marketplace-schemas/routing-policy.schema.json" | relURL | jsonify | safeJS }},
   routingLibrary: {{ "/marketplace-schemas/routing-library.schema.json" | relURL | jsonify | safeJS }}
 };
+{{ $chatApiPath := site.Params.chatApiPath | default site.Params.chatapipath | default "" }}
+{{ $aiProviderRelay := site.Params.aiProviderRelay | default site.Params.aiproviderrelay | default "" }}
+window.__SECURITY_RECIPES_CHAT_API__ = {{ $chatApiPath | jsonify | safeJS }};
+window.__SECURITY_RECIPES_AI_PROVIDER_RELAY__ = {{ $aiProviderRelay | jsonify | safeJS }};
 </script>
 {{/*
-  AI remediation chatbot â€” provider tokens are stored only in the user's
-  browser and requests go directly to OpenAI, xAI/Grok, or Anthropic.
+  AI remediation chatbot. Production Docker builds can point this at a
+  same-origin server-side chat API; static-only builds can still use
+  browser-held provider credentials.
 */}}
 {{ with resources.Get "js/ai-chatbot.js" | fingerprint }}
   <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>

@@ -14,7 +14,7 @@ description: >
 **Why this matters.** Credible agentic AI security needs measurement,
 not only guidance. This pack turns SecurityRecipes controls into
 repeatable probes that can be consumed by AI platform reviews, MCP
-gateways, procurement security, and acquisition diligence.
+gateways, procurement security, and trust review diligence.
 {{< /callout >}}
 
 SecurityRecipes is positioned as **the secure context layer for

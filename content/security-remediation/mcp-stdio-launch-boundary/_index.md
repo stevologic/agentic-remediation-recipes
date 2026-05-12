@@ -32,7 +32,7 @@ filesystem control, and network control. That makes STDIO launch review a
 natural enterprise product surface: before the agent sees a local tool,
 the platform can ask for a machine-readable launch decision.
 
-The high-value buyer questions are straightforward:
+The high-value reviewer questions are straightforward:
 
 - Which local MCP server commands are approved to run?
 - Can the launch install a package, execute a shell, or reach the
@@ -50,7 +50,7 @@ The high-value buyer questions are straightforward:
 - `scripts/generate_mcp_stdio_launch_boundary_pack.py` - dependency-free
   generator and validator with `--check` mode.
 - `data/evidence/mcp-stdio-launch-boundary-pack.json` - generated launch
-  boundaries, risk findings, source hashes, and buyer evidence.
+  boundaries, risk findings, source hashes, and reviewer evidence.
 - `scripts/evaluate_mcp_stdio_launch_decision.py` - deterministic runtime
   evaluator for an MCP client, endpoint agent, or CI gate.
 - `recipes_mcp_stdio_launch_boundary_pack` and

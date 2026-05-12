@@ -18,12 +18,12 @@ prompts, customer code, secrets, tokens, or private runtime data.
 ## The product bet
 
 SecurityRecipes is positioned as **the Secure Context Layer for Agentic
-AI**. That only becomes enterprise-grade when buyers can answer:
+AI**. That only becomes enterprise-grade when reviewers can answer:
 
 - What evidence objects are safe to expose?
 - Which source packs back each claim?
 - Which channels can publish public, design-partner, trust-center,
-  hosted API, or acquirer evidence?
+  hosted API, or reviewer evidence?
 - Which controls block an export that contains raw prompts, source code,
   customer data, secrets, tokens, or unsigned evidence?
 - What would the hosted API look like before the product is built?
@@ -123,8 +123,8 @@ The contract separates evidence by audience and risk:
 | `open_reference` | Public evidence for forks, search, and open adopters. |
 | `design_partner_private` | Tenant-bound customer pilot proof with runtime evidence. |
 | `trust_center_external` | Signed or signable procurement and governance packet. |
-| `acquirer_diligence` | Redacted runtime proof for strategic buyer review. |
-| `hosted_mcp_api` | Paid API path for evidence release checks, MCP decisions, receipt lookup, and trust-center export. |
+| `acquirer_diligence` | Redacted runtime proof for strategic reviewer review. |
+| `hosted_mcp_api` | Hosted-ready API path for evidence release checks, MCP decisions, receipt lookup, and trust-center export. |
 
 The important design choice is fail-closed publication. A channel that
 needs customer runtime proof, tenant binding, DPA state, ZDR state, or a
@@ -144,7 +144,7 @@ exists:
 - `GET /v1/run-receipts/{receipt_id}`
 - `GET /v1/customer-proof/metrics`
 
-This is intentionally narrow. It gives a design partner or acquirer a
+This is intentionally narrow. It gives a design partner or reviewer a
 concrete integration shape while preserving the open repo's read-only
 boundary.
 
@@ -173,9 +173,9 @@ This feature follows current primary guidance:
 - [CSA AI Controls Matrix](https://cloudsecurityalliance.org/artifacts/ai-controls-matrix)
   for procurement-friendly AI control mapping.
 
-## Commercial path
+## Trusted-source path
 
-The open repo now proves the object model and evaluator. The paid wedge
+The open repo now proves the object model and evaluator. The hosted-ready proof path
 is a hosted evidence API:
 
 - tenant-private evidence release checks;
@@ -184,7 +184,7 @@ is a hosted evidence API:
 - run-receipt and approval-receipt lookup;
 - customer-proof metric aggregation;
 - DPA, ZDR, retention, and signature state enforcement;
-- acquirer-ready redacted evidence packets.
+- reviewer-ready redacted evidence packets.
 
 That is a credible bridge from open knowledge to a production secure
 context layer that an AI platform, frontier lab, security vendor, or
@@ -229,7 +229,7 @@ recipes_evaluate_secure_context_evidence_release(
 ## See also
 
 - [Enterprise Trust Center Export]({{< relref "/security-remediation/enterprise-trust-center-export" >}})
-  for the buyer packet this contract can expose.
+  for the reviewer packet this contract can expose.
 - [Secure Context Customer Proof Pack]({{< relref "/security-remediation/secure-context-customer-proof-pack" >}})
   for design-partner runtime proof.
 - [Hosted MCP Readiness Pack]({{< relref "/security-remediation/hosted-mcp-readiness-pack" >}})

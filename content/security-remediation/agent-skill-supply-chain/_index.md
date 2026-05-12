@@ -72,7 +72,7 @@ through `recipes_evaluate_agent_skill_decision`.
 ## Why this matters now
 
 The 2026 agent security market is shifting from "prompt injection" to
-"behavior package supply chain." A mature buyer will ask:
+"behavior package supply chain." A mature reviewer will ask:
 
 - Which skills are installed across agent hosts?
 - Which publisher and registry does each skill come from?

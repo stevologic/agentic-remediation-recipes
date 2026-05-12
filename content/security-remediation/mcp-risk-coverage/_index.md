@@ -6,12 +6,12 @@ toc: true
 description: >
   Generated OWASP MCP Top 10 and OWASP Agentic Skills Top 10 coverage
   map for SecurityRecipes controls, evidence packs, MCP tools, and
-  hosted product wedges.
+  hosted readiness gates.
 ---
 
 {{< callout type="info" >}}
 **What this is.** This pack turns fresh MCP and agent-skill risk
-language into a buyer-readable coverage artifact. It shows which
+language into a reviewer-readable coverage artifact. It shows which
 SecurityRecipes evidence paths and MCP tools answer each OWASP MCP Top
 10 and OWASP Agentic Skills Top 10 risk.
 {{< /callout >}}
@@ -28,7 +28,7 @@ plane:
 
 The **MCP and Agentic Skills Risk Coverage Pack** maps those two layers
 to existing SecurityRecipes artifacts. It is designed for platform teams,
-procurement reviewers, GRC, investors, and acquirers who need to know
+procurement reviewers, GRC, reviewers, and reviewers who need to know
 whether the project tracks the newest risks without reading the whole
 site.
 
@@ -70,7 +70,7 @@ This pack makes that coverage explicit:
 | Context injection and over-sharing | Secure Context Trust Pack, Context Poisoning Guard, Context Egress Boundary, Memory Boundary, Handoff Boundary |
 | Malicious or over-privileged skills | Agent Skill Supply Chain, Gateway Policy, Identity Ledger, Entitlement Review, Action Runtime Pack |
 | Skill isolation, scanning, and update drift | Browser Agent Boundary, Measurement Probes, Red-Team Drills, Tool Surface Drift |
-| Governance and acquisition evidence | Enterprise Trust Center Export, Agentic System BOM, Telemetry Contract, Run Receipts |
+| Governance and trust review evidence | Enterprise Trust Center Export, Agentic System BOM, Telemetry Contract, Run Receipts |
 
 ## MCP examples
 
@@ -112,10 +112,10 @@ Filter for critical risks:
 }
 ```
 
-## Product wedge
+## Readiness gate
 
 The open pack proves that SecurityRecipes understands the current MCP and
-skills risk landscape. The commercial layer is the natural hosted
+skills risk landscape. The trusted-source layer is the natural hosted
 version of those controls:
 
 - live MCP connector discovery and admission,

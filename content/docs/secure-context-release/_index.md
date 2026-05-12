@@ -12,14 +12,14 @@ description: >
 **What this adds.** SecurityRecipes already tracks context provenance,
 attestation, poisoning scans, evals, and egress policy. The release gate
 packages those controls into versioned context releases so agent hosts,
-MCP gateways, and buyers know exactly which source hashes are safe to
+MCP gateways, and reviewers know exactly which source hashes are safe to
 consume.
 {{< /callout >}}
 
 ## Why This Matters
 
 The product thesis is **The Secure Context Layer for Agentic AI**. A
-credible context layer needs a release step. Enterprise buyers do not
+credible context layer needs a release step. Enterprise reviewers do not
 only ask "where did this guidance come from?" They ask:
 
 - Which context bundle is approved for production agents?
@@ -55,7 +55,7 @@ python3 scripts/generate_secure_context_release_pack.py --check
 | --- | --- | --- |
 | `open-reference` | Public docs, local MCP, CI, and open-source evaluation. | Unsigned but hash-bound. |
 | `production-mcp` | Hosted MCP and enterprise agent hosts. | Held until signature and transparency proof exist. |
-| `trust-center` | Procurement, AI platform review, and acquisition diligence. | Held until signed, or held earlier if a source needs review. |
+| `trust-center` | Procurement, AI platform review, and trust review diligence. | Held until signed, or held earlier if a source needs review. |
 
 ## Runtime Decisions
 
@@ -118,7 +118,7 @@ is hosted signed releases:
 - trust-center export automation.
 
 That makes the site easier for enterprise teams to approve and gives a
-future acquirer a concrete control primitive around agent context
+future reviewer a concrete control primitive around agent context
 distribution.
 
 ## Source Anchors

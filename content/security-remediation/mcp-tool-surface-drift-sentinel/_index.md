@@ -108,7 +108,7 @@ Each baseline records:
 - data classes, external systems, and capability flags
 - source artifacts used to build the pack
 
-That lets a hosted MCP gateway answer a hard buyer question: "Can you
+That lets a hosted MCP gateway answer a hard reviewer question: "Can you
 prove this production tool list is the one we reviewed?"
 
 ## Industry alignment
@@ -151,7 +151,7 @@ An MCP gateway should evaluate this pack when:
 5. A workflow starts with a cached tool baseline.
 6. A high-impact action is about to execute.
 
-The open pack is the product wedge. The paid surface is hosted live
+The open pack is the readiness gate. The hosted-ready surface is hosted live
 tool-list monitoring, signed baselines, tenant-specific policy, approval
 workflows, and fleet drift alerts.
 

@@ -114,7 +114,7 @@ policy decisions do not match the fixture, and kills the session when
 critical unsafe flags appear, such as secret leakage, unauthorized tool
 use, fabricated evidence, or an unbounded loop.
 
-This makes AI easier because a buyer does not need to read every raw
+This makes AI easier because a reviewer does not need to read every raw
 transcript to know whether the control plane held. The evaluator checks
 a small, stable contract: expected decision, evidence classes, trace
 events, fail signals, and unsafe runtime flags.

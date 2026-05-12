@@ -302,6 +302,26 @@ docker run --rm -p 8080:80 security-recipes
 # open http://localhost:8080
 ```
 
+For the production shape used on a DigitalOcean droplet, use Compose.
+It starts the Hugo/nginx site, the server-side chatbot API, and the
+hosted MCP server behind the same public origin:
+
+```bash
+cp .env.example .env
+# edit .env: set SECURITY_RECIPES_BASE_URL and at least one provider key
+docker compose up -d --build
+
+# site: http://your-droplet-or-domain/
+# chatbot API health: http://your-droplet-or-domain/api/chat/health?provider=openai
+# MCP endpoint: http://your-droplet-or-domain/mcp
+```
+
+Point DNS for your domain at the droplet, set
+`SECURITY_RECIPES_BASE_URL` to that HTTPS URL, and either terminate TLS
+in front of the container with a DigitalOcean load balancer/managed
+certificate or run a host-level reverse proxy such as Caddy/Nginx that
+forwards to `SECURITY_RECIPES_HTTP_PORT`.
+
 ### Add a recipe for a new agent
 
 ```bash
@@ -1530,6 +1550,12 @@ The project ships with a GitHub Actions workflow
 6. Pushes the compiled root-level `public/` directory to a dedicated
    **`gh-pages`** branch using `peaceiris/actions-gh-pages`.
 
+GitHub Pages is static hosting. The Security Remediation AI panel can
+load there and use browser-saved provider credentials, but Pages cannot
+serve the Docker/nginx `/ai-provider-proxy/*` routes or keep provider
+keys server-side. Use the Compose/Docker runtime when you need the
+server-side chat API or a same-origin AI provider relay.
+
 ### MCP server-friendly content index
 
 This site generates a machine-readable JSON corpus at:
@@ -2549,6 +2575,18 @@ docker run --rm -it \
   -p 8123:80 \
   mcp.server
 # MCP endpoint: http://localhost:8123/mcp
+```
+
+#### Docker Compose
+
+The root `docker-compose.yml` starts the MCP server alongside the Hugo
+site and server-side chatbot API. Nginx proxies the public `/mcp`
+endpoint to the private `mcp-server` service, so the droplet only needs
+to expose the site port:
+
+```bash
+cp .env.example .env
+docker compose up -d --build
 ```
 
 See `README.mcp-localhost.md` for client configuration examples and

@@ -26,7 +26,7 @@ The Secure Context Firewall turns that declaration into a runtime
 decision function an MCP gateway can enforce before retrieved text enters
 the model window.
 
-That is the enterprise shape acquirers and platform teams expect:
+That is the enterprise shape reviewers and platform teams expect:
 
 - **Registered context only.** Unknown source IDs fail closed.
 - **Workflow-bound packages.** A source must be approved for the
@@ -161,7 +161,7 @@ CI should replay at least four cases:
 - denied unregistered or workflow-unapproved context,
 - kill-session on prohibited data class.
 
-That gives buyers a testable story: SecurityRecipes is not just a docs
+That gives reviewers a testable story: SecurityRecipes is not just a docs
 site that agents read. It is a secure context layer with deterministic
 runtime context gates.
 

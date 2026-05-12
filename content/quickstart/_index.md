@@ -297,6 +297,12 @@ attempt. Saving you the scars:
 - **Letting the agent touch migrations, workflows, or prod
   infra on the first run.** Hard-block these in your rules
   file from day one. Loosen later if you need to.
+- **Expecting GitHub Pages to proxy model calls.** The static
+  site can load the Security Remediation AI UI, but Pages cannot
+  serve `/ai-provider-proxy/*` or keep provider keys on a server.
+  Use a browser-saved provider credential for direct provider calls,
+  or deploy the Docker/chatbot API runtime and set the chat API path
+  when you need a server-side relay.
 - **Reviewing the PR as "did it do what I asked?" instead of
   "would I merge this from a coworker?"** The second question
   is the real test.

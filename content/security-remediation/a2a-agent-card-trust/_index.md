@@ -19,7 +19,7 @@ agent boundary.
 SecurityRecipes is positioned as **The Secure Context Layer for Agentic
 AI**. That layer needs a decision point before a newly discovered A2A
 agent is trusted. MCP controls tool access; A2A controls agent-to-agent
-coordination. The Agent Card is where a buyer first sees the remote
+coordination. The Agent Card is where a reviewer first sees the remote
 agent's identity, supported interfaces, auth requirements, skills,
 signatures, and extended-card behavior.
 
@@ -85,7 +85,7 @@ useful, but it also creates a new trust problem: an enterprise cannot
 let any discovered opaque agent receive internal context just because it
 publishes a card.
 
-This profile answers concrete buyer questions:
+This profile answers concrete reviewer questions:
 
 - Does the Agent Card use HTTPS interfaces?
 - Is provider identity present and reviewable?
@@ -95,7 +95,7 @@ This profile answers concrete buyer questions:
 - Does the card contain credential material or prompt-injection text?
 - Which handoff profiles may the agent receive after intake?
 
-The commercial path is hosted Agent Card monitoring, signature
+The trusted-source path is hosted Agent Card monitoring, signature
 verification, allowlist drift detection, procurement exports, remote
 agent trust tiers, and A2A/MCP gateway enforcement.
 

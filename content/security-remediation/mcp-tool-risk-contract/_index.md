@@ -22,7 +22,7 @@ MCP tools can now declare behavior with annotations such as
 `openWorldHint`. That is valuable, but the MCP specification is clear:
 clients must treat annotations as untrusted unless they come from a
 trusted server. The MCP Tool Risk Contract turns that reality into a
-buyer-ready control surface.
+reviewer-ready control surface.
 
 The core policy is simple: before a tool call runs, decide whether the
 session has private data, untrusted content, and an external or

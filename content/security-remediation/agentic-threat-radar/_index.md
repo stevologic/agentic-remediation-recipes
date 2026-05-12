@@ -5,8 +5,8 @@ weight: 18
 toc: true
 description: >
   Source-backed radar that maps current agentic AI and MCP security
-  guidance to SecurityRecipes controls, MCP tools, buyer triggers, and
-  product roadmap priorities.
+  guidance to SecurityRecipes controls, MCP tools, reviewer triggers, and
+  source roadmap priorities.
 ---
 
 {{< callout type="info" >}}
@@ -28,8 +28,8 @@ guidance into a generated evidence pack:
   Pack, Context Poisoning Guard, MCP Gateway Policy, Agent Identity
   Ledger, Red-Team Drill Pack, Readiness Scorecard, Agentic System BOM,
   and this radar.
-- Buyer triggers that explain when an enterprise should care.
-- Product roadmap actions that keep the open knowledge base aligned
+- reviewer triggers that explain when an enterprise should care.
+- Source roadmap actions that keep the open knowledge base aligned
   with a future hosted MCP/server business.
 
 ## Generated artifact
@@ -80,7 +80,7 @@ new MCP servers or connector namespaces.
 quarterly agentic security review. If a source changes, regenerate the
 pack and review affected capabilities.
 
-**Acquisition diligence.** Use the generated pack to show that
+**trust review diligence.** Use the generated pack to show that
 SecurityRecipes is not only content. It is a machine-readable control
 story: sources, mapped risks, product surfaces, MCP tools, and roadmap
 actions.

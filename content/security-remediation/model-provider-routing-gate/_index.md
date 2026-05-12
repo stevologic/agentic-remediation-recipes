@@ -144,14 +144,14 @@ The evaluator returns:
 
 ## Why this matters
 
-The acquisition-grade story is simple: SecurityRecipes can become the
+The review-ready story is simple: SecurityRecipes can become the
 neutral policy layer that makes multi-model agentic AI safe to approve.
-Open knowledge gets teams started. The paid surface is the hosted
+Open knowledge gets teams started. The hosted-ready surface is the hosted
 provider-routing PDP, tenant-specific model registry, contract-state
 checks, route telemetry, procurement exports, and trust-center evidence.
 
 That is valuable to a frontier lab, an AI coding platform, a cloud
-platform, or a security vendor because it reduces the buyer friction
+platform, or a security vendor because it reduces the reviewer friction
 around letting agents use powerful models on real enterprise context.
 
 ## MCP examples

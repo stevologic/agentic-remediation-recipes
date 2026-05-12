@@ -12,7 +12,7 @@ description: >
 ---
 
 {{< callout type="info" >}}
-**Why this page exists.** Enterprise buyers can approve agentic
+**Why this page exists.** Enterprise reviewers can approve agentic
 remediation faster when they can inspect the system like a supply chain:
 which agents exist, what they can touch, which MCP connectors they use,
 which policies constrain them, and which evidence proves current state.
@@ -28,12 +28,12 @@ scorecard decides what can scale.
 
 The Agentic System BOM makes that system inspectable. It turns the
 control artifacts into a single generated inventory that an AI platform
-team, GRC reviewer, procurement security team, or acquirer can load
+team, GRC reviewer, procurement security team, or reviewer can load
 without reading the whole site.
 
 That matters because agentic systems are not one binary. They are a
 changing composition of models, prompts, skills, workflows, tools, MCP
-servers, policies, identities, evidence, and evals. A serious buyer will
+servers, policies, identities, evidence, and evals. A serious reviewer will
 ask:
 
 - Which agents and identities are part of the system?

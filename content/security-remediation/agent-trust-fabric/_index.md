@@ -12,14 +12,14 @@ description: >
 {{< callout type="info" >}}
 **What this is.** SecurityRecipes is positioned as **The Secure Context
 Layer for Agentic AI**. The Agent Trust Fabric is the single runtime
-verdict that tells an agent host, MCP gateway, SOC workflow, or buyer:
+verdict that tells an agent host, MCP gateway, SOC workflow, or reviewer:
 this agent run is trusted, needs step-up, is untrusted, or must be
 killed.
 {{< /callout >}}
 
 ## The product bet
 
-Enterprise buyers do not want a pile of agent safety checklists. They
+Enterprise reviewers do not want a pile of agent safety checklists. They
 want one answer before an agent touches tools or private context:
 
 > Can we trust this agent, for this workflow, in this tenant, right now?
@@ -39,7 +39,7 @@ The **Agent Trust Fabric** composes six dimensions into that answer:
 6. **Containment** - whether kill switches, SOC detections, and hosted
    MCP controls can stop the run when prevention fails.
 
-That is the acquisition-grade wedge: open knowledge creates adoption;
+That is the review-ready wedge: open knowledge creates adoption;
 the production MCP server becomes the control point that signs trust
 verdicts for customer-private agent runs.
 
@@ -47,7 +47,7 @@ verdicts for customer-private agent runs.
 
 - `data/assurance/agent-trust-fabric-profile.json` - source contract for
   trust dimensions, tiers, runtime fields, source references, and
-  commercialization path.
+  trusted-source path.
 - `scripts/generate_agent_trust_fabric_pack.py` - deterministic generator
   and `--check` validator.
 - `scripts/evaluate_agent_trust_fabric_decision.py` - deterministic
@@ -193,7 +193,7 @@ Evaluate one agent trust request:
 }
 ```
 
-## Why it is acquisition-grade
+## Why it is review-ready
 
 The trust fabric makes the site easier to understand and easier to sell.
 It creates one cross-vendor primitive that xAI, Anthropic, OpenAI, an AI

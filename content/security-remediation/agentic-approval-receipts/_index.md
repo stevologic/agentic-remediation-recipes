@@ -32,7 +32,7 @@ agent proceed.
 
 Agentic systems are crossing a new risk boundary: they can chain model
 reasoning, MCP tools, browser sessions, memory, remote agents, and non-human
-identities into workflows that create real side effects. Enterprise buyers
+identities into workflows that create real side effects. Enterprise reviewers
 will not trust that surface with comment-thread approvals, Slack reactions,
 or ambiguous ticket links.
 
@@ -42,18 +42,18 @@ Approval receipts are a product-grade answer:
 - **AI platform teams** get a narrow runtime API for approval checks.
 - **IAM teams** get separation-of-duties and role evidence.
 - **GRC teams** get repeatable audit artifacts instead of screenshots.
-- **Acquirers** get a differentiated control surface for an MCP-native
+- **reviewers** get a differentiated control surface for an MCP-native
   secure context layer.
 
 ## What Ships
 
 | Artifact | Purpose |
 | --- | --- |
-| `data/assurance/agentic-approval-receipt-profile.json` | Source profile with standards alignment, receipt contract, approval profiles, runtime policy, buyer views, and commercialization path. |
+| `data/assurance/agentic-approval-receipt-profile.json` | Source profile with standards alignment, receipt contract, approval profiles, runtime policy, reviewer views, and trusted-source path. |
 | `data/evidence/agentic-approval-receipt-pack.json` | Generated pack joining approval profiles to action runtime, run receipts, telemetry, entitlement, identity, MCP gateway, elicitation, and catastrophic-risk evidence. |
 | `scripts/generate_agentic_approval_receipt_pack.py` | Dependency-free generator with `--check` support for CI freshness validation. |
 | `scripts/evaluate_agentic_approval_receipt_decision.py` | Deterministic evaluator for one runtime approval request. |
-| `recipes_agentic_approval_receipt_pack` | MCP tool for receipt profiles, workflow requirements, buyer views, and evidence. |
+| `recipes_agentic_approval_receipt_pack` | MCP tool for receipt profiles, workflow requirements, reviewer views, and evidence. |
 | `recipes_evaluate_agentic_approval_receipt_decision` | MCP tool for runtime allow / hold / deny / kill decisions. |
 
 ## Approval Profiles
@@ -164,7 +164,7 @@ work:
 - [NIST AI RMF Generative AI Profile](https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence)
 - [CSA AI Controls Matrix](https://cloudsecurityalliance.org/artifacts/ai-controls-matrix)
 
-## Acquisition Logic
+## trust review Logic
 
 Approval receipts push SecurityRecipes beyond documentation. They create a
 repeatable enterprise control surface around MCP-backed agent actions:
@@ -175,8 +175,8 @@ repeatable enterprise control surface around MCP-backed agent actions:
   matrices, expose policy decisions, and export trust-center evidence.
 - **Enterprise integrations:** connect approval sources from GitHub, Jira,
   Slack, ServiceNow, IAM, incident tools, and deployment gates.
-- **Diligence packet:** show acquirers a coherent path from open knowledge
-  to revenue-grade runtime infrastructure.
+- **Diligence packet:** show reviewers a coherent path from open knowledge
+  to production-grade runtime infrastructure.
 
 ## See Also
 

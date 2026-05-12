@@ -11,7 +11,7 @@ description: >
 ---
 
 {{< callout type="info" >}}
-**What this is.** The standards crosswalk is the buyer-facing evidence
+**What this is.** The standards crosswalk is the reviewer-facing evidence
 map for SecurityRecipes. It answers which current agentic AI standards
 and guidance are tracked, which SecurityRecipes capability covers each
 control, and which generated JSON or MCP tool proves it.
@@ -19,7 +19,7 @@ control, and which generated JSON or MCP tool proves it.
 
 SecurityRecipes is positioned as **the secure context layer for
 agentic AI**. That claim needs more than a strong homepage. Enterprise
-buyers, AI platform teams, and acquirers will ask whether the project
+reviewers, AI platform teams, and reviewers will ask whether the project
 tracks the current external control language: OWASP Agentic Top 10,
 CSA AI Controls Matrix, NIST agent standards work, MCP authorization,
 critical-infrastructure AI review expectations, prompt-injection
@@ -65,9 +65,9 @@ python3 scripts/generate_agentic_standards_crosswalk.py --check
 
 The most valuable version of SecurityRecipes is not a static prompt
 library. It is a standards-aware secure context control plane that can
-answer a buyer's first hard questions:
+answer a reviewer's first hard questions:
 
-| Buyer question | Crosswalk answer |
+| reviewer question | Crosswalk answer |
 | --- | --- |
 | Which agentic risks are covered? | OWASP Agentic Top 10 controls map to generated capabilities and MCP tools. |
 | Which MCP authorization requirements matter? | Resource binding, audience validation, token-passthrough denial, PKCE, scope minimization, and local-server sandboxing map to concrete packs. |
@@ -75,7 +75,7 @@ answer a buyer's first hard questions:
 | How does this track NIST agent and GenAI guidance? | Identity, protocols, security evaluations, governance, access constraints, monitoring, data provenance, and lifecycle risk map to evidence artifacts. |
 | How are prompt-injection defenses made operational? | Context poisoning scans, egress decisions, handoff boundaries, sandboxed tool use, red-team replay, and readiness checks are linked to frontier-lab guidance. |
 | What changes for high-impact deployments? | Critical-infrastructure readiness maps fail-safe action boundaries, operational monitoring, incident response, and lifecycle change control to MCP-readable evidence. |
-| What should a diligence team inspect first? | The generated crosswalk returns standards, controls, sources, evidence paths, MCP tools, and commercialization hooks in one packet. |
+| What should a diligence team inspect first? | The generated crosswalk returns standards, controls, sources, evidence paths, MCP tools, and vendorization hooks in one packet. |
 
 ## Core mappings
 

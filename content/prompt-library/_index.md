@@ -3,8 +3,8 @@ title: Prompt Library
 linkTitle: Prompt Library
 weight: 8
 description: >
-  Prompt Library: community prompts plus agent-verified premium prompts
-  delivered through the SecurityRecipes production MCP server.
+  Prompt Library: community prompts plus reviewed agent prompts
+  delivered through the SecurityRecipes open knowledge base.
 sidebar:
   open: false
 cascade:
@@ -29,12 +29,13 @@ to see what a good entry looks like.
 The recipes elsewhere on this site show you **how** to enable
 agentic remediation in each tool. Prompt Library is where we
 collect the actual **prompts, rules, skills, and instruction
-files** that are shipping fixes in production today — with a clear split between open community prompts and premium agent-verified packs.
+files** that are shipping fixes in production today, with reviewed
+workflow packs kept traceable to public source material.
 
 Think of this as a shared cookbook for AI coding agents —
 community-driven, versioned, and reviewed.
 
-## Prompt Library: community + premium
+## Prompt Library: reviewed examples
 
 Every prompt lives under the folder for the agent it targets. If a
 prompt works the same across two or more agents, it belongs in
@@ -49,12 +50,12 @@ prompt works the same across two or more agents, it belongs in
   {{< card link="/prompt-library/general/" title="General" subtitle="Tool-agnostic triage frameworks, guardrails, review checklists, and PR templates." >}}
 {{< /cards >}}
 
-## Free vs Premium in Prompt Library
+## Open Prompt Library Scope
 
 | Access | Includes |
 | --- | --- |
 | **Free (on-site)** | Community prompts, public playbooks, and tool-specific examples. |
-| **Premium (via production MCP server)** | Agent-verified premium prompts, curated workflow packs, and premium-only context features. |
+| **Reviewed examples** | Agent-tested prompts, curated workflow packs, and reviewed context features. |
 
 ## Start with the sample
 

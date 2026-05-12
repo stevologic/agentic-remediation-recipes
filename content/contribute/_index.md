@@ -237,7 +237,7 @@ Things reviewers look for in a recipe PR:
 - **Reproducible** — a peer followed it and got the same result.
 - **Opinionated** — you picked one path and explained the trade-off.
 - **Safe** — the Guardrails section is not an afterthought.
-- **Current** — versions and pricing are dated so the reader knows
+- **Current** — versions and plan documentation are dated so the reader knows
   when the page might have drifted.
 
 ## Contributing a prompt

@@ -26,7 +26,7 @@ oversight, or incident response?"
 The **Critical Infrastructure Secure Context Profile** is the answer. It
 does not claim compliance with a future NIST profile. It creates an
 enterprise-ready scaffold now: sector profiles, hazard flags, required
-evidence, rollout lanes, buyer views, and deterministic allow, hold,
+evidence, rollout lanes, reviewer views, and deterministic allow, hold,
 deny, or kill decisions.
 
 ## Generated artifact
@@ -135,7 +135,7 @@ This is a stronger enterprise story than another static checklist.
 | Open foundation | Public profile, generator, evidence pack, evaluator, docs, and MCP tools. |
 | Production MCP server | Hosted sector profiles, authorization checks, safety-case lookup, receipts, and policy evaluation. |
 | Design-partner wedge | Regulated teams can start with read-only context and prove whether agent evidence lowers review friction. |
-| Acquisition fit | Frontier labs, cloud providers, and security platforms need a credible way to sell agents into high-stakes sectors. |
+| trust review fit | Frontier labs, cloud providers, and security platforms need a credible way to sell agents into high-stakes sectors. |
 
 ## MCP examples
 

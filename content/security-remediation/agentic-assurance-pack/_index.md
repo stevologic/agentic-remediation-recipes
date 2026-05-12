@@ -5,7 +5,7 @@ weight: 6
 sidebar:
   open: true
 description: >
-  A generated buyer-, auditor-, and AI-platform-ready evidence bundle
+  A generated reviewer-, auditor-, and AI-platform-ready evidence bundle
   for agentic remediation controls, workflow scope, MCP gateway policy,
   AI/Agent BOM readiness, and residual risk.
 ---
@@ -27,11 +27,11 @@ declares what a workflow may do. The
 [MCP Gateway Policy Pack]({{< relref "/security-remediation/mcp-gateway-policy" >}})
 turns that declaration into runtime decisions. The assurance pack is the
 next layer: it explains the control story in a format GRC teams, AI
-platform teams, procurement, and acquirers can consume directly.
+platform teams, procurement, and reviewers can consume directly.
 
 That matters because the market has moved from generic LLM governance to
 agentic AI systems that plan, call tools, persist context, and connect to
-MCP servers. A serious buyer will ask four questions:
+MCP servers. A serious reviewer will ask four questions:
 
 - What workflows are approved to run?
 - What prevents tool misuse, scope creep, or privileged action?
@@ -46,7 +46,7 @@ stitch together prose pages by hand.
 The assurance layer lives in source-controlled and generated artifacts:
 
 - `data/assurance/agentic-assurance-control-map.json` - the control map
-  for SecurityRecipes assurance objectives, evidence sources, buyer
+  for SecurityRecipes assurance objectives, evidence sources, reviewer
   value, and framework mappings.
 - `scripts/generate_agentic_assurance_pack.py` - a dependency-free
   generator and validator with `--check` mode for CI drift detection.
@@ -77,7 +77,7 @@ The generated pack includes:
 | `control_objectives` | SecurityRecipes assurance controls (`SR-AI-01` through `SR-AI-09`) with evidence sources and framework mappings. |
 | `workflow_assurance` | Per-workflow owner, maturity, gate, evidence, KPI, MCP namespace, and gateway decision coverage. |
 | `agent_bom_seed` | A starter inventory for AI/Agent BOM work: agent classes, MCP namespaces, prompt roots, and policy decisions. |
-| `enterprise_adoption_packet` | The board-level claim, buyer questions answered, and first-use guidance. |
+| `enterprise_adoption_packet` | The board-level claim, reviewer questions answered, and first-use guidance. |
 | `residual_risks` | What the pack does not solve by itself and what operators must supply. |
 | `source_artifacts` | Hashes for the source manifest, policy pack, validation report, and control map. |
 

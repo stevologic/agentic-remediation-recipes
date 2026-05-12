@@ -6,7 +6,7 @@ author: "Security Recipes Maintainers"
 team: "Security"
 maturity: "development"
 model: "GPT-5.3-Codex"
-tags: ["defi", "oracle", "pricing", "manipulation", "risk-controls"]
+tags: ["defi", "oracle", "plan documentation", "manipulation", "risk-controls"]
 weight: 25
 date: 2026-04-26
 ---

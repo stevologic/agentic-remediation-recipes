@@ -12,7 +12,7 @@ description: >
 
 {{< callout type="info" >}}
 **What this is.** The annex is the high-impact autonomy layer above the
-normal readiness scorecard. It answers the board and buyer question:
+normal readiness scorecard. It answers the board and reviewer question:
 "Which agent actions must be held, denied, or killed before a rare but
 severe failure becomes irreversible?"
 {{< /callout >}}
@@ -25,7 +25,7 @@ for severe-risk decisions.
 
 This is intentionally practical. It does not claim to solve long-horizon
 AI safety. It focuses on production-testable agentic controls that
-enterprise buyers can inspect:
+enterprise reviewers can inspect:
 
 - Which action classes are high impact?
 - Which scenarios require human approval and risk acceptance?
@@ -135,13 +135,13 @@ writes, identity administration, secret access, schema migrations, mass
 deletion, public releases, critical-infrastructure control, funds
 movement, and connector scope escalation.
 
-## Buyer diligence questions
+## reviewer diligence questions
 
-| Buyer view | Question |
+| reviewer view | Question |
 | --- | --- |
 | Board and executive risk | Can the organization say yes to agentic AI without losing control of irreversible or large-scale consequences? |
 | AI platform security | Can high-impact tool calls be stopped before they cross MCP, identity, data, memory, or inter-agent boundaries? |
-| Acquisition diligence | Does SecurityRecipes have a credible future enterprise assurance surface beyond open prompts and docs? |
+| trust review diligence | Does SecurityRecipes have a credible future enterprise assurance surface beyond open prompts and docs? |
 
 ## Product strategy
 
@@ -153,7 +153,7 @@ Agentic AI" thesis:
 | Open foundation | Severe-risk scenarios, default decisions, source packs, runtime evaluator, and MCP tools are public and forkable. |
 | Production MCP server | Hosted high-impact action inventory, approval receipt validation, customer-specific risk acceptance, and runtime kill policy. |
 | Enterprise expansion | Board reporting, insurer evidence, procurement exports, red-team replay, and customer-specific severe-risk test suites. |
-| Strategic acquisition fit | Frontier labs, coding-agent platforms, cloud providers, and security vendors need a credible action-governance layer for enterprise agents. |
+| Strategic trust review fit | Frontier labs, coding-agent platforms, cloud providers, and security vendors need a credible action-governance layer for enterprise agents. |
 
 ## MCP examples
 

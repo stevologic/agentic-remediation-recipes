@@ -46,6 +46,7 @@ ARG TARGETARCH=amd64
 #   --build-arg BASE_URL=https://example.com/docs/
 ARG BASE_URL="http://localhost/"
 ARG REPO_URL=""
+ARG CHAT_API_PATH=""
 
 # HUGO_ENABLEGITINFO=false overrides `enableGitInfo: true` from hugo.yaml *for
 # container builds only*. We intentionally exclude `.git/` via .dockerignore to
@@ -119,6 +120,8 @@ RUN BASE_PATH=$(printf '%s' "${BASE_URL}" | sed -E 's|^https?://[^/]+||; s|/$||'
 # generated links don't carry a GitHub Pages project subpath
 # into a container that's served from `/`.
 RUN HUGO_PARAMS_REPOURL="${REPO_URL:-https://github.com/stevologic/security-recipes.ai}" \
+    HUGO_PARAMS_CHATAPIPATH="${CHAT_API_PATH}" \
+    HUGO_PARAMS_AIPROVIDERRELAY="same-origin" \
     hugo --gc --minify \
         --baseURL="${BASE_URL}" \
     && touch public/.nojekyll
@@ -140,6 +143,7 @@ server {
     listen  [::]:80;
     server_name  _;
     large_client_header_buffers 8 64k;
+    resolver 127.0.0.11 valid=30s ipv6=off;
 
     root   /usr/share/nginx/html;
     index  index.html;
@@ -148,6 +152,57 @@ server {
     # Try the literal path, then with trailing slash, then 404.
     location / {
         try_files $uri $uri/ $uri.html =404;
+    }
+
+    # Server-side chatbot API. In Docker Compose this points at the private
+    # chatbot-api service so provider keys stay in server environment vars.
+    location = /api/chat {
+        set $chatbot_api "http://chatbot-api:8000";
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 300s;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass $chatbot_api/api/chat;
+    }
+
+    location /api/chat/ {
+        set $chatbot_api "http://chatbot-api:8000";
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 300s;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass $chatbot_api$request_uri;
+    }
+
+    # Hosted MCP endpoint served by the private mcp-server container.
+    location = /mcp {
+        set $mcp_api "http://mcp-server:80";
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 300s;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass $mcp_api/mcp;
+    }
+
+    location /mcp/ {
+        set $mcp_api "http://mcp-server:80";
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 300s;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass $mcp_api$request_uri;
     }
 
     # Same-origin GitHub API relay for optional repository context.

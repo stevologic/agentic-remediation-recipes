@@ -20,7 +20,7 @@ policy sidecar can load directly.
 ## The product bet
 
 Agentic remediation cannot scale on prompt discipline alone. Enterprise
-buyers need a boring answer to a hard question: "What prevents this
+reviewers need a boring answer to a hard question: "What prevents this
 agent from using the wrong tool, touching the wrong file, or continuing
 after its scope has changed?"
 
@@ -34,7 +34,7 @@ AI agents and enterprise systems:
 - Reviewers get evidence requirements that are consistent across tools.
 - Platform teams get one artifact they can pin, diff, and promote.
 
-This is the shape a buyer can underwrite: recipes for adoption,
+This is the shape a reviewer can underwrite: recipes for adoption,
 manifests for governance, policy for enforcement, and evidence for
 audit.
 

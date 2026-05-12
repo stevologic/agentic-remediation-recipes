@@ -11,7 +11,7 @@ description: >
 
 {{< callout type="info" >}}
 **Positioning.** SecurityRecipes already produces posture, exposure,
-control, and trust evidence. The missing buyer surface was quantitative
+control, and trust evidence. The missing reviewer surface was quantitative
 severity: which agentic risks are critical, who owns them, what SLA
 applies, and what a runtime gate should do. This pack turns current
 agentic AI security guidance into generated scoring evidence.
@@ -28,7 +28,7 @@ the Secure Context Layer. It maps emerging agentic risks into:
   deny pending remediation, or kill-session.
 - Remediation SLA and owner guidance.
 - Evidence keys linking each risk to generated SecurityRecipes packs.
-- Hosted MCP wedges that describe the production product surface.
+- Hosted MCP readiness gates that describe the production product surface.
 
 The pack is intentionally conservative: it is **AIVSS-aligned**, not an
 official OWASP calculator. The scoring vector is source-controlled so
@@ -86,7 +86,7 @@ The profile scores nine high-value enterprise scenarios:
 - Rogue agent or shadow MCP server.
 
 Each score includes recommended controls, evidence keys, owner, SLA, and
-a hosted MCP wedge that makes the open evidence commercially useful.
+a hosted MCP readiness gate that makes the open evidence operationally useful.
 
 ## Current industry alignment
 
@@ -117,14 +117,14 @@ The MCP server exposes:
 - `recipes_agentic_aivss_risk_scoring_pack`
 - `recipes_evaluate_agentic_aivss_risk_decision`
 
-Use the pack tool for buyer, platform, and remediation-priority review.
+Use the pack tool for reviewer, platform, and remediation-priority review.
 Use the evaluator before a gateway or agent host allows high-autonomy
 execution, external writes, untrusted context, shadow MCP servers,
 unregistered agents, or unpinned skills.
 
 ## What to look at first
 
-For enterprise or acquisition diligence, start with:
+For enterprise or trust review diligence, start with:
 
 1. `severity_summary` - critical/high counts and runtime decision mix.
 2. `risk_scores` - the scored risk scenarios and owners.

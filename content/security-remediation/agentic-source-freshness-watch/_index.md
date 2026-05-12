@@ -17,7 +17,7 @@ reviewed, and exposes the result as generated JSON plus an MCP tool.
 {{< /callout >}}
 
 SecurityRecipes is positioned as **The Secure Context Layer for Agentic
-AI**. That category depends on trust: a buyer needs to know not only
+AI**. That category depends on trust: a reviewer needs to know not only
 what the site says, but whether its source-backed controls still track
 the latest protocol, standards, government, and frontier-lab guidance.
 
@@ -31,9 +31,9 @@ This run considered three high-value product directions:
 
 | Candidate | Value | Decision |
 | --- | --- | --- |
-| Hosted context signing | Strong paid wedge for production MCP, but the repo already has attestation and release-gate foundations. | Keep as next hosted layer. |
+| Hosted context signing | Strong hosted-ready proof path for production MCP, but the repo already has attestation and release-gate foundations. | Keep as next hosted layer. |
 | More protocol conformance | Valuable, but MCP and A2A conformance already exists as a generated pack. | Extend later with live probes. |
-| Source freshness and standards drift | Directly strengthens every existing evidence pack and answers the buyer question: "How do we know this is current?" | **Implemented now.** |
+| Source freshness and standards drift | Directly strengthens every existing evidence pack and answers the reviewer question: "How do we know this is current?" | **Implemented now.** |
 
 ## Generated artifact
 
@@ -56,7 +56,7 @@ python3 scripts/generate_agentic_source_freshness_watch.py --check
 ## What it watches
 
 The watch currently monitors source references and last-reviewed dates
-from the product's most buyer-relevant evidence inputs:
+from the product's most reviewer-relevant evidence inputs:
 
 - Agentic Threat Radar sources.
 - Agentic Standards Crosswalk profile.
@@ -90,12 +90,12 @@ SecurityRecipes category claim:
 
 **Procurement security.** Return the watched packs, source references,
 last-reviewed dates, publisher coverage, and review-due findings before
-a buyer relies on the site for an AI platform decision.
+a reviewer relies on the site for an AI platform decision.
 
 **AI platform standards drift.** Use the watch as the quarterly agenda
 for MCP, A2A, OWASP, NIST, CISA, OpenAI, and CSA guidance changes.
 
-**Acquisition diligence.** Show that SecurityRecipes is maintained as a
+**trust review diligence.** Show that SecurityRecipes is maintained as a
 living control plane with generated evidence, not a static prompt
 library.
 
@@ -131,7 +131,7 @@ recipes_agentic_source_freshness_watch(
 )
 ```
 
-## Commercial path
+## Trusted-source path
 
 The open pack proves the operating model. The hosted product surface is
 standards and source-drift monitoring:
@@ -146,7 +146,7 @@ standards and source-drift monitoring:
   conformance checks, or context release manifests.
 
 That is a natural enterprise layer above the open SecurityRecipes
-knowledge base and a credible acquisition wedge for a model lab,
+knowledge base and a credible trust review wedge for a model lab,
 security platform, cloud platform, or developer-tool company.
 
 ## See also

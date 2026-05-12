@@ -26,7 +26,7 @@ sink controls are current and fail closed.
 
 The **Agentic Protocol Conformance Pack** turns fast-moving protocol and
 agent-security guidance into a generated artifact that a platform team,
-procurement reviewer, or acquirer can inspect through MCP.
+procurement reviewer, or reviewer can inspect through MCP.
 
 ## What was added
 
@@ -123,9 +123,9 @@ This feature tracks current primary guidance:
   for source-to-sink reasoning, constrained impact, confirmations, and
   data-transmission safeguards.
 
-## Commercial path
+## Trusted-source path
 
-The open pack is the proof model. The premium product surface is hosted
+The open pack is the proof model. The reviewed production surface is hosted
 MCP and A2A protocol conformance:
 
 - live MCP protected-resource metadata checks,
@@ -135,11 +135,11 @@ MCP and A2A protocol conformance:
 - A2A Agent Card monitoring, signature verification, and skill allowlists,
 - source-to-sink prompt-injection policy across protocol boundaries,
 - signed protocol receipts attached to agent run receipts,
-- procurement and acquisition diligence exports.
+- procurement and trust review diligence exports.
 
 That turns SecurityRecipes from a static knowledge base into a protocol
-control plane a model lab, AI platform vendor, security company, or VC
-can underwrite.
+control plane a model lab, AI platform vendor, or security team can
+inspect and operate.
 
 ## MCP examples
 

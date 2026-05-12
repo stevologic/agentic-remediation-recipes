@@ -36,7 +36,7 @@ motion. It scores applications by:
 - human approval and two-key review evidence for high-impact actions.
 
 The result is a simple launch decision that AI platform, product
-security, GRC, procurement, and acquisition reviewers can understand.
+security, GRC, procurement, and trust review reviewers can understand.
 
 ## Generated artifact
 
@@ -96,7 +96,7 @@ python3 scripts/evaluate_agentic_app_intake_decision.py \
 | `deny_until_controls_exist` | High-risk app lacks required controls or must be redesigned before launch. |
 | `kill_session_on_launch_signal` | Runtime launch request includes a hard-stop signal such as signer access, token passthrough, private-network egress, approval bypass, or autonomous high-impact action. |
 
-## Why this is acquisition-relevant
+## Why this is trust review-relevant
 
 This page gives the project an obvious enterprise product surface:
 

@@ -221,7 +221,7 @@ G) INFRASTRUCTURE & INTERNAL DATA
    - Internal hostnames / FQDNs that reveal architecture
    - Internal IP ranges in checked-in configs (when policy treats as sensitive)
    - Customer identifiers (account IDs, tenant IDs) in shared fixtures
-   - Vendor contract terms, pricing, internal financial data in docs/
+   - Vendor contract terms, plan documentation, internal financial data in docs/
 
 H) UNSAFE DATA HANDLING PATTERNS (code-level)
    - Logging full request/response bodies without redaction (Express morgan with body, Python logging of `request.json`, Java logging of entities, etc.)

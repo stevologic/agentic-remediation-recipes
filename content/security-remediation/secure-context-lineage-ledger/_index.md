@@ -40,7 +40,7 @@ The lineage layer has four artifacts:
 
 - `data/assurance/secure-context-lineage-profile.json` - the source
   profile for context lineage stages, reuse policy, runtime fields,
-  standards alignment, buyer views, and commercialization path.
+  standards alignment, reviewer views, and trusted-source path.
 - `scripts/generate_secure_context_lineage_ledger.py` - a dependency-free
   generator and validator with `--check` mode for CI drift detection.
 - `scripts/evaluate_secure_context_lineage_decision.py` - a dependency-free
@@ -164,14 +164,14 @@ This feature follows current primary guidance:
   for AI lifecycle governance, provenance, monitoring, measurement, and
   incident response.
 
-## Buyer value
+## reviewer value
 
 This is the enterprise-ready version of "make AI easy": the agent does
 not need to debate whether context is safe. It asks the MCP tool for the
 lineage decision, gets a structured answer, and either proceeds, asks for
 missing evidence, routes to review, denies reuse, or kills the session.
 
-For a future commercial product, the same shape becomes a hosted lineage
+For a future vendor product, the same shape becomes a hosted lineage
 API for MCP gateways, private context registries, SIEM/SOAR exports,
 signed run receipt verification, trust-center exports, and incident
 forensics.

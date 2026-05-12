@@ -7,14 +7,14 @@ sidebar:
 description: >
   A generated design-partner pilot motion that turns secure-context,
   MCP, telemetry, eval, receipt, and value-model evidence into a
-  buyer-ready path from open knowledge to hosted product proof.
+  reviewer-ready path from open knowledge to hosted product proof.
 ---
 
 {{< callout type="info" >}}
 **Why this page exists.** SecurityRecipes already has the artifacts a
-serious buyer wants to inspect. The next step is proving that those
+serious reviewer wants to inspect. The next step is proving that those
 artifacts can run inside a customer pilot, produce telemetry, validate a
-paid wedge, and support a credible hosted MCP business.
+hosted-ready proof path, and support a credible hosted MCP business.
 {{< /callout >}}
 
 SecurityRecipes is positioned as **The Secure Context Layer for Agentic
@@ -23,25 +23,25 @@ can answer four questions quickly:
 
 - Which agent workflow are we piloting?
 - Which private context and MCP controls are in scope?
-- Which telemetry proves security and ROI?
-- Which paid product wedge is this pilot validating?
+- Which telemetry proves security and operational impact?
+- Which hosted-ready deployment path is this pilot validating?
 
 The **Design Partner Pilot Pack** turns those questions into a generated
-artifact. It does not claim recurring revenue exists yet. It defines the
+artifact. It does not claim repeatable adoption proof exists yet. It defines the
 motion required to prove it.
 
 ## What was added
 
 - `data/assurance/design-partner-pilot-profile.json` - source-backed
-  pilot profile for buyer segments, phases, telemetry, success metrics,
-  paid wedges, pricing guardrails, diligence questions, and risk gates.
+  pilot profile for reviewer segments, phases, telemetry, success metrics,
+  hosted-ready proof paths, scope guardrails, diligence questions, and risk gates.
 - `scripts/generate_design_partner_pilot_pack.py` - deterministic
   generator and `--check` validator for CI drift detection.
 - `data/evidence/design-partner-pilot-pack.json` - generated pack with
-  source-pack hashes, readiness score, phase gates, wedge proof states,
+  source-pack hashes, readiness score, phase gates, readiness proof states,
   telemetry requirements, and diligence answers.
 - `recipes_design_partner_pilot_pack` - MCP tool for the full pack, a
-  buyer segment, pilot phase, monetization wedge, metric, diligence
+  reviewer segment, pilot phase, hosted-readiness path, metric, diligence
   question, or pilot risk.
 
 Run it from the repo root:
@@ -55,15 +55,15 @@ python3 scripts/generate_design_partner_pilot_pack.py --check
 
 | Section | Purpose |
 | --- | --- |
-| `pilot_summary` | Readiness score, decision, source-pack readiness, phase count, wedge count, metric count, and failure count. |
+| `pilot_summary` | Readiness score, decision, source-pack readiness, phase count, readiness gate count, metric count, and failure count. |
 | `buyer_segments` | Frontier model lab, AI platform vendor, security platform vendor, and regulated enterprise views. |
 | `pilot_phases` | Qualify, bind private context, run read-only MCP, govern controlled actions, and prove the renewal case. |
 | `success_metrics` | Receipt completeness, context hash coverage, MCP decision coverage, reviewer time saved, automation success, safe holds, replay, private context, and renewal intent. |
-| `monetization_wedges` | Hosted MCP policy, private context registry, connector drift, run-receipt vault, trust-center API, and continuous eval replay. |
+| `hosted_readiness_gates` | Hosted MCP policy, private context registry, connector drift, run-receipt vault, trust-center API, and continuous eval replay. |
 | `telemetry_requirements` | Metadata-first telemetry events and prohibited data classes. |
 | `risk_register` | Pilot risks with hold, deny, or kill decisions. |
 
-## Why this is acquisition-grade
+## Why this is review-ready
 
 The site already has open knowledge, generated evidence, and a
 production-oriented read-only MCP server. The missing enterprise proof is
@@ -73,13 +73,13 @@ This pack makes that proof testable:
 
 - The open layer stays useful and forkable.
 - The pilot binds private context, telemetry, and customer evidence.
-- The paid wedge is explicit before implementation expands.
+- The hosted-ready proof path is explicit before implementation expands.
 - Synthetic ROI is labeled as assumption-based until customer telemetry
   replaces it.
 - The pilot can stop safely on token passthrough, approval bypass,
   unsafe model routing, raw secret capture, or connector drift.
 
-That is the right path toward a credible $10-20M outcome: design
+That is the right path toward a credible trusted-source outcome: design
 partners first, hosted MCP controls second, renewal evidence third.
 
 ## MCP examples
@@ -90,13 +90,13 @@ Inspect the full pilot pack:
 recipes_design_partner_pilot_pack()
 ```
 
-Inspect the regulated-enterprise buyer view:
+Inspect the regulated-enterprise reviewer view:
 
 ```text
 recipes_design_partner_pilot_pack(segment_id="regulated-enterprise")
 ```
 
-Inspect the hosted MCP policy wedge:
+Inspect the hosted MCP policy gate:
 
 ```text
 recipes_design_partner_pilot_pack(wedge_id="hosted-mcp-policy-plane")

@@ -39,7 +39,7 @@ Anthropic's documented setup.
 
 1. **Pick a plan.** Claude Code works with Pro, Team, or
    Enterprise Claude subscriptions, or with an Anthropic Console
-   API key. See [Claude.com pricing](https://claude.com/pricing).
+   API key. See [Claude.com plan documentation](https://claude.com/plan documentation).
 2. **Install Claude Code.** Use the installer for your OS — see
    the section below, or Anthropic's
    [install overview](https://code.claude.com/docs/en/overview).
@@ -70,7 +70,7 @@ Anthropic's documented setup.
 - [GitHub Actions](https://code.claude.com/docs/en/github-actions)
 - [MCP](https://code.claude.com/docs/en/mcp)
 - [Hooks](https://code.claude.com/docs/en/hooks)
-- [Pricing](https://claude.com/pricing)
+- [Plan documentation](https://claude.com/plan documentation)
 - [Anthropic trust & compliance](https://trust.anthropic.com)
 
 ## Enterprise onboarding

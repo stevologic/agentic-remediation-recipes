@@ -240,7 +240,7 @@ Where the previous section gives you *text*, these give you
 
 ### Braintrust, LangSmith, and peers
 
-- Commercial observability + eval platforms. Their public
+- Vendor observability + eval platforms. Their public
   templates and blog content occasionally ship reusable prompt
   and eval patterns. Useful as references; not sources of
   truth on their own.

@@ -21,7 +21,7 @@ Agentic AI security is moving from "did the model answer correctly?" to
 "can we prove what context, tool, identity, policy, approval, egress
 decision, verifier, and incident signal shaped the run?" The Agentic
 Telemetry Contract turns that into a generated artifact that a platform
-team can hand to observability, SIEM, MCP gateway, GRC, and acquisition
+team can hand to observability, SIEM, MCP gateway, GRC, and trust review
 diligence reviewers.
 
 ## Generated artifact
